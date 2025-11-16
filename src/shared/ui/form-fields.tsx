@@ -28,6 +28,7 @@ import { Switch } from '@/shared/ui/switch';
 import { Combobox } from '@/shared/ui/combobox';
 import { MultiCombobox } from '@/shared/ui/multi-combobox';
 import { DatePicker, type DatePickerBaseProps } from '@/shared/ui/date-picker';
+import { FileUpload, type FileUploadValue } from '@/shared/ui/file-upload';
 import { type DateRange } from 'react-day-picker';
 
 /**
@@ -708,6 +709,50 @@ export const FormDatePicker = <
 
         return null;
       }}
+    </FormField>
+  );
+};
+
+type FormFileUploadProps<
+  V extends FieldValues = FieldValues,
+  N extends FieldPath<V> = FieldPath<V>
+> = FormBaseProps<V, N> & {
+  accept?: string;
+  maxSize?: number;
+  placeholder?: string;
+};
+
+export const FormFileUpload = <
+  V extends FieldValues = FieldValues,
+  N extends FieldPath<V> = FieldPath<V>
+>({
+  control,
+  name,
+  label,
+  description,
+  orientation,
+  accept,
+  maxSize,
+  placeholder,
+}: FormFileUploadProps<V, N>): ReactElement => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      label={label}
+      description={description}
+      orientation={orientation}
+    >
+      {({ onChange, fieldState, ...field }) => (
+        <FileUpload
+          value={field.value as FileUploadValue}
+          onValueChange={onChange}
+          accept={accept}
+          maxSize={maxSize}
+          placeholder={placeholder}
+          aria-invalid={fieldState.invalid}
+        />
+      )}
     </FormField>
   );
 };

@@ -15,7 +15,9 @@ import {
   FormCombobox,
   FormMultiCombobox,
   FormDatePicker,
+  FormFileUpload,
 } from '@/shared/ui/form-fields';
+import { type FileUploadValue } from '@/shared/ui/file-upload';
 import { LoadingButton } from '@/shared/ui/loading-button';
 
 const formSchema = z.object({
@@ -45,6 +47,24 @@ const formSchema = z.object({
       to: z.date().optional(),
     })
     .refine(data => data.from, { message: '기간을 선택해주세요.' }),
+  fileUpload: z.custom<FileUploadValue>(
+    val => {
+      if (val === null || val === undefined) return false;
+      const file = val as FileUploadValue;
+      if (file && file.type === 'existing' && file.markedForDeletion) return false;
+      return true;
+    },
+    { message: '파일을 업로드해주세요.' }
+  ),
+  imageUpload: z.custom<FileUploadValue>(
+    val => {
+      if (val === null || val === undefined) return false;
+      const file = val as FileUploadValue;
+      if (file && file.type === 'existing' && file.markedForDeletion) return false;
+      return true;
+    },
+    { message: '이미지를 업로드해주세요.' }
+  ),
 });
 
 const formDefaultValues: z.infer<typeof formSchema> = {
@@ -65,6 +85,12 @@ const formDefaultValues: z.infer<typeof formSchema> = {
   dateSingle: undefined as unknown as Date,
   dateMultiple: [],
   dateRange: { from: undefined as unknown as Date, to: undefined },
+  fileUpload: null,
+  imageUpload: {
+    type: 'existing',
+    url: 'https://picsum.photos/200',
+    name: 'existing-image.jpg',
+  },
 };
 
 function DemoForm() {
@@ -229,6 +255,22 @@ function DemoForm() {
           description='기간을 선택하세요'
           mode='range'
           numberOfMonths={2}
+        />
+        <FormFileUpload
+          control={form.control}
+          name='fileUpload'
+          label='File Upload'
+          description='PDF 또는 문서 파일을 업로드하세요'
+          accept='.pdf,.doc,.docx'
+          maxSize={10 * 1024 * 1024}
+        />
+        <FormFileUpload
+          control={form.control}
+          name='imageUpload'
+          label='Image Upload (기존 파일 있음)'
+          description='이미지 파일만 업로드 가능합니다 (최대 5MB)'
+          accept='image/*'
+          maxSize={5 * 1024 * 1024}
         />
         <LoadingButton
           type='submit'
