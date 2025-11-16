@@ -17,14 +17,26 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 
 type ComboboxProps = {
   value: string;
-  onChange: (value: string) => void;
+  onValueChange: (value: string) => void;
   options: { value: string; label: string }[];
   placeholder?: string;
+  searchPlaceholder?: string;
+  emptyMessage?: string;
+  className?: string;
+  'aria-invalid'?: boolean;
 };
 
-export function Combobox({ onChange, options, placeholder = 'Select' }: ComboboxProps) {
+export function Combobox({
+  value,
+  onValueChange,
+  options,
+  placeholder = 'Select',
+  searchPlaceholder = 'Search',
+  emptyMessage = 'No results found',
+  className,
+  'aria-invalid': ariaInvalid,
+}: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState('');
 
   return (
     <Popover
@@ -36,28 +48,34 @@ export function Combobox({ onChange, options, placeholder = 'Select' }: Combobox
           variant='outline'
           role='combobox'
           aria-expanded={open}
-          className='w-[200px] justify-between'
+          aria-invalid={ariaInvalid}
+          data-placeholder={!value}
+          className={cn(
+            'w-full hover:bg-background',
+            "border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+            className
+          )}
         >
           {value ? options.find(option => option.value === value)?.label : placeholder}
           <ChevronsUpDown className='opacity-50' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-[200px] p-0'>
+      <PopoverContent className='p-0'>
         <Command>
           <CommandInput
-            placeholder='Search'
+            placeholder={searchPlaceholder}
             className='h-9'
           />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup>
               {options.map(option => (
                 <CommandItem
                   key={option.value}
                   value={option.value}
                   onSelect={currentValue => {
-                    setValue(currentValue === value ? '' : currentValue);
                     setOpen(false);
+                    onValueChange(currentValue);
                   }}
                 >
                   {option.label}
@@ -72,4 +90,8 @@ export function Combobox({ onChange, options, placeholder = 'Select' }: Combobox
       </PopoverContent>
     </Popover>
   );
+}
+
+export function MultiCombobox({}) {
+  return null;
 }

@@ -11,6 +11,8 @@ import {
   FormCheckboxGroup,
   FormRadioGroup,
   FormSelect,
+  FormCombobox,
+  FormMultiCombobox,
 } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 
@@ -28,6 +30,8 @@ const formSchema = z.object({
   radioGroupUnselected: z.string().min(1),
   radioGroupVertical: z.string().min(1),
   select: z.string().min(1),
+  combobox: z.string().min(1),
+  multiCombobox: z.array(z.string()).min(1),
 });
 
 const formDefaultValues = {
@@ -41,6 +45,8 @@ const formDefaultValues = {
   radioGroup: 'option1',
   radioGroupVertical: 'option2',
   select: '',
+  combobox: '',
+  multiCombobox: [],
 };
 
 function DemoForm() {
@@ -137,6 +143,26 @@ function DemoForm() {
           control={form.control}
           name='select'
           label='Select'
+          options={[
+            { label: 'Option 1', value: 'option1' },
+            { label: 'Option 2', value: 'option2' },
+            { label: 'Option 3', value: 'option3' },
+          ]}
+        />
+        <FormCombobox
+          control={form.control}
+          name='combobox'
+          label='Combobox'
+          options={[
+            { label: 'Option 1', value: 'option1' },
+            { label: 'Option 2', value: 'option2' },
+            { label: 'Option 3', value: 'option3' },
+          ]}
+        />
+        <FormMultiCombobox
+          control={form.control}
+          name='multiCombobox'
+          label='Multi Combobox'
           options={[
             { label: 'Option 1', value: 'option1' },
             { label: 'Option 2', value: 'option2' },

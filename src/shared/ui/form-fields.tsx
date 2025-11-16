@@ -24,6 +24,8 @@ import { Textarea } from '@/shared/ui/textarea';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/shared/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
+import { Combobox } from '@/shared/ui/combobox';
+import { MultiCombobox } from '@/shared/ui/multi-combobox';
 
 /**
  * react-hook-form의 field가 관리하는 props들을 명시적으로 제외
@@ -420,6 +422,112 @@ export const FormSelect = <
             ))}
           </SelectContent>
         </Select>
+      )}
+    </FormField>
+  );
+};
+
+type FormComboboxProps<
+  V extends FieldValues = FieldValues,
+  N extends FieldPath<V> = FieldPath<V>
+> = FormBaseProps<V, N> & {
+  options: {
+    label: string;
+    value: string;
+  }[];
+  placeholder?: string;
+  searchPlaceholder?: string;
+  emptyMessage?: string;
+  className?: string;
+};
+
+export const FormCombobox = <
+  V extends FieldValues = FieldValues,
+  N extends FieldPath<V> = FieldPath<V>
+>({
+  control,
+  name,
+  label,
+  description,
+  orientation,
+  options,
+  placeholder,
+  searchPlaceholder,
+  emptyMessage,
+  className,
+}: FormComboboxProps<V, N>): ReactElement => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      label={label}
+      description={description}
+      orientation={orientation}
+    >
+      {({ onChange, fieldState, ...field }) => (
+        <Combobox
+          value={field.value}
+          onValueChange={onChange}
+          options={options}
+          placeholder={placeholder}
+          searchPlaceholder={searchPlaceholder}
+          emptyMessage={emptyMessage}
+          className={className}
+          aria-invalid={fieldState.invalid}
+        />
+      )}
+    </FormField>
+  );
+};
+
+type FormMultiComboboxProps<
+  V extends FieldValues = FieldValues,
+  N extends FieldPath<V> = FieldPath<V>
+> = FormBaseProps<V, N> & {
+  options: {
+    label: string;
+    value: string;
+  }[];
+  placeholder?: string;
+  searchPlaceholder?: string;
+  emptyMessage?: string;
+  className?: string;
+};
+
+export const FormMultiCombobox = <
+  V extends FieldValues = FieldValues,
+  N extends FieldPath<V> = FieldPath<V>
+>({
+  control,
+  name,
+  label,
+  description,
+  orientation,
+  options,
+  placeholder,
+  searchPlaceholder,
+  emptyMessage,
+  className,
+}: FormMultiComboboxProps<V, N>): ReactElement => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      label={label}
+      description={description}
+      orientation={orientation}
+    >
+      {({ onChange, fieldState, ...field }) => (
+        <MultiCombobox
+          value={field.value}
+          onValueChange={onChange}
+          options={options}
+          placeholder={placeholder}
+          searchPlaceholder={searchPlaceholder}
+          emptyMessage={emptyMessage}
+          className={className}
+          aria-invalid={fieldState.invalid}
+        />
       )}
     </FormField>
   );
