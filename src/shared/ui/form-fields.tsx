@@ -24,6 +24,7 @@ import { Textarea } from '@/shared/ui/textarea';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/shared/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
+import { Switch } from '@/shared/ui/switch';
 import { Combobox } from '@/shared/ui/combobox';
 import { MultiCombobox } from '@/shared/ui/multi-combobox';
 
@@ -183,6 +184,44 @@ export const FormTextarea = <
         />
       )}
     </FormField>
+  );
+};
+
+type FormSwitchProps<
+  V extends FieldValues = FieldValues,
+  N extends FieldPath<V> = FieldPath<V>
+> = Omit<FormBaseProps<V, N>, 'description' | 'orientation'>;
+
+export const FormSwitch = <
+  V extends FieldValues = FieldValues,
+  N extends FieldPath<V> = FieldPath<V>
+>({
+  control,
+  name,
+  label,
+}: FormSwitchProps<V, N>): ReactElement => {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field, fieldState }) => (
+        <Field data-invalid={fieldState.invalid}>
+          <Field
+            orientation='horizontal'
+            data-invalid={fieldState.invalid}
+          >
+            <Switch
+              id={field.name}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              aria-invalid={fieldState.invalid}
+            />
+            <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+          </Field>
+          {fieldState.error && <FieldError errors={[fieldState.error]} />}
+        </Field>
+      )}
+    />
   );
 };
 

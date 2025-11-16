@@ -7,6 +7,7 @@ import { FieldGroup } from '@/shared/ui/field';
 import {
   FormInput,
   FormTextarea,
+  FormSwitch,
   FormCheckbox,
   FormCheckboxGroup,
   FormRadioGroup,
@@ -21,6 +22,9 @@ const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   textarea: z.string().min(1),
+  switch: z.boolean().refine(val => val === true, {
+    message: 'Switch must be checked',
+  }),
   checkbox: z.boolean().refine(val => val === true, {
     message: 'Checkbox must be checked',
   }),
@@ -39,6 +43,7 @@ const formDefaultValues = {
   email: '',
   password: '',
   textarea: '',
+  switch: false,
   checkbox: false,
   checkboxGroup: [],
   checkboxGroupVertical: [],
@@ -83,6 +88,11 @@ function DemoForm() {
           control={form.control}
           name='textarea'
           label='Textarea'
+        />
+        <FormSwitch
+          control={form.control}
+          name='switch'
+          label='Switch'
         />
         <FormCheckbox
           control={form.control}
