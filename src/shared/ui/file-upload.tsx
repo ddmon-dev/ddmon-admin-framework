@@ -41,37 +41,6 @@ interface FileUploadProps {
   'aria-invalid'?: boolean;
 }
 
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
-function truncateFileName(fileName: string, maxLength: number = 30): string {
-  if (fileName.length <= maxLength) return fileName;
-
-  const lastDotIndex = fileName.lastIndexOf('.');
-  const hasExtension = lastDotIndex > 0;
-
-  if (!hasExtension) {
-    const halfLength = Math.floor((maxLength - 3) / 2);
-    return fileName.slice(0, halfLength) + '...' + fileName.slice(-halfLength);
-  }
-
-  const extension = fileName.slice(lastDotIndex);
-  const nameWithoutExt = fileName.slice(0, lastDotIndex);
-
-  const availableLength = maxLength - extension.length - 3;
-  if (availableLength <= 0) return fileName;
-
-  const halfLength = Math.floor(availableLength / 2);
-  return (
-    nameWithoutExt.slice(0, halfLength) + '...' + nameWithoutExt.slice(-halfLength) + extension
-  );
-}
-
 export function FileUpload({
   value,
   onValueChange,
@@ -204,21 +173,6 @@ export function FileUpload({
     }
   };
 
-  const getDisplayText = (): string => {
-    if (!value) return '';
-
-    if (value.type === 'existing') {
-      if (value.markedForDeletion) {
-        return `${truncateFileName(value.name)} (삭제 예정)`;
-      }
-      return truncateFileName(value.name);
-    }
-
-    const fileName = truncateFileName(value.file.name);
-    const fileSize = formatFileSize(value.file.size);
-    return `${fileName} (${fileSize})`;
-  };
-
   const hasFile = value && !(value.type === 'existing' && value.markedForDeletion);
   const isMarkedForDeletion = value?.type === 'existing' && value.markedForDeletion;
   const replacedFile = value?.type === 'new' ? value.replacedFile : undefined;
@@ -258,7 +212,7 @@ export function FileUpload({
           </div>
         </InputGroupAddon>
         <InputGroupInput
-          value={hasFile || isMarkedForDeletion ? getDisplayText() : ''}
+          value={hasFile || isMarkedForDeletion ? getDisplayText(value) : ''}
           placeholder={placeholder}
           readOnly
           onClick={!hasFile ? handleBrowseClick : undefined}
@@ -335,4 +289,50 @@ export function FileUpload({
       )}
     </div>
   );
+}
+
+// 유틸 함수들
+
+function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function truncateFileName(fileName: string, maxLength: number = 30): string {
+  if (fileName.length <= maxLength) return fileName;
+
+  const lastDotIndex = fileName.lastIndexOf('.');
+  const hasExtension = lastDotIndex > 0;
+
+  if (!hasExtension) {
+    const halfLength = Math.floor((maxLength - 3) / 2);
+    return fileName.slice(0, halfLength) + '...' + fileName.slice(-halfLength);
+  }
+
+  const extension = fileName.slice(lastDotIndex);
+  const nameWithoutExt = fileName.slice(0, lastDotIndex);
+
+  const availableLength = maxLength - extension.length - 3;
+  if (availableLength <= 0) return fileName;
+
+  const halfLength = Math.floor(availableLength / 2);
+  return nameWithoutExt.slice(0, halfLength) + '...' + nameWithoutExt.slice(-halfLength) + extension;
+}
+
+function getDisplayText(value: FileUploadValue): string {
+  if (!value) return '';
+
+  if (value.type === 'existing') {
+    if (value.markedForDeletion) {
+      return `${truncateFileName(value.name)} (삭제 예정)`;
+    }
+    return truncateFileName(value.name);
+  }
+
+  const fileName = truncateFileName(value.file.name);
+  const fileSize = formatFileSize(value.file.size);
+  return `${fileName} (${fileSize})`;
 }
