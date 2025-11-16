@@ -1,19 +1,11 @@
 'use client';
 
-import { cn } from '@/shared/utils/classnames';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormSubmit,
-} from '@/shared/ui/form';
-import { Input } from '@/shared/ui/input';
+import { FieldGroup } from '@/shared/ui/field';
+import { FormInput } from '@/shared/ui/form-fields';
+import { LoadingButton } from '@/shared/ui/loading-button';
 
 const resetPasswordSchema = z
   .object({
@@ -45,57 +37,34 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className={cn('space-y-6')}>
-          <div className={cn('space-y-4')}>
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>새 비밀번호</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type='password'
-                      placeholder='••••••••'
-                      autoComplete='new-password'
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FieldGroup className='gap-y-6'>
+        <FieldGroup className='gap-y-4'>
+          <FormInput
+            name='password'
+            label='새 비밀번호'
+            control={form.control}
+            type='password'
+            placeholder='••••••••'
+            autoComplete='new-password'
+          />
+          <FormInput
+            name='confirmPassword'
+            label='비밀번호 확인'
+            control={form.control}
+            type='password'
+            placeholder='••••••••'
+            autoComplete='new-password'
+          />
+        </FieldGroup>
 
-            <FormField
-              control={form.control}
-              name='confirmPassword'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>비밀번호 확인</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type='password'
-                      placeholder='••••••••'
-                      autoComplete='new-password'
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormSubmit
-            className={cn('w-full')}
-            size='lg'
-          >
-            비밀번호 변경
-          </FormSubmit>
-        </div>
-      </form>
-    </Form>
+        <LoadingButton
+          type='submit'
+          isLoading={form.formState.isSubmitting}
+        >
+          비밀번호 변경
+        </LoadingButton>
+      </FieldGroup>
+    </form>
   );
 }

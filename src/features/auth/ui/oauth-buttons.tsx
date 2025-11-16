@@ -1,6 +1,5 @@
 'use client';
 
-import { cn } from '@/shared/utils/classnames';
 import { Button } from '@/shared/ui/button';
 
 interface OAuthButtonsProps {
@@ -17,19 +16,16 @@ export function OAuthButtons({ isLoading = false, mode = 'login' }: OAuthButtons
   }
 
   return (
-    <div className={cn('space-y-3')}>
+    <div className='space-y-3'>
       <Button
         type='button'
         variant='outline'
-        size='lg'
-        className={cn(
-          'w-full relative hover:border-[#4285f4] hover:text-[#4285f4] transition-colors'
-        )}
+        className='w-full relative hover:border-[#4285f4] hover:text-[#4285f4] transition-colors'
         onClick={() => handleOAuthLogin('google')}
         disabled={isLoading}
       >
         <svg
-          className={cn('absolute left-3 h-5 w-5')}
+          className='absolute left-3 h-5 w-5'
           aria-hidden='true'
           focusable='false'
           data-prefix='fab'
@@ -49,15 +45,12 @@ export function OAuthButtons({ isLoading = false, mode = 'login' }: OAuthButtons
       <Button
         type='button'
         variant='outline'
-        size='lg'
-        className={cn(
-          'w-full relative hover:border-[#3A1D1D] hover:text-[#3A1D1D] transition-colors'
-        )}
+        className='w-full relative hover:border-[#3A1D1D] hover:text-[#3A1D1D] transition-colors'
         onClick={() => handleOAuthLogin('kakao')}
         disabled={isLoading}
       >
         <svg
-          className={cn('absolute left-3 h-5 w-5')}
+          className='absolute left-3 h-5 w-5'
           aria-hidden='true'
           focusable='false'
           role='img'

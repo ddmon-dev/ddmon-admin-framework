@@ -1,5 +1,5 @@
-import { ForgotPasswordForm } from '@/features/auth';
-import { AuthContainer, AuthCard } from '@/features/auth';
+import { ForgotPasswordForm } from '@/features/auth/ui/forgot-password-form';
+import { AuthContainer, AuthCard } from '@/features/auth/ui/auth-layout';
 
 export default function LoginPage() {
   return (

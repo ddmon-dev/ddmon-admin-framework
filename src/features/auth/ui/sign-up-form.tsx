@@ -1,25 +1,16 @@
 'use client';
 
-import { cn } from '@/shared/utils/classnames';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormSubmit,
-  FormDescription,
-} from '@/shared/ui/form';
-import { Input } from '@/shared/ui/input';
-import { Checkbox } from '@/shared/ui/checkbox';
-import Link from 'next/link';
+import { FieldGroup } from '@/shared/ui/field';
+import { FormInput, FormCheckbox } from '@/shared/ui/form-fields';
+import { LoadingButton } from '@/shared/ui/loading-button';
+import { DividerWithText } from '@/shared/ui/divider-with-text';
+
 import { SignInLink, AUTH_ROUTES } from './auth-links';
 import { OAuthButtons } from './oauth-buttons';
-import { DividerWithText } from '../../../shared/ui/divider-with-text';
 
 // 개발 환경인지 확인
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -74,155 +65,80 @@ export function SignupForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className={cn('space-y-6')}>
-          <OAuthButtons
-            isLoading={form.formState.isSubmitting}
-            mode='signup'
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FieldGroup className='gap-y-6'>
+        <OAuthButtons
+          isLoading={form.formState.isSubmitting}
+          mode='signup'
+        />
+
+        <DividerWithText />
+
+        <FieldGroup className='gap-y-4'>
+          <FormInput
+            control={form.control}
+            name='nickname'
+            label='닉네임'
+            placeholder=''
           />
 
-          <DividerWithText />
+          <FormInput
+            control={form.control}
+            name='email'
+            label='이메일'
+            placeholder='name@example.com'
+          />
 
-          <div className={cn('space-y-4')}>
-            <FormField
-              control={form.control}
-              name='nickname'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>닉네임</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type='text'
-                      placeholder='nickname123'
-                      autoComplete='username'
-                    />
-                  </FormControl>
-                  <FormDescription className='text-xs'>
-                    영문, 숫자, _, - 만 사용 가능합니다
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormInput
+            control={form.control}
+            name='password'
+            label='비밀번호'
+            placeholder='••••••••'
+          />
 
-            <FormField
-              control={form.control}
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>이메일</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type='email'
-                      placeholder='name@example.com'
-                      autoComplete='email'
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormInput
+            control={form.control}
+            name='confirmPassword'
+            label='비밀번호 확인'
+            placeholder='••••••••'
+          />
 
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>비밀번호</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type='password'
-                      placeholder='••••••••'
-                      autoComplete='new-password'
-                    />
-                  </FormControl>
-                  <FormDescription className={cn('text-xs')}>
-                    {isDevelopment
-                      ? '개발 모드: 6자 이상'
-                      : '영문, 숫자, 특수문자를 포함하여 8자 이상'}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormCheckbox
+            control={form.control}
+            name='agreeToTerms'
+            label={
+              <span className='font-normal cursor-pointer'>
+                <Link
+                  href={AUTH_ROUTES.terms}
+                  className='underline hover:text-primary'
+                >
+                  서비스 이용약관
+                </Link>
+                과{' '}
+                <Link
+                  href={AUTH_ROUTES.privacy}
+                  className='underline hover:text-primary'
+                >
+                  개인정보 처리방침
+                </Link>
+                에 동의합니다
+              </span>
+            }
+          />
+        </FieldGroup>
 
-            <FormField
-              control={form.control}
-              name='confirmPassword'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>비밀번호 확인</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type='password'
-                      placeholder='••••••••'
-                      autoComplete='new-password'
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='agreeToTerms'
-              render={({ field }) => (
-                <FormItem>
-                  <div className={cn('flex items-start space-x-3')}>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        className={cn('mt-0.5')}
-                      />
-                    </FormControl>
-                    <div className={cn('leading-none')}>
-                      <FormLabel
-                        className={cn(
-                          'text-sm font-normal text-muted-foreground cursor-pointer block'
-                        )}
-                      >
-                        <Link
-                          href={AUTH_ROUTES.terms}
-                          className={cn('underline hover:text-primary')}
-                        >
-                          서비스 이용약관
-                        </Link>
-                        과{' '}
-                        <Link
-                          href={AUTH_ROUTES.privacy}
-                          className={cn('underline hover:text-primary')}
-                        >
-                          개인정보 처리방침
-                        </Link>
-                        에 동의합니다
-                      </FormLabel>
-                    </div>
-                  </div>
-                  <FormMessage className={cn('mt-2')} />
-                </FormItem>
-              )}
-            />
-          </div>
+        <LoadingButton
+          type='submit'
+          isLoading={form.formState.isSubmitting}
+        >
+          회원가입
+        </LoadingButton>
 
-          <FormSubmit
-            className={cn('w-full')}
-            size='lg'
-          >
-            회원가입
-          </FormSubmit>
-
-          <div className={cn('text-center text-sm')}>
-            <span className={cn('text-muted-foreground')}>이미 계정이 있으신가요? </span>
-            <SignInLink className={cn('font-medium text-primary hover:underline')} />
-          </div>
+        <div className='text-center text-sm'>
+          <span className='text-muted-foreground'>이미 계정이 있으신가요? </span>
+          <SignInLink className='font-medium text-primary hover:underline' />
         </div>
-      </form>
-    </Form>
+      </FieldGroup>
+    </form>
   );
 }

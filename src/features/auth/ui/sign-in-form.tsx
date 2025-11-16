@@ -1,15 +1,11 @@
 'use client';
 
-import { cn } from '@/shared/utils/classnames';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { FieldGroup, Field, FieldLabel, FieldContent, FieldError } from '@/shared/ui/field';
-import { Input } from '@/shared/ui/input';
+import { FieldGroup } from '@/shared/ui/field';
+import { FormInput } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
-import { ForgotPasswordLink } from './auth-links';
-
-import { FormInput } from '@/shared/ui/form-templates';
 
 const signInSchema = z.object({
   id: z.string().min(1, { message: '아이디를 입력해주세요.' }),
@@ -37,25 +33,29 @@ export function SignInForm() {
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <FieldGroup className={cn('gap-y-6')}>
-        <FieldGroup className={cn('gap-y-4')}>
+      <FieldGroup className='gap-y-6'>
+        <FieldGroup className='gap-y-4'>
           <FormInput
             name='id'
             label='아이디'
             control={form.control}
+            type='email'
+            placeholder='아이디를 입력하세요'
+            autoComplete='username'
+            autoFocus
           />
           <FormInput
             name='password'
             label='비밀번호'
-            type='password'
             control={form.control}
+            type='password'
+            placeholder='비밀번호를 입력하세요'
+            autoComplete='current-password'
           />
         </FieldGroup>
 
         <LoadingButton
           type='submit'
-          className={cn('w-full')}
-          tabIndex={3}
           isLoading={form.formState.isSubmitting}
         >
           Log-in

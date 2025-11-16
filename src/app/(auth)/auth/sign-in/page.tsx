@@ -1,5 +1,5 @@
-import { SignInForm } from '@/features/auth';
-import { AuthContainer, AuthCard } from '@/features/auth';
+import { SignInForm } from '@/features/auth/ui/sign-in-form';
+import { AuthContainer, AuthCard } from '@/features/auth/ui/auth-layout';
 
 export default function LoginPage() {
   return (
