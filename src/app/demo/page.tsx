@@ -14,6 +14,7 @@ import {
   FormSelect,
   FormCombobox,
   FormMultiCombobox,
+  FormDatePicker,
 } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 
@@ -36,9 +37,17 @@ const formSchema = z.object({
   select: z.string().min(1),
   combobox: z.string().min(1),
   multiCombobox: z.array(z.string()).min(1),
+  dateSingle: z.date({ message: '날짜를 선택해주세요.' }),
+  dateMultiple: z.array(z.date()).min(1, '최소 1개 이상 선택해주세요.'),
+  dateRange: z
+    .object({
+      from: z.date().optional(),
+      to: z.date().optional(),
+    })
+    .refine(data => data.from, { message: '기간을 선택해주세요.' }),
 });
 
-const formDefaultValues = {
+const formDefaultValues: z.infer<typeof formSchema> = {
   name: '',
   email: '',
   password: '',
@@ -48,10 +57,14 @@ const formDefaultValues = {
   checkboxGroup: [],
   checkboxGroupVertical: [],
   radioGroup: 'option1',
+  radioGroupUnselected: '',
   radioGroupVertical: 'option2',
   select: '',
   combobox: '',
   multiCombobox: [],
+  dateSingle: undefined as unknown as Date,
+  dateMultiple: [],
+  dateRange: { from: undefined as unknown as Date, to: undefined },
 };
 
 function DemoForm() {
@@ -64,6 +77,8 @@ function DemoForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
+
+  console.log(form.formState.errors);
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -140,6 +155,19 @@ function DemoForm() {
         />
         <FormRadioGroup
           control={form.control}
+          name='radioGroupUnselected'
+          legend='Radio Group Unselected'
+          options={[
+            { label: 'Option 1', value: 'option1' },
+            { label: 'Option 2', value: 'option2' },
+            { label: 'Option 3', value: 'option3' },
+            { label: 'Option 4', value: 'option4' },
+            { label: 'Option 5', value: 'option5' },
+            { label: 'Option 6', value: 'option6' },
+          ]}
+        />
+        <FormRadioGroup
+          control={form.control}
           name='radioGroupVertical'
           legend='Radio Group Vertical'
           vertical
@@ -178,6 +206,29 @@ function DemoForm() {
             { label: 'Option 2', value: 'option2' },
             { label: 'Option 3', value: 'option3' },
           ]}
+        />
+        <FormDatePicker
+          control={form.control}
+          name='dateSingle'
+          label='Date (Single)'
+          description='날짜를 선택하세요'
+          presets
+        />
+        <FormDatePicker
+          control={form.control}
+          name='dateMultiple'
+          label='Date (Multiple)'
+          description='여러 날짜를 선택하세요'
+          mode='multiple'
+          max={5}
+        />
+        <FormDatePicker
+          control={form.control}
+          name='dateRange'
+          label='Date (Range)'
+          description='기간을 선택하세요'
+          mode='range'
+          numberOfMonths={2}
         />
         <LoadingButton
           type='submit'

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Check, ChevronsUpDown, X } from 'lucide-react';
+import { Check, ChevronsUpDown } from 'lucide-react';
 
 import { cn } from '@/shared/utils/classnames';
 import { Button } from '@/shared/ui/button';
@@ -14,7 +14,7 @@ import {
   CommandList,
 } from '@/shared/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
-import { Badge } from '@/shared/ui/badge';
+import { RemovableBadgeGroup } from '@/shared/ui/removable-badge-group';
 
 type MultiComboboxProps = {
   value: string[];
@@ -104,29 +104,13 @@ export function MultiCombobox({
         </PopoverContent>
       </Popover>
 
-      {value.length > 0 && (
-        <div className='flex flex-wrap gap-1'>
-          {value.map(v => {
-            const option = options.find(o => o.value === v);
-            return (
-              <Badge
-                key={v}
-                variant='default'
-                className='gap-1 pr-1'
-              >
-                {option?.label}
-                <button
-                  type='button'
-                  onClick={() => handleRemove(v)}
-                  className='ml-1 rounded-full p-0.5 hover:bg-muted-foreground/20 hover:text-destructive'
-                >
-                  <X className='h-3 w-3' />
-                </button>
-              </Badge>
-            );
-          })}
-        </div>
-      )}
+      <RemovableBadgeGroup
+        items={value.map(v => ({
+          key: v,
+          label: options.find(o => o.value === v)?.label ?? v,
+        }))}
+        onRemove={handleRemove}
+      />
     </div>
   );
 }
