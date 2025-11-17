@@ -38,9 +38,9 @@ const formSchema = z.object({
   dateSingle: z.date({ message: '날짜를 선택해주세요' }),
   dateMultiple: z.array(z.date()).min(1, '최소 1개의 날짜를 선택해주세요'),
   dateRange: schemaPresets.dateRange,
-  fileUpload: schemaPresets.fileUpload,
-  imageUpload: schemaPresets.fileUpload,
-  multiFileUpload: schemaPresets.multiFileUpload(1),
+  fileUpload: schemaPresets.fileUpload(1),
+  imageUpload: schemaPresets.fileUpload(1),
+  multiFileUpload: schemaPresets.fileUpload(1),
 });
 
 const formDefaultValues: z.infer<typeof formSchema> = {
@@ -61,12 +61,14 @@ const formDefaultValues: z.infer<typeof formSchema> = {
   dateSingle: new Date(),
   dateMultiple: [new Date(), new Date(), new Date()],
   dateRange: { from: new Date(), to: new Date() },
-  fileUpload: null,
-  imageUpload: {
-    type: 'existing',
-    url: 'https://picsum.photos/200',
-    name: 'existing-image.jpg',
-  },
+  fileUpload: [],
+  imageUpload: [
+    {
+      type: 'existing',
+      url: 'https://picsum.photos/200',
+      name: 'existing-image.jpg',
+    },
+  ],
   multiFileUpload: [
     {
       type: 'existing',
@@ -262,7 +264,6 @@ function DemoForm() {
           control={form.control}
           name='multiFileUpload'
           label='첨부 파일 (복수)'
-          multiple
           max={5}
           acceptPreset='documents'
           maxSize={10}

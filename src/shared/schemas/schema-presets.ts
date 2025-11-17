@@ -15,32 +15,17 @@ import { type DateRange } from 'react-day-picker';
  * const schema = z.object({
  *   name: z.string().min(1, '이름을 입력하세요'),  // 직접 작성
  *   email: z.string().email('유효한 이메일'),       // 직접 작성
- *   file: schemaPresets.fileUpload,                  // 프리셋 사용
+ *   files: schemaPresets.fileUpload(1),              // 프리셋 사용
  *   dateRange: schemaPresets.dateRange,              // 프리셋 사용
  * });
  * ```
  */
 export const schemaPresets = {
   /**
-   * 단일 파일 업로드 검증
-   * - null/undefined 불허
-   * - 삭제 예정인 기존 파일 불허
-   */
-  fileUpload: z.custom<FileUploadValue>(
-    val => {
-      if (val === null || val === undefined) return false;
-      const file = val as FileUploadValue;
-      if (file && file.type === 'existing' && file.markedForDeletion) return false;
-      return true;
-    },
-    { message: '파일을 업로드해주세요' }
-  ),
-
-  /**
-   * 복수 파일 업로드 검증
+   * 파일 업로드 검증
    * @param min 최소 파일 개수 (기본값: 1)
    */
-  multiFileUpload: (min = 1) =>
+  fileUpload: (min = 1) =>
     z.array(z.custom<FileUploadValue>()).refine(
       files => {
         const validFiles = files.filter(f => {
@@ -50,7 +35,7 @@ export const schemaPresets = {
         });
         return validFiles.length >= min;
       },
-      { message: `최소 ${min}개 이상의 파일을 업로드해주세요` }
+      { message: min === 1 ? '파일을 업로드해주세요' : `최소 ${min}개 이상의 파일을 업로드해주세요` }
     ),
 
   /**

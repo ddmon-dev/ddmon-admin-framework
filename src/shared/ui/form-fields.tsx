@@ -29,7 +29,6 @@ import { Combobox } from '@/shared/ui/combobox';
 import { MultiCombobox } from '@/shared/ui/multi-combobox';
 import { DatePicker, type DatePickerBaseProps } from '@/shared/ui/date-picker';
 import {
-  FileUpload,
   type FileUploadValue,
   type FileAcceptPreset,
   fileAcceptPresets,
@@ -722,7 +721,6 @@ type FormFileUploadProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
 > = Omit<FormBaseProps<V, N>, 'orientation'> & {
-  multiple?: boolean;
   max?: number;
   accept?: string;
   acceptPreset?: FileAcceptPreset;
@@ -735,8 +733,7 @@ type FormFileUploadProps<
 const generateFileConstraintsText = (
   accept?: string,
   maxSize?: number,
-  max?: number,
-  multiple?: boolean
+  max?: number
 ): string | null => {
   const parts: string[] = [];
 
@@ -769,7 +766,7 @@ const generateFileConstraintsText = (
     parts.push(`최대 ${formatFileSize(maxSize)}`);
   }
 
-  if (multiple && max) {
+  if (max) {
     parts.push(`최대 ${max}개`);
   }
 
@@ -784,8 +781,7 @@ export const FormFileUpload = <
   name,
   label,
   description,
-  multiple = false,
-  max,
+  max = 1,
   accept,
   acceptPreset,
   maxSize,
@@ -797,7 +793,7 @@ export const FormFileUpload = <
   const resolvedAccept = acceptPreset ? fileAcceptPresets[acceptPreset] : accept;
   const resolvedMaxSizeBytes = maxSize ? maxSize * 1024 * 1024 : undefined;
   const constraintsText = !hideConstraints
-    ? generateFileConstraintsText(resolvedAccept, resolvedMaxSizeBytes, max, multiple)
+    ? generateFileConstraintsText(resolvedAccept, resolvedMaxSizeBytes, max)
     : null;
   const displayDescription = description || constraintsText;
 
@@ -821,30 +817,17 @@ export const FormFileUpload = <
             )}
             {displayDescription && <FieldDescription>{displayDescription}</FieldDescription>}
           </FieldContent>
-          {multiple ? (
-            <MultiFileUpload
-              value={field.value as FileUploadValue[]}
-              onValueChange={field.onChange}
-              onError={setValidationError}
-              accept={accept}
-              acceptPreset={acceptPreset}
-              maxSize={maxSize}
-              max={max}
-              placeholder={placeholder}
-              aria-invalid={fieldState.invalid || !!validationError}
-            />
-          ) : (
-            <FileUpload
-              value={field.value as FileUploadValue}
-              onValueChange={field.onChange}
-              onError={setValidationError}
-              accept={accept}
-              acceptPreset={acceptPreset}
-              maxSize={maxSize}
-              placeholder={placeholder}
-              aria-invalid={fieldState.invalid || !!validationError}
-            />
-          )}
+          <MultiFileUpload
+            value={field.value as FileUploadValue[]}
+            onValueChange={field.onChange}
+            onError={setValidationError}
+            accept={accept}
+            acceptPreset={acceptPreset}
+            maxSize={maxSize}
+            max={max}
+            placeholder={placeholder}
+            aria-invalid={fieldState.invalid || !!validationError}
+          />
           {(fieldState.error || validationError) && (
             <FieldError>{validationError || fieldState.error?.message}</FieldError>
           )}
