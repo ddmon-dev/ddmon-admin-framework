@@ -238,10 +238,12 @@ export function MultiFileUpload({
           {value.map((file, index) => {
             if (!file) return null;
 
-            const isDeleted = file.type === 'existing' && file.markedForDeletion;
-            const fileName =
-              file.type === 'existing' ? truncateFileName(file.name) : truncateFileName(file.file.name);
-            const fileSize = file.type === 'new' ? formatFileSize(file.file.size) : null;
+            const isExisting = file.type === 'existing';
+            const isDeleted = isExisting && file.markedForDeletion;
+            const fileName = isExisting
+              ? truncateFileName(file.name)
+              : truncateFileName(file.file.name);
+            const fileSize = isExisting ? null : formatFileSize(file.file.size);
 
             return (
               <li
@@ -251,8 +253,11 @@ export function MultiFileUpload({
                   isDeleted && 'opacity-50'
                 )}
               >
-                <span className={cn('truncate', isDeleted && 'line-through text-destructive/70')}>
-                  {fileName}
+                <span className='truncate'>
+                  {isExisting && <span className='mr-1'>(기존 파일)</span>}
+                  <span className={isDeleted ? 'line-through text-destructive/70' : ''}>
+                    {fileName}
+                  </span>
                   {fileSize && <span className='ml-1 text-muted-foreground'>({fileSize})</span>}
                   {isDeleted && <span className='ml-1 text-destructive'>(삭제 예정)</span>}
                 </span>

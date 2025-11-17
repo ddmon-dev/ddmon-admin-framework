@@ -63,7 +63,7 @@ export function formatFileSize(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-export function truncateFileName(fileName: string, maxLength: number = 30): string {
+export function truncateFileName(fileName: string, maxLength: number = 40): string {
   if (fileName.length <= maxLength) return fileName;
 
   const lastDotIndex = fileName.lastIndexOf('.');
