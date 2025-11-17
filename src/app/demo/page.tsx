@@ -248,15 +248,15 @@ function DemoForm() {
           control={form.control}
           name='fileUpload'
           label='File Upload'
-          accept='.pdf,.doc,.docx'
-          maxSize={1 * 1024 * 1024}
+          acceptPreset='documents'
+          maxSizeMB={1}
         />
         <FormFileUpload
           control={form.control}
           name='imageUpload'
           label='Image Upload (기존 파일 있음)'
-          accept='image/*'
-          maxSize={5 * 1024 * 1024}
+          acceptPreset='images'
+          maxSizeMB={5}
         />
         <FormFileUpload
           control={form.control}
@@ -264,8 +264,8 @@ function DemoForm() {
           label='첨부 파일 (복수)'
           multiple
           max={5}
-          accept='.pdf,.doc,.docx'
-          maxSize={10 * 1024 * 1024}
+          acceptPreset='documents'
+          maxSizeMB={10}
         />
         <LoadingButton
           type='submit'

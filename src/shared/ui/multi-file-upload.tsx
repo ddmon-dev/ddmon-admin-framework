@@ -4,14 +4,22 @@ import { useRef, useState } from 'react';
 import { Trash2, File as FileIcon, Plus, RefreshCw } from 'lucide-react';
 import { cn } from '@/shared/utils/classnames';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from './input-group';
-import { type FileUploadValue, formatFileSize, truncateFileName } from './file-upload';
+import {
+  type FileUploadValue,
+  type FileAcceptPreset,
+  fileAcceptPresets,
+  formatFileSize,
+  truncateFileName,
+} from './file-upload';
 
 interface MultiFileUploadProps {
   value?: FileUploadValue[];
   onValueChange?: (value: FileUploadValue[]) => void;
   onError?: (message: string | null) => void;
   accept?: string;
+  acceptPreset?: FileAcceptPreset;
   maxSize?: number;
+  maxSizeMB?: number;
   max?: number;
   disabled?: boolean;
   placeholder?: string;
@@ -23,8 +31,10 @@ export function MultiFileUpload({
   value = [],
   onValueChange,
   onError,
-  accept,
-  maxSize,
+  accept: acceptProp,
+  acceptPreset,
+  maxSize: maxSizeProp,
+  maxSizeMB,
   max,
   disabled = false,
   placeholder = '파일을 선택하세요...',
@@ -33,6 +43,9 @@ export function MultiFileUpload({
 }: MultiFileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  const accept = acceptPreset ? fileAcceptPresets[acceptPreset] : acceptProp;
+  const maxSize = maxSizeMB ? maxSizeMB * 1024 * 1024 : maxSizeProp;
 
   const validFiles = value.filter(f => f && !(f.type === 'existing' && f.markedForDeletion));
   const canAddMore = !max || validFiles.length < max;

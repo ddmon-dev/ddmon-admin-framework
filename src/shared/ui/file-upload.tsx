@@ -29,12 +29,30 @@ export type NewFile = {
  */
 export type FileUploadValue = ExistingFile | NewFile | null;
 
+/**
+ * 파일 확장자 프리셋
+ */
+export const fileAcceptPresets = {
+  images: 'image/*',
+  documents: '.pdf,.doc,.docx,.txt,.rtf',
+  spreadsheets: '.xls,.xlsx,.csv',
+  presentations: '.ppt,.pptx',
+  office: '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx',
+  archives: '.zip,.rar,.7z,.tar,.gz',
+  videos: 'video/*',
+  audios: 'audio/*',
+} as const;
+
+export type FileAcceptPreset = keyof typeof fileAcceptPresets;
+
 interface FileUploadProps {
   value?: FileUploadValue;
   onValueChange?: (value: FileUploadValue) => void;
   onError?: (message: string | null) => void;
   accept?: string;
+  acceptPreset?: FileAcceptPreset;
   maxSize?: number;
+  maxSizeMB?: number;
   disabled?: boolean;
   placeholder?: string;
   className?: string;
@@ -45,8 +63,10 @@ export function FileUpload({
   value,
   onValueChange,
   onError,
-  accept,
-  maxSize,
+  accept: acceptProp,
+  acceptPreset,
+  maxSize: maxSizeProp,
+  maxSizeMB,
   disabled = false,
   placeholder = '파일을 선택하세요...',
   className,
@@ -54,6 +74,9 @@ export function FileUpload({
 }: FileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  const accept = acceptPreset ? fileAcceptPresets[acceptPreset] : acceptProp;
+  const maxSize = maxSizeMB ? maxSizeMB * 1024 * 1024 : maxSizeProp;
 
   const validateFile = (file: File): boolean => {
     if (accept) {

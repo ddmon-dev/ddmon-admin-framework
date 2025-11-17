@@ -28,7 +28,12 @@ import { Switch } from '@/shared/ui/switch';
 import { Combobox } from '@/shared/ui/combobox';
 import { MultiCombobox } from '@/shared/ui/multi-combobox';
 import { DatePicker, type DatePickerBaseProps } from '@/shared/ui/date-picker';
-import { FileUpload, type FileUploadValue, formatFileSize } from '@/shared/ui/file-upload';
+import {
+  FileUpload,
+  type FileUploadValue,
+  type FileAcceptPreset,
+  formatFileSize,
+} from '@/shared/ui/file-upload';
 import { MultiFileUpload } from '@/shared/ui/multi-file-upload';
 import { type DateRange } from 'react-day-picker';
 
@@ -719,7 +724,9 @@ type FormFileUploadProps<
   multiple?: boolean;
   max?: number;
   accept?: string;
+  acceptPreset?: FileAcceptPreset;
   maxSize?: number;
+  maxSizeMB?: number;
   placeholder?: string;
   hideConstraints?: boolean;
 };
@@ -773,13 +780,18 @@ export const FormFileUpload = <
   multiple = false,
   max,
   accept,
+  acceptPreset,
   maxSize,
+  maxSizeMB,
   placeholder,
   hideConstraints = false,
 }: FormFileUploadProps<V, N>): ReactElement => {
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  const constraintsText = !hideConstraints ? generateFileConstraintsText(accept, maxSize, max, multiple) : null;
+  const resolvedMaxSize = maxSizeMB ? maxSizeMB * 1024 * 1024 : maxSize;
+  const constraintsText = !hideConstraints
+    ? generateFileConstraintsText(accept || acceptPreset, resolvedMaxSize, max, multiple)
+    : null;
   const displayDescription = description || constraintsText;
 
   return (
@@ -808,7 +820,9 @@ export const FormFileUpload = <
               onValueChange={field.onChange}
               onError={setValidationError}
               accept={accept}
+              acceptPreset={acceptPreset}
               maxSize={maxSize}
+              maxSizeMB={maxSizeMB}
               max={max}
               placeholder={placeholder}
               aria-invalid={fieldState.invalid || !!validationError}
@@ -819,7 +833,9 @@ export const FormFileUpload = <
               onValueChange={field.onChange}
               onError={setValidationError}
               accept={accept}
+              acceptPreset={acceptPreset}
               maxSize={maxSize}
+              maxSizeMB={maxSizeMB}
               placeholder={placeholder}
               aria-invalid={fieldState.invalid || !!validationError}
             />
