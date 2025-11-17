@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, ReactElement } from 'react';
+import { ReactNode, ReactElement, useState } from 'react';
 import {
   Controller,
   type Control,
@@ -270,8 +270,7 @@ export const FormCheckbox = <
 type FormCheckboxGroupProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = Omit<FormBaseProps<V, N>, 'label' | 'orientation'> & {
-  legend?: string;
+> = Omit<FormBaseProps<V, N>, 'orientation'> & {
   options: {
     label: string;
     value: string | number;
@@ -284,7 +283,7 @@ export const FormCheckboxGroup = <
   N extends FieldPath<V> = FieldPath<V>
 >({
   control,
-  legend,
+  label,
   description,
   name,
   options,
@@ -301,7 +300,7 @@ export const FormCheckboxGroup = <
               variant='label'
               className='mb-0'
             >
-              {legend}
+              {label}
             </FieldLegend>
             {description && <FieldDescription>{description}</FieldDescription>}
           </FieldContent>
@@ -345,8 +344,7 @@ export const FormCheckboxGroup = <
 type FormRadioGroupProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = Omit<FormBaseProps<V, N>, 'label' | 'orientation'> & {
-  legend?: string;
+> = Omit<FormBaseProps<V, N>, 'orientation'> & {
   options: {
     label: string;
     value: string;
@@ -359,7 +357,7 @@ export const FormRadioGroup = <
   N extends FieldPath<V> = FieldPath<V>
 >({
   control,
-  legend,
+  label,
   description,
   name,
   options,
@@ -376,7 +374,7 @@ export const FormRadioGroup = <
               variant='label'
               className='mb-0'
             >
-              {legend}
+              {label}
             </FieldLegend>
             {description && <FieldDescription>{description}</FieldDescription>}
           </FieldContent>
@@ -717,8 +715,7 @@ export const FormDatePicker = <
 type FormFileUploadProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = Omit<FormBaseProps<V, N>, 'label' | 'orientation'> & {
-  legend?: ReactNode;
+> = Omit<FormBaseProps<V, N>, 'orientation'> & {
   multiple?: boolean;
   max?: number;
   accept?: string;
@@ -732,7 +729,7 @@ export const FormFileUpload = <
 >({
   control,
   name,
-  legend,
+  label,
   description,
   multiple = false,
   max,
@@ -740,22 +737,24 @@ export const FormFileUpload = <
   maxSize,
   placeholder,
 }: FormFileUploadProps<V, N>): ReactElement => {
+  const [validationError, setValidationError] = useState<string | null>(null);
+
   return (
     <Controller
       name={name}
       control={control}
       render={({ field, fieldState }) => (
         <FieldSet
-          data-invalid={fieldState.invalid}
+          data-invalid={fieldState.invalid || !!validationError}
           className='gap-2'
         >
           <FieldContent>
-            {legend && (
+            {label && (
               <FieldLegend
                 variant='label'
                 className='mb-0'
               >
-                {legend}
+                {label}
               </FieldLegend>
             )}
             {description && <FieldDescription>{description}</FieldDescription>}
@@ -764,23 +763,27 @@ export const FormFileUpload = <
             <MultiFileUpload
               value={field.value as FileUploadValue[]}
               onValueChange={field.onChange}
+              onError={setValidationError}
               accept={accept}
               maxSize={maxSize}
               max={max}
               placeholder={placeholder}
-              aria-invalid={fieldState.invalid}
+              aria-invalid={fieldState.invalid || !!validationError}
             />
           ) : (
             <FileUpload
               value={field.value as FileUploadValue}
               onValueChange={field.onChange}
+              onError={setValidationError}
               accept={accept}
               maxSize={maxSize}
               placeholder={placeholder}
-              aria-invalid={fieldState.invalid}
+              aria-invalid={fieldState.invalid || !!validationError}
             />
           )}
-          {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
+          {(fieldState.error || validationError) && (
+            <FieldError>{validationError || fieldState.error?.message}</FieldError>
+          )}
         </FieldSet>
       )}
     />

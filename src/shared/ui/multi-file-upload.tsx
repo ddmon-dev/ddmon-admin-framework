@@ -3,13 +3,13 @@
 import { useRef, useState } from 'react';
 import { Trash2, File as FileIcon, Plus, RefreshCw } from 'lucide-react';
 import { cn } from '@/shared/utils/classnames';
-import { toast } from 'sonner';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from './input-group';
 import { type FileUploadValue, formatFileSize, truncateFileName } from './file-upload';
 
 interface MultiFileUploadProps {
   value?: FileUploadValue[];
   onValueChange?: (value: FileUploadValue[]) => void;
+  onError?: (message: string | null) => void;
   accept?: string;
   maxSize?: number;
   max?: number;
@@ -22,6 +22,7 @@ interface MultiFileUploadProps {
 export function MultiFileUpload({
   value = [],
   onValueChange,
+  onError,
   accept,
   maxSize,
   max,
@@ -51,13 +52,13 @@ export function MultiFileUpload({
       });
 
       if (!isValid) {
-        toast.error(`허용되지 않는 파일 형식입니다. (${accept})`);
+        onError?.(`허용되지 않는 파일 형식입니다. (${accept})`);
         return false;
       }
     }
 
     if (maxSize && file.size > maxSize) {
-      toast.error(`파일 크기는 ${formatFileSize(maxSize)} 이하여야 합니다.`);
+      onError?.(`파일 크기는 ${formatFileSize(maxSize)} 이하여야 합니다.`);
       return false;
     }
 
@@ -67,10 +68,12 @@ export function MultiFileUpload({
   const handleFiles = (files: FileList) => {
     const newFiles: FileUploadValue[] = [...value];
     let addedCount = 0;
+    let hasError = false;
 
     for (let i = 0; i < files.length; i++) {
       if (max && validFiles.length + addedCount >= max) {
-        toast.error(`최대 ${max}개까지 업로드 가능합니다.`);
+        onError?.(`최대 ${max}개까지 업로드 가능합니다.`);
+        hasError = true;
         break;
       }
 
@@ -78,11 +81,16 @@ export function MultiFileUpload({
       if (validateFile(file)) {
         newFiles.push({ type: 'new', file });
         addedCount++;
+      } else {
+        hasError = true;
       }
     }
 
     if (addedCount > 0) {
       onValueChange?.(newFiles);
+      if (!hasError) {
+        onError?.(null);
+      }
     }
   };
 

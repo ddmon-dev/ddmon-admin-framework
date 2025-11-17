@@ -3,7 +3,6 @@
 import { useRef, useState } from 'react';
 import { Trash2, File as FileIcon, Plus, RefreshCw } from 'lucide-react';
 import { cn } from '@/shared/utils/classnames';
-import { toast } from 'sonner';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from './input-group';
 
 /**
@@ -33,6 +32,7 @@ export type FileUploadValue = ExistingFile | NewFile | null;
 interface FileUploadProps {
   value?: FileUploadValue;
   onValueChange?: (value: FileUploadValue) => void;
+  onError?: (message: string | null) => void;
   accept?: string;
   maxSize?: number;
   disabled?: boolean;
@@ -44,6 +44,7 @@ interface FileUploadProps {
 export function FileUpload({
   value,
   onValueChange,
+  onError,
   accept,
   maxSize,
   disabled = false,
@@ -69,16 +70,17 @@ export function FileUpload({
       });
 
       if (!isValid) {
-        toast.error(`허용되지 않는 파일 형식입니다. (${accept})`);
+        onError?.(`허용되지 않는 파일 형식입니다. (${accept})`);
         return false;
       }
     }
 
     if (maxSize && file.size > maxSize) {
-      toast.error(`파일 크기는 ${formatFileSize(maxSize)} 이하여야 합니다.`);
+      onError?.(`파일 크기는 ${formatFileSize(maxSize)} 이하여야 합니다.`);
       return false;
     }
 
+    onError?.(null);
     return true;
   };
 

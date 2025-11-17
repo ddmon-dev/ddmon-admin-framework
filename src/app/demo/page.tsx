@@ -166,7 +166,7 @@ function DemoForm() {
         <FormCheckboxGroup
           control={form.control}
           name='checkboxGroup'
-          legend='Checkbox Group'
+          label='Checkbox Group'
           description='Select all that apply'
           options={[
             { label: 'Option 1', value: 'option1' },
@@ -180,7 +180,7 @@ function DemoForm() {
         <FormCheckboxGroup
           control={form.control}
           name='checkboxGroupVertical'
-          legend='Checkbox Group Vertical'
+          label='Checkbox Group Vertical'
           vertical
           options={[
             { label: 'Option 1', value: 'option1' },
@@ -191,7 +191,7 @@ function DemoForm() {
         <FormRadioGroup
           control={form.control}
           name='radioGroup'
-          legend='Radio Group'
+          label='Radio Group'
           description='Select an option'
           options={[
             { label: 'Option 1', value: 'option1' },
@@ -205,7 +205,7 @@ function DemoForm() {
         <FormRadioGroup
           control={form.control}
           name='radioGroupUnselected'
-          legend='Radio Group Unselected'
+          label='Radio Group Unselected'
           options={[
             { label: 'Option 1', value: 'option1' },
             { label: 'Option 2', value: 'option2' },
@@ -218,7 +218,7 @@ function DemoForm() {
         <FormRadioGroup
           control={form.control}
           name='radioGroupVertical'
-          legend='Radio Group Vertical'
+          label='Radio Group Vertical'
           vertical
           options={[
             { label: 'Option 1', value: 'option1' },
@@ -282,15 +282,15 @@ function DemoForm() {
         <FormFileUpload
           control={form.control}
           name='fileUpload'
-          legend='File Upload'
+          label='File Upload'
           description='PDF 또는 문서 파일을 업로드하세요'
           accept='.pdf,.doc,.docx'
-          maxSize={10 * 1024 * 1024}
+          maxSize={1 * 1024 * 1024}
         />
         <FormFileUpload
           control={form.control}
           name='imageUpload'
-          legend='Image Upload (기존 파일 있음)'
+          label='Image Upload (기존 파일 있음)'
           description='이미지 파일만 업로드 가능합니다 (최대 5MB)'
           accept='image/*'
           maxSize={5 * 1024 * 1024}
@@ -298,7 +298,7 @@ function DemoForm() {
         <FormFileUpload
           control={form.control}
           name='multiFileUpload'
-          legend='첨부 파일 (복수)'
+          label='첨부 파일 (복수)'
           description='최대 5개의 파일을 업로드할 수 있습니다'
           multiple
           max={5}
