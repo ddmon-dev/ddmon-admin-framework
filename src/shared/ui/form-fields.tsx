@@ -716,7 +716,9 @@ export const FormDatePicker = <
 type FormFileUploadProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = FormBaseProps<V, N> & {
+> = Omit<FormBaseProps<V, N>, 'label' | 'orientation'> & {
+  legend?: ReactNode;
+  count?: number;
   accept?: string;
   maxSize?: number;
   placeholder?: string;
@@ -728,31 +730,62 @@ export const FormFileUpload = <
 >({
   control,
   name,
-  label,
+  legend,
   description,
-  orientation,
+  count = 1,
   accept,
   maxSize,
   placeholder,
 }: FormFileUploadProps<V, N>): ReactElement => {
   return (
-    <FormField
-      control={control}
+    <Controller
       name={name}
-      label={label}
-      description={description}
-      orientation={orientation}
-    >
-      {({ onChange, fieldState, ...field }) => (
-        <FileUpload
-          value={field.value as FileUploadValue}
-          onValueChange={onChange}
-          accept={accept}
-          maxSize={maxSize}
-          placeholder={placeholder}
-          aria-invalid={fieldState.invalid}
-        />
-      )}
-    </FormField>
+      control={control}
+      render={({ field, fieldState }) => {
+        const values = (field.value as FileUploadValue[]) || [];
+
+        const handleValueChange = (index: number, newValue: FileUploadValue) => {
+          const updatedValues = [...values];
+          updatedValues[index] = newValue;
+          field.onChange(updatedValues);
+        };
+
+        return (
+          <FieldSet
+            data-invalid={fieldState.invalid}
+            className='gap-2'
+          >
+            <FieldContent>
+              {legend && (
+                <FieldLegend
+                  variant='label'
+                  className='mb-0'
+                >
+                  {legend}
+                </FieldLegend>
+              )}
+              {description && <FieldDescription>{description}</FieldDescription>}
+            </FieldContent>
+            <FieldGroup
+              data-slot='file-upload-group'
+              className='gap-2'
+            >
+              {Array.from({ length: count }).map((_, index) => (
+                <FileUpload
+                  key={index}
+                  value={values[index] || null}
+                  onValueChange={newValue => handleValueChange(index, newValue)}
+                  accept={accept}
+                  maxSize={maxSize}
+                  placeholder={placeholder}
+                  aria-invalid={fieldState.invalid}
+                />
+              ))}
+            </FieldGroup>
+            {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
+          </FieldSet>
+        );
+      }}
+    />
   );
 };

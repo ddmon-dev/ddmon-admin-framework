@@ -19,9 +19,9 @@ export function RemovableBadgeGroup({
 
   return (
     <div className='flex flex-wrap gap-1'>
-      {items.map(item => (
+      {items.map((item, index) => (
         <Badge
-          key={item.key}
+          key={`${item.key}-${index}`}
           variant={variant}
           className='gap-1 pr-1'
         >

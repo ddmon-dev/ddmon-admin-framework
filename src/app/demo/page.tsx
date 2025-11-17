@@ -47,50 +47,68 @@ const formSchema = z.object({
       to: z.date().optional(),
     })
     .refine(data => data.from, { message: '기간을 선택해주세요.' }),
-  fileUpload: z.custom<FileUploadValue>(
-    val => {
-      if (val === null || val === undefined) return false;
-      const file = val as FileUploadValue;
-      if (file && file.type === 'existing' && file.markedForDeletion) return false;
-      return true;
+  fileUpload: z.array(z.custom<FileUploadValue>()).refine(
+    files => {
+      const validFiles = files.filter(f => {
+        if (!f) return false;
+        if (f.type === 'existing' && f.markedForDeletion) return false;
+        return true;
+      });
+      return validFiles.length >= 1;
     },
     { message: '파일을 업로드해주세요.' }
   ),
-  imageUpload: z.custom<FileUploadValue>(
-    val => {
-      if (val === null || val === undefined) return false;
-      const file = val as FileUploadValue;
-      if (file && file.type === 'existing' && file.markedForDeletion) return false;
-      return true;
+  imageUpload: z.array(z.custom<FileUploadValue>()).refine(
+    files => {
+      const validFiles = files.filter(f => {
+        if (!f) return false;
+        if (f.type === 'existing' && f.markedForDeletion) return false;
+        return true;
+      });
+      return validFiles.length >= 1;
     },
     { message: '이미지를 업로드해주세요.' }
+  ),
+  multiFileUpload: z.array(z.custom<FileUploadValue>()).refine(
+    files => {
+      const validFiles = files.filter(f => {
+        if (!f) return false;
+        if (f.type === 'existing' && f.markedForDeletion) return false;
+        return true;
+      });
+      return validFiles.length >= 1;
+    },
+    { message: '최소 1개 이상의 파일을 업로드해주세요.' }
   ),
 });
 
 const formDefaultValues: z.infer<typeof formSchema> = {
-  name: '',
-  email: '',
-  password: '',
-  textarea: '',
-  switch: false,
-  checkbox: false,
-  checkboxGroup: [],
-  checkboxGroupVertical: [],
+  name: 'name',
+  email: 'email@example.com',
+  password: 'password',
+  textarea: 'textarea',
+  switch: true,
+  checkbox: true,
+  checkboxGroup: ['option1', 'option2', 'option3'],
+  checkboxGroupVertical: ['option1', 'option2', 'option3'],
   radioGroup: 'option1',
-  radioGroupUnselected: '',
+  radioGroupUnselected: 'option1',
   radioGroupVertical: 'option2',
-  select: '',
-  combobox: '',
-  multiCombobox: [],
-  dateSingle: undefined as unknown as Date,
-  dateMultiple: [],
-  dateRange: { from: undefined as unknown as Date, to: undefined },
-  fileUpload: null,
-  imageUpload: {
-    type: 'existing',
-    url: 'https://picsum.photos/200',
-    name: 'existing-image.jpg',
-  },
+  select: 'option1',
+  combobox: 'option1',
+  multiCombobox: ['option1', 'option2', 'option3'],
+  dateSingle: new Date(),
+  dateMultiple: [new Date(), new Date(), new Date()],
+  dateRange: { from: new Date(), to: new Date() },
+  fileUpload: [null],
+  imageUpload: [
+    {
+      type: 'existing',
+      url: 'https://picsum.photos/200',
+      name: 'existing-image.jpg',
+    },
+  ],
+  multiFileUpload: [null, null, null],
 };
 
 function DemoForm() {
@@ -259,7 +277,7 @@ function DemoForm() {
         <FormFileUpload
           control={form.control}
           name='fileUpload'
-          label='File Upload'
+          legend='File Upload'
           description='PDF 또는 문서 파일을 업로드하세요'
           accept='.pdf,.doc,.docx'
           maxSize={10 * 1024 * 1024}
@@ -267,10 +285,19 @@ function DemoForm() {
         <FormFileUpload
           control={form.control}
           name='imageUpload'
-          label='Image Upload (기존 파일 있음)'
+          legend='Image Upload (기존 파일 있음)'
           description='이미지 파일만 업로드 가능합니다 (최대 5MB)'
           accept='image/*'
           maxSize={5 * 1024 * 1024}
+        />
+        <FormFileUpload
+          control={form.control}
+          name='multiFileUpload'
+          legend='첨부 파일 (복수)'
+          description='최대 3개의 파일을 업로드할 수 있습니다'
+          count={3}
+          accept='.pdf,.doc,.docx'
+          maxSize={10 * 1024 * 1024}
         />
         <LoadingButton
           type='submit'
