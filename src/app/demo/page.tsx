@@ -47,25 +47,21 @@ const formSchema = z.object({
       to: z.date().optional(),
     })
     .refine(data => data.from, { message: '기간을 선택해주세요.' }),
-  fileUpload: z.array(z.custom<FileUploadValue>()).refine(
-    files => {
-      const validFiles = files.filter(f => {
-        if (!f) return false;
-        if (f.type === 'existing' && f.markedForDeletion) return false;
-        return true;
-      });
-      return validFiles.length >= 1;
+  fileUpload: z.custom<FileUploadValue>(
+    val => {
+      if (val === null || val === undefined) return false;
+      const file = val as FileUploadValue;
+      if (file && file.type === 'existing' && file.markedForDeletion) return false;
+      return true;
     },
     { message: '파일을 업로드해주세요.' }
   ),
-  imageUpload: z.array(z.custom<FileUploadValue>()).refine(
-    files => {
-      const validFiles = files.filter(f => {
-        if (!f) return false;
-        if (f.type === 'existing' && f.markedForDeletion) return false;
-        return true;
-      });
-      return validFiles.length >= 1;
+  imageUpload: z.custom<FileUploadValue>(
+    val => {
+      if (val === null || val === undefined) return false;
+      const file = val as FileUploadValue;
+      if (file && file.type === 'existing' && file.markedForDeletion) return false;
+      return true;
     },
     { message: '이미지를 업로드해주세요.' }
   ),
@@ -100,15 +96,24 @@ const formDefaultValues: z.infer<typeof formSchema> = {
   dateSingle: new Date(),
   dateMultiple: [new Date(), new Date(), new Date()],
   dateRange: { from: new Date(), to: new Date() },
-  fileUpload: [null],
-  imageUpload: [
+  fileUpload: null,
+  imageUpload: {
+    type: 'existing',
+    url: 'https://picsum.photos/200',
+    name: 'existing-image.jpg',
+  },
+  multiFileUpload: [
     {
       type: 'existing',
-      url: 'https://picsum.photos/200',
-      name: 'existing-image.jpg',
+      url: 'https://example.com/report.pdf',
+      name: 'annual-report-2024.pdf',
+    },
+    {
+      type: 'existing',
+      url: 'https://example.com/contract.docx',
+      name: 'contract-agreement-final-version.docx',
     },
   ],
-  multiFileUpload: [null, null, null],
 };
 
 function DemoForm() {
@@ -294,8 +299,9 @@ function DemoForm() {
           control={form.control}
           name='multiFileUpload'
           legend='첨부 파일 (복수)'
-          description='최대 3개의 파일을 업로드할 수 있습니다'
-          count={3}
+          description='최대 5개의 파일을 업로드할 수 있습니다'
+          multiple
+          max={5}
           accept='.pdf,.doc,.docx'
           maxSize={10 * 1024 * 1024}
         />

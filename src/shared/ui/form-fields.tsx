@@ -718,7 +718,8 @@ type FormFileUploadProps<
   N extends FieldPath<V> = FieldPath<V>
 > = Omit<FormBaseProps<V, N>, 'label' | 'orientation'> & {
   legend?: ReactNode;
-  count?: number;
+  multiple?: boolean;
+  max?: number;
   accept?: string;
   maxSize?: number;
   placeholder?: string;
@@ -732,7 +733,8 @@ export const FormFileUpload = <
   name,
   legend,
   description,
-  count = 1,
+  multiple = false,
+  max,
   accept,
   maxSize,
   placeholder,
@@ -741,51 +743,35 @@ export const FormFileUpload = <
     <Controller
       name={name}
       control={control}
-      render={({ field, fieldState }) => {
-        const values = (field.value as FileUploadValue[]) || [];
-
-        const handleValueChange = (index: number, newValue: FileUploadValue) => {
-          const updatedValues = [...values];
-          updatedValues[index] = newValue;
-          field.onChange(updatedValues);
-        };
-
-        return (
-          <FieldSet
-            data-invalid={fieldState.invalid}
-            className='gap-2'
-          >
-            <FieldContent>
-              {legend && (
-                <FieldLegend
-                  variant='label'
-                  className='mb-0'
-                >
-                  {legend}
-                </FieldLegend>
-              )}
-              {description && <FieldDescription>{description}</FieldDescription>}
-            </FieldContent>
-            <FieldGroup
-              data-slot='file-upload-group'
-              className='gap-2'
-            >
-              {Array.from({ length: count }).map((_, index) => (
-                <FileUpload
-                  key={index}
-                  value={values[index] || null}
-                  onValueChange={newValue => handleValueChange(index, newValue)}
-                  accept={accept}
-                  maxSize={maxSize}
-                  placeholder={placeholder}
-                  aria-invalid={fieldState.invalid}
-                />
-              ))}
-            </FieldGroup>
-            {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
-          </FieldSet>
-        );
-      }}
+      render={({ field, fieldState }) => (
+        <FieldSet
+          data-invalid={fieldState.invalid}
+          className='gap-2'
+        >
+          <FieldContent>
+            {legend && (
+              <FieldLegend
+                variant='label'
+                className='mb-0'
+              >
+                {legend}
+              </FieldLegend>
+            )}
+            {description && <FieldDescription>{description}</FieldDescription>}
+          </FieldContent>
+          <FileUpload
+            value={field.value as FileUploadValue | FileUploadValue[]}
+            onValueChange={field.onChange}
+            accept={accept}
+            maxSize={maxSize}
+            placeholder={placeholder}
+            multiple={multiple}
+            max={max}
+            aria-invalid={fieldState.invalid}
+          />
+          {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
+        </FieldSet>
+      )}
     />
   );
 };
