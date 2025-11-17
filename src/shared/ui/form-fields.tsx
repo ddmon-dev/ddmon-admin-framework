@@ -29,6 +29,7 @@ import { Combobox } from '@/shared/ui/combobox';
 import { MultiCombobox } from '@/shared/ui/multi-combobox';
 import { DatePicker, type DatePickerBaseProps } from '@/shared/ui/date-picker';
 import { FileUpload, type FileUploadValue } from '@/shared/ui/file-upload';
+import { MultiFileUpload } from '@/shared/ui/multi-file-upload';
 import { type DateRange } from 'react-day-picker';
 
 /**
@@ -759,16 +760,26 @@ export const FormFileUpload = <
             )}
             {description && <FieldDescription>{description}</FieldDescription>}
           </FieldContent>
-          <FileUpload
-            value={field.value as FileUploadValue | FileUploadValue[]}
-            onValueChange={field.onChange}
-            accept={accept}
-            maxSize={maxSize}
-            placeholder={placeholder}
-            multiple={multiple}
-            max={max}
-            aria-invalid={fieldState.invalid}
-          />
+          {multiple ? (
+            <MultiFileUpload
+              value={field.value as FileUploadValue[]}
+              onValueChange={field.onChange}
+              accept={accept}
+              maxSize={maxSize}
+              max={max}
+              placeholder={placeholder}
+              aria-invalid={fieldState.invalid}
+            />
+          ) : (
+            <FileUpload
+              value={field.value as FileUploadValue}
+              onValueChange={field.onChange}
+              accept={accept}
+              maxSize={maxSize}
+              placeholder={placeholder}
+              aria-invalid={fieldState.invalid}
+            />
+          )}
           {fieldState.error && <FieldError>{fieldState.error.message}</FieldError>}
         </FieldSet>
       )}
