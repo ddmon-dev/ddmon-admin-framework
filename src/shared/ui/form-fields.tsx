@@ -28,7 +28,7 @@ import { Switch } from '@/shared/ui/switch';
 import { Combobox } from '@/shared/ui/combobox';
 import { MultiCombobox } from '@/shared/ui/multi-combobox';
 import { DatePicker, type DatePickerBaseProps } from '@/shared/ui/date-picker';
-import { FileUpload, type FileUploadValue } from '@/shared/ui/file-upload';
+import { FileUpload, type FileUploadValue, formatFileSize } from '@/shared/ui/file-upload';
 import { MultiFileUpload } from '@/shared/ui/multi-file-upload';
 import { type DateRange } from 'react-day-picker';
 
@@ -721,6 +721,45 @@ type FormFileUploadProps<
   accept?: string;
   maxSize?: number;
   placeholder?: string;
+  hideConstraints?: boolean;
+};
+
+const generateFileConstraintsText = (
+  accept?: string,
+  maxSize?: number,
+  max?: number,
+  multiple?: boolean
+): string | null => {
+  const parts: string[] = [];
+
+  if (accept) {
+    const extensions = accept
+      .split(',')
+      .map(t => t.trim())
+      .map(t => {
+        if (t.startsWith('.')) {
+          return t.slice(1).toUpperCase();
+        } else if (t.endsWith('/*')) {
+          const baseType = t.slice(0, -2);
+          if (baseType === 'image') return '이미지';
+          if (baseType === 'video') return '비디오';
+          if (baseType === 'audio') return '오디오';
+          return baseType;
+        }
+        return t;
+      });
+    parts.push(extensions.join(', '));
+  }
+
+  if (maxSize) {
+    parts.push(`최대 ${formatFileSize(maxSize)}`);
+  }
+
+  if (multiple && max) {
+    parts.push(`최대 ${max}개`);
+  }
+
+  return parts.length > 0 ? parts.join(' / ') : null;
 };
 
 export const FormFileUpload = <
@@ -736,8 +775,12 @@ export const FormFileUpload = <
   accept,
   maxSize,
   placeholder,
+  hideConstraints = false,
 }: FormFileUploadProps<V, N>): ReactElement => {
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  const constraintsText = !hideConstraints ? generateFileConstraintsText(accept, maxSize, max, multiple) : null;
+  const displayDescription = description || constraintsText;
 
   return (
     <Controller
@@ -757,7 +800,7 @@ export const FormFileUpload = <
                 {label}
               </FieldLegend>
             )}
-            {description && <FieldDescription>{description}</FieldDescription>}
+            {displayDescription && <FieldDescription>{displayDescription}</FieldDescription>}
           </FieldContent>
           {multiple ? (
             <MultiFileUpload

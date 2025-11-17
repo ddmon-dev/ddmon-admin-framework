@@ -17,65 +17,30 @@ import {
   FormDatePicker,
   FormFileUpload,
 } from '@/shared/ui/form-fields';
-import { type FileUploadValue } from '@/shared/ui/file-upload';
 import { LoadingButton } from '@/shared/ui/loading-button';
+import { schemaPresets } from '@/shared/schemas/schema-presets';
 
 const formSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(8),
-  textarea: z.string().min(1),
-  switch: z.boolean().refine(val => val === true, {
-    message: 'Switch must be checked',
-  }),
-  checkbox: z.boolean().refine(val => val === true, {
-    message: 'Checkbox must be checked',
-  }),
-  checkboxGroup: z.array(z.string()).min(1),
-  checkboxGroupVertical: z.array(z.string()).min(1),
-  radioGroup: z.string().min(1),
-  radioGroupUnselected: z.string().min(1),
-  radioGroupVertical: z.string().min(1),
-  select: z.string().min(1),
-  combobox: z.string().min(1),
-  multiCombobox: z.array(z.string()).min(1),
-  dateSingle: z.date({ message: '날짜를 선택해주세요.' }),
-  dateMultiple: z.array(z.date()).min(1, '최소 1개 이상 선택해주세요.'),
-  dateRange: z
-    .object({
-      from: z.date().optional(),
-      to: z.date().optional(),
-    })
-    .refine(data => data.from, { message: '기간을 선택해주세요.' }),
-  fileUpload: z.custom<FileUploadValue>(
-    val => {
-      if (val === null || val === undefined) return false;
-      const file = val as FileUploadValue;
-      if (file && file.type === 'existing' && file.markedForDeletion) return false;
-      return true;
-    },
-    { message: '파일을 업로드해주세요.' }
-  ),
-  imageUpload: z.custom<FileUploadValue>(
-    val => {
-      if (val === null || val === undefined) return false;
-      const file = val as FileUploadValue;
-      if (file && file.type === 'existing' && file.markedForDeletion) return false;
-      return true;
-    },
-    { message: '이미지를 업로드해주세요.' }
-  ),
-  multiFileUpload: z.array(z.custom<FileUploadValue>()).refine(
-    files => {
-      const validFiles = files.filter(f => {
-        if (!f) return false;
-        if (f.type === 'existing' && f.markedForDeletion) return false;
-        return true;
-      });
-      return validFiles.length >= 1;
-    },
-    { message: '최소 1개 이상의 파일을 업로드해주세요.' }
-  ),
+  name: z.string().min(1, '이름을 입력하세요'),
+  email: z.string().email('유효한 이메일을 입력하세요'),
+  password: z.string().min(8, '최소 8자 이상 입력하세요'),
+  textarea: z.string().min(1, '내용을 입력하세요'),
+  switch: z.boolean(),
+  checkbox: z.boolean().refine(val => val === true, { message: '동의해주세요' }),
+  checkboxGroup: z.array(z.string()).min(1, '최소 1개를 선택해주세요'),
+  checkboxGroupVertical: z.array(z.string()).min(1, '최소 1개를 선택해주세요'),
+  radioGroup: z.string().min(1, '선택해주세요'),
+  radioGroupUnselected: z.string().min(1, '선택해주세요'),
+  radioGroupVertical: z.string().min(1, '선택해주세요'),
+  select: z.string().min(1, '선택해주세요'),
+  combobox: z.string().min(1, '선택해주세요'),
+  multiCombobox: z.array(z.string()).min(1, '최소 1개를 선택해주세요'),
+  dateSingle: z.date({ message: '날짜를 선택해주세요' }),
+  dateMultiple: z.array(z.date()).min(1, '최소 1개의 날짜를 선택해주세요'),
+  dateRange: schemaPresets.dateRange,
+  fileUpload: schemaPresets.fileUpload,
+  imageUpload: schemaPresets.fileUpload,
+  multiFileUpload: schemaPresets.multiFileUpload(1),
 });
 
 const formDefaultValues: z.infer<typeof formSchema> = {
@@ -283,7 +248,6 @@ function DemoForm() {
           control={form.control}
           name='fileUpload'
           label='File Upload'
-          description='PDF 또는 문서 파일을 업로드하세요'
           accept='.pdf,.doc,.docx'
           maxSize={1 * 1024 * 1024}
         />
@@ -291,7 +255,6 @@ function DemoForm() {
           control={form.control}
           name='imageUpload'
           label='Image Upload (기존 파일 있음)'
-          description='이미지 파일만 업로드 가능합니다 (최대 5MB)'
           accept='image/*'
           maxSize={5 * 1024 * 1024}
         />
@@ -299,7 +262,6 @@ function DemoForm() {
           control={form.control}
           name='multiFileUpload'
           label='첨부 파일 (복수)'
-          description='최대 5개의 파일을 업로드할 수 있습니다'
           multiple
           max={5}
           accept='.pdf,.doc,.docx'
