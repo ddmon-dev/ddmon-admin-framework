@@ -1,5 +1,5 @@
 import { type MenuData } from './app-sidebar.types';
-import { Settings2 } from 'lucide-react';
+import { Settings2, FileText } from 'lucide-react';
 
 export const navigationConfig: {
   user: {
@@ -37,12 +37,12 @@ export const navigationConfig: {
       ],
     },
     {
-      title: 'Settings2',
+      title: '게시판',
       items: [
         {
-          title: 'Settings22',
-          url: '#',
-          icon: Settings2,
+          title: '공지사항',
+          url: '/manage-notice',
+          icon: FileText,
           isActive: true,
         },
       ],

@@ -11,7 +11,7 @@ interface SortingButtonProps {
   className?: string;
 }
 
-export function DataListSortingButton({
+export function SortingButton({
   columnKey,
   currentSortKey,
   onSort,

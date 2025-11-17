@@ -4,7 +4,7 @@ import * as React from 'react';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
-import { DataListSortingButton } from './data-list-sorting-button';
+import { SortingButton } from './sorting-button';
 import { DataListPagination } from './data-list-pagination';
 
 interface DataListProps<TData> {
@@ -42,7 +42,7 @@ export function DataList<TData>({
 }: DataListProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState({});
 
-  // enableSorting이 true인 컬럼에 자동으로 DataListSortingButton 적용
+  // enableSorting이 true인 컬럼에 자동으로 SortingButton 적용
   const processedColumns = React.useMemo(() => {
     return columns.map(col => {
       if (col.enableSorting && typeof col.header === 'string' && 'accessorKey' in col) {
@@ -52,13 +52,13 @@ export function DataList<TData>({
         return {
           ...col,
           header: () => (
-            <DataListSortingButton
+            <SortingButton
               columnKey={columnKey}
               currentSortKey={sortingKey}
               onSort={onSortingChange}
             >
               {headerText}
-            </DataListSortingButton>
+            </SortingButton>
           ),
         };
       }

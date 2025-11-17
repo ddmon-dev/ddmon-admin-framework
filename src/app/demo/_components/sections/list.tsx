@@ -1,8 +1,13 @@
 'use client';
 
-import { DataList, useDataListParams } from '@/shared/ui/data-lists';
-import { ColumnDef } from '@tanstack/react-table';
 import { useMemo } from 'react';
+import { ColumnDef } from '@tanstack/react-table';
+import {
+  DataList,
+  useDataListParams,
+  SearchBar,
+  CategoryButtonGroup,
+} from '@/shared/ui/data-lists';
 
 type Notice = {
   id: string;
@@ -10,6 +15,7 @@ type Notice = {
   author: string;
   createdAt: string;
   viewCount: number;
+  category: 'notice' | 'normal';
 };
 
 const mockNotices: Notice[] = [
@@ -19,6 +25,7 @@ const mockNotices: Notice[] = [
     author: '관리자',
     createdAt: '2024-01-15',
     viewCount: 1520,
+    category: 'notice',
   },
   {
     id: '2',
@@ -26,6 +33,7 @@ const mockNotices: Notice[] = [
     author: '개발팀',
     createdAt: '2024-01-14',
     viewCount: 892,
+    category: 'normal',
   },
   {
     id: '3',
@@ -33,6 +41,7 @@ const mockNotices: Notice[] = [
     author: '보안팀',
     createdAt: '2024-01-13',
     viewCount: 2341,
+    category: 'notice',
   },
   {
     id: '4',
@@ -40,6 +49,7 @@ const mockNotices: Notice[] = [
     author: '마케팅팀',
     createdAt: '2024-01-12',
     viewCount: 3456,
+    category: 'normal',
   },
   {
     id: '5',
@@ -47,6 +57,7 @@ const mockNotices: Notice[] = [
     author: '법무팀',
     createdAt: '2024-01-11',
     viewCount: 1234,
+    category: 'normal',
   },
   {
     id: '6',
@@ -54,6 +65,7 @@ const mockNotices: Notice[] = [
     author: '사업팀',
     createdAt: '2024-01-10',
     viewCount: 567,
+    category: 'normal',
   },
   {
     id: '7',
@@ -61,6 +73,7 @@ const mockNotices: Notice[] = [
     author: '개발팀',
     createdAt: '2024-01-09',
     viewCount: 2100,
+    category: 'normal',
   },
   {
     id: '8',
@@ -68,6 +81,7 @@ const mockNotices: Notice[] = [
     author: '고객지원팀',
     createdAt: '2024-01-08',
     viewCount: 890,
+    category: 'notice',
   },
   {
     id: '9',
@@ -75,6 +89,7 @@ const mockNotices: Notice[] = [
     author: '인프라팀',
     createdAt: '2024-01-07',
     viewCount: 4521,
+    category: 'normal',
   },
   {
     id: '10',
@@ -82,6 +97,7 @@ const mockNotices: Notice[] = [
     author: '물류팀',
     createdAt: '2024-01-06',
     viewCount: 1678,
+    category: 'notice',
   },
   {
     id: '11',
@@ -89,14 +105,23 @@ const mockNotices: Notice[] = [
     author: '경영지원팀',
     createdAt: '2024-01-05',
     viewCount: 3210,
+    category: 'normal',
   },
-  { id: '12', title: '채용 공고', author: '인사팀', createdAt: '2024-01-04', viewCount: 5432 },
+  {
+    id: '12',
+    title: '채용 공고',
+    author: '인사팀',
+    createdAt: '2024-01-04',
+    viewCount: 5432,
+    category: 'normal',
+  },
   {
     id: '13',
     title: 'API 버전 업그레이드',
     author: '개발팀',
     createdAt: '2024-01-03',
     viewCount: 987,
+    category: 'normal',
   },
   {
     id: '14',
@@ -104,8 +129,16 @@ const mockNotices: Notice[] = [
     author: '결제팀',
     createdAt: '2024-01-02',
     viewCount: 1456,
+    category: 'normal',
   },
-  { id: '15', title: '신년 인사', author: 'CEO', createdAt: '2024-01-01', viewCount: 8901 },
+  {
+    id: '15',
+    title: '신년 인사',
+    author: 'CEO',
+    createdAt: '2024-01-01',
+    viewCount: 8901,
+    category: 'normal',
+  },
 ];
 
 const columns: ColumnDef<Notice>[] = [
@@ -113,6 +146,17 @@ const columns: ColumnDef<Notice>[] = [
     accessorKey: 'title',
     header: '제목',
     enableSorting: true,
+    cell: ({ row }) => {
+      const notice = row.original;
+      const isNotice = notice.category === 'notice';
+
+      return (
+        <>
+          {isNotice && <strong className='text-primary mr-1'>[공지]</strong>}
+          {notice.title}
+        </>
+      );
+    },
   },
   {
     accessorKey: 'author',
@@ -138,7 +182,7 @@ const columns: ColumnDef<Notice>[] = [
 ];
 
 export function DemoList() {
-  const { page, sort, search, setPage, setSort } = useDataListParams();
+  const { page, sort, search, category, setPage, setSort } = useDataListParams();
 
   const { filteredData, totalCount } = useMemo(() => {
     // 필터링
@@ -149,6 +193,12 @@ export function DemoList() {
           notice.title.toLowerCase().includes(search.toLowerCase()) ||
           notice.author.toLowerCase().includes(search.toLowerCase())
       );
+    }
+
+    console.log(category);
+
+    if (category) {
+      result = result.filter(notice => notice.category === category);
     }
 
     // 정렬
@@ -173,18 +223,27 @@ export function DemoList() {
     const totalCount = result.length;
 
     // 페이지네이션
-    const pageSize = 15;
+    const pageSize = 5;
     const startIndex = (page - 1) * pageSize;
     const pagedData = result.slice(startIndex, startIndex + pageSize);
 
     return { filteredData: pagedData, totalCount };
-  }, [search, sort, page]);
+  }, [search, sort, page, category]);
 
-  const pageSize = 15;
+  const pageSize = 5;
   const pageCount = Math.ceil(totalCount / pageSize);
 
   return (
     <div className='space-y-4'>
+      <div className='flex gap-2'>
+        <SearchBar />
+        <CategoryButtonGroup
+          options={[
+            { value: 'notice', label: '공지' },
+            { value: 'normal', label: '일반' },
+          ]}
+        />
+      </div>
       <DataList
         data={filteredData}
         columns={columns}
