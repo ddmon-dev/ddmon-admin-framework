@@ -1,4 +1,5 @@
 import * as React from "react"
+import Link from "next/link"
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -39,29 +40,54 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
 
 type PaginationLinkProps = {
   isActive?: boolean
-} & Pick<React.ComponentProps<typeof Button>, "size"> &
-  React.ComponentProps<"a">
+  size?: "default" | "sm" | "lg" | "icon"
+  href?: string
+} & Omit<React.ComponentProps<"a">, "href"> &
+  Omit<React.ComponentProps<typeof Button>, "size" | "variant">
 
 function PaginationLink({
   className,
   isActive,
   size = "icon",
+  href,
+  onClick,
+  children,
   ...props
 }: PaginationLinkProps) {
+  if (href) {
+    return (
+      <Link
+        href={href}
+        aria-current={isActive ? "page" : undefined}
+        data-slot="pagination-link"
+        data-active={isActive}
+        className={cn(
+          buttonVariants({
+            variant: isActive ? "outline" : "ghost",
+            size,
+          }),
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </Link>
+    )
+  }
+
   return (
-    <a
+    <Button
+      variant={isActive ? "outline" : "ghost"}
+      size={size}
       aria-current={isActive ? "page" : undefined}
       data-slot="pagination-link"
       data-active={isActive}
-      className={cn(
-        buttonVariants({
-          variant: isActive ? "outline" : "ghost",
-          size,
-        }),
-        className
-      )}
+      className={className}
+      onClick={onClick}
       {...props}
-    />
+    >
+      {children}
+    </Button>
   )
 }
 
@@ -72,12 +98,11 @@ function PaginationPrevious({
   return (
     <PaginationLink
       aria-label="Go to previous page"
-      size="default"
-      className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
+      size="icon"
+      className={cn("", className)}
       {...props}
     >
-      <ChevronLeftIcon />
-      <span className="hidden sm:block">Previous</span>
+      <ChevronLeftIcon className="size-4" />
     </PaginationLink>
   )
 }
@@ -89,12 +114,11 @@ function PaginationNext({
   return (
     <PaginationLink
       aria-label="Go to next page"
-      size="default"
-      className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
+      size="icon"
+      className={cn("", className)}
       {...props}
     >
-      <span className="hidden sm:block">Next</span>
-      <ChevronRightIcon />
+      <ChevronRightIcon className="size-4" />
     </PaginationLink>
   )
 }
