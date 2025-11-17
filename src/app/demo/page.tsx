@@ -23,7 +23,13 @@ import { schemaPresets } from '@/shared/schemas/schema-presets';
 const formSchema = z.object({
   name: z.string().min(1, '이름을 입력하세요'),
   email: z.string().email('유효한 이메일을 입력하세요'),
-  password: z.string().min(8, '최소 8자 이상 입력하세요'),
+  password: z
+    .string()
+    .min(6, '비밀번호는 6자 이상이어야 합니다')
+    .max(16, '비밀번호는 16자 이하이어야 합니다')
+    .regex(/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/, {
+      message: '비밀번호는 6자 이상, 16자 이하의 영문, 숫자, 특수문자를 포함해야 합니다.',
+    }),
   textarea: z.string().min(1, '내용을 입력하세요'),
   switch: z.boolean(),
   checkbox: z.boolean().refine(val => val === true, { message: '동의해주세요' }),
@@ -109,11 +115,13 @@ function DemoForm() {
           control={form.control}
           name='email'
           label='Email'
+          type='email'
         />
         <FormInput
           control={form.control}
           name='password'
           label='Password'
+          type='password'
         />
         <FormTextarea
           control={form.control}
