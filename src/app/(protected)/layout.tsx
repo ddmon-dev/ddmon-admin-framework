@@ -9,7 +9,7 @@ export default function AuthenticatedLayout({ children }: { children: React.Reac
       <AppSidebar />
       <SidebarInset>
         <AppHeader />
-        <ContentContainer className='py-4'>{children}</ContentContainer>
+        <ContentContainer className='py-10 px-10'>{children}</ContentContainer>
       </SidebarInset>
     </SidebarProvider>
   );

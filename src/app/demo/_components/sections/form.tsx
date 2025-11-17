@@ -18,7 +18,7 @@ import {
   FormFileUpload,
 } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
-import { schemaPresets } from '@/shared/schemas/schema-presets';
+import { schemaPresets } from '@/shared/schema-presets';
 
 const formSchema = z.object({
   name: z.string().min(1, '이름을 입력하세요'),

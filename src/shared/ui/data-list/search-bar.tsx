@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { cn } from '@/shared/utils/classnames';
 import { Search, X } from 'lucide-react';
 
 import {
@@ -46,7 +47,7 @@ export function SearchBar({
   };
 
   return (
-    <InputGroup className={className}>
+    <InputGroup className={cn('w-auto min-w-64', className)}>
       <InputGroupAddon align='inline-start'>
         <Search className='size-4' />
       </InputGroupAddon>

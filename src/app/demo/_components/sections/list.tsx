@@ -2,12 +2,7 @@
 
 import { useMemo } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  DataList,
-  useDataListParams,
-  SearchBar,
-  CategoryButtonGroup,
-} from '@/shared/ui/data-lists';
+import { DataList, useDataListParams, SearchBar, CategoryButtonGroup } from '@/shared/ui/data-list';
 
 type Notice = {
   id: string;

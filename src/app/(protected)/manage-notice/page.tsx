@@ -1,34 +1,20 @@
-'use client';
+import { type SearchParams } from '@/shared/type';
+import { List, getList, Filters } from '@/features/manage-modules/notice';
 
-import {
-  DataList,
-  useDataListParams,
-  SearchBar,
-  CategoryButtonGroup,
-} from '@/shared/ui/data-lists';
+interface PageProps {
+  searchParams: SearchParams;
+}
 
-export default function ManageNoticePage() {
-  const { page, sort, search, category, setPage, setSort } = useDataListParams();
+export default async function ManageNoticePage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const { data, totalCount } = await getList(params);
 
   return (
     <div className='space-y-4'>
-      <div className='flex gap-2'>
-        <SearchBar />
-        <CategoryButtonGroup
-          options={[
-            { value: 'notice', label: '공지' },
-            { value: 'normal', label: '일반' },
-          ]}
-        />
-      </div>
-      <DataList
-        data={[]}
-        columns={[]}
-        pageCount={0}
-        currentPage={page}
-        onPageChange={setPage}
-        sortingKey={sort}
-        onSortingChange={setSort}
+      <Filters />
+      <List
+        data={data}
+        totalCount={totalCount}
       />
     </div>
   );
