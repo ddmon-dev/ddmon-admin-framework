@@ -34,16 +34,34 @@ export type FileUploadValue = ExistingFile | NewFile | null;
  */
 export const fileAcceptPresets = {
   images: 'image/*',
-  documents: '.pdf,.doc,.docx,.txt,.rtf',
-  spreadsheets: '.xls,.xlsx,.csv',
-  presentations: '.ppt,.pptx',
-  office: '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx',
-  archives: '.zip,.rar,.7z,.tar,.gz',
+  documents: 'pdf,doc,docx,txt,xls,xlsx,ppt,pptx,hwp',
+  zips: 'zip,rar,7z,tar,gz',
   videos: 'video/*',
   audios: 'audio/*',
 } as const;
 
 export type FileAcceptPreset = keyof typeof fileAcceptPresets;
+
+/**
+ * accept 문자열을 정규화 (확장자에 . 자동 추가)
+ * 예: 'pdf,doc' → '.pdf,.doc'
+ * 예: '.pdf,doc' → '.pdf,.doc'
+ * 예: 'image/*' → 'image/*' (그대로 유지)
+ */
+export function normalizeAccept(accept: string): string {
+  return accept
+    .split(',')
+    .map(t => t.trim())
+    .map(t => {
+      // MIME 타입이거나 이미 .으로 시작하면 그대로
+      if (t.includes('/') || t.startsWith('.')) {
+        return t;
+      }
+      // 확장자만 있으면 . 추가
+      return `.${t}`;
+    })
+    .join(',');
+}
 
 interface FileUploadProps {
   value?: FileUploadValue;
@@ -51,8 +69,8 @@ interface FileUploadProps {
   onError?: (message: string | null) => void;
   accept?: string;
   acceptPreset?: FileAcceptPreset;
+  /** 최대 파일 크기 (MB 단위) */
   maxSize?: number;
-  maxSizeMB?: number;
   disabled?: boolean;
   placeholder?: string;
   className?: string;
@@ -65,8 +83,7 @@ export function FileUpload({
   onError,
   accept: acceptProp,
   acceptPreset,
-  maxSize: maxSizeProp,
-  maxSizeMB,
+  maxSize: maxSizeMB,
   disabled = false,
   placeholder = '파일을 선택하세요...',
   className,
@@ -75,8 +92,9 @@ export function FileUpload({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const accept = acceptPreset ? fileAcceptPresets[acceptPreset] : acceptProp;
-  const maxSize = maxSizeMB ? maxSizeMB * 1024 * 1024 : maxSizeProp;
+  const rawAccept = acceptPreset ? fileAcceptPresets[acceptPreset] : acceptProp;
+  const accept = rawAccept ? normalizeAccept(rawAccept) : undefined;
+  const maxSize = maxSizeMB ? maxSizeMB * 1024 * 1024 : undefined;
 
   const validateFile = (file: File): boolean => {
     if (accept) {
@@ -335,7 +353,9 @@ export function truncateFileName(fileName: string, maxLength: number = 30): stri
   if (availableLength <= 0) return fileName;
 
   const halfLength = Math.floor(availableLength / 2);
-  return nameWithoutExt.slice(0, halfLength) + '...' + nameWithoutExt.slice(-halfLength) + extension;
+  return (
+    nameWithoutExt.slice(0, halfLength) + '...' + nameWithoutExt.slice(-halfLength) + extension
+  );
 }
 
 function getDisplayText(value: FileUploadValue): string {

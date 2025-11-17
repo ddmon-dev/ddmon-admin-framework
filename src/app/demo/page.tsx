@@ -249,14 +249,14 @@ function DemoForm() {
           name='fileUpload'
           label='File Upload'
           acceptPreset='documents'
-          maxSizeMB={1}
+          maxSize={1}
         />
         <FormFileUpload
           control={form.control}
           name='imageUpload'
           label='Image Upload (기존 파일 있음)'
           acceptPreset='images'
-          maxSizeMB={5}
+          maxSize={5}
         />
         <FormFileUpload
           control={form.control}
@@ -265,7 +265,7 @@ function DemoForm() {
           multiple
           max={5}
           acceptPreset='documents'
-          maxSizeMB={10}
+          maxSize={10}
         />
         <LoadingButton
           type='submit'

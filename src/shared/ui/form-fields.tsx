@@ -32,6 +32,7 @@ import {
   FileUpload,
   type FileUploadValue,
   type FileAcceptPreset,
+  fileAcceptPresets,
   formatFileSize,
 } from '@/shared/ui/file-upload';
 import { MultiFileUpload } from '@/shared/ui/multi-file-upload';
@@ -725,8 +726,8 @@ type FormFileUploadProps<
   max?: number;
   accept?: string;
   acceptPreset?: FileAcceptPreset;
+  /** 최대 파일 크기 (MB 단위) */
   maxSize?: number;
-  maxSizeMB?: number;
   placeholder?: string;
   hideConstraints?: boolean;
 };
@@ -745,7 +746,7 @@ const generateFileConstraintsText = (
       .map(t => t.trim())
       .map(t => {
         if (t.startsWith('.')) {
-          return t.slice(1).toUpperCase();
+          return t.slice(1);
         } else if (t.endsWith('/*')) {
           const baseType = t.slice(0, -2);
           if (baseType === 'image') return '이미지';
@@ -755,7 +756,13 @@ const generateFileConstraintsText = (
         }
         return t;
       });
-    parts.push(extensions.join(', '));
+
+    // 확장자가 5개 초과시 앞 4개 + "등"으로 표기
+    if (extensions.length > 5) {
+      parts.push(extensions.slice(0, 4).join(', ') + ' 등');
+    } else {
+      parts.push(extensions.join(', '));
+    }
   }
 
   if (maxSize) {
@@ -782,15 +789,15 @@ export const FormFileUpload = <
   accept,
   acceptPreset,
   maxSize,
-  maxSizeMB,
   placeholder,
   hideConstraints = false,
 }: FormFileUploadProps<V, N>): ReactElement => {
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  const resolvedMaxSize = maxSizeMB ? maxSizeMB * 1024 * 1024 : maxSize;
+  const resolvedAccept = acceptPreset ? fileAcceptPresets[acceptPreset] : accept;
+  const resolvedMaxSizeBytes = maxSize ? maxSize * 1024 * 1024 : undefined;
   const constraintsText = !hideConstraints
-    ? generateFileConstraintsText(accept || acceptPreset, resolvedMaxSize, max, multiple)
+    ? generateFileConstraintsText(resolvedAccept, resolvedMaxSizeBytes, max, multiple)
     : null;
   const displayDescription = description || constraintsText;
 
@@ -822,7 +829,6 @@ export const FormFileUpload = <
               accept={accept}
               acceptPreset={acceptPreset}
               maxSize={maxSize}
-              maxSizeMB={maxSizeMB}
               max={max}
               placeholder={placeholder}
               aria-invalid={fieldState.invalid || !!validationError}
@@ -835,7 +841,6 @@ export const FormFileUpload = <
               accept={accept}
               acceptPreset={acceptPreset}
               maxSize={maxSize}
-              maxSizeMB={maxSizeMB}
               placeholder={placeholder}
               aria-invalid={fieldState.invalid || !!validationError}
             />

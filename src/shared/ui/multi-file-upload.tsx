@@ -8,6 +8,7 @@ import {
   type FileUploadValue,
   type FileAcceptPreset,
   fileAcceptPresets,
+  normalizeAccept,
   formatFileSize,
   truncateFileName,
 } from './file-upload';
@@ -18,8 +19,8 @@ interface MultiFileUploadProps {
   onError?: (message: string | null) => void;
   accept?: string;
   acceptPreset?: FileAcceptPreset;
+  /** 최대 파일 크기 (MB 단위) */
   maxSize?: number;
-  maxSizeMB?: number;
   max?: number;
   disabled?: boolean;
   placeholder?: string;
@@ -33,8 +34,7 @@ export function MultiFileUpload({
   onError,
   accept: acceptProp,
   acceptPreset,
-  maxSize: maxSizeProp,
-  maxSizeMB,
+  maxSize: maxSizeMB,
   max,
   disabled = false,
   placeholder = '파일을 선택하세요...',
@@ -44,8 +44,9 @@ export function MultiFileUpload({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const accept = acceptPreset ? fileAcceptPresets[acceptPreset] : acceptProp;
-  const maxSize = maxSizeMB ? maxSizeMB * 1024 * 1024 : maxSizeProp;
+  const rawAccept = acceptPreset ? fileAcceptPresets[acceptPreset] : acceptProp;
+  const accept = rawAccept ? normalizeAccept(rawAccept) : undefined;
+  const maxSize = maxSizeMB ? maxSizeMB * 1024 * 1024 : undefined;
 
   const validFiles = value.filter(f => f && !(f.type === 'existing' && f.markedForDeletion));
   const canAddMore = !max || validFiles.length < max;
