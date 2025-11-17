@@ -2,7 +2,7 @@
 
 import { useQueryParams } from '@/shared/hooks/use-query-params';
 
-interface UseDataListParamsOptions {
+interface UseDataListOptions {
   defaultSort?: string;
   pageKey?: string;
   sortKey?: string;
@@ -10,7 +10,13 @@ interface UseDataListParamsOptions {
   categoryKey?: string;
 }
 
-export function useDataListParams(options?: UseDataListParamsOptions) {
+interface UseDataListParams {
+  totalCount: number;
+  pageSize: number;
+  options?: UseDataListOptions;
+}
+
+export function useDataList({ totalCount, pageSize, options }: UseDataListParams) {
   const queryParams = useQueryParams();
 
   const pageKey = options?.pageKey || 'page';
@@ -28,5 +34,7 @@ export function useDataListParams(options?: UseDataListParamsOptions) {
   const setSearch = (s: string) => queryParams.set({ [searchKey]: s, [pageKey]: '1' });
   const setCategory = (c: string) => queryParams.set(categoryKey, c);
 
-  return { page, sort, search, category, setPage, setSort, setSearch, setCategory };
+  const pageCount = Math.ceil(totalCount / pageSize);
+
+  return { page, sort, search, category, pageCount, setPage, setSort, setSearch, setCategory };
 }

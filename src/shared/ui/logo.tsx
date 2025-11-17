@@ -1,4 +1,4 @@
-import { cn } from '../utils/classnames';
+import { cn } from '../lib/utils/classnames';
 import { Radar } from 'lucide-react';
 import Link from 'next/link';
 

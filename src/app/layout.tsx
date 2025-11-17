@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { cn } from '@/shared/utils/classnames';
+import { cn } from '@/shared/lib/utils/classnames';
 import { fontPrimary, fontSecondary } from '@/fonts';
 import './globals.css';
 import { Toaster } from 'sonner';

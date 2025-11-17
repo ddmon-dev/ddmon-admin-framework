@@ -6,7 +6,7 @@ import { ko } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
 import { type Matcher, type DateRange } from 'react-day-picker';
 
-import { cn } from '@/shared/utils/classnames';
+import { cn } from '@/shared/lib/utils/classnames';
 import { Button } from '@/shared/ui/button';
 import { Calendar } from '@/shared/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';

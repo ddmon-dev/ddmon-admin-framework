@@ -5,7 +5,7 @@ const CATEGORY_OPTIONS = [
   { value: 'normal', label: '일반' },
 ] as const;
 
-export function Filters() {
+export function ListFilters() {
   return (
     <div className='flex justify-between gap-2'>
       <CategoryButtonGroup options={[...CATEGORY_OPTIONS]} />

@@ -1,4 +1,4 @@
-export interface Row {
+export interface ListRow {
   id: string;
   title: string;
   author: string;

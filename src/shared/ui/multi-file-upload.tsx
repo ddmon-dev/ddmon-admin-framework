@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { Trash2, File as FileIcon, Plus, RefreshCw } from 'lucide-react';
-import { cn } from '@/shared/utils/classnames';
+import { cn } from '@/shared/lib/utils/classnames';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from './input-group';
 import {
   type FileUploadValue,

@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { DataList, useDataListParams, SearchBar, CategoryButtonGroup } from '@/shared/ui/data-list';
+import { DataList, useDataList, SearchBar, CategoryButtonGroup } from '@/shared/ui/data-list';
 
 type Notice = {
   id: string;
@@ -177,7 +177,7 @@ const columns: ColumnDef<Notice>[] = [
 ];
 
 export function DemoList() {
-  const { page, sort, search, category, setPage, setSort } = useDataListParams();
+  const { page, sort, search, category, setPage, setSort } = useDataList();
 
   const { filteredData, totalCount } = useMemo(() => {
     // 필터링
