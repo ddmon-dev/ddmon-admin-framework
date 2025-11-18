@@ -6,9 +6,11 @@ import { listColumns } from './list-columns';
 import { BASE_CONFIG } from '../base.config';
 import { type ListProps } from '../base.types';
 import { type ListItem } from './types';
+import { useItemSheet } from '../components/item-sheet';
 
 export function List({ list, totalCount }: ListProps<ListItem>) {
   const searchParams = useSearchParams();
+  const { openItemSheet } = useItemSheet();
   const pageSize = Number(searchParams.get('pageSize')) || BASE_CONFIG.defaultListPageSize;
 
   const { page, setPage, pageCount } = useDataList({
@@ -23,6 +25,7 @@ export function List({ list, totalCount }: ListProps<ListItem>) {
       pageCount={pageCount}
       currentPage={page}
       onPageChange={setPage}
+      onRowClick={row => openItemSheet({ id: row.id, mode: 'modify' })}
     />
   );
 }

@@ -102,9 +102,9 @@ export function DataList<TData>({
 
   const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement>, row: TData) => {
     const eventTarget = event.target as HTMLElement;
-    const preventElements = ['button', 'input', 'select', 'textarea', 'a'];
+    const preventElements = ['BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'A'];
 
-    if (preventElements.includes(eventTarget.tagName)) {
+    if (preventElements.includes(eventTarget.tagName.toUpperCase())) {
       event.stopPropagation();
       return;
     }

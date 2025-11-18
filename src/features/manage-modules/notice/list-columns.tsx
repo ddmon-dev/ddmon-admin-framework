@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { type ListItem } from './types';
+import { ModifyButton } from '../components/modify-button';
 
 export const listColumns: ColumnDef<ListItem>[] = [
   {
@@ -34,6 +35,15 @@ export const listColumns: ColumnDef<ListItem>[] = [
     cell: ({ row }) => {
       const count = row.getValue('viewCount') as number;
       return <div className='text-right'>{count.toLocaleString()}</div>;
+    },
+  },
+  {
+    accessorKey: 'etc',
+    header: () => <div className='text-right'>기타</div>,
+    size: 100,
+    cell: ({ row }) => {
+      const { id } = row.original;
+      return <ModifyButton itemId={id} />;
     },
   },
 ];

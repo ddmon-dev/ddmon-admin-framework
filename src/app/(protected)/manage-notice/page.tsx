@@ -1,3 +1,4 @@
+import { ManageModuleContainer } from '@/features/manage-modules/manage-module-container';
 import { type SearchParams } from '@/shared/types/search-params';
 import { List, getList, ListFilters } from '@/features/manage-modules/notice';
 
@@ -16,12 +17,14 @@ export default async function ManageNoticePage({ searchParams }: PageProps) {
   const { list, totalCount } = result.data;
 
   return (
-    <div className='space-y-4'>
-      <ListFilters />
-      <List
-        list={list}
-        totalCount={totalCount}
-      />
-    </div>
+    <ManageModuleContainer>
+      <div className='space-y-4'>
+        <ListFilters />
+        <List
+          list={list}
+          totalCount={totalCount}
+        />
+      </div>
+    </ManageModuleContainer>
   );
 }
