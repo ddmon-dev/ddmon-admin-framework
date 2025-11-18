@@ -5,7 +5,7 @@ import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { BASE_CONFIG } from '../../base.config';
 import { CONFIG } from '../config';
 import { type FetchListResult } from '../../base.types';
-import { type DbRow, type ListRow } from '../types';
+import { type DbRow, type ListItem } from '../types';
 
 interface GetListParams {
   page?: string;
@@ -15,7 +15,7 @@ interface GetListParams {
   pageSize?: number;
 }
 
-export async function getList(params: GetListParams): Promise<FetchListResult<ListRow>> {
+export async function getList(params: GetListParams): Promise<FetchListResult<ListItem>> {
   try {
     const {
       page: rawPage = '1',

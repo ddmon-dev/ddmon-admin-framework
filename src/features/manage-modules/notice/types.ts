@@ -13,7 +13,7 @@ export type DbRow = BaseDbRow<TableType>;
  * 프론트엔드 데이터 모델 (camelCase)
  * DB 조회 후 transformSnakeToCamel 결과 타입
  */
-export interface ListRow {
+export interface ListItem {
   id: number;
   title: string;
   author: string;

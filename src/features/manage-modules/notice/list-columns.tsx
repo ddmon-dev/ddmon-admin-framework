@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { type ListRow } from './types';
+import { type ListItem } from './types';
 
-export const listColumns: ColumnDef<ListRow>[] = [
+export const listColumns: ColumnDef<ListItem>[] = [
   {
     accessorKey: 'title',
     header: '제목',
