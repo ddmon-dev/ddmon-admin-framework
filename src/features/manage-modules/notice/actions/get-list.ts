@@ -5,7 +5,7 @@ import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { BASE_CONFIG } from '../../base.config';
 import { CONFIG } from '../config';
 import { type FetchListResult } from '../../base.types';
-import { type DbRow, type ListItem } from '../types';
+import { type CamelCaseRowData } from '../types';
 
 interface GetListParams {
   page?: string;
@@ -15,7 +15,7 @@ interface GetListParams {
   pageSize?: number;
 }
 
-export async function getList(params: GetListParams): Promise<FetchListResult<ListItem>> {
+export async function getList(params: GetListParams): Promise<FetchListResult<CamelCaseRowData>> {
   try {
     const {
       page: rawPage = '1',
@@ -56,8 +56,7 @@ export async function getList(params: GetListParams): Promise<FetchListResult<Li
     }
 
     // snake_case → camelCase 변환
-    const dbRows = (rawData as DbRow[]) || [];
-    const list = dbRows.map(row => transformSnakeToCamel(row));
+    const list = rawData.map(row => transformSnakeToCamel(row));
 
     return { success: true, data: { list, totalCount: count || 0 } };
   } catch (error) {

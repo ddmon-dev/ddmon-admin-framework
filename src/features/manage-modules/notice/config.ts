@@ -1,6 +1,7 @@
 export const CONFIG = {
   tableName: 'notices',
-  tableType: 'Notices',
+  categoryOptions: [
+    { label: '공지', value: 'notice' },
+    { label: '일반', value: 'normal' },
+  ],
 } as const;
-
-export type TableType = typeof CONFIG.tableType;

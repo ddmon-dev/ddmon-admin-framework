@@ -6,3 +6,5 @@ export interface ListProps<T> {
 }
 
 export type FetchListResult<T> = ActionResult<ListProps<T>>;
+
+export type FetchItemResult<T> = ActionResult<T>;

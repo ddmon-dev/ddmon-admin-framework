@@ -1,23 +1,15 @@
-import { type DbRow as BaseDbRow } from '@/shared/lib/supabase/helpers';
-import { type TableType } from './config';
+import { type RowData as BaseRowData } from '@/shared/lib/supabase/helpers';
+import { type CamelCaseKeys } from '@/shared/lib/utils/objects';
+import { CONFIG } from './config';
 
 /**
  * DB 테이블 Row 타입 (snake_case)
- *
- * Phase 1: Database['Tables']['Notices']['Row']
- * Phase 2: Supabase CLI 자동 생성 후에도 동일하게 작동
+ * Supabase CLI에서 받은 타입을 그대로 사용하기 위해 정의
  */
-export type DbRow = BaseDbRow<TableType>;
+export type RowData = BaseRowData<typeof CONFIG.tableName>;
 
 /**
  * 프론트엔드 데이터 모델 (camelCase)
- * DB 조회 후 transformSnakeToCamel 결과 타입
+ * snake_case인 DB의 데이터를 프론트엔드에서 사용하기 위해 camelCase로 변환
  */
-export interface ListItem {
-  id: number;
-  title: string;
-  author: string;
-  createdAt: string;
-  viewCount: number;
-  category: string;
-}
+export type CamelCaseRowData = CamelCaseKeys<RowData>;

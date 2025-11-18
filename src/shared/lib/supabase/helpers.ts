@@ -10,36 +10,36 @@ import { transformSnakeToCamel, type CamelCaseKeys } from '../utils/objects';
 /**
  * 테이블 이름 타입
  */
-export type TableName = keyof Database['Tables'];
+export type TableName = keyof Database['public']['Tables'];
 
 /**
  * 테이블의 Row 타입 추출
  * @example
- * DbRow<'Notices'> → Database['Tables']['Notices']['Row']
+ * RowData<'Notices'> → Database['public']['Tables']['Notices']['Row']
  */
-export type DbRow<T extends TableName> = Database['Tables'][T]['Row'];
+export type RowData<T extends TableName> = Database['public']['Tables'][T]['Row'];
 
 /**
  * 테이블의 Insert 타입 추출
  * @example
- * DbInsert<'Notices'> → Database['Tables']['Notices']['Insert']
+ * DbInsert<'Notices'> → Database['public']['Tables']['Notices']['Insert']
  */
-export type DbInsert<T extends TableName> = Database['Tables'][T]['Insert'];
+export type DbInsert<T extends TableName> = Database['public']['Tables'][T]['Insert'];
 
 /**
  * 테이블의 Update 타입 추출
  * @example
- * DbUpdate<'Notices'> → Database['Tables']['Notices']['Update']
+ * DbUpdate<'Notices'> → Database['public']['Tables']['Notices']['Update']
  */
-export type DbUpdate<T extends TableName> = Database['Tables'][T]['Update'];
+export type DbUpdate<T extends TableName> = Database['public']['Tables'][T]['Update'];
 
 /**
  * DB Row 배열을 camelCase 배열로 변환
  * @example
- * transformDbRows<NoticeDbRow>(rawData)
+ * transformRowDatas<NoticeRowData>(rawData)
  */
-export function transformDbRows<TDbRow extends Record<string, any>>(
-  rows: TDbRow[] | null
-): CamelCaseKeys<TDbRow>[] {
+export function transformRowDatas<TRowData extends Record<string, any>>(
+  rows: TRowData[] | null
+): CamelCaseKeys<TRowData>[] {
   return (rows || []).map(row => transformSnakeToCamel(row));
 }

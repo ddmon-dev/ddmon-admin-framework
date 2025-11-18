@@ -1,10 +1,5 @@
-import { ItemSheetProvider, ItemSheet } from './components/item-sheet';
+import { ManageSheetProvider } from './components/manage-sheet';
 
 export function ManageModuleContainer({ children }: { children: React.ReactNode }) {
-  return (
-    <ItemSheetProvider>
-      {children}
-      <ItemSheet />
-    </ItemSheetProvider>
-  );
+  return <ManageSheetProvider>{children}</ManageSheetProvider>;
 }

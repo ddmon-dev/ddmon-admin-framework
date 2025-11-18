@@ -1,6 +1,6 @@
 import { ManageModuleContainer } from '@/features/manage-modules/manage-module-container';
 import { type SearchParams } from '@/shared/types/search-params';
-import { List, getList, ListFilters } from '@/features/manage-modules/notice';
+import { List, getList, ListFilters, ItemSheet } from '@/features/manage-modules/notice';
 
 interface PageProps {
   searchParams: SearchParams;
@@ -24,6 +24,7 @@ export default async function ManageNoticePage({ searchParams }: PageProps) {
           list={list}
           totalCount={totalCount}
         />
+        <ItemSheet />
       </div>
     </ManageModuleContainer>
   );

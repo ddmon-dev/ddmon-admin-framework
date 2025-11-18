@@ -1,20 +1,20 @@
 'use client';
 
 import { Button } from '@/shared/ui/button';
-import { useItemSheet } from './item-sheet';
+import { useManageSheet } from './manage-sheet';
 
 interface ModifyButtonProps {
-  itemId: string | number;
+  itemId: string;
 }
 
 export function ModifyButton({ itemId }: ModifyButtonProps) {
-  const { openItemSheet } = useItemSheet();
+  const { openManageSheet } = useManageSheet();
 
   return (
     <Button
       size='sm'
       variant='secondary'
-      onClick={() => openItemSheet({ id: itemId, mode: 'modify' })}
+      onClick={() => openManageSheet({ id: itemId, mode: 'modify' })}
     >
       수정
     </Button>
