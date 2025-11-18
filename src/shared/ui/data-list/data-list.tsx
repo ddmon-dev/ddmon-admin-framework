@@ -35,6 +35,9 @@ interface DataListProps<TData> {
   // 상태
   isLoading?: boolean;
   emptyMessage?: string;
+
+  // 행 클릭
+  onRowClick?: (row: TData) => void;
 }
 
 export function DataList<TData>({
@@ -46,6 +49,7 @@ export function DataList<TData>({
   sortingKey,
   onSortingChange,
   onSelectionChange,
+  onRowClick,
   isLoading,
   emptyMessage = '데이터가 없습니다.',
 }: DataListProps<TData>) {
@@ -96,6 +100,18 @@ export function DataList<TData>({
     }
   }, [rowSelection, table, onSelectionChange]);
 
+  const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement>, row: TData) => {
+    const eventTarget = event.target as HTMLElement;
+    const preventElements = ['button', 'input', 'select', 'textarea', 'a'];
+
+    if (preventElements.includes(eventTarget.tagName)) {
+      event.stopPropagation();
+      return;
+    }
+
+    onRowClick?.(row);
+  };
+
   return (
     <div className='w-full'>
       <div className='overflow-hidden rounded-md border'>
@@ -134,6 +150,7 @@ export function DataList<TData>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  onClick={event => handleRowClick(event, row.original)}
                 >
                   {row.getVisibleCells().map(cell => {
                     const size = cell.column.columnDef.size;
