@@ -6,6 +6,7 @@ export const listColumns: ColumnDef<CamelCaseRowData>[] = [
   {
     accessorKey: 'title',
     header: '제목',
+    size: 400,
     cell: ({ row }) => {
       const notice = row.original;
       const isNotice = notice.category === 'notice';
@@ -27,6 +28,11 @@ export const listColumns: ColumnDef<CamelCaseRowData>[] = [
     accessorKey: 'createdAt',
     header: '작성일',
     size: 100,
+    cell: ({ row }) => {
+      const { createdAt } = row.original;
+      const date = new Date(createdAt);
+      return <div className='text-right'>{date.toLocaleDateString()}</div>;
+    },
   },
   {
     accessorKey: 'viewCount',
@@ -40,7 +46,6 @@ export const listColumns: ColumnDef<CamelCaseRowData>[] = [
   {
     accessorKey: 'etc',
     header: () => <div className='text-right'>기타</div>,
-    size: 100,
     cell: ({ row }) => {
       const { id } = row.original;
       return <ModifyButton itemId={id} />;

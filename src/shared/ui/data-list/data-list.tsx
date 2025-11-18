@@ -243,7 +243,7 @@ function DataListPagination({ pageCount, currentPage, onPageChange }: DataListPa
 
   return (
     <div className='py-4'>
-      <Pagination className='justify-end'>
+      <Pagination className='justify-start'>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
