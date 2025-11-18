@@ -1,1 +1,3 @@
-export const DEFAULT_LIST_PAGE_SIZE = 10;
+export const BASE_CONFIG = {
+  defaultListPageSize: 10,
+} as const;

@@ -2,10 +2,10 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
-import { DEFAULT_LIST_PAGE_SIZE } from '../../base.config';
-import { TABLE_NAME } from '../config';
-import { type ListRow } from '../types';
+import { BASE_CONFIG } from '../../base.config';
+import { CONFIG } from '../config';
 import { type FetchListResult } from '../../base.types';
+import { type DbRow, type ListRow } from '../types';
 
 interface GetListParams {
   page?: string;
@@ -21,14 +21,14 @@ export async function getList(params: GetListParams): Promise<FetchListResult<Li
       page: rawPage = '1',
       search = '',
       category = '',
-      pageSize = DEFAULT_LIST_PAGE_SIZE,
+      pageSize = BASE_CONFIG.defaultListPageSize,
     } = params;
     const page = parseInt(rawPage) || 1;
 
     const supabase = createServerClient();
 
     // 기본 쿼리
-    let query = supabase.from(TABLE_NAME).select('*', { count: 'exact' });
+    let query = supabase.from(CONFIG.tableName).select('*', { count: 'exact' });
 
     // 검색 필터
     if (search) {
@@ -56,7 +56,8 @@ export async function getList(params: GetListParams): Promise<FetchListResult<Li
     }
 
     // snake_case → camelCase 변환
-    const list: ListRow[] = (rawData || []).map(item => transformSnakeToCamel(item)) as ListRow[];
+    const dbRows = (rawData as DbRow[]) || [];
+    const list = dbRows.map(row => transformSnakeToCamel(row));
 
     return { success: true, data: { list, totalCount: count || 0 } };
   } catch (error) {

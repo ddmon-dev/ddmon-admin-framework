@@ -13,7 +13,7 @@ type CamelCase<S extends string> = S extends `${infer Head}_${infer Tail}`
  * @example
  * CamelCaseKeys<{ created_at: string }> → { createdAt: string }
  */
-type CamelCaseKeys<T> = {
+export type CamelCaseKeys<T> = {
   [K in keyof T as CamelCase<string & K>]: T[K];
 };
 

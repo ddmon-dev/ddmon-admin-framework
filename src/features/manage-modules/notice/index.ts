@@ -1,4 +1,3 @@
-export { type ListRow } from './types';
+export { List } from './list';
 export { ListFilters } from './list-filters';
 export { getList } from './actions/get';
-export { List } from './list';

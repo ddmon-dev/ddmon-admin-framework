@@ -177,7 +177,10 @@ const columns: ColumnDef<Notice>[] = [
 ];
 
 export function DemoList() {
-  const { page, sort, search, category, setPage, setSort } = useDataList();
+  const { page, sort, search, category, setPage, setSort } = useDataList({
+    totalCount: mockNotices.length,
+    pageSize: 5,
+  });
 
   const { filteredData, totalCount } = useMemo(() => {
     // 필터링
