@@ -1,9 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Editor } from '@/shared/ui/editor/editor';
+import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
+
+const Editor = dynamic(() => import('@/shared/ui/editor/editor').then(mod => ({ default: mod.Editor })), {
+  ssr: false,
+  loading: () => <div className="flex h-[300px] items-center justify-center">에디터 로딩 중...</div>,
+});
 
 export function DemoEditor() {
   const [content, setContent] = useState('');
