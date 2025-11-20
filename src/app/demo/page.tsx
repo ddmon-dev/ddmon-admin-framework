@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Menu } from './_components/menu';
 import { DemoForm } from './_components/sections/form';
 import { DemoList } from './_components/sections/list';
+import { DemoEditor } from './_components/sections/editor';
 
 const menuItems = [
   {
@@ -14,6 +15,10 @@ const menuItems = [
   {
     title: 'table',
     components: [<DemoList />],
+  },
+  {
+    title: 'editor',
+    components: [<DemoEditor />],
   },
 ];
 

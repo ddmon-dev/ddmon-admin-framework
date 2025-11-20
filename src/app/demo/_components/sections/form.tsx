@@ -16,6 +16,7 @@ import {
   FormMultiCombobox,
   FormDatePicker,
   FormFileUpload,
+  FormEditor,
 } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas/presets';
@@ -47,6 +48,7 @@ const formSchema = z.object({
   fileUpload: schemaPresets.fileUpload(1),
   imageUpload: schemaPresets.fileUpload(1),
   multiFileUpload: schemaPresets.fileUpload(1),
+  editor: z.string().min(1, '내용을 입력하세요'),
 });
 
 const formDefaultValues: z.infer<typeof formSchema> = {
@@ -87,6 +89,7 @@ const formDefaultValues: z.infer<typeof formSchema> = {
       name: 'contract-agreement-final-version.docx',
     },
   ],
+  editor: '<p>CKEditor 5 위지윅 에디터 <strong>예시</strong>입니다.</p><p>다양한 서식을 지원합니다.</p>',
 };
 
 export function DemoForm() {
@@ -275,6 +278,13 @@ export function DemoForm() {
           max={5}
           acceptPreset='documents'
           maxSize={10}
+        />
+        <FormEditor
+          control={form.control}
+          name='editor'
+          label='에디터'
+          description='CKEditor 5 위지윅 에디터'
+          placeholder='내용을 입력하세요...'
         />
         <LoadingButton
           type='submit'
