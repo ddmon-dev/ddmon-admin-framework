@@ -5,12 +5,8 @@ export interface ListProps<T> {
   totalCount: number;
 }
 
-export type FetchListResult<T> = ActionResult<ListProps<T>>;
-
-export type FetchItemResult<T> = ActionResult<T>;
-
+export type GetListResult<T> = ActionResult<ListProps<T>>;
+export type GetItemResult<T> = ActionResult<T>;
 export type UpdateResult<T> = ActionResult<T>;
-
 export type CreateResult<T> = ActionResult<T>;
-
 export type DeleteResult<T> = ActionResult<T>;

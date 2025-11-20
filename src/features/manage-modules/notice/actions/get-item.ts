@@ -3,14 +3,14 @@
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { CONFIG } from '../config';
-import { type FetchItemResult } from '../../_base/types';
+import { type GetItemResult } from '../../_base/types';
 import { type ItemDTO } from '../types';
 
 interface Params {
   id: string;
 }
 
-export async function getItem({ id }: Params): Promise<FetchItemResult<ItemDTO>> {
+export async function getItem({ id }: Params): Promise<GetItemResult<ItemDTO>> {
   try {
     const supabase = createServerClient();
 
