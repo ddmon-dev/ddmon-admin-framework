@@ -4,7 +4,7 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { BASE_CONFIG } from '../../_base/config';
 import { CONFIG } from '../config';
-import { type FetchListResult } from '../../_base/types';
+import { type GetListResult } from '../../_base/types';
 import { type ItemDTO } from '../types';
 
 interface Params {
@@ -20,7 +20,7 @@ export async function getList({
   search = '',
   category = '',
   pageSize = BASE_CONFIG.defaultListPageSize,
-}: Params): Promise<FetchListResult<ItemDTO>> {
+}: Params): Promise<GetListResult<ItemDTO>> {
   try {
     const page = parseInt(rawPage) || 1;
 

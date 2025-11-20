@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { DeleteButton } from '../_base/components/delete-button';
+import { SoftDeleteButton } from '../_base/components/soft-delete-button';
 import { deleteItem } from './actions/delete-item';
 
 interface DeleteItemButtonProps {
@@ -20,5 +20,5 @@ export function DeleteItemButton({ itemId, children }: DeleteItemButtonProps) {
     }
   };
 
-  return <DeleteButton onDelete={handleDelete}>{children}</DeleteButton>;
+  return <SoftDeleteButton onDelete={handleDelete}>{children}</SoftDeleteButton>;
 }

@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { Button } from '@/shared/ui/button';
 
-interface DeleteButtonProps {
+interface SoftDeleteButtonProps {
   onDelete: () => Promise<void>;
   children?: React.ReactNode;
 }
 
-export function DeleteButton({ onDelete, children }: DeleteButtonProps) {
+export function SoftDeleteButton({ onDelete, children }: SoftDeleteButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {
