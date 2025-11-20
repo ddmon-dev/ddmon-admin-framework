@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { type CKEditor as CKEditorType } from './ckeditor';
 
 const EDITOR_COMPONENT = './ckeditor';
 
@@ -10,7 +11,7 @@ export const Editor = dynamic(
     ssr: false,
     loading: () => <EditorSkeleton />,
   }
-);
+) as typeof CKEditorType;
 
 function EditorSkeleton() {
   return (

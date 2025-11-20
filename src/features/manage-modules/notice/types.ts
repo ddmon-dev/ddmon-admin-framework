@@ -1,4 +1,8 @@
-import { type RowData as BaseRowData } from '@/shared/lib/supabase/helpers';
+import {
+  type RowData as BaseRowData,
+  type DbUpdate,
+  type DbInsert,
+} from '@/shared/lib/supabase/helpers';
 import { type CamelCaseKeys } from '@/shared/lib/utils/objects';
 import { CONFIG } from './config';
 
@@ -13,3 +17,13 @@ export type RowData = BaseRowData<typeof CONFIG.tableName>;
  * snake_case인 DB의 데이터를 프론트엔드에서 사용하기 위해 camelCase로 변환
  */
 export type CamelCaseRowData = CamelCaseKeys<RowData>;
+
+/**
+ * 업데이트 항목 값 타입
+ */
+export type UpdateItemValues = DbUpdate<typeof CONFIG.tableName>;
+
+/**
+ * 생성 항목 값 타입
+ */
+export type CreateItemValues = DbInsert<typeof CONFIG.tableName>;

@@ -1,6 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
+import { ModifyButton } from '../_base/components/modify-button';
+import { DeleteItemButton } from './delete-item-button';
 import { type CamelCaseRowData } from './types';
-import { ModifyButton } from '../components/modify-button';
+import { CONFIG } from './config';
 
 export const listColumns: ColumnDef<CamelCaseRowData>[] = [
   {
@@ -48,7 +50,12 @@ export const listColumns: ColumnDef<CamelCaseRowData>[] = [
     header: () => <div className='text-right'>기타</div>,
     cell: ({ row }) => {
       const { id } = row.original;
-      return <ModifyButton itemId={id} />;
+      return (
+        <nav className='flex gap-2'>
+          <ModifyButton itemId={id} />
+          <DeleteItemButton itemId={id} />
+        </nav>
+      );
     },
   },
 ];

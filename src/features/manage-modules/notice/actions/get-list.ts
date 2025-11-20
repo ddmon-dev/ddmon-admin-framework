@@ -2,12 +2,12 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
-import { BASE_CONFIG } from '../../base.config';
+import { BASE_CONFIG } from '../../_base/config';
 import { CONFIG } from '../config';
-import { type FetchListResult } from '../../base.types';
+import { type FetchListResult } from '../../_base/types';
 import { type CamelCaseRowData } from '../types';
 
-interface GetListParams {
+interface Params {
   page?: string;
   sort?: string;
   search?: string;
@@ -15,20 +15,22 @@ interface GetListParams {
   pageSize?: number;
 }
 
-export async function getList(params: GetListParams): Promise<FetchListResult<CamelCaseRowData>> {
+export async function getList({
+  page: rawPage = '1',
+  search = '',
+  category = '',
+  pageSize = BASE_CONFIG.defaultListPageSize,
+}: Params): Promise<FetchListResult<CamelCaseRowData>> {
   try {
-    const {
-      page: rawPage = '1',
-      search = '',
-      category = '',
-      pageSize = BASE_CONFIG.defaultListPageSize,
-    } = params;
     const page = parseInt(rawPage) || 1;
 
     const supabase = createServerClient();
 
     // 기본 쿼리
-    let query = supabase.from(CONFIG.tableName).select('*', { count: 'exact' });
+    let query = supabase
+      .from(CONFIG.tableName)
+      .select('*', { count: 'exact' })
+      .eq('deleted', false); // 삭제된 데이터는 제외
 
     // 검색 필터
     if (search) {
@@ -41,7 +43,7 @@ export async function getList(params: GetListParams): Promise<FetchListResult<Ca
     }
 
     // 정렬
-    query = query.order('created_at', { ascending: false });
+    query = query.order('created_at', { ascending: false }).order('id', { ascending: false });
 
     // 페이지네이션
     const startIndex = (page - 1) * pageSize;
