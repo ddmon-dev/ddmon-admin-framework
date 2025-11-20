@@ -33,14 +33,32 @@ export function transformSnakeToCamel<T extends Record<string, any>>(obj: T): Ca
   ) as CamelCaseKeys<T>;
 }
 
+/**
+ * camelCase 문자열을 snake_case로 변환하는 타입
+ * @example
+ * SnakeCase<"createdAt"> → "created_at"
+ * SnakeCase<"userCreatedAt"> → "user_created_at"
+ */
 type SnakeCase<S extends string> = S extends `${infer Head}${infer Tail}`
   ? `${Lowercase<Head>}_${SnakeCase<Tail>}`
   : S;
 
+/**
+ * camelCase 객체를 snake_case 객체로 변환
+ * @example
+ * transformCamelToSnake({ createdAt: "2024" })
+ * // → { created_at: "2024" }
+ */
 export type SnakeCaseKeys<T> = {
   [K in keyof T as SnakeCase<string & K>]: T[K];
 };
 
+/**
+ * camelCase 객체를 snake_case 객체로 변환
+ * @example
+ * transformCamelToSnake({ createdAt: "2024" })
+ * // → { created_at: "2024" }
+ */
 export function transformCamelToSnake<T extends Record<string, any>>(obj: T): SnakeCaseKeys<T> {
   return Object.fromEntries(
     Object.entries(obj).map(([key, value]) => {
