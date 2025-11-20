@@ -10,3 +10,4 @@ export { getList } from './actions/get-list';
 export { getItem } from './actions/get-item';
 export { createItem } from './actions/create-item';
 export { updateItem } from './actions/update-item';
+export { deleteItem } from './actions/delete-item';
