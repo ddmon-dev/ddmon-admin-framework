@@ -1,6 +1,7 @@
 'use client';
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
+import translations from 'ckeditor5/translations/ko.js';
 import {
   ClassicEditor,
   AccessibilityHelp,
@@ -90,6 +91,7 @@ export function Editor({
         disabled={disabled}
         config={{
           licenseKey: 'GPL',
+          translations: [translations],
           toolbar: {
             items: [
               'undo',
