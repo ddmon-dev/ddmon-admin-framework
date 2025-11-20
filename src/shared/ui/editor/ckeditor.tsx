@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/shared/lib/utils/classnames';
 import { CKEditor as _CKEditor } from '@ckeditor/ckeditor5-react';
 import translations from 'ckeditor5/translations/ko.js';
 import {
@@ -84,7 +85,7 @@ export function CKEditor({
   className,
 }: CKEditorProps) {
   return (
-    <div className={className}>
+    <div className={cn('w-full', className)}>
       <_CKEditor
         editor={ClassicEditor}
         data={content}
@@ -94,15 +95,13 @@ export function CKEditor({
           translations: [translations],
           toolbar: {
             items: [
-              'undo',
-              'redo',
-              '|',
-              'heading',
+              // 'heading',
               '|',
               'fontSize',
-              'fontFamily',
+              // 'fontFamily',
               'fontColor',
               'fontBackgroundColor',
+              // 'highlight',
               '|',
               'bold',
               'italic',
@@ -110,8 +109,17 @@ export function CKEditor({
               'strikethrough',
               'subscript',
               'superscript',
-              'code',
+              // 'code',
               'removeFormat',
+              '|',
+              'link',
+              'insertImage',
+              'mediaEmbed',
+              'insertTable',
+              // 'blockQuote',
+              // 'codeBlock',
+              // 'horizontalLine',
+              'specialCharacters',
               '|',
               'alignment',
               '|',
@@ -122,17 +130,9 @@ export function CKEditor({
               'outdent',
               'indent',
               '|',
-              'link',
-              'insertImage',
-              'mediaEmbed',
-              'insertTable',
-              'blockQuote',
-              'codeBlock',
-              'horizontalLine',
-              'specialCharacters',
-              '|',
-              'highlight',
               'findAndReplace',
+              'undo',
+              'redo',
             ],
             shouldNotGroupWhenFull: false,
           },
@@ -143,19 +143,19 @@ export function CKEditor({
             AutoLink,
             Autosave,
             Base64UploadAdapter,
-            BlockQuote,
+            // BlockQuote,
             Bold,
-            Code,
-            CodeBlock,
+            // Code,
+            // CodeBlock,
             Essentials,
             FindAndReplace,
             FontBackgroundColor,
             FontColor,
-            FontFamily,
+            // FontFamily,
             FontSize,
-            Heading,
-            Highlight,
-            HorizontalLine,
+            // Heading,
+            // Highlight,
+            // HorizontalLine,
             ImageBlock,
             ImageCaption,
             ImageInline,
@@ -198,24 +198,24 @@ export function CKEditor({
             Underline,
             Undo,
           ],
-          fontFamily: {
-            supportAllValues: true,
-          },
+          // fontFamily: {
+          //   supportAllValues: true,
+          // },
           fontSize: {
-            options: [10, 12, 14, 'default', 18, 20, 22],
+            options: [10, 12, 14, 'default', 18, 20, 22, 24, 26, 28, 30],
             supportAllValues: true,
           },
-          heading: {
-            options: [
-              { model: 'paragraph', title: '본문', class: 'ck-heading_paragraph' },
-              { model: 'heading1', view: 'h1', title: '제목 1', class: 'ck-heading_heading1' },
-              { model: 'heading2', view: 'h2', title: '제목 2', class: 'ck-heading_heading2' },
-              { model: 'heading3', view: 'h3', title: '제목 3', class: 'ck-heading_heading3' },
-              { model: 'heading4', view: 'h4', title: '제목 4', class: 'ck-heading_heading4' },
-              { model: 'heading5', view: 'h5', title: '제목 5', class: 'ck-heading_heading5' },
-              { model: 'heading6', view: 'h6', title: '제목 6', class: 'ck-heading_heading6' },
-            ],
-          },
+          // heading: {
+          //   options: [
+          //     { model: 'paragraph', title: '본문', class: 'ck-heading_paragraph' },
+          //     { model: 'heading1', view: 'h1', title: '제목 1', class: 'ck-heading_heading1' },
+          //     { model: 'heading2', view: 'h2', title: '제목 2', class: 'ck-heading_heading2' },
+          //     { model: 'heading3', view: 'h3', title: '제목 3', class: 'ck-heading_heading3' },
+          //     { model: 'heading4', view: 'h4', title: '제목 4', class: 'ck-heading_heading4' },
+          //     { model: 'heading5', view: 'h5', title: '제목 5', class: 'ck-heading_heading5' },
+          //     { model: 'heading6', view: 'h6', title: '제목 6', class: 'ck-heading_heading6' },
+          //   ],
+          // },
           image: {
             toolbar: [
               'imageTextAlternative',
