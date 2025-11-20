@@ -5,7 +5,7 @@ import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { BASE_CONFIG } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type FetchListResult } from '../../_base/types';
-import { type CamelCaseRowData } from '../types';
+import { type ItemDTO } from '../types';
 
 interface Params {
   page?: string;
@@ -20,7 +20,7 @@ export async function getList({
   search = '',
   category = '',
   pageSize = BASE_CONFIG.defaultListPageSize,
-}: Params): Promise<FetchListResult<CamelCaseRowData>> {
+}: Params): Promise<FetchListResult<ItemDTO>> {
   try {
     const page = parseInt(rawPage) || 1;
 

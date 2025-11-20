@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 import { ManageSheet, useManageSheet } from '../_base/components/manage-sheet';
 import { ItemForm } from './item-form';
 import { getItem } from './actions/get-item';
-import { type CamelCaseRowData } from './types';
+import { type ItemDTO } from './types';
 
 export function ItemSheet() {
   const { manageSheetData } = useManageSheet();
   const { id, mode } = manageSheetData ?? { id: '' };
-  const [prevValues, setPrevValues] = useState<CamelCaseRowData | null>(null);
+  const [prevValues, setPrevValues] = useState<ItemDTO | null>(null);
 
   useEffect(() => {
     const fetchItem = async () => {

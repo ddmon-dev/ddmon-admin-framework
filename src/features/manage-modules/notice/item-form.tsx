@@ -12,7 +12,7 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 
 import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
-import { type RowData, type CamelCaseRowData } from './types';
+import { type RowData, type ItemDTO } from './types';
 
 const formSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요.'),
@@ -26,7 +26,7 @@ const formDefaultValues = {
 
 interface ItemFormProps {
   id?: RowData['id'] | null;
-  prevValues: CamelCaseRowData | null;
+  prevValues: ItemDTO | null;
 }
 
 export function ItemForm({ id, prevValues }: ItemFormProps) {
