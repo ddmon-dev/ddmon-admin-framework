@@ -16,21 +16,17 @@ export const navigationConfig: {
   },
   navMain: [
     {
-      title: 'Settings',
+      title: 'Demo',
       items: [
         {
-          title: 'Settings',
+          title: 'Demo',
           url: '#',
           icon: Settings2,
           isActive: true,
           items: [
             {
-              title: 'Admin Users',
-              url: '/settings/admin-accounts',
-            },
-            {
-              title: 'App Settings',
-              url: '/settings/app-settings',
+              title: 'Component Demo',
+              url: '/demo',
             },
           ],
         },
