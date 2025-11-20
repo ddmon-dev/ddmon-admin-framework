@@ -4,11 +4,11 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { CONFIG } from '../config';
-import { type RowData, type ItemDTO, type UpdateItemValues } from '../types';
+import { type ItemDTO, type UpdateItemValues } from '../types';
 import { type UpdateResult } from '../../_base/types';
 
 interface Params {
-  id: RowData['id'];
+  id: string;
   values: UpdateItemValues;
   path?: string;
 }

@@ -36,7 +36,7 @@ export function ItemSheet() {
     <ManageSheet>
       {mode === 'view' ? null : (
         <ItemForm
-          id={id}
+          id={id || undefined}
           prevValues={prevValues}
         />
       )}
