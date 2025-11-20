@@ -36,6 +36,7 @@ import {
 } from '@/shared/ui/file-upload';
 import { MultiFileUpload } from '@/shared/ui/multi-file-upload';
 import { type DateRange } from 'react-day-picker';
+import { Editor } from '@/shared/ui/editor/editor';
 
 /**
  * react-hook-form의 field가 관리하는 props들을 명시적으로 제외
@@ -834,5 +835,45 @@ export const FormFileUpload = <
         </FieldSet>
       )}
     />
+  );
+};
+
+type FormEditorProps<
+  V extends FieldValues = FieldValues,
+  N extends FieldPath<V> = FieldPath<V>
+> = FormBaseProps<V, N> & {
+  placeholder?: string;
+  className?: string;
+};
+
+export const FormEditor = <
+  V extends FieldValues = FieldValues,
+  N extends FieldPath<V> = FieldPath<V>
+>({
+  control,
+  name,
+  label,
+  description,
+  orientation,
+  placeholder = '내용을 입력하세요...',
+  className,
+}: FormEditorProps<V, N>): ReactElement => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      label={label}
+      description={description}
+      orientation={orientation}
+    >
+      {({ onChange, fieldState, ...field }) => (
+        <Editor
+          content={field.value as string}
+          onChange={onChange}
+          placeholder={placeholder}
+          className={className}
+        />
+      )}
+    </FormField>
   );
 };

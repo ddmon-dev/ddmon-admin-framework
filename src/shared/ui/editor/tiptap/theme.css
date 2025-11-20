@@ -1,0 +1,137 @@
+/**
+ * Tiptap 에디터 콘텐츠 영역 스타일
+ *
+ * 글로벌 CSS 변수(--border, --primary 등)를 사용해 라이트/다크 모드 자동 적용.
+ * 렌더링 스타일(rich-text-content.css)과 시각적으로 일치하도록 유지.
+ */
+.tiptap-content {
+  min-height: 250px;
+  padding: 1rem;
+  line-height: 1.7;
+  color: var(--foreground);
+
+  /* Placeholder */
+  & p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+    color: var(--muted-foreground);
+  }
+
+  /* 단락 */
+  & p {
+    margin: 0.5rem 0;
+  }
+
+  /* 리스트 */
+  & :where(ul, ol) {
+    padding-left: 2rem;
+    margin: 0.5rem 0;
+  }
+
+  & ul {
+    list-style-type: disc;
+  }
+  & ol {
+    list-style-type: decimal;
+  }
+
+  /* 리스트 내 들여쓰기는 중첩으로 표현 — 문단 margin 무효화 */
+  & li > p {
+    margin-left: 0 !important;
+  }
+
+  /* 링크 */
+  & a {
+    color: var(--primary);
+    text-decoration: underline;
+    cursor: text;
+  }
+
+  /* 인용문 */
+  & blockquote {
+    border-left: 4px solid var(--border);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: var(--muted-foreground);
+  }
+
+  /* 이미지 */
+  & .tiptap-image {
+    margin: 1rem 0;
+  }
+
+  /* 테이블 */
+  & table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+    table-layout: fixed;
+
+    & th,
+    & td {
+      position: relative;
+      border: 1px solid var(--border);
+      padding: 0.5rem;
+      vertical-align: top;
+
+      & > p {
+        margin: 0;
+      }
+    }
+
+    & th {
+      background: var(--muted);
+      font-weight: 600;
+      text-align: left;
+    }
+
+    /* 셀 선택 영역 */
+    & .selectedCell::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+
+    /* 열 리사이즈 핸들 */
+    & .column-resize-handle {
+      position: absolute;
+      top: 0;
+      bottom: -1px;
+      right: -2px;
+      width: 4px;
+      pointer-events: none;
+      background-color: var(--primary);
+    }
+  }
+
+  &.resize-cursor {
+    cursor: col-resize;
+  }
+
+  /* 유튜브 임베드 */
+  & div[data-youtube-video] {
+    margin: 1rem 0;
+
+    & iframe {
+      max-width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      border: none;
+      border-radius: 0.5rem;
+    }
+  }
+
+  & div[data-youtube-video].ProseMirror-selectednode iframe {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  /* Gap cursor (표·이미지 사이 커서) */
+  & .ProseMirror-gapcursor::after {
+    border-top: 1px solid var(--foreground);
+  }
+}
