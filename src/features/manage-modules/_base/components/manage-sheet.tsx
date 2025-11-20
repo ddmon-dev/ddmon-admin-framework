@@ -4,7 +4,7 @@ import { use, createContext, useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/shared/ui/sheet';
 
 interface ManageSheetData {
-  id: string;
+  id?: string | null;
   mode: 'view' | 'modify' | 'create';
 }
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +9,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FieldGroup } from '@/shared/ui/field';
 import { FormInput, FormEditor } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
+
+import { createItem } from './actions/create-item';
+import { updateItem } from './actions/update-item';
+import { type RowData, type CamelCaseRowData } from './types';
 
 const formSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요.'),
@@ -20,21 +25,30 @@ const formDefaultValues = {
 };
 
 interface ItemFormProps {
-  prevValues: z.infer<typeof formSchema> | null;
+  id?: RowData['id'] | null;
+  prevValues: CamelCaseRowData | null;
 }
 
-export function ItemForm({ prevValues }: ItemFormProps) {
+export function ItemForm({ id, prevValues }: ItemFormProps) {
+  const pathname = usePathname();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: prevValues ?? formDefaultValues,
+    defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof formSchema>,
   });
 
   useEffect(() => {
-    form.reset(prevValues ?? formDefaultValues);
-  }, [prevValues]);
+    form.reset((prevValues ?? formDefaultValues) as z.infer<typeof formSchema>);
+  }, [prevValues, form]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { success, error } = id
+      ? await updateItem({ id, values, path: pathname })
+      : await createItem({ values, path: pathname });
+
+    if (!success) {
+      console.error(error);
+      return;
+    }
   }
 
   return (

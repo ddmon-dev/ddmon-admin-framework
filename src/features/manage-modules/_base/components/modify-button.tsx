@@ -5,9 +5,10 @@ import { useManageSheet } from './manage-sheet';
 
 interface ModifyButtonProps {
   itemId: string;
+  children?: React.ReactNode;
 }
 
-export function ModifyButton({ itemId }: ModifyButtonProps) {
+export function ModifyButton({ itemId, children }: ModifyButtonProps) {
   const { openManageSheet } = useManageSheet();
 
   return (
@@ -16,7 +17,7 @@ export function ModifyButton({ itemId }: ModifyButtonProps) {
       variant='secondary'
       onClick={() => openManageSheet({ id: itemId, mode: 'modify' })}
     >
-      수정
+      {children ?? '수정'}
     </Button>
   );
 }

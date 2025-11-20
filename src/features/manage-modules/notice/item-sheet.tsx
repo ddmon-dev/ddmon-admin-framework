@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ManageSheet, useManageSheet } from '../components/manage-sheet';
+import { ManageSheet, useManageSheet } from '../_base/components/manage-sheet';
 import { ItemForm } from './item-form';
 import { getItem } from './actions/get-item';
 import { type CamelCaseRowData } from './types';
 
 export function ItemSheet() {
   const { manageSheetData } = useManageSheet();
-  const { id } = manageSheetData ?? {};
+  const { id, mode } = manageSheetData ?? { id: '' };
   const [prevValues, setPrevValues] = useState<CamelCaseRowData | null>(null);
 
   useEffect(() => {
@@ -34,7 +34,12 @@ export function ItemSheet() {
 
   return (
     <ManageSheet>
-      <ItemForm prevValues={prevValues} />
+      {mode === 'view' ? null : (
+        <ItemForm
+          id={id}
+          prevValues={prevValues}
+        />
+      )}
     </ManageSheet>
   );
 }

@@ -3,10 +3,10 @@
 import { useSearchParams } from 'next/navigation';
 import { DataList, useDataList } from '@/shared/ui/data-list';
 import { listColumns } from './list-columns';
-import { BASE_CONFIG } from '../base.config';
-import { type ListProps } from '../base.types';
+import { BASE_CONFIG } from '../_base/config';
+import { type ListProps } from '../_base/types';
 import { type CamelCaseRowData } from './types';
-import { useManageSheet } from '../components/manage-sheet';
+import { useManageSheet } from '../_base/components/manage-sheet';
 
 export function List({ list, totalCount }: ListProps<CamelCaseRowData>) {
   const searchParams = useSearchParams();

@@ -32,3 +32,23 @@ export function transformSnakeToCamel<T extends Record<string, any>>(obj: T): Ca
     ])
   ) as CamelCaseKeys<T>;
 }
+
+type SnakeCase<S extends string> = S extends `${infer Head}${infer Tail}`
+  ? `${Lowercase<Head>}_${SnakeCase<Tail>}`
+  : S;
+
+export type SnakeCaseKeys<T> = {
+  [K in keyof T as SnakeCase<string & K>]: T[K];
+};
+
+export function transformCamelToSnake<T extends Record<string, any>>(obj: T): SnakeCaseKeys<T> {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => {
+      const snakeCasedKey = key
+        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+        .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2')
+        .toLowerCase();
+      return [snakeCasedKey, value];
+    })
+  ) as SnakeCaseKeys<T>;
+}
