@@ -1,6 +1,6 @@
 'use client';
 
-import { use, createContext, useState, useEffect } from 'react';
+import { use, createContext, useState } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/shared/ui/sheet';
 
 interface ManageSheetData {
@@ -8,45 +8,35 @@ interface ManageSheetData {
   mode: 'view' | 'modify' | 'create';
 }
 
-interface ManageSheetContextType<T> {
-  manageSheetOpen: boolean;
-  setManageSheetOpen: (open: boolean) => void;
-  manageSheetData: T | null;
-  setManageSheetData: (data: T | null) => void;
-  openManageSheet: (data: T) => void;
+interface ManageSheetContextType {
+  manageSheetData: ManageSheetData | null;
+  openManageSheet: (data: ManageSheetData) => void;
+  closeManageSheet: () => void;
 }
 
-const ManageSheetContext = createContext<ManageSheetContextType<ManageSheetData>>({
-  manageSheetOpen: false,
-  setManageSheetOpen: () => {},
+const ManageSheetContext = createContext<ManageSheetContextType>({
   manageSheetData: null,
-  setManageSheetData: () => {},
   openManageSheet: () => {},
+  closeManageSheet: () => {},
 });
 
 export function ManageSheetProvider({ children }: { children: React.ReactNode }) {
-  const [manageSheetOpen, setManageSheetOpen] = useState(false);
   const [manageSheetData, setManageSheetData] = useState<ManageSheetData | null>(null);
 
   const openManageSheet = (data: ManageSheetData) => {
-    setManageSheetOpen(true);
     setManageSheetData(data);
   };
 
-  useEffect(() => {
-    if (!manageSheetOpen) {
-      setManageSheetData(null);
-    }
-  }, [manageSheetOpen]);
+  const closeManageSheet = () => {
+    setManageSheetData(null);
+  };
 
   return (
     <ManageSheetContext.Provider
       value={{
-        manageSheetOpen,
-        setManageSheetOpen,
         manageSheetData,
-        setManageSheetData,
         openManageSheet,
+        closeManageSheet,
       }}
     >
       {children}
@@ -59,12 +49,13 @@ export function useManageSheet() {
 }
 
 export function ManageSheet({ children }: { children: React.ReactNode }) {
-  const { manageSheetOpen, setManageSheetOpen } = useManageSheet();
+  const { manageSheetData, closeManageSheet } = useManageSheet();
+  const isOpen = manageSheetData !== null;
 
   return (
     <Sheet
-      open={manageSheetOpen}
-      onOpenChange={setManageSheetOpen}
+      open={isOpen}
+      onOpenChange={open => !open && closeManageSheet()}
     >
       <SheetContent>
         <SheetHeader>
