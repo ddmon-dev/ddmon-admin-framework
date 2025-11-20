@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { CONFIG } from '../config';
-import { type RowData, type CamelCaseRowData, type UpdateItemValues } from '../types';
+import { type RowData, type ItemDTO, type UpdateItemValues } from '../types';
 import { type UpdateResult } from '../../_base/types';
 
 interface Params {
@@ -13,11 +13,7 @@ interface Params {
   path?: string;
 }
 
-export async function updateItem({
-  id,
-  values,
-  path,
-}: Params): Promise<UpdateResult<CamelCaseRowData>> {
+export async function updateItem({ id, values, path }: Params): Promise<UpdateResult<ItemDTO>> {
   try {
     if (!id) {
       throw new Error('ID값이 없습니다.');

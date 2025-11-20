@@ -16,7 +16,7 @@ export type RowData = BaseRowData<typeof CONFIG.tableName>;
  * 프론트엔드 데이터 모델 (camelCase)
  * snake_case인 DB의 데이터를 프론트엔드에서 사용하기 위해 camelCase로 변환
  */
-export type CamelCaseRowData = CamelCaseKeys<RowData>;
+export type ItemDTO = CamelCaseKeys<RowData>;
 
 /**
  * 업데이트 항목 값 타입

@@ -1,10 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ModifyButton } from '../_base/components/modify-button';
 import { DeleteItemButton } from './delete-item-button';
-import { type CamelCaseRowData } from './types';
-import { CONFIG } from './config';
+import { type ItemDTO } from './types';
 
-export const listColumns: ColumnDef<CamelCaseRowData>[] = [
+export const listColumns: ColumnDef<ItemDTO>[] = [
   {
     accessorKey: 'title',
     header: '제목',

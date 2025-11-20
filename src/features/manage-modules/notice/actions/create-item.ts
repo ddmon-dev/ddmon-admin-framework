@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { CONFIG } from '../config';
-import { type CamelCaseRowData, type CreateItemValues } from '../types';
+import { type ItemDTO, type CreateItemValues } from '../types';
 import { type CreateResult } from '../../_base/types';
 
 interface Params {
@@ -12,10 +12,7 @@ interface Params {
   path?: string;
 }
 
-export async function createItem({
-  values,
-  path,
-}: Params): Promise<CreateResult<CamelCaseRowData>> {
+export async function createItem({ values, path }: Params): Promise<CreateResult<ItemDTO>> {
   try {
     const supabase = createServerClient();
 

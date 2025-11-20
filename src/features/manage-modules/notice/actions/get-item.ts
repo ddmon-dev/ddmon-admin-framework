@@ -4,13 +4,13 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { CONFIG } from '../config';
 import { type FetchItemResult } from '../../_base/types';
-import { type CamelCaseRowData } from '../types';
+import { type ItemDTO } from '../types';
 
 interface Params {
   id: string;
 }
 
-export async function getItem({ id }: Params): Promise<FetchItemResult<CamelCaseRowData>> {
+export async function getItem({ id }: Params): Promise<FetchItemResult<ItemDTO>> {
   try {
     const supabase = createServerClient();
 
