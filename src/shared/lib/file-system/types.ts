@@ -18,7 +18,15 @@ export type FileMetadata = {
  * 폼에서 받은 파일 업로드 값 타입
  */
 export type FileUploadValue =
-  | { type: 'existing'; url: string; originalName: string; markedForDeletion?: boolean }
+  | {
+      type: 'existing';
+      url: string;
+      originalName: string;
+      size: number;
+      mimeType: string;
+      uploadedAt: string;
+      markedForDeletion?: boolean;
+    }
   | { type: 'new'; file: File }
   | null;
 

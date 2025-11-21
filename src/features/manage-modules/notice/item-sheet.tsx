@@ -5,6 +5,7 @@ import { ManageSheet, useManageSheet } from '../_base/components/manage-sheet';
 import { ItemForm } from './item-form';
 import { getItem } from './actions/get-item';
 import { type ItemDTO } from './types';
+import { type FileMetadata } from '@/shared/lib/file-system';
 
 export function ItemSheet() {
   const { manageSheetData } = useManageSheet();
@@ -29,10 +30,13 @@ export function ItemSheet() {
           ? Object.fromEntries(
               Object.entries(data.files).map(([category, fileList]) => [
                 category,
-                fileList?.map((file: { url: string; originalName: string }) => ({
+                fileList?.map((file: FileMetadata) => ({
                   type: 'existing' as const,
                   url: file.url,
                   originalName: file.originalName,
+                  size: file.size,
+                  mimeType: file.mimeType,
+                  uploadedAt: file.uploadedAt,
                 })),
               ])
             )
