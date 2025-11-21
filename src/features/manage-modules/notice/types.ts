@@ -5,7 +5,6 @@ import {
 } from '@/shared/lib/supabase/db-helpers';
 import { type CamelCaseKeys } from '@/shared/lib/utils/objects';
 import { type FileMetadata } from '@/shared/lib/supabase/file-helpers';
-import { type FilesInput } from '@/shared/lib/supabase/file-processing';
 import { CONFIG } from './config';
 
 /**
@@ -33,14 +32,12 @@ export type ItemDTO = CamelCaseKeys<RowData> & {
 
 /**
  * 업데이트 항목 값 타입
+ * Presigned URL 방식에서는 files를 Server Action에서 받지 않음
  */
-export type UpdateItemValues = Omit<DbUpdate<typeof CONFIG.tableName>, 'files'> & {
-  files?: FilesInput;
-};
+export type UpdateItemValues = DbUpdate<typeof CONFIG.tableName>;
 
 /**
  * 생성 항목 값 타입
+ * Presigned URL 방식에서는 files를 Server Action에서 받지 않음
  */
-export type CreateItemValues = Omit<DbInsert<typeof CONFIG.tableName>, 'files'> & {
-  files?: FilesInput;
-};
+export type CreateItemValues = DbInsert<typeof CONFIG.tableName>;
