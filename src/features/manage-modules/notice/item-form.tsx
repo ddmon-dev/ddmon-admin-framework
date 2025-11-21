@@ -15,6 +15,7 @@ import {
   type FileUploadValue,
 } from '@/shared/lib/file-system';
 
+import { CONFIG } from './config';
 import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
 import { type ItemDTO } from './types';
@@ -40,7 +41,6 @@ interface ItemFormProps {
 }
 
 export function ItemForm({ id, prevValues }: ItemFormProps) {
-  console.log('ItemForm', id, prevValues);
   const pathname = usePathname();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,7 +59,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
       // 1. 파일 업로드 처리 (새 파일 업로드 + 삭제 표시된 파일 삭제)
       await processFileUploads(
-        'notices',
+        CONFIG.tableName,
         entityId,
         files as Record<string, FileUploadValue[] | undefined>,
         {

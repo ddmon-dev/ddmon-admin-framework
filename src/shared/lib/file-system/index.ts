@@ -22,11 +22,11 @@ export {
   deleteFilesByUrls,
 } from './operations';
 
-// Helpers
+// Utils
 export {
   generateUniqueFileName,
   createFileMetadata,
-} from './helpers';
+} from './utils';
 
 // Client (브라우저 전용)
 export {
@@ -40,8 +40,8 @@ export {
   createFilesSchema,
 } from './schemas';
 
-// Upload Helpers (클라이언트 전용)
+// Upload Utils (클라이언트 전용)
 export {
   processFileUploads,
   type UploadFilesOptions,
-} from './upload-helpers';
+} from './upload-utils';
