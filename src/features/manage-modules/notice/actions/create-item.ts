@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
-import { deleteEntityFiles } from '../../_base/utils/entity-file-operations';
+import { deleteEntityFiles } from '../../_base/utils/file-operations';
 import { CONFIG } from '../config';
 import { type ItemDTO, type CreateItemValues } from '../types';
 import { type CreateResult } from '../../_base/types';

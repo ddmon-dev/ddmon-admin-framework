@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
-import { softDelete, hardDelete } from '../../_base/utils/db-operations';
-import { deleteEntityFiles } from '../../_base/utils/entity-file-operations';
+import { softDelete } from '../../_base/utils/db-operations';
+import { deleteEntityFiles } from '../../_base/utils/file-operations';
 import { CONFIG } from '../config';
 import { type DeleteResult } from '../../_base/types';
 import { type ItemDTO } from '../types';

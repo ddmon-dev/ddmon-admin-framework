@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { hardDeleteEntityFiles } from '../../_base/utils/entity-file-operations';
+import { hardDeleteEntityFiles } from '../../_base/utils/file-operations';
 import { CONFIG } from '../config';
 import { type ActionResult } from '@/shared/types/server-actions';
 
@@ -38,7 +38,8 @@ export async function hardDeleteItem({ id, path }: Params): Promise<ActionResult
     console.error(error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : '데이터를 영구 삭제하는 중 오류가 발생했습니다.',
+      error:
+        error instanceof Error ? error.message : '데이터를 영구 삭제하는 중 오류가 발생했습니다.',
     };
   }
 }

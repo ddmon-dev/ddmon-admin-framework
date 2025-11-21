@@ -8,10 +8,15 @@ import {
 import { generateUniqueFileName, type FileMetadata } from '@/shared/lib/supabase/file-helpers';
 
 /**
- * 엔티티 타입 (새 모듈 추가 시 여기에 추가)
- * 실제 DB 테이블명과 일치시킵니다
+ * 엔티티 타입 (완전히 동적, 제약 없음)
+ *
+ * 새 도메인 추가 시 코드 수정 불필요
+ * DB에서도 제약 없이 동적으로 관리
+ *
+ * @example
+ * 'notices', 'products', 'posts', 'users', 'events', ...
  */
-export type EntityType = 'notices' | 'products' | 'posts' | 'users';
+export type EntityType = string;
 
 /**
  * Presigned URL 업로드 정보
