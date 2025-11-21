@@ -7,7 +7,7 @@
 export type {
   FileMetadata,
   FileUploadValue,
-  EntityType,
+  TableName,
   PresignedUploadInfo,
 } from './types';
 

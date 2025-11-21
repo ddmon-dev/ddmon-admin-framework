@@ -8,7 +8,7 @@ import {
   saveUploadedFilesMetadata,
   deleteSpecificFiles,
 } from './operations';
-import { type EntityType } from './types';
+import { type TableName } from './types';
 
 /**
  * 파일 업로드 통합 처리 함수 (클라이언트 전용)
@@ -16,8 +16,8 @@ import { type EntityType } from './types';
  * 새 파일 업로드, 메타데이터 저장, 삭제 표시된 파일 처리를 한번에 처리합니다.
  *
  * @param params - 업로드 파라미터
- * @param params.entityType - 엔티티 타입 (예: 'notices')
- * @param params.entityId - 엔티티 ID
+ * @param params.tableName - 테이블 이름 (예: 'notices')
+ * @param params.parentId - 부모 레코드 ID
  * @param params.files - 폼에서 전달된 파일 데이터 (카테고리별)
  * @param params.handleDeletion - 기존 파일 중 삭제 표시된 파일 처리 여부 (update 시에만 true)
  * @returns Promise<void>
@@ -25,28 +25,28 @@ import { type EntityType } from './types';
  * @example
  * // Create 시
  * await processFileUploads({
- *   entityType: 'notices',
- *   entityId: noticeId,
+ *   tableName: 'notices',
+ *   parentId: noticeId,
  *   files: values.files,
  * });
  *
  * @example
  * // Update 시 (삭제 처리 포함)
  * await processFileUploads({
- *   entityType: 'notices',
- *   entityId: noticeId,
+ *   tableName: 'notices',
+ *   parentId: noticeId,
  *   files: values.files,
  *   handleDeletion: true,
  * });
  */
 export async function processFileUploads({
-  entityType,
-  entityId,
+  tableName,
+  parentId,
   files,
   handleDeletion = false,
 }: {
-  entityType: EntityType;
-  entityId: string;
+  tableName: TableName;
+  parentId: string;
   files?: Record<string, any>;
   handleDeletion?: boolean;
 }): Promise<void> {
@@ -76,8 +76,8 @@ export async function processFileUploads({
   if (newFileInfos.length > 0) {
     // Presigned URL 발급
     const presignedInfos = await getPresignedUploadUrls(
-      entityType,
-      entityId,
+      tableName,
+      parentId,
       newFileInfos.map(info => ({
         originalName: info.originalName,
         category: info.category,
@@ -93,8 +93,8 @@ export async function processFileUploads({
 
     // 메타데이터 저장
     await saveUploadedFilesMetadata(
-      entityType,
-      entityId,
+      tableName,
+      parentId,
       presignedInfos.map((info, idx) => ({
         publicUrl: info.publicUrl,
         originalName: info.originalName,
@@ -119,7 +119,7 @@ export async function processFileUploads({
     }
 
     if (deletedUrls.length > 0) {
-      await deleteSpecificFiles(entityType, entityId, deletedUrls);
+      await deleteSpecificFiles(tableName, parentId, deletedUrls);
     }
   }
 }

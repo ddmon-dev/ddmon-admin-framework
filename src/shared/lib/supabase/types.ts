@@ -44,12 +44,12 @@ export type Database = {
           category: string
           created_at: string | null
           deleted: boolean | null
-          entity_id: string
-          entity_type: string
           id: string
           mime_type: string
           original_name: string
+          parent_id: string
           size: number
+          table_name: string
           updated_at: string | null
           uploaded_at: string | null
           url: string
@@ -58,12 +58,12 @@ export type Database = {
           category: string
           created_at?: string | null
           deleted?: boolean | null
-          entity_id: string
-          entity_type: string
           id?: string
           mime_type: string
           original_name: string
+          parent_id: string
           size: number
+          table_name: string
           updated_at?: string | null
           uploaded_at?: string | null
           url: string
@@ -72,12 +72,12 @@ export type Database = {
           category?: string
           created_at?: string | null
           deleted?: boolean | null
-          entity_id?: string
-          entity_type?: string
           id?: string
           mime_type?: string
           original_name?: string
+          parent_id?: string
           size?: number
+          table_name?: string
           updated_at?: string | null
           uploaded_at?: string | null
           url?: string
