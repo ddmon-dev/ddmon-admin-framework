@@ -13,6 +13,7 @@ import {
   processFileUploads,
   createFilesSchema,
 } from '@/shared/lib/file-system';
+import { hardDelete } from '@/features/manage-modules/_base/utils/db-operations';
 
 import { CONFIG } from './config';
 import { createItem } from './actions/create-item';
@@ -53,24 +54,33 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const parentId = id || crypto.randomUUID();
       const { files, ...restValues } = values;
 
-      // 1. 파일 업로드 처리 (새 파일 업로드 + 삭제 표시된 파일 삭제)
-      await processFileUploads({
-        tableName: CONFIG.tableName,
-        parentId,
-        files,
-        handleDeletion: !!id, // update 시에만 삭제 처리
-      });
-
-      // 2. DB 저장 (파일 정보 제외)
-      const { success, error } = id
+      // 1. DB 먼저 저장 (DB가 UUID 생성)
+      const { success, data, error } = id
         ? await updateItem({ id, values: restValues, path: pathname })
         : await createItem({ values: restValues, path: pathname });
 
-      if (!success) {
+      if (!success || !data) {
         throw new Error(error || '저장에 실패했습니다.');
+      }
+
+      // 2. 파일 업로드 (반환된 ID 사용)
+      if (files && Object.keys(files).length > 0) {
+        try {
+          await processFileUploads({
+            tableName: CONFIG.tableName,
+            parentId: data.id,
+            files,
+            handleDeletion: !!id, // update 시에만 삭제 처리
+          });
+        } catch (fileError) {
+          // 생성 시 파일 업로드 실패 → 레코드 삭제 (롤백)
+          if (!id) {
+            await hardDelete(CONFIG.tableName, data.id);
+          }
+          throw fileError;
+        }
       }
     } catch (error) {
       console.error(error);

@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
-import { deleteEntityFiles } from '@/shared/lib/file-system';
 import { CONFIG } from '../config';
 import { type ItemDTO, type CreateItemValues } from '../types';
 import { type CreateResult } from '../../_base/types';
@@ -50,9 +49,8 @@ export async function createItem({ values, path }: Params): Promise<CreateResult
   } catch (error) {
     console.error(error);
 
-    // 실패 시 notices 레코드 및 업로드된 파일 삭제 (롤백)
-    await deleteEntityFiles('notices', noticeId);
-
+    // 실패 시 생성된 레코드 삭제 (롤백)
+    // 주의: 파일은 DB 저장 성공 후에 업로드되므로 여기서는 파일이 없음
     const supabase = createServerClient();
     await supabase.from(CONFIG.tableName).delete().eq('id', noticeId);
 
