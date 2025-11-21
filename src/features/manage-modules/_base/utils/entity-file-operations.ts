@@ -2,16 +2,10 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import {
-  uploadFileToStorage,
   deleteFileFromStorage,
   createPresignedUploadUrl,
 } from '@/shared/lib/supabase/storage';
-import {
-  createFileMetadata,
-  generateUniqueFileName,
-  type FileMetadata,
-} from '@/shared/lib/supabase/file-helpers';
-import type { FileUploadValue, FilesInput } from '@/shared/lib/supabase/file-processing';
+import { generateUniqueFileName, type FileMetadata } from '@/shared/lib/supabase/file-helpers';
 
 /**
  * 엔티티 타입 (새 모듈 추가 시 여기에 추가)
@@ -76,150 +70,6 @@ export async function getEntityFiles(
     },
     {} as Record<string, FileMetadata[]>
   );
-}
-
-/**
- * 엔티티에 파일 생성 (업로드 + DB 저장)
- *
- * @param entityType - 엔티티 타입
- * @param entityId - 엔티티 ID
- * @param filesInput - 폼의 files 객체
- * @returns void
- *
- * @example
- * await createEntityFiles('notice', noticeId, {
- *   thumbnail: [{ type: 'new', file: File }],
- *   attachments: [{ type: 'new', file: File }, ...],
- * });
- */
-export async function createEntityFiles(
-  entityType: EntityType,
-  entityId: string,
-  filesInput?: FilesInput
-): Promise<void> {
-  if (!filesInput) return;
-
-  const supabase = createServerClient();
-  const folder = `${entityType}/${entityId}`;
-  const uploadedUrls: string[] = [];
-
-  try {
-    const records: Array<{
-      entity_type: string;
-      entity_id: string;
-      category: string;
-      url: string;
-      original_name: string;
-      size: number;
-      mime_type: string;
-    }> = [];
-
-    // 각 카테고리별로 처리
-    for (const [category, files] of Object.entries(filesInput)) {
-      if (!files || files.length === 0) continue;
-
-      // 새 파일만 추출
-      const newFiles = files.filter(
-        (f): f is Extract<FileUploadValue, { type: 'new' }> => f?.type === 'new'
-      );
-
-      // 새 파일 업로드
-      for (const fileItem of newFiles) {
-        const file = fileItem.file;
-        const fileName = generateUniqueFileName(file.name);
-        const filePath = `${folder}/${fileName}`;
-
-        // Storage 업로드
-        const uploadResult = await uploadFileToStorage(file, filePath);
-
-        if (!uploadResult.success) {
-          throw new Error(uploadResult.error || '파일 업로드 실패');
-        }
-
-        uploadedUrls.push(uploadResult.data.url);
-
-        // DB 레코드 준비
-        const metadata = createFileMetadata(file, uploadResult.data.url);
-        records.push({
-          entity_type: entityType,
-          entity_id: entityId,
-          category,
-          url: metadata.url,
-          original_name: metadata.originalName,
-          size: metadata.size,
-          mime_type: metadata.mimeType,
-        });
-      }
-    }
-
-    // DB에 일괄 삽입
-    if (records.length > 0) {
-      const { error } = await supabase.from('files').insert(records);
-
-      if (error) {
-        throw new Error(error.message);
-      }
-    }
-  } catch (error) {
-    // 롤백: 업로드된 파일 삭제
-    if (uploadedUrls.length > 0) {
-      await Promise.allSettled(uploadedUrls.map(url => deleteFileFromStorage(url)));
-    }
-    throw error;
-  }
-}
-
-/**
- * 엔티티 파일 업데이트
- *
- * @param entityType - 엔티티 타입
- * @param entityId - 엔티티 ID
- * @param filesInput - 폼의 files 객체
- * @returns void
- *
- * @example
- * await updateEntityFiles('notice', noticeId, {
- *   thumbnail: [{ type: 'existing', url: '...', originalName: '...', markedForDeletion: true }],
- *   attachments: [{ type: 'new', file: File }],
- * });
- */
-export async function updateEntityFiles(
-  entityType: EntityType,
-  entityId: string,
-  filesInput?: FilesInput
-): Promise<void> {
-  if (!filesInput) return;
-
-  const supabase = createServerClient();
-
-  // 1. 삭제 표시된 파일 URL 추출
-  const deletedUrls: string[] = [];
-  for (const files of Object.values(filesInput)) {
-    if (files) {
-      const markedFiles = files.filter(
-        (f): f is Extract<FileUploadValue, { type: 'existing' }> =>
-          f?.type === 'existing' && f.markedForDeletion === true
-      );
-      deletedUrls.push(...markedFiles.map(f => f.url));
-    }
-  }
-
-  // 2. 새 파일 추가
-  await createEntityFiles(entityType, entityId, filesInput);
-
-  // 3. 삭제 표시된 파일 처리
-  if (deletedUrls.length > 0) {
-    // DB에서 soft delete
-    await supabase
-      .from('files')
-      .update({ deleted: true })
-      .eq('entity_type', entityType)
-      .eq('entity_id', entityId)
-      .in('url', deletedUrls);
-
-    // Storage에서 삭제
-    await Promise.allSettled(deletedUrls.map(url => deleteFileFromStorage(url)));
-  }
 }
 
 /**
