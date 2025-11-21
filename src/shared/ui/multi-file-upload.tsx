@@ -241,7 +241,7 @@ export function MultiFileUpload({
             const isExisting = file.type === 'existing';
             const isDeleted = isExisting && file.markedForDeletion;
             const fileName = isExisting
-              ? truncateFileName(file.name)
+              ? truncateFileName(file.originalName)
               : truncateFileName(file.file.name);
             const fileSize = isExisting ? null : formatFileSize(file.file.size);
 

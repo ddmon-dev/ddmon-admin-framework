@@ -1,7 +1,7 @@
 'use server';
 
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { type TableName } from '@/shared/lib/supabase/helpers';
+import { type TableName } from '@/shared/lib/supabase/db-helpers';
 
 interface DeleteResult {
   data?: any;

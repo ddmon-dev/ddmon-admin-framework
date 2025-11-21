@@ -74,19 +74,19 @@ const formDefaultValues: z.infer<typeof formSchema> = {
     {
       type: 'existing',
       url: 'https://picsum.photos/200',
-      name: 'existing-image.jpg',
+      originalName: 'existing-image.jpg',
     },
   ],
   multiFileUpload: [
     {
       type: 'existing',
       url: 'https://example.com/report.pdf',
-      name: 'annual-report-2024.pdf',
+      originalName: 'annual-report-2024.pdf',
     },
     {
       type: 'existing',
       url: 'https://example.com/contract.docx',
-      name: 'contract-agreement-final-version.docx',
+      originalName: 'contract-agreement-final-version.docx',
     },
   ],
   editor: '<p>CKEditor 5 위지윅 에디터 <strong>예시</strong>입니다.</p><p>다양한 서식을 지원합니다.</p>',
