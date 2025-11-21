@@ -40,8 +40,8 @@ export {
   createFilesSchema,
 } from './schemas';
 
-// Upload Utils (클라이언트 전용)
+// Upload Helper (클라이언트 전용)
 export {
   processFileUploads,
   type UploadFilesOptions,
-} from './upload-utils';
+} from './upload-helper';
