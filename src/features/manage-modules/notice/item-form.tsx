@@ -10,12 +10,14 @@ import { FieldGroup } from '@/shared/ui/field';
 import { FormInput, FormEditor, FormFileUpload } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { uploadFileWithPresignedUrl } from '@/shared/lib/client-file-upload';
+import {
+  prepareFileUpload,
+  saveFileMetadata,
+  deleteEntityFiles,
+} from '@/shared/actions/file-actions';
 
 import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
-import { prepareFileUpload } from './actions/prepare-file-upload';
-import { saveFileMetadata } from './actions/save-file-metadata';
-import { deleteFiles } from './actions/delete-files';
 import { type ItemDTO } from './types';
 
 const existingFileSchema = z.object({
@@ -97,13 +99,14 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       if (newFileInfos.length > 0) {
         // Presigned URL 발급
         const { success: prepareSuccess, data: presignedInfos, error: prepareError } =
-          await prepareFileUpload({
+          await prepareFileUpload(
+            'notices',
             entityId,
-            fileInfos: newFileInfos.map(info => ({
+            newFileInfos.map(info => ({
               originalName: info.originalName,
               category: info.category,
-            })),
-          });
+            }))
+          );
 
         if (!prepareSuccess || !presignedInfos) {
           throw new Error(prepareError || 'Presigned URL 발급 실패');
@@ -117,16 +120,17 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         );
 
         // 메타데이터 저장
-        const { success: saveSuccess, error: saveError } = await saveFileMetadata({
+        const { success: saveSuccess, error: saveError } = await saveFileMetadata(
+          'notices',
           entityId,
-          uploadedFiles: presignedInfos.map((info, idx) => ({
+          presignedInfos.map((info, idx) => ({
             publicUrl: info.publicUrl,
             originalName: info.originalName,
             size: newFileInfos[idx].file.size,
             mimeType: newFileInfos[idx].file.type,
             category: info.category,
-          })),
-        });
+          }))
+        );
 
         if (!saveSuccess) {
           throw new Error(saveError || '파일 메타데이터 저장 실패');
@@ -147,10 +151,11 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         }
 
         if (deletedUrls.length > 0) {
-          const { success: deleteSuccess, error: deleteError } = await deleteFiles({
+          const { success: deleteSuccess, error: deleteError } = await deleteEntityFiles(
+            'notices',
             entityId,
-            fileUrls: deletedUrls,
-          });
+            deletedUrls
+          );
 
           if (!deleteSuccess) {
             throw new Error(deleteError || '파일 삭제 실패');
