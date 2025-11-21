@@ -2,6 +2,7 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
+import { getEntityFiles } from '../../_base/utils/entity-file-operations';
 import { CONFIG } from '../config';
 import { type GetItemResult } from '../../_base/types';
 import { type ItemDTO } from '../types';
@@ -14,11 +15,12 @@ export async function getItem({ id }: Params): Promise<GetItemResult<ItemDTO>> {
   try {
     const supabase = createServerClient();
 
-    // 기본 쿼리
-    let query = supabase.from(CONFIG.tableName).select('*', { count: 'exact' });
-
-    // 쿼리 실행
-    const { data: rawData, error } = await query.eq('id', id).single();
+    // 1. notices 테이블에서 기본 데이터 조회
+    const { data: rawData, error } = await supabase
+      .from(CONFIG.tableName)
+      .select('*')
+      .eq('id', id)
+      .single();
 
     // 에러 처리
     if (error) {
@@ -28,7 +30,10 @@ export async function getItem({ id }: Params): Promise<GetItemResult<ItemDTO>> {
     // snake_case → camelCase 변환
     const item = transformSnakeToCamel(rawData);
 
-    return { success: true, data: { ...item } as ItemDTO };
+    // 2. files 테이블에서 파일 데이터 조회
+    const files = await getEntityFiles('notices', id);
+
+    return { success: true, data: { ...item, files } as ItemDTO };
   } catch (error) {
     console.error(error);
     return { success: false, error: '데이터를 불러오는 중 오류가 발생했습니다.' };
