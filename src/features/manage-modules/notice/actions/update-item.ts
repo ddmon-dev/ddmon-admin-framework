@@ -45,12 +45,15 @@ export async function updateItem({ id, values, path }: Params): Promise<UpdateRe
     }
 
     // 4. 삭제된 파일 확인 및 Storage 삭제
-    const oldUrls = extractAllFileUrls((oldData as any)?.files);
-    const newUrls = extractAllFileUrls((values as any).files);
-    const deletedUrls = oldUrls.filter(url => !newUrls.includes(url));
+    // values에 files 키가 명시적으로 있을 때만 삭제 로직 실행
+    if ('files' in values) {
+      const oldUrls = extractAllFileUrls((oldData as any)?.files);
+      const newUrls = extractAllFileUrls((values as any).files);
+      const deletedUrls = oldUrls.filter(url => !newUrls.includes(url));
 
-    if (deletedUrls.length > 0) {
-      await deleteFilesFromStorage(deletedUrls);
+      if (deletedUrls.length > 0) {
+        await deleteFilesFromStorage(deletedUrls);
+      }
     }
 
     // 5. 패스 재검증
