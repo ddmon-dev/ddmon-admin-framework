@@ -10,39 +10,19 @@ import { FieldGroup } from '@/shared/ui/field';
 import { FormInput, FormEditor, FormFileUpload } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import {
-  uploadFileWithPresignedUrl,
-  getPresignedUploadUrls,
-  saveUploadedFilesMetadata,
-  deleteSpecificFiles,
+  processFileUploads,
+  createFilesSchema,
+  type FileUploadValue,
 } from '@/shared/lib/file-system';
 
 import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
 import { type ItemDTO } from './types';
 
-const existingFileSchema = z.object({
-  type: z.literal('existing'),
-  url: z.string(),
-  originalName: z.string(),
-  markedForDeletion: z.boolean().optional(),
-});
-
-const newFileSchema = z.object({
-  type: z.literal('new'),
-  file: z.instanceof(File),
-});
-
-const fileUploadValueSchema = z.union([existingFileSchema, newFileSchema, z.null()]);
-
 const formSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요.'),
   content: z.string().min(1, '내용을 입력해주세요.'),
-  files: z
-    .object({
-      thumbnail: z.array(fileUploadValueSchema).optional(),
-      attachments: z.array(fileUploadValueSchema).optional(),
-    })
-    .optional(),
+  ...createFilesSchema(['thumbnail', 'attachments']),
 });
 
 const formDefaultValues = {
@@ -77,76 +57,17 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       const entityId = id || crypto.randomUUID();
       const { files, ...restValues } = values;
 
-      // 1. 새 파일 추출 및 파일 정보 준비
-      const newFileInfos: Array<{ file: File; category: string; originalName: string }> = [];
-      if (files) {
-        for (const [category, fileList] of Object.entries(files)) {
-          if (fileList) {
-            for (const fileValue of fileList) {
-              if (fileValue?.type === 'new') {
-                newFileInfos.push({
-                  file: fileValue.file,
-                  category,
-                  originalName: fileValue.file.name,
-                });
-              }
-            }
-          }
+      // 1. 파일 업로드 처리 (새 파일 업로드 + 삭제 표시된 파일 삭제)
+      await processFileUploads(
+        'notices',
+        entityId,
+        files as Record<string, FileUploadValue[] | undefined>,
+        {
+          handleDeletion: !!id, // update 시에만 삭제 처리
         }
-      }
+      );
 
-      // 2. 새 파일 업로드 (Presigned URL 방식)
-      if (newFileInfos.length > 0) {
-        // Presigned URL 발급
-        const presignedInfos = await getPresignedUploadUrls(
-          'notices',
-          entityId,
-          newFileInfos.map(info => ({
-            originalName: info.originalName,
-            category: info.category,
-          }))
-        );
-
-        // 파일 업로드 (병렬)
-        await Promise.all(
-          presignedInfos.map((info, idx) =>
-            uploadFileWithPresignedUrl(newFileInfos[idx].file, info.uploadUrl)
-          )
-        );
-
-        // 메타데이터 저장
-        await saveUploadedFilesMetadata(
-          'notices',
-          entityId,
-          presignedInfos.map((info, idx) => ({
-            publicUrl: info.publicUrl,
-            originalName: info.originalName,
-            size: newFileInfos[idx].file.size,
-            mimeType: newFileInfos[idx].file.type,
-            category: info.category,
-          }))
-        );
-      }
-
-      // 3. 삭제 표시된 파일 처리 (update 시)
-      if (id && files) {
-        const deletedUrls: string[] = [];
-        for (const fileList of Object.values(files)) {
-          if (fileList) {
-            for (const fileValue of fileList) {
-              if (fileValue?.type === 'existing' && fileValue.markedForDeletion) {
-                deletedUrls.push(fileValue.url);
-              }
-            }
-          }
-        }
-
-        if (deletedUrls.length > 0) {
-          await deleteSpecificFiles('notices', entityId, deletedUrls);
-        }
-      }
-
-      // 4. DB 저장 (파일 정보 제외)
+      // 2. DB 저장 (파일 정보 제외)
       const { success, error } = id
         ? await updateItem({ id, values: restValues, path: pathname })
         : await createItem({ values: restValues, path: pathname });

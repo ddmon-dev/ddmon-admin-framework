@@ -33,3 +33,15 @@ export {
   uploadFileWithPresignedUrl,
   uploadMultipleFilesWithPresignedUrl,
 } from './client';
+
+// Schemas (Zod 검증)
+export {
+  fileUploadValueSchema,
+  createFilesSchema,
+} from './schemas';
+
+// Upload Helpers (클라이언트 전용)
+export {
+  processFileUploads,
+  type UploadFilesOptions,
+} from './upload-helpers';
