@@ -38,7 +38,8 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
   useEffect(() => {
     form.reset((prevValues ?? formDefaultValues) as z.infer<typeof formSchema>);
-  }, [prevValues, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prevValues]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { success, error } = id
