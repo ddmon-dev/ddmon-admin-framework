@@ -22,7 +22,24 @@ export function ItemSheet() {
         return;
       }
 
-      setPrevValues(data);
+      // FileMetadata를 FormFileUpload 형태로 변환
+      const transformedData = {
+        ...data,
+        files: data.files
+          ? Object.fromEntries(
+              Object.entries(data.files).map(([category, fileList]) => [
+                category,
+                fileList?.map((file: { url: string; name: string }) => ({
+                  type: 'existing' as const,
+                  url: file.url,
+                  originalName: file.name,
+                })),
+              ])
+            )
+          : undefined,
+      };
+
+      setPrevValues(transformedData as ItemDTO);
     };
 
     fetchItem();

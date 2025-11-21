@@ -311,7 +311,8 @@ src/features/manage-modules/
 │   │   ├── soft-delete-button.tsx
 │   │   └── hard-delete-button.tsx
 │   ├── utils/
-│   │   └── db-operations.ts          # DB 유틸리티 (Soft/Hard Delete)
+│   │   ├── db-operations.ts          # DB 유틸리티 (Soft/Hard Delete)
+│   │   └── file-operations.ts        # 파일 업로드/삭제 유틸리티
 │   ├── types.ts                       # 공통 타입 정의
 │   └── config.ts                      # 기본 설정
 │
@@ -321,7 +322,8 @@ src/features/manage-modules/
     │   ├── get-item.ts
     │   ├── create-item.ts
     │   ├── update-item.ts
-    │   └── delete-item.ts
+    │   ├── delete-item.ts
+    │   └── upload-files.ts   # 파일 업로드
     ├── list.tsx              # 목록 컴포넌트
     ├── list-columns.tsx      # 테이블 컬럼 정의
     ├── list-filters.tsx      # 필터 UI
@@ -462,6 +464,162 @@ const handleDelete = async () => {
 2. 호출 컴포넌트에서 `throw Error`
 3. 버튼 컴포넌트의 `catch` 블록에서 처리
 4. `finally` 블록에서 항상 로딩 상태 해제
+
+#### 5. 파일 업로드 패턴
+
+Supabase Storage를 활용한 파일 업로드 시스템입니다.
+
+**아키텍처**:
+```
+Storage 클라이언트 (shared/lib/supabase/storage.ts)
+  ↓
+파일 작업 유틸리티 (_base/utils/file-operations.ts)
+  ↓
+모듈별 Server Actions (notice/actions/upload-files.ts)
+  ↓
+UI 컴포넌트 (FormFileUpload)
+```
+
+**Storage 클라이언트** (`shared/lib/supabase/storage.ts`):
+```typescript
+// 단일 파일 업로드
+export async function uploadFileToStorage(
+  file: File,
+  path: string
+): Promise<FileUploadResult> {
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const { data, error } = await supabase.storage
+    .from('my-bucket')
+    .upload(path, buffer);
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('my-bucket')
+    .getPublicUrl(data.path);
+
+  return { success: true, data: { url: publicUrl } };
+}
+
+// 파일 삭제
+export async function deleteFileFromStorage(url: string): Promise<FileDeleteResult> {
+  const filePath = extractFilePathFromUrl(url);
+
+  await supabase.storage
+    .from('my-bucket')
+    .remove([filePath]);
+
+  return { success: true, data: undefined };
+}
+```
+
+**파일 작업 유틸리티** (`_base/utils/file-operations.ts`):
+```typescript
+// 다중 파일 병렬 업로드 (실패 시 자동 롤백)
+export async function uploadFiles(
+  files: File[],
+  folder: string
+): Promise<MultiFileUploadResult> {
+  const uploadedUrls: string[] = [];
+
+  try {
+    const results = await Promise.all(
+      files.map(file => {
+        const fileName = generateUniqueFileName(file.name);
+        return uploadFileToStorage(file, `${folder}/${fileName}`);
+      })
+    );
+
+    uploadedUrls.push(...results.map(r => r.data.url));
+    return { success: true, data: { urls: uploadedUrls } };
+  } catch (error) {
+    // 실패 시 이미 업로드된 파일들 삭제
+    await deleteFiles(uploadedUrls);
+    return { success: false, error: '파일 업로드 실패' };
+  }
+}
+```
+
+**모듈별 Server Action** (`notice/actions/upload-files.ts`):
+```typescript
+export async function uploadNoticeFiles({
+  files,
+  noticeId,
+}: {
+  files: File[];
+  noticeId: string;
+}): Promise<MultiFileUploadResult> {
+  const folder = `notices/${noticeId}`;
+  return await uploadFiles(files, folder);
+}
+```
+
+**폼 통합** (`notice/item-form.tsx`):
+```typescript
+async function onSubmit(values) {
+  const { attachmentUrls, ...restValues } = values;
+
+  // 1. 기존 파일 필터링 (삭제 표시 제외)
+  const existingFiles = attachmentUrls
+    .filter(f => f.type === 'existing' && !f.markedForDeletion)
+    .map(f => f.url);
+
+  // 2. 새 파일만 업로드
+  const newFiles = attachmentUrls
+    .filter(f => f.type === 'new')
+    .map(f => f.file);
+
+  let uploadedUrls = [];
+  if (newFiles.length > 0) {
+    const result = await uploadNoticeFiles({ files: newFiles, noticeId: id || crypto.randomUUID() });
+    if (!result.success) throw new Error(result.error);
+    uploadedUrls = result.data.urls;
+  }
+
+  // 3. 최종 URL 배열 생성
+  const finalUrls = [...existingFiles, ...uploadedUrls];
+
+  // 4. DB 저장
+  await createItem({
+    values: { ...restValues, attachment_urls: finalUrls },
+    path
+  });
+}
+```
+
+**삭제 시 파일 처리** (`notice/actions/delete-item.ts`):
+```typescript
+export async function deleteItem({ id, path }) {
+  // 1. 항목 조회
+  const { data: item } = await getItem({ id });
+
+  // 2. 첨부 파일 삭제
+  if (item?.attachmentUrls?.length > 0) {
+    await deleteFiles(item.attachmentUrls);
+  }
+
+  // 3. DB에서 soft delete
+  await softDelete(tableName, id);
+
+  revalidatePath(path);
+}
+```
+
+**주요 특징**:
+- Supabase Storage 사용 (`my-bucket`)
+- 병렬 업로드로 성능 최적화
+- 실패 시 자동 롤백
+- 파일명 중복 방지 (UUID 추가)
+- 기존/신규 파일 분리 처리
+- 삭제 시 Storage 파일도 함께 삭제
+
+**Storage 경로 구조**:
+```
+my-bucket/
+└── notices/
+    ├── {noticeId}/
+    │   ├── {timestamp}-{random}-filename.pdf
+    │   └── {timestamp}-{random}-document.docx
+```
 
 ### 데이터 흐름
 
@@ -659,6 +817,422 @@ export default async function ProductsPage() {
    ```typescript
    return { success: true, data: transformSnakeToCamel(data) };
    ```
+
+### 파일 업로드 시스템
+
+manage-modules는 Supabase Storage를 활용한 파일 업로드 시스템을 포함합니다. 한글 파일명 지원, 여러 파일 카테고리 처리, 자동 롤백 등의 기능을 제공하며, 템플릿 재사용성을 위해 동적 처리를 지원합니다.
+
+#### 핵심 파일
+
+**글로벌 유틸리티** (`/src/shared/lib/supabase/`)
+- `file-helpers.ts`: FileMetadata 타입, 파일명 생성 유틸리티
+- `file-processing.ts`: 파일 처리 핵심 로직 (processFiles, rollbackFiles, deleteFilesByUrls)
+- `storage.ts`: Supabase Storage 업로드/삭제 함수
+
+**모듈별 구현** (예: `notice`)
+- `types.ts`: ItemFiles 타입 정의 (files 필드)
+- `actions/create-item.ts`: 생성 시 파일 업로드
+- `actions/update-item.ts`: 수정 시 파일 업로드/삭제
+- `actions/delete-item.ts`: 삭제 시 파일 정리
+- `item-form.tsx`: 파일 폼 필드
+- `item-sheet.tsx`: 기존 파일 데이터 변환
+
+#### 주요 개념
+
+**1. 한글 파일명 지원**
+
+Supabase Storage는 한글 파일명을 지원하지 않으므로, Storage에는 UUID+확장자로 저장하고 원본 파일명은 DB 메타데이터에 저장합니다.
+
+```typescript
+// Storage: 1234567890-abc123.pdf
+// DB metadata: { url: "...", name: "한글파일명.pdf", ... }
+```
+
+**2. 다중 파일 카테고리**
+
+하나의 엔티티가 여러 종류의 파일을 가질 수 있습니다 (예: 썸네일 1개, 첨부파일 5개).
+
+```typescript
+// DB 스키마
+files: {
+  thumbnail?: FileMetadata[];
+  attachments?: FileMetadata[];
+}
+
+// FileMetadata 타입
+type FileMetadata = {
+  url: string;           // Storage 공개 URL
+  name: string;          // 원본 파일명
+  size: number;          // 파일 크기 (bytes)
+  mimeType: string;      // MIME 타입
+  uploadedAt: string;    // 업로드 시각 (ISO)
+};
+```
+
+**3. 동적 카테고리 처리**
+
+카테고리를 하드코딩하지 않고 `Object.entries()`로 동적 처리하여 템플릿 재사용성을 극대화합니다.
+
+```typescript
+// processFiles는 카테고리 개수/이름에 상관없이 동작
+uploadedFiles = await processFiles({
+  filesInput: values.files,
+  folder: `notices/${id}`,
+});
+```
+
+**4. 자동 롤백**
+
+파일 업로드 후 DB 저장 실패 시, 업로드된 파일을 자동으로 삭제합니다.
+
+```typescript
+try {
+  uploadedFiles = await processFiles({ ... });
+  await supabase.from(...).insert(...); // DB 저장
+} catch (error) {
+  await rollbackFiles(uploadedFiles); // 업로드된 파일 자동 삭제
+}
+```
+
+#### 데이터 흐름
+
+**생성 (Create)**
+```
+1. 사용자가 폼에서 파일 선택 (thumbnail, attachments)
+2. onSubmit → createItem({ values, path })
+3. createItem에서 processFiles() 호출
+   - 새 파일만 추출하여 Storage 업로드
+   - 메타데이터 생성
+4. DB에 메타데이터 저장 (files 컬럼)
+5. 실패 시 rollbackFiles()로 자동 삭제
+```
+
+**수정 (Update)**
+```
+1. 기존 데이터 조회 (getItem)
+2. item-sheet에서 FileMetadata → FormFileUpload 형태로 변환
+3. 폼에서 파일 추가/삭제 표시
+4. onSubmit → updateItem({ id, values, path })
+5. updateItem에서:
+   - markedForDeletion 파일 URL 추출
+   - processFiles() 호출 (새 파일 업로드 + 기존 파일 유지)
+   - DB 업데이트
+   - markedForDeletion 파일 Storage에서 삭제
+6. 실패 시 rollbackFiles()로 새 파일만 삭제
+```
+
+**삭제 (Delete)**
+```
+1. deleteItem({ id, path })
+2. getItem으로 파일 정보 조회
+3. files에서 모든 카테고리의 URL을 동적으로 추출
+4. deleteFilesByUrls()로 Storage 삭제
+5. softDelete로 deleted = true 설정
+```
+
+#### 사용 방법
+
+**1. 모듈 타입 정의**
+
+```typescript
+// notice/types.ts
+import { type FileMetadata } from '@/shared/lib/supabase/file-helpers';
+
+export type ItemFiles = {
+  thumbnail?: FileMetadata[];
+  attachments?: FileMetadata[];
+};
+
+export type ItemDTO = CamelCaseKeys<RowData> & {
+  files?: ItemFiles;
+};
+```
+
+**2. 폼 스키마 설정**
+
+```typescript
+// notice/item-form.tsx
+const existingFileSchema = z.object({
+  type: z.literal('existing'),
+  url: z.string(),
+  originalName: z.string(),
+  markedForDeletion: z.boolean().optional(),
+});
+
+const newFileSchema = z.object({
+  type: z.literal('new'),
+  file: z.instanceof(File),
+});
+
+const fileUploadValueSchema = z.union([existingFileSchema, newFileSchema, z.null()]);
+
+const formSchema = z.object({
+  title: z.string().min(1),
+  content: z.string().min(1),
+  files: z.object({
+    thumbnail: z.array(fileUploadValueSchema).optional(),
+    attachments: z.array(fileUploadValueSchema).optional(),
+  }).optional(),
+});
+```
+
+**3. 폼 컴포넌트**
+
+```typescript
+<FormFileUpload
+  control={form.control}
+  name='files.thumbnail'
+  label='썸네일'
+  acceptPreset='images'
+  maxSize={5}
+  max={1}
+/>
+<FormFileUpload
+  control={form.control}
+  name='files.attachments'
+  label='첨부 파일'
+  acceptPreset='documents'
+  maxSize={10}
+  max={5}
+/>
+```
+
+**4. Server Action (Create)**
+
+```typescript
+// notice/actions/create-item.ts
+import { processFiles, rollbackFiles, type ProcessedFiles } from '@/shared/lib/supabase/file-processing';
+
+export async function createItem({ values, path }: Params) {
+  const noticeId = crypto.randomUUID();
+  let uploadedFiles: ProcessedFiles = {};
+
+  try {
+    // 파일 처리 (업로드 + 메타데이터 생성)
+    uploadedFiles = await processFiles({
+      filesInput: values.files as any,
+      folder: `notices/${noticeId}`,
+    });
+
+    // DB 저장용 값 준비
+    const insertValues = {
+      ...values,
+      id: noticeId,
+      files: uploadedFiles,
+    };
+
+    const { data, error } = await supabase
+      .from(CONFIG.tableName)
+      .insert(transformCamelToSnake(insertValues) as any)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    if (path) revalidatePath(path);
+
+    return { success: true, data: transformSnakeToCamel(data) };
+  } catch (error) {
+    console.error(error);
+    await rollbackFiles(uploadedFiles); // 롤백
+    return { success: false, error: '생성 실패' };
+  }
+}
+```
+
+**5. Server Action (Update)**
+
+```typescript
+// notice/actions/update-item.ts
+export async function updateItem({ id, values, path }: Params) {
+  let uploadedFiles: ProcessedFiles = {};
+  const deletedUrls: string[] = [];
+
+  try {
+    // 삭제 표시된 파일 URL 추출
+    if (values.files) {
+      for (const files of Object.values(values.files)) {
+        if (files) {
+          const markedFiles = files.filter(
+            (f): f is Extract<typeof f, { type: 'existing' }> =>
+              f?.type === 'existing' && f.markedForDeletion === true
+          );
+          deletedUrls.push(...markedFiles.map(f => f.url));
+        }
+      }
+    }
+
+    // 파일 처리
+    uploadedFiles = await processFiles({
+      filesInput: values.files as any,
+      folder: `notices/${id}`,
+    });
+
+    // DB 업데이트
+    const updateValues = { ...values, files: uploadedFiles };
+    const { data, error } = await supabase
+      .from(CONFIG.tableName)
+      .update(transformCamelToSnake(updateValues) as any)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    // 삭제 표시된 파일 Storage에서 삭제
+    if (deletedUrls.length > 0) {
+      await deleteFilesByUrls(deletedUrls);
+    }
+
+    if (path) revalidatePath(path);
+    return { success: true, data: transformSnakeToCamel(data) };
+  } catch (error) {
+    console.error(error);
+    await rollbackFiles(uploadedFiles); // 롤백
+    return { success: false, error: '업데이트 실패' };
+  }
+}
+```
+
+**6. Server Action (Delete)**
+
+```typescript
+// notice/actions/delete-item.ts
+import { deleteFilesByUrls } from '@/shared/lib/supabase/file-processing';
+
+export async function deleteItem({ id, path }: Params) {
+  try {
+    const { success, data: item } = await getItem({ id });
+
+    // 모든 카테고리의 파일 URL을 동적으로 추출
+    if (success && item?.files) {
+      const allFileUrls = Object.values(item.files)
+        .flat()
+        .map(f => f.url);
+
+      if (allFileUrls.length > 0) {
+        await deleteFilesByUrls(allFileUrls);
+      }
+    }
+
+    const { data, error } = await softDelete(CONFIG.tableName, id);
+    if (error) return { success: false, error };
+
+    if (path) revalidatePath(path);
+    return { success: true, data: transformSnakeToCamel(data) };
+  } catch (error) {
+    return { success: false, error: '삭제 실패' };
+  }
+}
+```
+
+**7. Sheet 컴포넌트 (기존 데이터 변환)**
+
+```typescript
+// notice/item-sheet.tsx
+useEffect(() => {
+  const fetchItem = async () => {
+    const { success, data } = await getItem({ id });
+    if (!success) return;
+
+    // FileMetadata를 FormFileUpload 형태로 변환
+    const transformedData = {
+      ...data,
+      files: data.files
+        ? Object.fromEntries(
+            Object.entries(data.files).map(([category, fileList]) => [
+              category,
+              fileList?.map(file => ({
+                type: 'existing' as const,
+                url: file.url,
+                originalName: file.name,
+              })),
+            ])
+          )
+        : undefined,
+    };
+
+    setPrevValues(transformedData);
+  };
+
+  fetchItem();
+}, [id]);
+```
+
+#### 새로운 모듈에 파일 처리 추가하기
+
+새로운 manage-modules 모듈(예: `products`)에 파일 업로드를 추가하는 경우:
+
+**1. types.ts 정의**
+```typescript
+import { type FileMetadata } from '@/shared/lib/supabase/file-helpers';
+
+export type ProductFiles = {
+  images?: FileMetadata[];     // 상품 이미지 (여러 개)
+  manual?: FileMetadata[];     // 설명서 (PDF)
+};
+
+export type ItemDTO = CamelCaseKeys<RowData> & {
+  files?: ProductFiles;
+};
+```
+
+**2. item-form.tsx 수정**
+- 폼 스키마에 `files` 객체 추가
+- FormFileUpload 컴포넌트 추가 (카테고리별)
+- onSubmit은 단순히 values 전달만 (파일 처리 로직 제거)
+
+**3. Server Actions 수정**
+- `notice` 모듈의 create-item.ts, update-item.ts, delete-item.ts 복사
+- `tableName`과 `folder` 경로만 수정 (`notices` → `products`)
+- 파일 처리 로직은 그대로 사용 (동적 처리되므로)
+
+**4. item-sheet.tsx 수정**
+- `notice` 모듈의 파일 변환 로직 복사
+- 동적 처리되므로 코드 수정 불필요
+
+#### 주요 유틸리티 함수
+
+**processFiles()**
+
+파일 업로드 및 메타데이터 생성을 동적으로 처리합니다.
+
+```typescript
+type FilesInput = Record<string, FileUploadValue[] | undefined>;
+type ProcessedFiles = Record<string, FileMetadata[]>;
+
+processFiles({
+  filesInput: { thumbnail: [...], attachments: [...] },
+  folder: 'notices/uuid',
+}): Promise<ProcessedFiles>
+```
+
+- 새 파일만 추출하여 Storage 업로드
+- 기존 파일 유지 (markedForDeletion 제외)
+- 업로드 실패 시 자동 롤백 (내부)
+- 카테고리 개수/이름 무관하게 동적 처리
+
+**rollbackFiles()**
+
+업로드된 파일들을 Storage에서 삭제합니다 (롤백용).
+
+```typescript
+rollbackFiles(processedFiles: ProcessedFiles): Promise<void>
+```
+
+**deleteFilesByUrls()**
+
+URL 배열로 파일들을 Storage에서 삭제합니다.
+
+```typescript
+deleteFilesByUrls(urls: string[]): Promise<void>
+```
+
+#### 템플릿 재사용 팁
+
+1. **카테고리 하드코딩 금지**: `Object.entries()`로 동적 처리
+2. **Server Action 복제**: 파일 처리 로직은 모든 모듈에서 동일
+3. **폼 스키마만 수정**: 모듈별로 필요한 카테고리만 정의
+4. **Storage 경로 규칙**: `{모듈명}/{엔티티ID}/{파일명}`
 
 ## 새로운 기능 추가 시
 

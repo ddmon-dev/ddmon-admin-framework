@@ -4,7 +4,7 @@
 export type ExistingFile = {
   type: 'existing';
   url: string;
-  name: string;
+  originalName: string;
   markedForDeletion?: boolean;
 };
 

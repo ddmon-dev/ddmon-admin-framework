@@ -28,7 +28,7 @@ export async function getItem({ id }: Params): Promise<GetItemResult<ItemDTO>> {
     // snake_case → camelCase 변환
     const item = transformSnakeToCamel(rawData);
 
-    return { success: true, data: { ...item } };
+    return { success: true, data: { ...item } as ItemDTO };
   } catch (error) {
     console.error(error);
     return { success: false, error: '데이터를 불러오는 중 오류가 발생했습니다.' };

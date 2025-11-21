@@ -2,8 +2,10 @@ import {
   type RowData as BaseRowData,
   type DbUpdate,
   type DbInsert,
-} from '@/shared/lib/supabase/helpers';
+} from '@/shared/lib/supabase/db-helpers';
 import { type CamelCaseKeys } from '@/shared/lib/utils/objects';
+import { type FileMetadata } from '@/shared/lib/supabase/file-helpers';
+import { type FilesInput } from '@/shared/lib/supabase/file-processing';
 import { CONFIG } from './config';
 
 /**
@@ -13,17 +15,32 @@ import { CONFIG } from './config';
 export type RowData = BaseRowData<typeof CONFIG.tableName>;
 
 /**
+ * 아이템 파일 구조
+ * 모든 모듈에서 재사용 가능한 범용 타입
+ */
+export type ItemFiles = {
+  thumbnail?: FileMetadata[];
+  attachments?: FileMetadata[];
+};
+
+/**
  * 프론트엔드 데이터 모델 (camelCase)
  * snake_case인 DB의 데이터를 프론트엔드에서 사용하기 위해 camelCase로 변환
  */
-export type ItemDTO = CamelCaseKeys<RowData>;
+export type ItemDTO = CamelCaseKeys<RowData> & {
+  files?: ItemFiles;
+};
 
 /**
  * 업데이트 항목 값 타입
  */
-export type UpdateItemValues = DbUpdate<typeof CONFIG.tableName>;
+export type UpdateItemValues = Omit<DbUpdate<typeof CONFIG.tableName>, 'files'> & {
+  files?: FilesInput;
+};
 
 /**
  * 생성 항목 값 타입
  */
-export type CreateItemValues = DbInsert<typeof CONFIG.tableName>;
+export type CreateItemValues = Omit<DbInsert<typeof CONFIG.tableName>, 'files'> & {
+  files?: FilesInput;
+};

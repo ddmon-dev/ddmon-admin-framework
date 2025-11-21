@@ -7,21 +7,45 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { FieldGroup } from '@/shared/ui/field';
-import { FormInput, FormEditor } from '@/shared/ui/form-fields';
+import { FormInput, FormEditor, FormFileUpload } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 
 import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
 import { type ItemDTO } from './types';
 
+const existingFileSchema = z.object({
+  type: z.literal('existing'),
+  url: z.string(),
+  originalName: z.string(),
+  markedForDeletion: z.boolean().optional(),
+});
+
+const newFileSchema = z.object({
+  type: z.literal('new'),
+  file: z.instanceof(File),
+});
+
+const fileUploadValueSchema = z.union([existingFileSchema, newFileSchema, z.null()]);
+
 const formSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요.'),
   content: z.string().min(1, '내용을 입력해주세요.'),
+  files: z
+    .object({
+      thumbnail: z.array(fileUploadValueSchema).optional(),
+      attachments: z.array(fileUploadValueSchema).optional(),
+    })
+    .optional(),
 });
 
 const formDefaultValues = {
   title: '',
   content: '',
+  files: {
+    thumbnail: [],
+    attachments: [],
+  },
 };
 
 interface ItemFormProps {
@@ -30,6 +54,7 @@ interface ItemFormProps {
 }
 
 export function ItemForm({ id, prevValues }: ItemFormProps) {
+  console.log('ItemForm', id, prevValues);
   const pathname = usePathname();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,13 +67,17 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   }, [prevValues]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { success, error } = id
-      ? await updateItem({ id, values, path: pathname })
-      : await createItem({ values, path: pathname });
+    try {
+      const { success, error } = id
+        ? await updateItem({ id, values, path: pathname })
+        : await createItem({ values, path: pathname });
 
-    if (!success) {
+      if (!success) {
+        throw new Error(error || '저장에 실패했습니다.');
+      }
+    } catch (error) {
       console.error(error);
-      return;
+      alert(error instanceof Error ? error.message : '저장에 실패했습니다.');
     }
   }
 
@@ -64,6 +93,22 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           control={form.control}
           name='content'
           label='내용'
+        />
+        <FormFileUpload
+          control={form.control}
+          name='files.thumbnail'
+          label='썸네일'
+          acceptPreset='images'
+          maxSize={5}
+          max={1}
+        />
+        <FormFileUpload
+          control={form.control}
+          name='files.attachments'
+          label='첨부 파일'
+          acceptPreset='documents'
+          maxSize={10}
+          max={5}
         />
 
         <LoadingButton

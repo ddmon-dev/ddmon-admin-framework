@@ -46,6 +46,7 @@ export type Database = {
           content: string | null
           created_at: string
           deleted: boolean
+          files: Json | null
           id: string
           modified_at: string
           order: number
@@ -58,6 +59,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           deleted?: boolean
+          files?: Json | null
           id?: string
           modified_at?: string
           order?: number
@@ -70,6 +72,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           deleted?: boolean
+          files?: Json | null
           id?: string
           modified_at?: string
           order?: number

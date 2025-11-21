@@ -60,7 +60,7 @@ export async function getList({
     // snake_case → camelCase 변환
     const list = rawData.map(row => transformSnakeToCamel(row));
 
-    return { success: true, data: { list, totalCount: count || 0 } };
+    return { success: true, data: { list: list as ItemDTO[], totalCount: count || 0 } };
   } catch (error) {
     console.error(error);
     return { success: false, error: '데이터를 불러오는 중 오류가 발생했습니다.' };
