@@ -100,9 +100,8 @@ export async function processFileUploads({
       });
     }
 
-    if (processedFiles.length > 0) {
-      result[category] = processedFiles;
-    }
+    // 빈 배열이어도 명시적으로 추가 (해당 카테고리에 파일이 없음을 표시)
+    result[category] = processedFiles;
   }
 
   return result;
