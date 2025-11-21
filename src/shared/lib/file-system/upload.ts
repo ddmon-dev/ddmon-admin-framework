@@ -42,13 +42,13 @@ export async function processFileUploads({
     );
 
     for (const existingFile of existingFiles) {
-      // 기존 파일 메타데이터 유지 (간소화된 형태)
+      // 기존 파일 메타데이터 유지
       processedFiles.push({
         url: existingFile.url,
         originalName: existingFile.originalName,
-        size: 0,
-        mimeType: '',
-        uploadedAt: new Date().toISOString(),
+        size: existingFile.size,
+        mimeType: existingFile.mimeType,
+        uploadedAt: existingFile.uploadedAt,
       });
     }
 
