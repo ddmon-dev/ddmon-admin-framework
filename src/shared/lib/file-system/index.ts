@@ -15,7 +15,7 @@ export type {
 export { processFileUploads } from './upload';
 
 // Storage (Server Actions)
-export { deleteFilesFromStorage } from '../supabase/storage';
+export { deleteFilesFromStorage, deleteFolderFromStorage } from '../supabase/storage';
 
 // Utils
 export { generateUniqueFileName, createFileMetadata, extractAllFileUrls } from './utils';
