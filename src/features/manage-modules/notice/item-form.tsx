@@ -57,14 +57,12 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       const { files, ...restValues } = values;
 
       // 1. 파일 업로드 처리 (새 파일 업로드 + 삭제 표시된 파일 삭제)
-      await processFileUploads(
-        CONFIG.tableName,
+      await processFileUploads({
+        entityType: CONFIG.tableName,
         entityId,
         files,
-        {
-          handleDeletion: !!id, // update 시에만 삭제 처리
-        }
-      );
+        handleDeletion: !!id, // update 시에만 삭제 처리
+      });
 
       // 2. DB 저장 (파일 정보 제외)
       const { success, error } = id
