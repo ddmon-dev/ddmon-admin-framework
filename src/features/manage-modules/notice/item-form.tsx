@@ -55,6 +55,11 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
     try {
       const { files, ...restValues } = values;
 
+      // 실제 파일이 있는지 확인
+      const hasFiles =
+        files &&
+        Object.values(files).some(fileList => Array.isArray(fileList) && fileList.length > 0);
+
       // 1. DB 먼저 저장 (DB가 UUID 생성)
       const { success, data, error } = id
         ? await updateItem({ id, values: restValues, path: pathname })
@@ -64,19 +69,21 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         throw new Error(error || '저장에 실패했습니다.');
       }
 
-      // 2. 파일 업로드 (반환된 ID 사용)
-      if (files && Object.keys(files).length > 0) {
+      // 2. 파일 업로드 (실제 파일이 있을 때만)
+      if (hasFiles) {
         const uploadedFiles = await processFileUploads({
           files: files as Record<string, FileUploadValue[]>,
           folder: `notices/${data.id}`,
         });
 
-        // 3. files JSONB 컬럼 업데이트
-        await updateItem({
-          id: data.id,
-          values: { files: uploadedFiles } as any,
-          path: pathname,
-        });
+        // 3. files JSONB 컬럼 업데이트 (업로드된 파일이 있을 때만)
+        if (Object.keys(uploadedFiles).length > 0) {
+          await updateItem({
+            id: data.id,
+            values: { files: uploadedFiles } as any,
+            path: pathname,
+          });
+        }
       }
     } catch (error) {
       console.error(error);
