@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { softDelete } from '../../_base/utils/db-operations';
-import { deleteEntityFiles } from '../../_base/utils/file-operations';
+import { deleteEntityFiles } from '@/shared/lib/file-system';
 import { CONFIG } from '../config';
 import { type DeleteResult } from '../../_base/types';
 import { type ItemDTO } from '../types';

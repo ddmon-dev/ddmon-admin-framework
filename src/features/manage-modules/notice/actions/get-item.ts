@@ -2,7 +2,7 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
-import { getEntityFiles } from '../../_base/utils/file-operations';
+import { getEntityFiles } from '@/shared/lib/file-system';
 import { CONFIG } from '../config';
 import { type GetItemResult } from '../../_base/types';
 import { type ItemDTO } from '../types';

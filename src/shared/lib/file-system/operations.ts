@@ -5,29 +5,19 @@ import {
   deleteFileFromStorage,
   createPresignedUploadUrl,
 } from '@/shared/lib/supabase/storage';
-import { generateUniqueFileName, type FileMetadata } from '@/shared/lib/supabase/file-helpers';
+import { generateUniqueFileName } from './helpers';
+import { type FileMetadata, type EntityType, type PresignedUploadInfo } from './types';
 
 /**
- * 엔티티 타입 (완전히 동적, 제약 없음)
+ * URL 배열을 Storage에서 삭제
  *
- * 새 도메인 추가 시 코드 수정 불필요
- * DB에서도 제약 없이 동적으로 관리
- *
- * @example
- * 'notices', 'products', 'posts', 'users', 'events', ...
+ * @param urls - 삭제할 파일 URL 배열
  */
-export type EntityType = string;
+export async function deleteFilesByUrls(urls: string[]): Promise<void> {
+  if (urls.length === 0) return;
 
-/**
- * Presigned URL 업로드 정보
- */
-export type PresignedUploadInfo = {
-  uploadUrl: string;
-  publicUrl: string;
-  filePath: string;
-  originalName: string;
-  category: string;
-};
+  await Promise.allSettled(urls.map(url => deleteFileFromStorage(url)));
+}
 
 /**
  * 엔티티의 파일 목록 조회

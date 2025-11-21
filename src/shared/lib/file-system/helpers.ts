@@ -1,13 +1,4 @@
-/**
- * 파일 메타데이터 타입
- */
-export type FileMetadata = {
-  url: string;
-  originalName: string;
-  size: number;
-  mimeType: string;
-  uploadedAt: string;
-};
+import { type FileMetadata } from './types';
 
 /**
  * 파일명 생성: UUID + 확장자만 (한글 완벽 지원)
