@@ -18,7 +18,7 @@ interface Params {
 export async function hardDeleteItem({ id, path }: Params): Promise<ActionResult<void>> {
   try {
     // 1. files 테이블 레코드 삭제 + Storage 파일 삭제
-    await hardDeleteEntityFiles('notices', id);
+    await hardDeleteEntityFiles(CONFIG.tableName, id);
 
     // 2. notices 테이블 레코드 삭제
     const supabase = createServerClient();

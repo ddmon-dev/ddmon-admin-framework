@@ -16,7 +16,7 @@ interface Params {
 export async function deleteItem({ id, path }: Params): Promise<DeleteResult<ItemDTO>> {
   try {
     // 1. files 테이블에서 파일 삭제
-    await deleteEntityFiles('notices', id);
+    await deleteEntityFiles(CONFIG.tableName, id);
 
     // 2. notices 테이블에서 soft delete 수행
     const { data, error } = await softDelete(CONFIG.tableName, id);
