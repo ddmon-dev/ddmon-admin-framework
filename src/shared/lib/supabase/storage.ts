@@ -137,6 +137,50 @@ export async function createPresignedUploadUrl(
   }
 }
 
+export type MultiPresignedUploadUrlResult = ActionResult<{
+  uploadUrl: string;
+  publicUrl: string;
+  filePath: string;
+  originalName: string;
+}[]>;
+
+/**
+ * 여러 파일에 대한 Presigned URL을 일괄 발급합니다.
+ *
+ * @param files - 파일 경로와 원본 파일명 배열
+ * @returns Presigned URL 배열
+ */
+export async function createMultiplePresignedUploadUrls(
+  files: Array<{ filePath: string; originalName: string }>
+): Promise<MultiPresignedUploadUrlResult> {
+  try {
+    const results = await Promise.all(
+      files.map(async ({ filePath, originalName }) => {
+        const result = await createPresignedUploadUrl(filePath);
+        if (!result.success) {
+          throw new Error(result.error || 'Presigned URL 발급 실패');
+        }
+        return {
+          ...result.data,
+          originalName,
+        };
+      })
+    );
+
+    return {
+      success: true,
+      data: results,
+    };
+  } catch (error) {
+    console.error('다중 Presigned URL 발급 실패:', error);
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : 'Presigned URL 발급에 실패했습니다.',
+    };
+  }
+}
+
 /**
  * Supabase Storage에서 여러 파일을 일괄 삭제합니다.
  *

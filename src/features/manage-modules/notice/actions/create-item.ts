@@ -34,6 +34,7 @@ export async function createItem({ values, path }: Params): Promise<CreateResult
       .single();
 
     if (error) {
+      console.error('Supabase error:', error);
       throw new Error(error.message);
     }
 
@@ -47,7 +48,8 @@ export async function createItem({ values, path }: Params): Promise<CreateResult
 
     return { success: true, data: createdItem as ItemDTO };
   } catch (error) {
-    console.error(error);
-    return { success: false, error: '데이터를 생성하는 중 오류가 발생했습니다.' };
+    console.error('Create item error:', error);
+    const errorMessage = error instanceof Error ? error.message : '데이터를 생성하는 중 오류가 발생했습니다.';
+    return { success: false, error: errorMessage };
   }
 }
