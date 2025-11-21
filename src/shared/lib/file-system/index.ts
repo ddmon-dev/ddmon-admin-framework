@@ -16,6 +16,7 @@ export {
   getEntityFiles,
   deleteEntityFiles,
   hardDeleteEntityFiles,
+  deleteSpecificFiles,
   getPresignedUploadUrls,
   saveUploadedFilesMetadata,
   deleteFilesByUrls,
@@ -26,3 +27,9 @@ export {
   generateUniqueFileName,
   createFileMetadata,
 } from './helpers';
+
+// Client (브라우저 전용)
+export {
+  uploadFileWithPresignedUrl,
+  uploadMultipleFilesWithPresignedUrl,
+} from './client';

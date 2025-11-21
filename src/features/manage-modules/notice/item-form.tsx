@@ -9,12 +9,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FieldGroup } from '@/shared/ui/field';
 import { FormInput, FormEditor, FormFileUpload } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
-import { uploadFileWithPresignedUrl } from '@/shared/lib/client-file-upload';
 import {
-  prepareFileUpload,
-  saveFileMetadata,
-  deleteEntityFiles,
-} from '@/shared/actions/file-actions';
+  uploadFileWithPresignedUrl,
+  getPresignedUploadUrls,
+  saveUploadedFilesMetadata,
+  deleteSpecificFiles,
+} from '@/shared/lib/file-system';
 
 import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
@@ -98,19 +98,14 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       // 2. 새 파일 업로드 (Presigned URL 방식)
       if (newFileInfos.length > 0) {
         // Presigned URL 발급
-        const { success: prepareSuccess, data: presignedInfos, error: prepareError } =
-          await prepareFileUpload(
-            'notices',
-            entityId,
-            newFileInfos.map(info => ({
-              originalName: info.originalName,
-              category: info.category,
-            }))
-          );
-
-        if (!prepareSuccess || !presignedInfos) {
-          throw new Error(prepareError || 'Presigned URL 발급 실패');
-        }
+        const presignedInfos = await getPresignedUploadUrls(
+          'notices',
+          entityId,
+          newFileInfos.map(info => ({
+            originalName: info.originalName,
+            category: info.category,
+          }))
+        );
 
         // 파일 업로드 (병렬)
         await Promise.all(
@@ -120,7 +115,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         );
 
         // 메타데이터 저장
-        const { success: saveSuccess, error: saveError } = await saveFileMetadata(
+        await saveUploadedFilesMetadata(
           'notices',
           entityId,
           presignedInfos.map((info, idx) => ({
@@ -131,10 +126,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
             category: info.category,
           }))
         );
-
-        if (!saveSuccess) {
-          throw new Error(saveError || '파일 메타데이터 저장 실패');
-        }
       }
 
       // 3. 삭제 표시된 파일 처리 (update 시)
@@ -151,15 +142,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         }
 
         if (deletedUrls.length > 0) {
-          const { success: deleteSuccess, error: deleteError } = await deleteEntityFiles(
-            'notices',
-            entityId,
-            deletedUrls
-          );
-
-          if (!deleteSuccess) {
-            throw new Error(deleteError || '파일 삭제 실패');
-          }
+          await deleteSpecificFiles('notices', entityId, deletedUrls);
         }
       }
 
