@@ -290,6 +290,376 @@ export default nextConfig;
 - CSS Variables 기반 테마
 - `globals.css`에서 @import로 설정
 
+## manage-modules Feature (CRUD 모듈 시스템)
+
+### 개요
+
+`manage-modules`는 데이터 관리 기능(CRUD)을 위한 재사용 가능한 모듈 시스템입니다. 공통 인프라(`_base`)와 구체적 구현(예: `notice`)으로 분리되어 있으며, 새로운 관리 모듈을 빠르게 추가할 수 있는 구조입니다.
+
+**위치**: `/src/features/manage-modules/`
+
+### 아키텍처
+
+```
+src/features/manage-modules/
+├── _base/                    # 공통 인프라 레이어
+│   ├── components/           # 재사용 가능한 공통 컴포넌트
+│   │   ├── manage-module-container.tsx
+│   │   ├── manage-sheet.tsx          # Context & Sheet UI
+│   │   ├── create-button.tsx
+│   │   ├── modify-button.tsx
+│   │   ├── soft-delete-button.tsx
+│   │   └── hard-delete-button.tsx
+│   ├── utils/
+│   │   └── db-operations.ts          # DB 유틸리티 (Soft/Hard Delete)
+│   ├── types.ts                       # 공통 타입 정의
+│   └── config.ts                      # 기본 설정
+│
+└── notice/                   # 구체적 구현 (공지사항 모듈)
+    ├── actions/              # Server Actions
+    │   ├── get-list.ts
+    │   ├── get-item.ts
+    │   ├── create-item.ts
+    │   ├── update-item.ts
+    │   └── delete-item.ts
+    ├── list.tsx              # 목록 컴포넌트
+    ├── list-columns.tsx      # 테이블 컬럼 정의
+    ├── list-filters.tsx      # 필터 UI
+    ├── item-form.tsx         # 항목 폼 (생성/수정)
+    ├── item-sheet.tsx        # Sheet 컨테이너
+    ├── delete-item-button.tsx
+    ├── config.ts             # 모듈별 설정
+    ├── types.ts              # 모듈별 타입
+    └── index.ts              # 공개 API
+```
+
+### 핵심 패턴
+
+#### 1. Context 기반 상태 관리
+
+`ManageSheetContext`를 통해 시트 상태를 전역으로 관리합니다.
+
+```typescript
+// _base/components/manage-sheet.tsx
+type ManageSheetData = {
+  id?: string;
+  mode: 'view' | 'modify' | 'create';
+};
+
+// 사용 예시
+const { openManageSheet, closeManageSheet } = useManageSheet();
+openManageSheet({ id: '123', mode: 'modify' });
+```
+
+**장점**:
+- Props Drilling 제거
+- 어디서든 시트 열기/닫기 가능
+- 명확한 상태 관리
+
+#### 2. Delete 이원화
+
+데이터 삭제를 Soft Delete와 Hard Delete로 분리하여 관리합니다.
+
+```typescript
+// Soft Delete: deleted 컬럼만 업데이트 (복구 가능)
+<SoftDeleteButton onDelete={handleSoftDelete} />
+
+// Hard Delete: 실제 데이터 삭제 (복구 불가)
+<HardDeleteButton onDelete={handleHardDelete} />
+```
+
+**구현**:
+```typescript
+// _base/utils/db-operations.ts
+export async function softDelete(tableName: TableName, id: string) {
+  const { data, error } = await supabase
+    .from(tableName)
+    .update({ deleted: true })
+    .eq('id', id)
+    .select()
+    .single();
+  return { data, error };
+}
+```
+
+#### 3. Server Actions 패턴
+
+모든 DB 작업은 Server Actions로 처리하며, 일관된 응답 형식을 유지합니다.
+
+```typescript
+// 응답 형식
+type ActionResult<T> = {
+  success: boolean;
+  data?: T;
+  error?: string;
+};
+
+// 구현 예시
+export async function createItem({
+  values,
+  path
+}: {
+  values: CreateItemValues;
+  path?: string;
+}): Promise<ActionResult<ItemDTO>> {
+  try {
+    // 1. DB 작업
+    const { data, error } = await supabase
+      .from(tableName)
+      .insert(transformCamelToSnake(values))
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    // 2. 경로 재검증
+    if (path) revalidatePath(path);
+
+    // 3. 타입 변환 (snake_case → camelCase)
+    return { success: true, data: transformSnakeToCamel(data) };
+  } catch (error) {
+    return { success: false, error: '생성 실패' };
+  }
+}
+```
+
+**주요 특징**:
+- snake_case (DB) ↔ camelCase (Frontend) 자동 변환
+- 선택적 경로 재검증 (`revalidatePath`)
+- 타입 안전성 보장
+
+#### 4. 에러 처리 패턴
+
+**try-catch-finally** 구조로 안전하게 에러를 처리합니다.
+
+```typescript
+// 버튼 컴포넌트
+const handleClick = async () => {
+  setIsLoading(true);
+  try {
+    await onDelete();
+    alert('삭제되었습니다.');
+  } catch (error) {
+    console.error(error);
+    alert('삭제 실패');
+  } finally {
+    setIsLoading(false); // 항상 실행
+  }
+};
+
+// Server Action 호출 컴포넌트
+const handleDelete = async () => {
+  const { success, error } = await deleteItem({ id, path });
+
+  if (!success) {
+    throw new Error(error || '삭제 실패'); // 에러 전파
+  }
+};
+```
+
+**흐름**:
+1. Server Action에서 `success: false` 반환
+2. 호출 컴포넌트에서 `throw Error`
+3. 버튼 컴포넌트의 `catch` 블록에서 처리
+4. `finally` 블록에서 항상 로딩 상태 해제
+
+### 데이터 흐름
+
+#### 생성 (Create)
+```
+CreateButton 클릭
+  ↓
+openManageSheet({ mode: 'create' })
+  ↓
+ItemSheet 렌더 (mode === 'create')
+  ↓
+ItemForm 제출
+  ↓
+createItem({ values, path })
+  ↓
+Supabase INSERT
+  ↓
+revalidatePath(path)
+  ↓
+성공 메시지 표시
+```
+
+#### 수정 (Update)
+```
+ModifyButton 클릭
+  ↓
+openManageSheet({ id, mode: 'modify' })
+  ↓
+ItemSheet useEffect → getItem({ id })
+  ↓
+ItemForm.reset(prevValues)
+  ↓
+ItemForm 제출
+  ↓
+updateItem({ id, values, path })
+  ↓
+Supabase UPDATE
+  ↓
+revalidatePath(path)
+  ↓
+성공 메시지 표시
+```
+
+#### 삭제 (Delete)
+```
+DeleteItemButton 클릭
+  ↓
+SoftDeleteButton.handleClick
+  ↓
+deleteItem({ id, path })
+  ↓
+softDelete(tableName, id)
+  ↓
+Supabase UPDATE deleted = true
+  ↓
+revalidatePath(path)
+  ↓
+성공 메시지 표시
+```
+
+### 새로운 모듈 추가 방법
+
+새로운 관리 모듈(예: `products`)을 추가하는 단계입니다.
+
+#### 1. 디렉토리 생성
+```bash
+mkdir -p src/features/manage-modules/products/actions
+```
+
+#### 2. 설정 파일 작성
+
+**config.ts**
+```typescript
+export const PRODUCT_CONFIG = {
+  tableName: 'products',
+  categoryOptions: [
+    { label: '전자제품', value: 'electronics' },
+    { label: '의류', value: 'clothing' },
+  ],
+} as const;
+```
+
+**types.ts**
+```typescript
+import type { BaseRowData, CamelCaseKeys, DbInsert, DbUpdate } from '@/types/supabase/helpers';
+
+export type RowData = BaseRowData<'products'>;
+export type ItemDTO = CamelCaseKeys<RowData>;
+export type CreateItemValues = DbInsert<'products'>;
+export type UpdateItemValues = DbUpdate<'products'>;
+```
+
+#### 3. Server Actions 구현
+
+`notice` 모듈의 Server Actions를 복사하고 다음을 수정:
+- `tableName`: `'products'`로 변경
+- 필터링 로직: 필요한 컬럼에 맞게 수정
+
+```typescript
+// actions/get-list.ts
+const { data, error } = await supabase
+  .from('products')
+  .select('*', { count: 'exact' })
+  .eq('deleted', false)
+  // 필터 추가
+  .range(start, end)
+  .order('created_at', { ascending: false });
+```
+
+#### 4. 컴포넌트 작성
+
+- `list.tsx`: 데이터 테이블
+- `list-columns.tsx`: 컬럼 정의
+- `list-filters.tsx`: 필터 UI
+- `item-form.tsx`: 폼 (Zod 스키마 수정)
+- `item-sheet.tsx`: Sheet 컨테이너
+- `delete-item-button.tsx`: 삭제 버튼
+
+#### 5. index.ts 작성
+
+```typescript
+export { List as ProductList } from './list';
+export { ItemSheet as ProductItemSheet } from './item-sheet';
+export { DeleteItemButton as DeleteProductButton } from './delete-item-button';
+```
+
+#### 6. 페이지 통합
+
+```typescript
+// app/(protected)/products/page.tsx
+import { getList } from '@/features/manage-modules/products/actions/get-list';
+import { ProductList, ProductItemSheet } from '@/features/manage-modules/products';
+
+export default async function ProductsPage() {
+  const { list, totalCount } = await getList({});
+
+  return (
+    <ManageModuleContainer>
+      <ProductList list={list} totalCount={totalCount} />
+      <ProductItemSheet />
+    </ManageModuleContainer>
+  );
+}
+```
+
+### 베스트 프랙티스
+
+#### 1. 타입 안전성
+- Supabase 자동 생성 타입 활용
+- Zod 스키마로 런타임 검증
+- snake_case ↔ camelCase 자동 변환
+
+#### 2. 에러 처리
+- try-catch-finally로 안전하게 처리
+- 명확한 에러 메시지 제공
+- 로딩 상태 중복 클릭 방지
+
+#### 3. 상태 관리
+- Context로 시트 상태 관리
+- usePathname()으로 경로 전달
+- revalidatePath로 ISR 캐시 갱신
+
+#### 4. 코드 재사용
+- _base 컴포넌트 최대한 활용
+- 공통 패턴 유지
+- 중복 코드 최소화
+
+#### 5. 성능 최적화
+- React Hook Form으로 최적화된 폼 처리
+- useEffect 의존성 배열 최적화
+- 불필요한 리렌더링 방지
+
+### 주의사항
+
+1. **useEffect 의존성 배열**: `form` 객체는 제외하여 무한 루프 방지
+   ```typescript
+   useEffect(() => {
+     form.reset(prevValues ?? initialValues);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [prevValues]);
+   ```
+
+2. **pathname 전달**: Server Action에서 `headers()`로 가져올 수 없으므로 파라미터로 전달
+   ```typescript
+   const pathname = usePathname();
+   await createItem({ values, path: pathname });
+   ```
+
+3. **deleted 필터링**: 목록 조회 시 항상 `deleted = false` 조건 추가
+   ```typescript
+   .eq('deleted', false)
+   ```
+
+4. **타입 변환**: DB 응답은 항상 snake_case → camelCase 변환
+   ```typescript
+   return { success: true, data: transformSnakeToCamel(data) };
+   ```
+
 ## 새로운 기능 추가 시
 
 ### 1. features/ 레이어에 기능 추가
