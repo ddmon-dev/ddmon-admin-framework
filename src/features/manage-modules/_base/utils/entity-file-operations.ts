@@ -223,14 +223,14 @@ export async function updateEntityFiles(
 }
 
 /**
- * 엔티티의 모든 파일 삭제
+ * 엔티티의 모든 파일 Soft Delete (복구 가능)
  *
  * @param entityType - 엔티티 타입
  * @param entityId - 엔티티 ID
  * @returns void
  *
  * @example
- * await deleteEntityFiles('notice', noticeId);
+ * await deleteEntityFiles('notices', noticeId);
  */
 export async function deleteEntityFiles(
   entityType: EntityType,
@@ -238,24 +238,48 @@ export async function deleteEntityFiles(
 ): Promise<void> {
   const supabase = createServerClient();
 
-  // 1. 파일 목록 조회
+  // DB에서 soft delete (Storage 파일은 유지)
+  await supabase
+    .from('files')
+    .update({ deleted: true })
+    .eq('entity_type', entityType)
+    .eq('entity_id', entityId)
+    .eq('deleted', false);
+}
+
+/**
+ * 엔티티의 모든 파일 Hard Delete (영구 삭제, 복구 불가)
+ *
+ * @param entityType - 엔티티 타입
+ * @param entityId - 엔티티 ID
+ * @returns void
+ *
+ * @example
+ * await hardDeleteEntityFiles('notices', noticeId);
+ */
+export async function hardDeleteEntityFiles(
+  entityType: EntityType,
+  entityId: string
+): Promise<void> {
+  const supabase = createServerClient();
+
+  // 1. 파일 목록 조회 (deleted = true인 파일 포함)
   const { data: files } = await supabase
     .from('files')
     .select('url')
     .eq('entity_type', entityType)
-    .eq('entity_id', entityId)
-    .eq('deleted', false);
+    .eq('entity_id', entityId);
 
-  if (!files || files.length === 0) return;
+  if (files && files.length > 0) {
+    // 2. Storage에서 삭제
+    const urls = files.map((f: any) => f.url);
+    await Promise.allSettled(urls.map((url: string) => deleteFileFromStorage(url)));
+  }
 
-  // 2. Storage에서 삭제
-  const urls = files.map((f: any) => f.url);
-  await Promise.allSettled(urls.map((url: string) => deleteFileFromStorage(url)));
-
-  // 3. DB에서 soft delete
+  // 3. DB에서 실제 삭제 (DELETE)
   await supabase
     .from('files')
-    .update({ deleted: true })
+    .delete()
     .eq('entity_type', entityType)
     .eq('entity_id', entityId);
 }

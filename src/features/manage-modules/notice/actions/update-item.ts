@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
-import { updateEntityFiles } from '../../_base/utils/entity-file-operations';
 import { CONFIG } from '../config';
 import { type ItemDTO, type UpdateItemValues } from '../types';
 import { type UpdateResult } from '../../_base/types';
@@ -22,13 +21,10 @@ export async function updateItem({ id, values, path }: Params): Promise<UpdateRe
 
     const supabase = createServerClient();
 
-    // files 필드 분리
-    const { files, ...restValues } = values;
+    // DB 저장용 값 준비 (파일은 클라이언트에서 이미 처리 완료)
+    const snakedValues = transformCamelToSnake(values);
 
-    // DB 저장용 값 준비 (files 제외)
-    const snakedValues = transformCamelToSnake(restValues);
-
-    // 1. notices 테이블 업데이트
+    // notices 테이블 업데이트
     const { data, error } = await supabase
       .from(CONFIG.tableName)
       .update(snakedValues as any)
@@ -40,10 +36,7 @@ export async function updateItem({ id, values, path }: Params): Promise<UpdateRe
       throw new Error(error.message);
     }
 
-    // 2. files 테이블 업데이트 (새 파일 추가 + 삭제 표시된 파일 제거)
-    await updateEntityFiles('notices', id, files);
-
-    // 3. 패스 재검증
+    // 패스 재검증
     if (path) {
       revalidatePath(path);
     }
