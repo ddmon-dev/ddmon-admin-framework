@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { hardDeleteEntityFiles } from '@/shared/lib/file-system';
+import { extractAllFileUrls, deleteFilesFromStorage } from '@/shared/lib/file-system';
 import { CONFIG } from '../config';
 import { type ActionResult } from '@/shared/types/server-actions';
 
@@ -13,22 +13,34 @@ interface Params {
 
 /**
  * 게시글 영구 삭제 (복구 불가능)
+ * DB에서 완전히 삭제하고 Storage 파일도 삭제
  * 휴지통 화면에서 사용
  */
 export async function hardDeleteItem({ id, path }: Params): Promise<ActionResult<void>> {
   try {
-    // 1. files 테이블 레코드 삭제 + Storage 파일 삭제
-    await hardDeleteEntityFiles(CONFIG.tableName, id);
-
-    // 2. notices 테이블 레코드 삭제
     const supabase = createServerClient();
+
+    // 1. files 조회 (Storage 삭제용)
+    const { data: itemData } = await supabase
+      .from(CONFIG.tableName)
+      .select('files')
+      .eq('id', id)
+      .single();
+
+    // 2. Storage 파일 삭제
+    const fileUrls = extractAllFileUrls((itemData as any)?.files);
+    if (fileUrls.length > 0) {
+      await deleteFilesFromStorage(fileUrls);
+    }
+
+    // 3. DB에서 완전 삭제
     const { error } = await supabase.from(CONFIG.tableName).delete().eq('id', id);
 
     if (error) {
       throw new Error(error.message);
     }
 
-    // 3. 패스 재검증
+    // 4. 패스 재검증
     if (path) {
       revalidatePath(path);
     }

@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { softDelete } from '../../_base/utils/db-operations';
-import { deleteEntityFiles } from '@/shared/lib/file-system';
 import { CONFIG } from '../config';
 import { type DeleteResult } from '../../_base/types';
 import { type ItemDTO } from '../types';
@@ -13,19 +12,20 @@ interface Params {
   path?: string;
 }
 
+/**
+ * Soft Delete: deleted = true로 설정
+ * Storage 파일은 유지 (복구 가능)
+ */
 export async function deleteItem({ id, path }: Params): Promise<DeleteResult<ItemDTO>> {
   try {
-    // 1. files 테이블에서 파일 삭제
-    await deleteEntityFiles(CONFIG.tableName, id);
-
-    // 2. notices 테이블에서 soft delete 수행
+    // notices 테이블에서 soft delete 수행
     const { data, error } = await softDelete(CONFIG.tableName, id);
 
     if (error) {
       return { success: false, error };
     }
 
-    // 3. 패스 재검증
+    // 패스 재검증
     if (path) {
       revalidatePath(path);
     }

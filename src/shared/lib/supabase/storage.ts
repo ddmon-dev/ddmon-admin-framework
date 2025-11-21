@@ -138,6 +138,46 @@ export async function createPresignedUploadUrl(
 }
 
 /**
+ * Supabase Storage에서 여러 파일을 일괄 삭제합니다.
+ *
+ * @param urls - 삭제할 파일들의 공개 URL 배열
+ * @returns 삭제 결과
+ */
+export async function deleteFilesFromStorage(urls: string[]): Promise<FileDeleteResult> {
+  if (urls.length === 0) {
+    return { success: true, data: undefined };
+  }
+
+  try {
+    const supabase = createServerClient();
+
+    // URL에서 파일 경로 추출
+    const filePaths = urls.map(url => extractFilePathFromUrl(url)).filter(Boolean);
+
+    if (filePaths.length === 0) {
+      return { success: true, data: undefined };
+    }
+
+    const { error } = await supabase.storage.from(BUCKET_NAME).remove(filePaths);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return {
+      success: true,
+      data: undefined,
+    };
+  } catch (error) {
+    console.error('파일 일괄 삭제 실패:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : '파일 삭제에 실패했습니다.',
+    };
+  }
+}
+
+/**
  * 공개 URL에서 파일 경로를 추출합니다.
  *
  * @param url - Supabase Storage 공개 URL

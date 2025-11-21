@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
+import { extractAllFileUrls, deleteFilesFromStorage } from '@/shared/lib/file-system';
 import { CONFIG } from '../config';
 import { type ItemDTO, type UpdateItemValues } from '../types';
 import { type UpdateResult } from '../../_base/types';
@@ -21,10 +22,17 @@ export async function updateItem({ id, values, path }: Params): Promise<UpdateRe
 
     const supabase = createServerClient();
 
-    // DB 저장용 값 준비 (파일은 클라이언트에서 이미 처리 완료)
+    // 1. 기존 files 조회 (삭제된 파일 확인용)
+    const { data: oldData } = await supabase
+      .from(CONFIG.tableName)
+      .select('files')
+      .eq('id', id)
+      .single();
+
+    // 2. DB 저장용 값 준비
     const snakedValues = transformCamelToSnake(values);
 
-    // notices 테이블 업데이트
+    // 3. notices 테이블 업데이트
     const { data, error } = await supabase
       .from(CONFIG.tableName)
       .update(snakedValues as any)
@@ -36,7 +44,16 @@ export async function updateItem({ id, values, path }: Params): Promise<UpdateRe
       throw new Error(error.message);
     }
 
-    // 패스 재검증
+    // 4. 삭제된 파일 확인 및 Storage 삭제
+    const oldUrls = extractAllFileUrls((oldData as any)?.files);
+    const newUrls = extractAllFileUrls((values as any).files);
+    const deletedUrls = oldUrls.filter(url => !newUrls.includes(url));
+
+    if (deletedUrls.length > 0) {
+      await deleteFilesFromStorage(deletedUrls);
+    }
+
+    // 5. 패스 재검증
     if (path) {
       revalidatePath(path);
     }
