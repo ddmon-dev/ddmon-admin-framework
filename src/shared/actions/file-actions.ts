@@ -1,12 +1,12 @@
 'use server';
 
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { deleteFilesByUrls } from '@/shared/lib/supabase/file-processing';
 import {
+  deleteFilesByUrls,
   getPresignedUploadUrls as getPresignedUrls,
   saveUploadedFilesMetadata as saveMetadata,
   type PresignedUploadInfo,
-} from '@/features/manage-modules/_base/utils/file-operations';
+} from '@/shared/lib/file-system';
 import { type ActionResult } from '@/shared/types/server-actions';
 
 /**

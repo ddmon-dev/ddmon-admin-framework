@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { hardDeleteEntityFiles } from '../../_base/utils/file-operations';
+import { hardDeleteEntityFiles } from '@/shared/lib/file-system';
 import { CONFIG } from '../config';
 import { type ActionResult } from '@/shared/types/server-actions';
 

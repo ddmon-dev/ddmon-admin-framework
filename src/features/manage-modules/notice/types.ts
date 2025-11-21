@@ -4,7 +4,7 @@ import {
   type DbInsert,
 } from '@/shared/lib/supabase/db-helpers';
 import { type CamelCaseKeys } from '@/shared/lib/utils/objects';
-import { type FileMetadata } from '@/shared/lib/supabase/file-helpers';
+import { type FileMetadata } from '@/shared/lib/file-system';
 import { CONFIG } from './config';
 
 /**
