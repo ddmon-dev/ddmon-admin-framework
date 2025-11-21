@@ -5,7 +5,7 @@ import {
   deleteFileFromStorage,
   createPresignedUploadUrl,
 } from '@/shared/lib/supabase/storage';
-import { generateUniqueFileName } from './helpers';
+import { generateUniqueFileName } from './utils';
 import { type FileMetadata, type EntityType, type PresignedUploadInfo } from './types';
 
 /**
