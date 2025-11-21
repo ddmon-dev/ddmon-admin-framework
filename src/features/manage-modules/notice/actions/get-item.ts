@@ -31,7 +31,7 @@ export async function getItem({ id }: Params): Promise<GetItemResult<ItemDTO>> {
     const item = transformSnakeToCamel(rawData);
 
     // 2. files 테이블에서 파일 데이터 조회
-    const files = await getEntityFiles('notices', id);
+    const files = await getEntityFiles(CONFIG.tableName, id);
 
     return { success: true, data: { ...item, files } as ItemDTO };
   } catch (error) {
