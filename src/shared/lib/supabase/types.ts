@@ -86,11 +86,12 @@ export type Database = {
       }
       notices: {
         Row: {
-          author: string | null
+          author: string
           category: string
           content: string | null
           created_at: string
           deleted: boolean
+          files: Json | null
           id: string
           modified_at: string
           order: number
@@ -98,11 +99,12 @@ export type Database = {
           view_count: number
         }
         Insert: {
-          author?: string | null
+          author: string
           category?: string
           content?: string | null
           created_at?: string
           deleted?: boolean
+          files?: Json | null
           id?: string
           modified_at?: string
           order?: number
@@ -110,11 +112,12 @@ export type Database = {
           view_count?: number
         }
         Update: {
-          author?: string | null
+          author?: string
           category?: string
           content?: string | null
           created_at?: string
           deleted?: boolean
+          files?: Json | null
           id?: string
           modified_at?: string
           order?: number

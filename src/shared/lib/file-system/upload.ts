@@ -1,6 +1,7 @@
 'use server';
 
 import { uploadFileToStorage } from '../supabase/storage';
+import { generateUniqueFileName } from './utils';
 import { type FileMetadata, type FileUploadValue } from './types';
 
 /**
@@ -60,10 +61,8 @@ export async function processFileUploads({
       if (fileValue.type === 'new') {
         const file = fileValue.file;
 
-        // 파일명 생성 (timestamp-random-원본파일명)
-        const timestamp = Date.now();
-        const random = Math.random().toString(36).substring(2, 8);
-        const fileName = `${timestamp}-${random}-${file.name}`;
+        // 파일명 생성 (timestamp-random.확장자만)
+        const fileName = generateUniqueFileName(file.name);
         const filePath = `${folder}/${fileName}`;
 
         // Storage 업로드
