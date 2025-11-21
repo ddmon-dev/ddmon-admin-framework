@@ -41,7 +41,4 @@ export {
 } from './schemas';
 
 // Upload Helper (클라이언트 전용)
-export {
-  processFileUploads,
-  type UploadFilesOptions,
-} from './upload-helper';
+export { processFileUploads } from './upload-helper';
