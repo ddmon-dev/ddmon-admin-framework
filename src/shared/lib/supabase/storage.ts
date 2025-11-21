@@ -178,6 +178,53 @@ export async function deleteFilesFromStorage(urls: string[]): Promise<FileDelete
 }
 
 /**
+ * Supabase Storage에서 폴더를 재귀적으로 삭제합니다.
+ *
+ * @param folderPath - 삭제할 폴더 경로 (예: 'notices/uuid')
+ * @returns 삭제 결과
+ */
+export async function deleteFolderFromStorage(folderPath: string): Promise<FileDeleteResult> {
+  try {
+    const supabase = createServerClient();
+
+    // 폴더 내 모든 파일 목록 조회
+    const { data: fileList, error: listError } = await supabase.storage
+      .from(BUCKET_NAME)
+      .list(folderPath);
+
+    if (listError) {
+      throw new Error(listError.message);
+    }
+
+    // 파일이 없으면 종료
+    if (!fileList || fileList.length === 0) {
+      return { success: true, data: undefined };
+    }
+
+    // 모든 파일 경로 생성
+    const filePaths = fileList.map(file => `${folderPath}/${file.name}`);
+
+    // 모든 파일 삭제
+    const { error: removeError } = await supabase.storage.from(BUCKET_NAME).remove(filePaths);
+
+    if (removeError) {
+      throw new Error(removeError.message);
+    }
+
+    return {
+      success: true,
+      data: undefined,
+    };
+  } catch (error) {
+    console.error('폴더 삭제 실패:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : '폴더 삭제에 실패했습니다.',
+    };
+  }
+}
+
+/**
  * 공개 URL에서 파일 경로를 추출합니다.
  *
  * @param url - Supabase Storage 공개 URL
