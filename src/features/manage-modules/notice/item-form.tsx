@@ -12,9 +12,9 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 import {
   processFileUploads,
   createFilesSchema,
+  type FileUploadValue,
 } from '@/shared/lib/file-system';
 
-import { CONFIG } from './config';
 import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
 import { type ItemDTO } from './types';
@@ -66,11 +66,16 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
       // 2. 파일 업로드 (반환된 ID 사용)
       if (files && Object.keys(files).length > 0) {
-        await processFileUploads({
-          tableName: CONFIG.tableName,
-          parentId: data.id,
-          files,
-          handleDeletion: !!id, // update 시에만 삭제 처리
+        const uploadedFiles = await processFileUploads({
+          files: files as Record<string, FileUploadValue[]>,
+          folder: `notices/${data.id}`,
+        });
+
+        // 3. files JSONB 컬럼 업데이트
+        await updateItem({
+          id: data.id,
+          values: { files: uploadedFiles } as any,
+          path: pathname,
         });
       }
     } catch (error) {

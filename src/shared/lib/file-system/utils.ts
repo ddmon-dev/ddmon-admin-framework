@@ -38,3 +38,27 @@ export function createFileMetadata(file: File, url: string): FileMetadata {
     uploadedAt: new Date().toISOString(),
   };
 }
+
+/**
+ * JSONB files 객체에서 모든 파일 URL을 추출합니다.
+ *
+ * @param files - JSONB files 객체 (예: { thumbnail: [...], attachments: [...] })
+ * @returns 모든 파일 URL 배열
+ *
+ * @example
+ * const urls = extractAllFileUrls({ thumbnail: [{ url: '...' }], attachments: [{ url: '...' }] });
+ * // 결과: ['url1', 'url2', 'url3']
+ */
+export function extractAllFileUrls(files?: Record<string, FileMetadata[]>): string[] {
+  if (!files) return [];
+
+  const urls: string[] = [];
+
+  for (const fileList of Object.values(files)) {
+    if (Array.isArray(fileList)) {
+      urls.push(...fileList.map(file => file.url));
+    }
+  }
+
+  return urls;
+}
