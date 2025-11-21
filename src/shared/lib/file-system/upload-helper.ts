@@ -43,7 +43,7 @@ export type UploadFilesOptions = {
 export async function processFileUploads(
   entityType: EntityType,
   entityId: string,
-  filesInput?: Record<string, FileUploadValue[] | undefined>,
+  filesInput?: Record<string, any>,
   options: UploadFilesOptions = {}
 ): Promise<void> {
   if (!filesInput) return;

@@ -12,7 +12,6 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 import {
   processFileUploads,
   createFilesSchema,
-  type FileUploadValue,
 } from '@/shared/lib/file-system';
 
 import { CONFIG } from './config';
@@ -61,7 +60,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       await processFileUploads(
         CONFIG.tableName,
         entityId,
-        files as Record<string, FileUploadValue[] | undefined>,
+        files,
         {
           handleDeletion: !!id, // update 시에만 삭제 처리
         }
