@@ -13,7 +13,6 @@ import {
   processFileUploads,
   createFilesSchema,
 } from '@/shared/lib/file-system';
-import { hardDelete } from '@/features/manage-modules/_base/utils/db-operations';
 
 import { CONFIG } from './config';
 import { createItem } from './actions/create-item';
@@ -67,20 +66,12 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
       // 2. 파일 업로드 (반환된 ID 사용)
       if (files && Object.keys(files).length > 0) {
-        try {
-          await processFileUploads({
-            tableName: CONFIG.tableName,
-            parentId: data.id,
-            files,
-            handleDeletion: !!id, // update 시에만 삭제 처리
-          });
-        } catch (fileError) {
-          // 생성 시 파일 업로드 실패 → 레코드 삭제 (롤백)
-          if (!id) {
-            await hardDelete(CONFIG.tableName, data.id);
-          }
-          throw fileError;
-        }
+        await processFileUploads({
+          tableName: CONFIG.tableName,
+          parentId: data.id,
+          files,
+          handleDeletion: !!id, // update 시에만 삭제 처리
+        });
       }
     } catch (error) {
       console.error(error);
