@@ -54,16 +54,17 @@ export async function processFileUploads(
   const newFileInfos: Array<{ file: File; category: string; originalName: string }> = [];
 
   for (const [category, fileList] of Object.entries(filesInput)) {
-    if (fileList) {
-      for (const fileValue of fileList) {
-        if (fileValue?.type === 'new') {
-          newFileInfos.push({
-            file: fileValue.file,
-            category,
-            originalName: fileValue.file.name,
-          });
-        }
-      }
+    if (!fileList) continue;
+
+    for (const fileValue of fileList) {
+      if (!fileValue) continue;
+      if (fileValue?.type === 'existing') continue;
+
+      newFileInfos.push({
+        file: fileValue.file,
+        category,
+        originalName: fileValue.file.name,
+      });
     }
   }
 
@@ -105,11 +106,10 @@ export async function processFileUploads(
     const deletedUrls: string[] = [];
 
     for (const fileList of Object.values(filesInput)) {
-      if (fileList) {
-        for (const fileValue of fileList) {
-          if (fileValue?.type === 'existing' && fileValue.markedForDeletion) {
-            deletedUrls.push(fileValue.url);
-          }
+      if (!fileList) continue;
+      for (const fileValue of fileList) {
+        if (fileValue?.type === 'existing' && fileValue.markedForDeletion) {
+          deletedUrls.push(fileValue.url);
         }
       }
     }
