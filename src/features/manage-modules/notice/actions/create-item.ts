@@ -3,10 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
-import {
-  createEntityFiles,
-  deleteEntityFiles,
-} from '../../_base/utils/entity-file-operations';
+import { deleteEntityFiles } from '../../_base/utils/entity-file-operations';
 import { CONFIG } from '../config';
 import { type ItemDTO, type CreateItemValues } from '../types';
 import { type CreateResult } from '../../_base/types';
@@ -22,18 +19,15 @@ export async function createItem({ values, path }: Params): Promise<CreateResult
   try {
     const supabase = createServerClient();
 
-    // files 필드 분리
-    const { files, ...restValues } = values;
-
-    // DB 저장용 값 준비 (files 제외)
+    // DB 저장용 값 준비 (파일은 클라이언트에서 이미 업로드 완료)
     const insertValues = {
-      ...restValues,
+      ...values,
       id: noticeId,
     };
 
     const snakedValues = transformCamelToSnake(insertValues);
 
-    // 1. notices 테이블에 레코드 생성
+    // notices 테이블에 레코드 생성
     const { data, error } = await supabase
       .from(CONFIG.tableName)
       .insert(snakedValues as any)
@@ -44,10 +38,7 @@ export async function createItem({ values, path }: Params): Promise<CreateResult
       throw new Error(error.message);
     }
 
-    // 2. files 테이블에 파일 저장
-    await createEntityFiles('notices', noticeId, files);
-
-    // 3. 패스 재검증
+    // 패스 재검증
     if (path) {
       revalidatePath(path);
     }

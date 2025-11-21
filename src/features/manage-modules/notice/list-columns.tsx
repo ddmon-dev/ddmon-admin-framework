@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ModifyButton } from '../_base/components/modify-button';
-import { DeleteItemButton } from './delete-item-button';
+import { DeleteItemButton, HardDeleteItemButton } from './delete-item-button';
 import { type ItemDTO } from './types';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
@@ -53,6 +53,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
         <nav className='flex gap-2'>
           <ModifyButton itemId={id} />
           <DeleteItemButton itemId={id} />
+          <HardDeleteItemButton itemId={id} />
         </nav>
       );
     },
