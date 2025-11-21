@@ -6,7 +6,7 @@ import {
   createPresignedUploadUrl,
 } from '@/shared/lib/supabase/storage';
 import { generateUniqueFileName } from './utils';
-import { type FileMetadata, type EntityType, type PresignedUploadInfo } from './types';
+import { type FileMetadata, type TableName, type PresignedUploadInfo } from './types';
 
 /**
  * URL 배열을 Storage에서 삭제
@@ -20,11 +20,11 @@ export async function deleteFilesByUrls(urls: string[]): Promise<void> {
 }
 
 /**
- * 엔티티의 특정 파일들을 Hard Delete (영구 삭제)
+ * 레코드의 특정 파일들을 Hard Delete (영구 삭제)
  * 게시글 수정 시 사용자가 명시적으로 삭제한 파일에 사용
  *
- * @param entityType - 엔티티 타입
- * @param entityId - 엔티티 ID
+ * @param tableName - 테이블 이름
+ * @param parentId - 부모 레코드 ID
  * @param fileUrls - 삭제할 파일 URL 배열
  * @returns void
  *
@@ -32,8 +32,8 @@ export async function deleteFilesByUrls(urls: string[]): Promise<void> {
  * await deleteSpecificFiles('notices', noticeId, ['https://...', 'https://...']);
  */
 export async function deleteSpecificFiles(
-  entityType: EntityType,
-  entityId: string,
+  tableName: TableName,
+  parentId: string,
   fileUrls: string[]
 ): Promise<void> {
   if (fileUrls.length === 0) return;
@@ -47,16 +47,16 @@ export async function deleteSpecificFiles(
   await supabase
     .from('files')
     .delete()
-    .eq('entity_type', entityType)
-    .eq('entity_id', entityId)
+    .eq('table_name', tableName)
+    .eq('parent_id', parentId)
     .in('url', fileUrls);
 }
 
 /**
- * 엔티티의 파일 목록 조회
+ * 레코드의 파일 목록 조회
  *
- * @param entityType - 엔티티 타입 (예: 'notice')
- * @param entityId - 엔티티 ID
+ * @param tableName - 테이블 이름 (예: 'notice')
+ * @param parentId - 부모 레코드 ID
  * @returns 카테고리별로 그룹화된 파일 메타데이터
  *
  * @example
@@ -64,16 +64,16 @@ export async function deleteSpecificFiles(
  * // 결과: { thumbnail: [FileMetadata], attachments: [FileMetadata, ...] }
  */
 export async function getEntityFiles(
-  entityType: EntityType,
-  entityId: string
+  tableName: TableName,
+  parentId: string
 ): Promise<Record<string, FileMetadata[]>> {
   const supabase = createServerClient();
 
   const { data, error } = await supabase
     .from('files')
     .select('*')
-    .eq('entity_type', entityType)
-    .eq('entity_id', entityId)
+    .eq('table_name', tableName)
+    .eq('parent_id', parentId)
     .eq('deleted', false);
 
   if (error) {
@@ -101,18 +101,18 @@ export async function getEntityFiles(
 }
 
 /**
- * 엔티티의 모든 파일 Soft Delete (복구 가능)
+ * 레코드의 모든 파일 Soft Delete (복구 가능)
  *
- * @param entityType - 엔티티 타입
- * @param entityId - 엔티티 ID
+ * @param tableName - 테이블 이름
+ * @param parentId - 부모 레코드 ID
  * @returns void
  *
  * @example
  * await deleteEntityFiles('notices', noticeId);
  */
 export async function deleteEntityFiles(
-  entityType: EntityType,
-  entityId: string
+  tableName: TableName,
+  parentId: string
 ): Promise<void> {
   const supabase = createServerClient();
 
@@ -120,24 +120,24 @@ export async function deleteEntityFiles(
   await supabase
     .from('files')
     .update({ deleted: true })
-    .eq('entity_type', entityType)
-    .eq('entity_id', entityId)
+    .eq('table_name', tableName)
+    .eq('parent_id', parentId)
     .eq('deleted', false);
 }
 
 /**
- * 엔티티의 모든 파일 Hard Delete (영구 삭제, 복구 불가)
+ * 레코드의 모든 파일 Hard Delete (영구 삭제, 복구 불가)
  *
- * @param entityType - 엔티티 타입
- * @param entityId - 엔티티 ID
+ * @param tableName - 테이블 이름
+ * @param parentId - 부모 레코드 ID
  * @returns void
  *
  * @example
  * await hardDeleteEntityFiles('notices', noticeId);
  */
 export async function hardDeleteEntityFiles(
-  entityType: EntityType,
-  entityId: string
+  tableName: TableName,
+  parentId: string
 ): Promise<void> {
   const supabase = createServerClient();
 
@@ -145,8 +145,8 @@ export async function hardDeleteEntityFiles(
   const { data: files } = await supabase
     .from('files')
     .select('url')
-    .eq('entity_type', entityType)
-    .eq('entity_id', entityId);
+    .eq('table_name', tableName)
+    .eq('parent_id', parentId);
 
   if (files && files.length > 0) {
     // 2. Storage에서 삭제
@@ -158,15 +158,15 @@ export async function hardDeleteEntityFiles(
   await supabase
     .from('files')
     .delete()
-    .eq('entity_type', entityType)
-    .eq('entity_id', entityId);
+    .eq('table_name', tableName)
+    .eq('parent_id', parentId);
 }
 
 /**
  * 클라이언트 업로드를 위한 Presigned URL 발급 (여러 파일)
  *
- * @param entityType - 엔티티 타입
- * @param entityId - 엔티티 ID
+ * @param tableName - 테이블 이름
+ * @param parentId - 부모 레코드 ID
  * @param fileInfos - 파일 정보 배열 (originalName, category)
  * @returns Presigned URL 배열
  *
@@ -178,11 +178,11 @@ export async function hardDeleteEntityFiles(
  * // 클라이언트에서 urls를 사용해 파일 업로드
  */
 export async function getPresignedUploadUrls(
-  entityType: EntityType,
-  entityId: string,
+  tableName: TableName,
+  parentId: string,
   fileInfos: Array<{ originalName: string; category: string }>
 ): Promise<PresignedUploadInfo[]> {
-  const folder = `${entityType}/${entityId}`;
+  const folder = `${tableName}/${parentId}`;
   const results: PresignedUploadInfo[] = [];
 
   for (const fileInfo of fileInfos) {
@@ -210,8 +210,8 @@ export async function getPresignedUploadUrls(
 /**
  * 클라이언트 업로드 완료 후 메타데이터를 DB에 저장
  *
- * @param entityType - 엔티티 타입
- * @param entityId - 엔티티 ID
+ * @param tableName - 테이블 이름
+ * @param parentId - 부모 레코드 ID
  * @param uploadedFiles - 업로드된 파일 정보 (publicUrl, originalName, size, mimeType, category)
  * @returns void
  *
@@ -222,8 +222,8 @@ export async function getPresignedUploadUrls(
  * ]);
  */
 export async function saveUploadedFilesMetadata(
-  entityType: EntityType,
-  entityId: string,
+  tableName: TableName,
+  parentId: string,
   uploadedFiles: Array<{
     publicUrl: string;
     originalName: string;
@@ -235,8 +235,8 @@ export async function saveUploadedFilesMetadata(
   const supabase = createServerClient();
 
   const records = uploadedFiles.map(file => ({
-    entity_type: entityType,
-    entity_id: entityId,
+    table_name: tableName,
+    parent_id: parentId,
     category: file.category,
     url: file.publicUrl,
     original_name: file.originalName,
