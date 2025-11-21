@@ -22,7 +22,12 @@ export function generateUniqueFileName(originalFileName: string): string {
  *
  * @param file - File 객체
  * @param url - Storage 공개 URL
- * @returns FileMetadata 객체
+ * @returns
+ *  url: string;
+ *  originalName: string;
+ *  size: number;
+ *  mimeType: string;
+ *  uploadedAt: string;
  */
 export function createFileMetadata(file: File, url: string): FileMetadata {
   return {

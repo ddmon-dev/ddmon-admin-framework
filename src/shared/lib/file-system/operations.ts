@@ -20,6 +20,39 @@ export async function deleteFilesByUrls(urls: string[]): Promise<void> {
 }
 
 /**
+ * 엔티티의 특정 파일들을 Hard Delete (영구 삭제)
+ * 게시글 수정 시 사용자가 명시적으로 삭제한 파일에 사용
+ *
+ * @param entityType - 엔티티 타입
+ * @param entityId - 엔티티 ID
+ * @param fileUrls - 삭제할 파일 URL 배열
+ * @returns void
+ *
+ * @example
+ * await deleteSpecificFiles('notices', noticeId, ['https://...', 'https://...']);
+ */
+export async function deleteSpecificFiles(
+  entityType: EntityType,
+  entityId: string,
+  fileUrls: string[]
+): Promise<void> {
+  if (fileUrls.length === 0) return;
+
+  const supabase = createServerClient();
+
+  // 1. Storage에서 삭제
+  await deleteFilesByUrls(fileUrls);
+
+  // 2. DB에서 실제 삭제 (DELETE)
+  await supabase
+    .from('files')
+    .delete()
+    .eq('entity_type', entityType)
+    .eq('entity_id', entityId)
+    .in('url', fileUrls);
+}
+
+/**
  * 엔티티의 파일 목록 조회
  *
  * @param entityType - 엔티티 타입 (예: 'notice')
