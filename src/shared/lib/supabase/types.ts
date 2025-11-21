@@ -39,6 +39,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      files: {
+        Row: {
+          category: string
+          created_at: string | null
+          deleted: boolean | null
+          entity_id: string
+          entity_type: string
+          id: string
+          mime_type: string
+          original_name: string
+          size: number
+          updated_at: string | null
+          uploaded_at: string | null
+          url: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          deleted?: boolean | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          mime_type: string
+          original_name: string
+          size: number
+          updated_at?: string | null
+          uploaded_at?: string | null
+          url: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          deleted?: boolean | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          mime_type?: string
+          original_name?: string
+          size?: number
+          updated_at?: string | null
+          uploaded_at?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
       notices: {
         Row: {
           author: string | null
@@ -46,7 +91,6 @@ export type Database = {
           content: string | null
           created_at: string
           deleted: boolean
-          files: Json | null
           id: string
           modified_at: string
           order: number
@@ -59,7 +103,6 @@ export type Database = {
           content?: string | null
           created_at?: string
           deleted?: boolean
-          files?: Json | null
           id?: string
           modified_at?: string
           order?: number
@@ -72,7 +115,6 @@ export type Database = {
           content?: string | null
           created_at?: string
           deleted?: boolean
-          files?: Json | null
           id?: string
           modified_at?: string
           order?: number

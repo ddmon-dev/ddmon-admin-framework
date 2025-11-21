@@ -76,7 +76,7 @@ export async function processFiles({
         )
         .map(f => ({
           url: f.url,
-          name: f.originalName,
+          originalName: f.originalName,
           size: 0,
           mimeType: '',
           uploadedAt: '',

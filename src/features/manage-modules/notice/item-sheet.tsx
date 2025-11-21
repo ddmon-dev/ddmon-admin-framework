@@ -29,10 +29,10 @@ export function ItemSheet() {
           ? Object.fromEntries(
               Object.entries(data.files).map(([category, fileList]) => [
                 category,
-                fileList?.map((file: { url: string; name: string }) => ({
+                fileList?.map((file: { url: string; originalName: string }) => ({
                   type: 'existing' as const,
                   url: file.url,
-                  originalName: file.name,
+                  originalName: file.originalName,
                 })),
               ])
             )

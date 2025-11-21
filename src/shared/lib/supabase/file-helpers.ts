@@ -3,7 +3,7 @@
  */
 export type FileMetadata = {
   url: string;
-  name: string;
+  originalName: string;
   size: number;
   mimeType: string;
   uploadedAt: string;
@@ -36,7 +36,7 @@ export function generateUniqueFileName(originalFileName: string): string {
 export function createFileMetadata(file: File, url: string): FileMetadata {
   return {
     url,
-    name: file.name,
+    originalName: file.name,
     size: file.size,
     mimeType: file.type,
     uploadedAt: new Date().toISOString(),
