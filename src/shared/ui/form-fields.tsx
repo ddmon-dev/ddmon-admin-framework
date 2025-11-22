@@ -32,9 +32,9 @@ import {
   type FormFileValue,
   type FileAcceptPreset,
   fileAcceptPresets,
-  formatFileSize,
+  MultiFileUpload,
 } from '@/shared/ui/file-upload';
-import { MultiFileUpload } from '@/shared/ui/multi-file-upload';
+import { mbToBytes, formatFileSize } from '@/shared/lib/utils/format';
 import { type DateRange } from 'react-day-picker';
 import { Editor } from '@/shared/ui/editor/editor';
 
@@ -792,7 +792,7 @@ export const FormFileUpload = <
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const resolvedAccept = acceptPreset ? fileAcceptPresets[acceptPreset] : accept;
-  const resolvedMaxSizeBytes = maxSize ? maxSize * 1024 * 1024 : undefined;
+  const resolvedMaxSizeBytes = maxSize ? mbToBytes(maxSize) : undefined;
   const constraintsText = !hideConstraints
     ? generateFileConstraintsText(resolvedAccept, resolvedMaxSizeBytes, max)
     : null;
