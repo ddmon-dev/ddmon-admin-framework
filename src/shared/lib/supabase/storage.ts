@@ -1,9 +1,8 @@
 'use server';
 
-import { createServerClient } from './server';
 import { type ActionResult } from '@/shared/types/server-actions';
-
-const BUCKET_NAME = 'my-bucket';
+import { createServerClient } from './server';
+import { BUCKET_NAME, extractFilePathFromUrl } from './storage-helpers';
 
 type ResultData = {
   uploadUrl: string;
@@ -185,27 +184,5 @@ export async function deleteFolderFromStorage(folderPath: string): Promise<FileD
       success: false,
       error: error instanceof Error ? error.message : '폴더 삭제에 실패했습니다.',
     };
-  }
-}
-
-/**
- * 공개 URL에서 파일 경로를 추출합니다.
- *
- * @param url - Supabase Storage 공개 URL
- * @returns 파일 경로
- */
-function extractFilePathFromUrl(url: string): string {
-  try {
-    const urlObj = new URL(url);
-    const pathSegments = urlObj.pathname.split('/');
-    const bucketIndex = pathSegments.findIndex(segment => segment === BUCKET_NAME);
-
-    if (bucketIndex === -1) {
-      throw new Error('유효하지 않은 Storage URL입니다.');
-    }
-
-    return pathSegments.slice(bucketIndex + 1).join('/');
-  } catch (error) {
-    throw new Error('URL 파싱에 실패했습니다: ' + url);
   }
 }
