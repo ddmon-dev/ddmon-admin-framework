@@ -4,7 +4,7 @@
  */
 
 /**
- * 파일 메타데이터
+ * DB의 files 필드에 저장되는 파일 메타데이터
  */
 export type FileMetadata = {
   url: string;

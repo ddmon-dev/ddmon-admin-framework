@@ -23,6 +23,8 @@ export function ItemSheet() {
         return;
       }
 
+      console.log(data.files);
+
       // FileMetadata를 FormFileUpload 형태로 변환
       const transformedData = {
         ...data,
