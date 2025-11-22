@@ -30,17 +30,19 @@ export function ItemSheet() {
         ...data,
         files: data.files
           ? Object.fromEntries(
-              Object.entries(data.files).map(([category, fileList]) => [
-                category,
-                fileList?.map((file: FileMetadata) => ({
-                  type: 'existing' as const,
-                  url: file.url,
-                  originalName: file.originalName,
-                  size: file.size,
-                  mimeType: file.mimeType,
-                  uploadedAt: file.uploadedAt,
-                })),
-              ])
+              Object.entries(data.files as Record<string, FileMetadata[]>).map(
+                ([category, fileList]) => [
+                  category,
+                  fileList?.map((file) => ({
+                    type: 'existing' as const,
+                    url: file.url,
+                    originalName: file.originalName,
+                    size: file.size,
+                    mimeType: file.mimeType,
+                    uploadedAt: file.uploadedAt,
+                  })),
+                ]
+              )
             )
           : undefined,
       };
