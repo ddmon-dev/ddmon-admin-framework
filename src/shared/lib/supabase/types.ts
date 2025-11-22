@@ -95,6 +95,7 @@ export type Database = {
           id: string
           modified_at: string
           order: number
+          phone_number: string | null
           title: string
           view_count: number
         }
@@ -108,6 +109,7 @@ export type Database = {
           id?: string
           modified_at?: string
           order?: number
+          phone_number?: string | null
           title: string
           view_count?: number
         }
@@ -121,6 +123,7 @@ export type Database = {
           id?: string
           modified_at?: string
           order?: number
+          phone_number?: string | null
           title?: string
           view_count?: number
         }
