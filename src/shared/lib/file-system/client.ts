@@ -3,6 +3,38 @@
  */
 
 /**
+ * 여러 파일을 병렬로 업로드
+ *
+ * @param uploads - 업로드할 파일과 URL 배열
+ * @param onProgress - 전체 진행 상태 콜백 (0-100)
+ * @returns Promise<void>
+ */
+export async function uploadFilesWithPresignedUrl(
+  uploads: Array<{ file: File; uploadUrl: string }>,
+  onProgress?: (progress: number) => void
+): Promise<void> {
+  const progressMap = new Map<number, number>();
+  const totalFiles = uploads.length;
+
+  const updateOverallProgress = () => {
+    if (onProgress) {
+      const totalProgress =
+        Array.from(progressMap.values()).reduce((sum, p) => sum + p, 0) / totalFiles;
+      onProgress(Math.round(totalProgress));
+    }
+  };
+
+  await Promise.all(
+    uploads.map((upload, index) =>
+      uploadSingleFileWithPresignedUrl(upload.file, upload.uploadUrl, progress => {
+        progressMap.set(index, progress);
+        updateOverallProgress();
+      })
+    )
+  );
+}
+
+/**
  * 단일 파일을 Presigned URL로 업로드
  *
  * @param file - 업로드할 파일
@@ -10,7 +42,7 @@
  * @param onProgress - 업로드 진행 상태 콜백 (0-100)
  * @returns Promise<void>
  */
-export async function uploadFileWithPresignedUrl(
+async function uploadSingleFileWithPresignedUrl(
   file: File,
   uploadUrl: string,
   onProgress?: (progress: number) => void
@@ -53,36 +85,4 @@ export async function uploadFileWithPresignedUrl(
     xhr.timeout = 30000; // 30초
     xhr.send(file);
   });
-}
-
-/**
- * 여러 파일을 병렬로 업로드
- *
- * @param uploads - 업로드할 파일과 URL 배열
- * @param onProgress - 전체 진행 상태 콜백 (0-100)
- * @returns Promise<void>
- */
-export async function uploadMultipleFilesWithPresignedUrl(
-  uploads: Array<{ file: File; uploadUrl: string }>,
-  onProgress?: (progress: number) => void
-): Promise<void> {
-  const progressMap = new Map<number, number>();
-  const totalFiles = uploads.length;
-
-  const updateOverallProgress = () => {
-    if (onProgress) {
-      const totalProgress =
-        Array.from(progressMap.values()).reduce((sum, p) => sum + p, 0) / totalFiles;
-      onProgress(Math.round(totalProgress));
-    }
-  };
-
-  await Promise.all(
-    uploads.map((upload, index) =>
-      uploadFileWithPresignedUrl(upload.file, upload.uploadUrl, progress => {
-        progressMap.set(index, progress);
-        updateOverallProgress();
-      })
-    )
-  );
 }

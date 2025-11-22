@@ -16,7 +16,7 @@ export { deleteFilesFromStorage, deleteFolderFromStorage } from '../supabase/sto
 export { generateUniqueFileName, createFileMetadata, extractAllFileUrls } from './utils';
 
 // Client (브라우저 전용)
-export { uploadFileWithPresignedUrl, uploadMultipleFilesWithPresignedUrl } from './client';
+export { uploadFilesWithPresignedUrl } from './client';
 
 // Schemas (Zod 검증)
 export { createFilesSchema } from './schemas';
