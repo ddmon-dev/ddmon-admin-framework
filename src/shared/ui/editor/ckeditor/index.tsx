@@ -10,20 +10,12 @@ import {
   AutoImage,
   AutoLink,
   Autosave,
-  Base64UploadAdapter,
-  BlockQuote,
   Bold,
-  Code,
-  CodeBlock,
   Essentials,
   FindAndReplace,
   FontBackgroundColor,
   FontColor,
-  FontFamily,
   FontSize,
-  Heading,
-  Highlight,
-  HorizontalLine,
   ImageBlock,
   ImageCaption,
   ImageInline,
@@ -68,6 +60,9 @@ import {
 } from 'ckeditor5';
 
 import 'ckeditor5/ckeditor5.css';
+import { CustomUploadAdapterPlugin } from './custom-upload-adapter';
+import { DEFAULT_IMAGE_CONFIG } from './config';
+import { generateUploadPath } from './utils';
 
 interface CKEditorProps {
   content?: string;
@@ -75,6 +70,14 @@ interface CKEditorProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  /** 업로드 폴더 경로 (우선순위 1: 명시적 경로) */
+  uploadFolder?: string;
+  /** 엔티티명 (우선순위 2: 자동 경로 생성용, 예: 'notices') */
+  entity?: string;
+  /** 최대 이미지 크기 (MB 단위, 기본값: 2) */
+  maxImageSizeMB?: number;
+  /** 허용되는 이미지 형식 (기본값: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']) */
+  acceptedImageFormats?: string[];
 }
 
 export function CKEditor({
@@ -83,13 +86,27 @@ export function CKEditor({
   placeholder = '내용을 입력하세요...',
   disabled = false,
   className,
+  uploadFolder,
+  entity,
+  maxImageSizeMB = DEFAULT_IMAGE_CONFIG.maxSizeMB,
+  acceptedImageFormats = DEFAULT_IMAGE_CONFIG.acceptedFormats,
 }: CKEditorProps) {
+  const finalUploadFolder = generateUploadPath(uploadFolder, entity);
+
   return (
     <div className={cn('w-full', className)}>
       <_CKEditor
         editor={ClassicEditor}
         data={content}
         disabled={disabled}
+        onReady={editor => {
+          // 커스텀 업로드 어댑터 등록
+          CustomUploadAdapterPlugin({
+            folder: finalUploadFolder,
+            maxSizeMB: maxImageSizeMB,
+            acceptedFormats: acceptedImageFormats,
+          })(editor);
+        }}
         config={{
           licenseKey: 'GPL',
           translations: [translations],
@@ -142,7 +159,6 @@ export function CKEditor({
             AutoImage,
             AutoLink,
             Autosave,
-            Base64UploadAdapter,
             // BlockQuote,
             Bold,
             // Code,

@@ -844,6 +844,14 @@ type FormEditorProps<
 > = FormBaseProps<V, N> & {
   placeholder?: string;
   className?: string;
+  /** 업로드 폴더 경로 (우선순위 1: 명시적 경로) */
+  uploadFolder?: string;
+  /** 엔티티명 (우선순위 2: 자동 경로 생성용, 예: 'notices') */
+  entity?: string;
+  /** 최대 이미지 크기 (MB 단위, 기본값: 2) */
+  maxImageSizeMB?: number;
+  /** 허용되는 이미지 형식 (기본값: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']) */
+  acceptedImageFormats?: string[];
 };
 
 export const FormEditor = <
@@ -857,6 +865,10 @@ export const FormEditor = <
   orientation,
   placeholder = '내용을 입력하세요...',
   className,
+  uploadFolder,
+  entity,
+  maxImageSizeMB,
+  acceptedImageFormats,
 }: FormEditorProps<V, N>): ReactElement => {
   return (
     <FormField
@@ -872,6 +884,10 @@ export const FormEditor = <
           onChange={onChange}
           placeholder={placeholder}
           className={className}
+          uploadFolder={uploadFolder}
+          entity={entity}
+          maxImageSizeMB={maxImageSizeMB}
+          acceptedImageFormats={acceptedImageFormats}
         />
       )}
     </FormField>
