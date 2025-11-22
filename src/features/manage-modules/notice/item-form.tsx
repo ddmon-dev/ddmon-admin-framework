@@ -16,8 +16,9 @@ import {
   FormDatePicker,
 } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
-import { processFileUploads, type FormFilesField } from '@/shared/lib/file-system';
 import { schemaPresets } from '@/shared/schemas/presets';
+import { type FormFilesField } from '@/shared/lib/file-system';
+import { handleFileUploads } from '../_base/utils';
 
 import { CONFIG } from './config';
 import { type ItemDTO } from './types';
@@ -64,11 +65,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
     try {
       const { files: formFiles, ...restValues } = values;
 
-      // 파일 유무 체크
-      const hasFormFiles =
-        formFiles &&
-        Object.values(formFiles).some(fileList => Array.isArray(fileList) && fileList.length > 0);
-
       // 데이터 DB 저장
       const { success, data, error } = id
         ? await updateItem({ id, values: restValues, path: pathname })
@@ -79,21 +75,13 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       }
 
       // 파일 업로드
-      if (hasFormFiles) {
-        const uploadedFilesMetadata = await processFileUploads({
-          files: formFiles as FormFilesField,
-          folder: `${CONFIG.tableName}/${data.id}`,
-        });
-
-        // files JSONB 컬럼 업데이트
-        if (Object.keys(uploadedFilesMetadata).length > 0) {
-          await updateItem({
-            id: data.id,
-            values: { files: uploadedFilesMetadata },
-            path: pathname,
-          });
-        }
-      }
+      await handleFileUploads({
+        formFiles: formFiles as FormFilesField,
+        itemId: data.id,
+        tableName: CONFIG.tableName,
+        pathname,
+        updateItemAction: updateItem,
+      });
     } catch (error) {
       console.error(error);
       alert(error instanceof Error ? error.message : '저장에 실패했습니다.');
