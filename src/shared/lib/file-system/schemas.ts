@@ -1,11 +1,7 @@
 import { z } from 'zod';
 
-/**
- * 파일 업로드 시 데이터베이스에 저장되는 파일 메타데이터의 스키마입니다.
- */
-
 /* *
- * 기존에 DB에 저장된 파일 데이터 스키마 +
+ * 기존에 DB에 저장된 파일 메타 데이터 스키마 +
  * 클라이언트의 폼에서 컨트롤 (삭제) 하기 위한 옵션 필드 (markedForDeletion)
  */
 const previousFileData = z.object({
