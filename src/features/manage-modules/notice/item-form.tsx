@@ -7,7 +7,13 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { FieldGroup } from '@/shared/ui/field';
-import { FormInput, FormEditor, FormFileUpload } from '@/shared/ui/form-fields';
+import {
+  FormRadioGroup,
+  FormInput,
+  FormEditor,
+  FormFileUpload,
+  FormDatePicker,
+} from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import {
   processFileUploads,
@@ -21,12 +27,18 @@ import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
 
 const formSchema = z.object({
+  category: z.string().min(1, '카테고리를 선택해주세요.'),
+  createdAt: z.date().optional(),
+  viewCount: z.number().optional(),
   title: z.string().min(1, '제목을 입력해주세요.'),
   content: z.string().min(1, '내용을 입력해주세요.'),
   files: createFilesSchema(['thumbnail', 'attachments']),
 });
 
 const formDefaultValues = {
+  category: CONFIG.categoryOptions[0].value,
+  createdAt: new Date(),
+  viewCount: 0,
   title: '',
   content: '',
   files: undefined,
@@ -48,6 +60,9 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
     form.reset((prevValues ?? formDefaultValues) as z.infer<typeof formSchema>);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevValues]);
+
+  console.log(prevValues);
+  console.log(form.getValues());
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -92,6 +107,24 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
+        <FormRadioGroup
+          control={form.control}
+          name='category'
+          label='카테고리'
+          options={[...CONFIG.categoryOptions]}
+        />
+        <FormDatePicker
+          control={form.control}
+          name='createdAt'
+          label='작성일'
+          mode='single'
+          presets={true}
+        />
+        <FormInput
+          control={form.control}
+          name='viewCount'
+          label='조회수'
+        />
         <FormInput
           control={form.control}
           name='title'

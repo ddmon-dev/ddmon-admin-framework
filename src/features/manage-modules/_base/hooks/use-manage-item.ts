@@ -9,15 +9,34 @@ import { useManageSheet } from '../components/manage-sheet';
 type GetItemAction<T> = (params: { id: string }) => Promise<ActionResult<T>>;
 
 /**
+ * 공통 날짜 필드 목록 (자동으로 Date 객체로 변환됨)
+ */
+const DEFAULT_DATE_FIELDS = ['createdAt', 'modifiedAt', 'updatedAt'];
+
+/**
  * 관리 모듈의 항목 데이터를 페칭하고 처리하는 커스텀 훅
  *
  * @param getItemAction - 항목 조회 Server Action
+ * @param options - 옵션
+ * @param options.additionalDateFields - 추가로 변환할 날짜 필드명 배열 (기본 필드에 추가됨)
  * @returns prevValues, isLoading, error
  *
  * @example
- * const { prevValues, isLoading, error } = useManageItem(getItem);
+ * // 기본 사용 (createdAt, modifiedAt, updatedAt 자동 변환)
+ * const { prevValues } = useManageItem(getItem);
+ *
+ * @example
+ * // 커스텀 날짜 필드 추가
+ * const { prevValues } = useManageItem(getItem, {
+ *   additionalDateFields: ['publishedAt', 'expiredAt']
+ * });
  */
-export function useManageItem<T extends { files?: DbFilesJSONB }>(getItemAction: GetItemAction<T>) {
+export function useManageItem<T extends { files?: DbFilesJSONB }>(
+  getItemAction: GetItemAction<T>,
+  options?: {
+    additionalDateFields?: string[];
+  }
+) {
   const { manageSheetData } = useManageSheet();
   const { id } = manageSheetData ?? {};
 
@@ -45,9 +64,21 @@ export function useManageItem<T extends { files?: DbFilesJSONB }>(getItemAction:
           return;
         }
 
+        // 변환할 날짜 필드 목록 (기본 + 추가)
+        const dateFields = [...DEFAULT_DATE_FIELDS, ...(options?.additionalDateFields || [])];
+
+        // 날짜 필드 변환 (string -> Date)
+        // supabase에서 조회한 timestamp field의 데이터는 string 타입으로 넘어오므로, Date 객체로 변환해줌
+        const convertedDateFields = Object.fromEntries(
+          dateFields
+            .filter(field => data[field as keyof typeof data] != null)
+            .map(field => [field, new Date(data[field as keyof typeof data] as string)])
+        );
+
         const transformedData = {
           ...data,
           files: transformFilesToUploadValues(data.files),
+          ...convertedDateFields,
         } as T;
 
         setPrevValues(transformedData);
