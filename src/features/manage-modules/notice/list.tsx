@@ -1,31 +1,15 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { DataList, useDataList } from '@/shared/ui/data-list';
-import { listColumns } from './list-columns';
-import { BASE_CONFIG } from '../_base/config';
-import { type ListProps } from '../_base/types';
+import { ManageList } from '../_base/components/manage-list';
 import { type ItemDTO } from './types';
-import { useManageSheet } from '../_base/components/manage-sheet';
+import { listColumns } from './list-columns';
 
-export function List({ list, totalCount }: ListProps<ItemDTO>) {
-  const searchParams = useSearchParams();
-  const { openManageSheet } = useManageSheet();
-  const pageSize = Number(searchParams.get('pageSize')) || BASE_CONFIG.defaultListPageSize;
-
-  const { page, setPage, pageCount } = useDataList({
-    totalCount,
-    pageSize,
-  });
-
+export function List({ data, totalCount }: { data: ItemDTO[]; totalCount: number }) {
   return (
-    <DataList
-      data={list}
-      columns={listColumns}
-      pageCount={pageCount}
-      currentPage={page}
-      onPageChange={setPage}
-      onRowClick={row => openManageSheet({ id: row.id, mode: 'modify' })}
+    <ManageList
+      data={data}
+      totalCount={totalCount}
+      listColumns={listColumns}
     />
   );
 }

@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다. **FSD (Feature-Sliced Design)** 아키텍처 패턴을 따르며, 확장 가능하고 유지보수가 용이한 구조를 제공합니다.
 
 ### 핵심 원칙: 우직실 (우아함, 직관성, 실용성)
+
 - **우아함**: 불필요한 복잡성 없이 깔끔한 구조
 - **직관성**: 누가 봐도 바로 이해되는 명확한 코드
 - **실용성**: 과도한 추상화보다 실제 개발과 유지보수에 도움되는 구조
@@ -15,6 +16,7 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 ## 기술 스택
 
 ### Core
+
 - **Framework**: Next.js 16.0.3 (App Router)
 - **React**: 19.2.0 (React Compiler 활성화)
 - **Language**: TypeScript (Strict Mode)
@@ -22,16 +24,19 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 - **Package Manager**: Yarn
 
 ### Styling & UI
+
 - **CSS Framework**: Tailwind CSS V4 (PostCSS 플러그인)
 - **UI Library**: Shadcn UI (New York 스타일, CSS Variables)
 - **Icons**: Lucide React
 - **Theme**: next-themes (다크모드 지원)
 
 ### Forms & Validation
+
 - **Form**: React Hook Form
 - **Validation**: Zod
 
 ### Fonts
+
 - **영문**: Poppins (Google Fonts)
 - **한글**: Pretendard (Local Fonts)
 
@@ -92,18 +97,22 @@ src/
 ### FSD 레이어 설명
 
 1. **app/**: Next.js App Router 라우팅
+
    - 페이지 구성과 라우팅만 담당
    - 비즈니스 로직은 features/로 분리
 
 2. **features/**: 기능별 비즈니스 로직
+
    - 특정 기능(인증, 결제 등)의 로직과 UI
    - 독립적으로 재사용 가능한 기능 단위
 
 3. **widgets/**: 복합 UI 위젯
+
    - 여러 컴포넌트를 조합한 복합 위젯
    - 예: Sidebar, Header, Breadcrumb
 
 4. **entities/**: 비즈니스 엔티티
+
    - 도메인 모델 (User, Product 등)
    - 향후 사용 예정
 
@@ -114,13 +123,16 @@ src/
 ## 라우팅 패턴
 
 ### Route Groups
+
 Next.js의 Route Groups를 사용하여 레이아웃을 구분합니다.
 
 1. **(auth)**: 인증 페이지
+
    - 경로: `/auth/sign-in`, `/auth/sign-up`, `/auth/forgot-password`
    - 레이아웃: 없음 (인증 페이지용 깔끔한 UI)
 
 2. **(protected)**: 보호된 페이지
+
    - 경로: `/`, `/settings`
    - 레이아웃: Sidebar + Header + Breadcrumb
    - 인증이 필요한 모든 페이지
@@ -148,6 +160,7 @@ yarn lint
 ```
 
 ### Claude Code용 빌드
+
 Claude Code에서 빌드 시 `.next-claude` 디렉토리를 사용합니다.
 
 ```bash
@@ -156,9 +169,10 @@ IS_CLAUDE=1 yarn build
 ```
 
 이는 `next.config.ts`에서 다음과 같이 설정됩니다:
+
 ```typescript
 {
-  distDir: process.env.IS_CLAUDE ? '.next-claude' : undefined
+  distDir: process.env.IS_CLAUDE ? '.next-claude' : undefined;
 }
 ```
 
@@ -167,28 +181,34 @@ IS_CLAUDE=1 yarn build
 ## UI 컴포넌트 가이드
 
 ### Shadcn UI (59개 컴포넌트)
+
 모든 UI 컴포넌트는 `/src/shared/ui/`에 위치합니다.
 
 #### 주요 카테고리
 
 **Form 관련**
+
 - button, input, textarea, select, checkbox, radio-group
 - form, label, switch, slider
 - date-picker, calendar
 
 **Layout**
+
 - card, container, separator, sidebar
 - resizable, scroll-area
 
 **Feedback**
+
 - alert, alert-dialog, dialog, drawer
 - toast, sonner, popover, tooltip
 
 **Data Display**
+
 - table, chart, avatar, badge
 - collapsible, accordion, tabs
 
 **Navigation**
+
 - breadcrumb, dropdown-menu, menubar
 - navigation-menu, pagination
 
@@ -209,12 +229,14 @@ import { Card } from '@/shared/ui/card';
 ## 코딩 컨벤션
 
 ### 파일 및 폴더 네이밍
+
 - **kebab-case** 사용
 - 컴포넌트 파일: `user-profile.tsx`
 - 페이지 폴더: `user-settings/`
 - 유틸리티 파일: `format-date.ts`
 
 ### 코드 네이밍
+
 - **컴포넌트**: PascalCase (`UserProfile`)
 - **함수/변수**: camelCase (`getUserData`)
 - **상수**: SCREAMING_SNAKE_CASE (`API_BASE_URL`)
@@ -223,6 +245,7 @@ import { Card } from '@/shared/ui/card';
 ### Git 컨벤션
 
 #### 커밋 메시지
+
 ```
 타입: 제목
 
@@ -230,6 +253,7 @@ import { Card } from '@/shared/ui/card';
 ```
 
 **타입 분류**:
+
 - `feat`: 새로운 기능 추가
 - `fix`: 버그 수정
 - `refactor`: 코드 개선 및 리팩토링
@@ -239,6 +263,7 @@ import { Card } from '@/shared/ui/card';
 - `chore`: 빌드, 설정 파일 변경
 
 #### 브랜치 전략
+
 - **`main`**: 프로덕션 배포 브랜치
 - **`dev`**: 개발 브랜치 (기본 작업 브랜치)
 - **`feat/*`**: 기능 개발 브랜치
@@ -247,6 +272,7 @@ import { Card } from '@/shared/ui/card';
 ## 설정 파일
 
 ### next.config.ts
+
 ```typescript
 import type { NextConfig } from 'next';
 
@@ -261,19 +287,21 @@ export default nextConfig;
 ```
 
 ### tsconfig.json
+
 - Strict mode 활성화
 - Path alias: `@/*` → `./src/*`
 - 모든 TypeScript strict 옵션 활성화
 
 ### components.json (Shadcn UI)
+
 ```json
 {
-  "style": "new-york",       // UI 스타일
+  "style": "new-york", // UI 스타일
   "tailwind": {
     "config": "tailwind.config.ts",
     "css": "src/app/globals.css",
-    "baseColor": "neutral",  // 기본 색상
-    "cssVariables": true     // CSS Variables 사용
+    "baseColor": "neutral", // 기본 색상
+    "cssVariables": true // CSS Variables 사용
   },
   "aliases": {
     "components": "@/shared/ui",
@@ -286,6 +314,7 @@ export default nextConfig;
 ```
 
 ### Tailwind CSS V4
+
 - PostCSS 플러그인 방식
 - CSS Variables 기반 테마
 - `globals.css`에서 @import로 설정
@@ -354,6 +383,7 @@ openManageSheet({ id: '123', mode: 'modify' });
 ```
 
 **장점**:
+
 - Props Drilling 제거
 - 어디서든 시트 열기/닫기 가능
 - 명확한 상태 관리
@@ -371,6 +401,7 @@ openManageSheet({ id: '123', mode: 'modify' });
 ```
 
 **구현**:
+
 ```typescript
 // _base/utils/db-operations.ts
 export async function softDelete(tableName: TableName, id: string) {
@@ -399,7 +430,7 @@ type ActionResult<T> = {
 // 구현 예시
 export async function createItem({
   values,
-  path
+  path,
 }: {
   values: CreateItemValues;
   path?: string;
@@ -426,6 +457,7 @@ export async function createItem({
 ```
 
 **주요 특징**:
+
 - snake_case (DB) ↔ camelCase (Frontend) 자동 변환
 - 선택적 경로 재검증 (`revalidatePath`)
 - 타입 안전성 보장
@@ -460,6 +492,7 @@ const handleDelete = async () => {
 ```
 
 **흐름**:
+
 1. Server Action에서 `success: false` 반환
 2. 호출 컴포넌트에서 `throw Error`
 3. 버튼 컴포넌트의 `catch` 블록에서 처리
@@ -470,6 +503,7 @@ const handleDelete = async () => {
 Supabase Storage를 활용한 파일 업로드 시스템입니다.
 
 **아키텍처**:
+
 ```
 Storage 클라이언트 (shared/lib/supabase/storage.ts)
   ↓
@@ -481,21 +515,17 @@ UI 컴포넌트 (FormFileUpload)
 ```
 
 **Storage 클라이언트** (`shared/lib/supabase/storage.ts`):
+
 ```typescript
 // 단일 파일 업로드
-export async function uploadFileToStorage(
-  file: File,
-  path: string
-): Promise<FileUploadResult> {
+export async function uploadFileToStorage(file: File, path: string): Promise<FileUploadResult> {
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  const { data, error } = await supabase.storage
-    .from('my-bucket')
-    .upload(path, buffer);
+  const { data, error } = await supabase.storage.from('my-bucket').upload(path, buffer);
 
-  const { data: { publicUrl } } = supabase.storage
-    .from('my-bucket')
-    .getPublicUrl(data.path);
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from('my-bucket').getPublicUrl(data.path);
 
   return { success: true, data: { url: publicUrl } };
 }
@@ -504,21 +534,17 @@ export async function uploadFileToStorage(
 export async function deleteFileFromStorage(url: string): Promise<FileDeleteResult> {
   const filePath = extractFilePathFromUrl(url);
 
-  await supabase.storage
-    .from('my-bucket')
-    .remove([filePath]);
+  await supabase.storage.from('my-bucket').remove([filePath]);
 
   return { success: true, data: undefined };
 }
 ```
 
 **파일 작업 유틸리티** (`_base/utils/file-operations.ts`):
+
 ```typescript
 // 다중 파일 병렬 업로드 (실패 시 자동 롤백)
-export async function uploadFiles(
-  files: File[],
-  folder: string
-): Promise<MultiFileUploadResult> {
+export async function uploadFiles(files: File[], folder: string): Promise<MultiFileUploadResult> {
   const uploadedUrls: string[] = [];
 
   try {
@@ -540,6 +566,7 @@ export async function uploadFiles(
 ```
 
 **모듈별 Server Action** (`notice/actions/upload-files.ts`):
+
 ```typescript
 export async function uploadNoticeFiles({
   files,
@@ -554,6 +581,7 @@ export async function uploadNoticeFiles({
 ```
 
 **폼 통합** (`notice/item-form.tsx`):
+
 ```typescript
 async function onSubmit(values) {
   const { attachmentUrls, ...restValues } = values;
@@ -564,13 +592,14 @@ async function onSubmit(values) {
     .map(f => f.url);
 
   // 2. 새 파일만 업로드
-  const newFiles = attachmentUrls
-    .filter(f => f.type === 'new')
-    .map(f => f.file);
+  const newFiles = attachmentUrls.filter(f => f.type === 'new').map(f => f.file);
 
   let uploadedUrls = [];
   if (newFiles.length > 0) {
-    const result = await uploadNoticeFiles({ files: newFiles, noticeId: id || crypto.randomUUID() });
+    const result = await uploadNoticeFiles({
+      files: newFiles,
+      noticeId: id || crypto.randomUUID(),
+    });
     if (!result.success) throw new Error(result.error);
     uploadedUrls = result.data.urls;
   }
@@ -581,12 +610,13 @@ async function onSubmit(values) {
   // 4. DB 저장
   await createItem({
     values: { ...restValues, attachment_urls: finalUrls },
-    path
+    path,
   });
 }
 ```
 
 **삭제 시 파일 처리** (`notice/actions/delete-item.ts`):
+
 ```typescript
 export async function deleteItem({ id, path }) {
   // 1. 항목 조회
@@ -605,6 +635,7 @@ export async function deleteItem({ id, path }) {
 ```
 
 **주요 특징**:
+
 - Supabase Storage 사용 (`my-bucket`)
 - 병렬 업로드로 성능 최적화
 - 실패 시 자동 롤백
@@ -613,6 +644,7 @@ export async function deleteItem({ id, path }) {
 - 삭제 시 Storage 파일도 함께 삭제
 
 **Storage 경로 구조**:
+
 ```
 my-bucket/
 └── notices/
@@ -624,6 +656,7 @@ my-bucket/
 ### 데이터 흐름
 
 #### 생성 (Create)
+
 ```
 CreateButton 클릭
   ↓
@@ -643,6 +676,7 @@ revalidatePath(path)
 ```
 
 #### 수정 (Update)
+
 ```
 ModifyButton 클릭
   ↓
@@ -664,6 +698,7 @@ revalidatePath(path)
 ```
 
 #### 삭제 (Delete)
+
 ```
 DeleteItemButton 클릭
   ↓
@@ -685,6 +720,7 @@ revalidatePath(path)
 새로운 관리 모듈(예: `products`)을 추가하는 단계입니다.
 
 #### 1. 디렉토리 생성
+
 ```bash
 mkdir -p src/features/manage-modules/products/actions
 ```
@@ -692,6 +728,7 @@ mkdir -p src/features/manage-modules/products/actions
 #### 2. 설정 파일 작성
 
 **config.ts**
+
 ```typescript
 export const PRODUCT_CONFIG = {
   tableName: 'products',
@@ -703,6 +740,7 @@ export const PRODUCT_CONFIG = {
 ```
 
 **types.ts**
+
 ```typescript
 import type { BaseRowData, CamelCaseKeys, DbInsert, DbUpdate } from '@/types/supabase/helpers';
 
@@ -715,6 +753,7 @@ export type UpdateItemValues = DbUpdate<'products'>;
 #### 3. Server Actions 구현
 
 `notice` 모듈의 Server Actions를 복사하고 다음을 수정:
+
 - `tableName`: `'products'`로 변경
 - 필터링 로직: 필요한 컬럼에 맞게 수정
 
@@ -757,10 +796,13 @@ export default async function ProductsPage() {
   const { list, totalCount } = await getList({});
 
   return (
-    <ManageModuleContainer>
-      <ProductList list={list} totalCount={totalCount} />
+    <ManageContainer>
+      <ProductList
+        list={list}
+        totalCount={totalCount}
+      />
       <ProductItemSheet />
-    </ManageModuleContainer>
+    </ManageContainer>
   );
 }
 ```
@@ -768,26 +810,31 @@ export default async function ProductsPage() {
 ### 베스트 프랙티스
 
 #### 1. 타입 안전성
+
 - Supabase 자동 생성 타입 활용
 - Zod 스키마로 런타임 검증
 - snake_case ↔ camelCase 자동 변환
 
 #### 2. 에러 처리
+
 - try-catch-finally로 안전하게 처리
 - 명확한 에러 메시지 제공
 - 로딩 상태 중복 클릭 방지
 
 #### 3. 상태 관리
+
 - Context로 시트 상태 관리
 - usePathname()으로 경로 전달
 - revalidatePath로 ISR 캐시 갱신
 
 #### 4. 코드 재사용
-- _base 컴포넌트 최대한 활용
+
+- \_base 컴포넌트 최대한 활용
 - 공통 패턴 유지
 - 중복 코드 최소화
 
 #### 5. 성능 최적화
+
 - React Hook Form으로 최적화된 폼 처리
 - useEffect 의존성 배열 최적화
 - 불필요한 리렌더링 방지
@@ -795,6 +842,7 @@ export default async function ProductsPage() {
 ### 주의사항
 
 1. **useEffect 의존성 배열**: `form` 객체는 제외하여 무한 루프 방지
+
    ```typescript
    useEffect(() => {
      form.reset(prevValues ?? initialValues);
@@ -803,12 +851,14 @@ export default async function ProductsPage() {
    ```
 
 2. **pathname 전달**: Server Action에서 `headers()`로 가져올 수 없으므로 파라미터로 전달
+
    ```typescript
    const pathname = usePathname();
    await createItem({ values, path: pathname });
    ```
 
 3. **deleted 필터링**: 목록 조회 시 항상 `deleted = false` 조건 추가
+
    ```typescript
    .eq('deleted', false)
    ```
@@ -825,11 +875,13 @@ manage-modules는 Supabase Storage를 활용한 파일 업로드 시스템을 �
 #### 핵심 파일
 
 **글로벌 유틸리티** (`/src/shared/lib/supabase/`)
+
 - `file-helpers.ts`: FileMetadata 타입, 파일명 생성 유틸리티
 - `file-processing.ts`: 파일 처리 핵심 로직 (processFiles, rollbackFiles, deleteFilesByUrls)
 - `storage.ts`: Supabase Storage 업로드/삭제 함수
 
 **모듈별 구현** (예: `notice`)
+
 - `types.ts`: ItemFiles 타입 정의 (files 필드)
 - `actions/create-item.ts`: 생성 시 파일 업로드
 - `actions/update-item.ts`: 수정 시 파일 업로드/삭제
@@ -897,6 +949,7 @@ try {
 #### 데이터 흐름
 
 **생성 (Create)**
+
 ```
 1. 사용자가 폼에서 파일 선택 (thumbnail, attachments)
 2. onSubmit → createItem({ values, path })
@@ -908,6 +961,7 @@ try {
 ```
 
 **수정 (Update)**
+
 ```
 1. 기존 데이터 조회 (getItem)
 2. item-sheet에서 FileMetadata → FormFileUpload 형태로 변환
@@ -922,6 +976,7 @@ try {
 ```
 
 **삭제 (Delete)**
+
 ```
 1. deleteItem({ id, path })
 2. getItem으로 파일 정보 조회
@@ -969,10 +1024,12 @@ const fileUploadValueSchema = z.union([existingFileSchema, newFileSchema, z.null
 const formSchema = z.object({
   title: z.string().min(1),
   content: z.string().min(1),
-  files: z.object({
-    thumbnail: z.array(fileUploadValueSchema).optional(),
-    attachments: z.array(fileUploadValueSchema).optional(),
-  }).optional(),
+  files: z
+    .object({
+      thumbnail: z.array(fileUploadValueSchema).optional(),
+      attachments: z.array(fileUploadValueSchema).optional(),
+    })
+    .optional(),
 });
 ```
 
@@ -1001,7 +1058,11 @@ const formSchema = z.object({
 
 ```typescript
 // notice/actions/create-item.ts
-import { processFiles, rollbackFiles, type ProcessedFiles } from '@/shared/lib/supabase/file-processing';
+import {
+  processFiles,
+  rollbackFiles,
+  type ProcessedFiles,
+} from '@/shared/lib/supabase/file-processing';
 
 export async function createItem({ values, path }: Params) {
   const noticeId = crypto.randomUUID();
@@ -1163,12 +1224,13 @@ useEffect(() => {
 새로운 manage-modules 모듈(예: `products`)에 파일 업로드를 추가하는 경우:
 
 **1. types.ts 정의**
+
 ```typescript
 import { type FileMetadata } from '@/shared/lib/supabase/file-helpers';
 
 export type ProductFiles = {
-  images?: FileMetadata[];     // 상품 이미지 (여러 개)
-  manual?: FileMetadata[];     // 설명서 (PDF)
+  images?: FileMetadata[]; // 상품 이미지 (여러 개)
+  manual?: FileMetadata[]; // 설명서 (PDF)
 };
 
 export type ItemDTO = CamelCaseKeys<RowData> & {
@@ -1177,16 +1239,19 @@ export type ItemDTO = CamelCaseKeys<RowData> & {
 ```
 
 **2. item-form.tsx 수정**
+
 - 폼 스키마에 `files` 객체 추가
 - FormFileUpload 컴포넌트 추가 (카테고리별)
 - onSubmit은 단순히 values 전달만 (파일 처리 로직 제거)
 
 **3. Server Actions 수정**
+
 - `notice` 모듈의 create-item.ts, update-item.ts, delete-item.ts 복사
 - `tableName`과 `folder` 경로만 수정 (`notices` → `products`)
 - 파일 처리 로직은 그대로 사용 (동적 처리되므로)
 
 **4. item-sheet.tsx 수정**
+
 - `notice` 모듈의 파일 변환 로직 복사
 - 동적 처리되므로 코드 수정 불필요
 
@@ -1237,6 +1302,7 @@ deleteFilesByUrls(urls: string[]): Promise<void>
 ## 새로운 기능 추가 시
 
 ### 1. features/ 레이어에 기능 추가
+
 ```typescript
 // src/features/feature-name/ui/component-name.tsx
 export function ComponentName() {
@@ -1245,6 +1311,7 @@ export function ComponentName() {
 ```
 
 ### 2. widgets/ 레이어에 복합 위젯 추가
+
 ```typescript
 // src/widgets/widget-name/widget-name.tsx
 export function WidgetName() {
@@ -1253,6 +1320,7 @@ export function WidgetName() {
 ```
 
 ### 3. app/ 라우팅 추가
+
 ```typescript
 // src/app/(protected)/new-page/page.tsx
 export default function NewPage() {
@@ -1261,7 +1329,9 @@ export default function NewPage() {
 ```
 
 ### 4. shared/ UI 컴포넌트 추가
+
 Shadcn UI CLI 사용:
+
 ```bash
 npx shadcn@latest add component-name
 ```
@@ -1269,6 +1339,7 @@ npx shadcn@latest add component-name
 ## 주요 의존성
 
 ### 프로덕션 의존성
+
 - `next`: 16.0.3
 - `react`, `react-dom`: 19.2.0
 - `@hookform/resolvers`: 3.9.1
@@ -1279,6 +1350,7 @@ npx shadcn@latest add component-name
 - `next-themes`: 0.4.6
 
 ### 개발 의존성
+
 - `typescript`: 5.7.2
 - `eslint`: 9.18.0
 - `@eslint/eslintrc`: 3.2.0

@@ -58,9 +58,9 @@ export async function getList({
     }
 
     // snake_case → camelCase 변환
-    const list = rawData.map(row => transformSnakeToCamel(row));
+    const data = rawData.map(row => transformSnakeToCamel(row)) as ItemDTO[];
 
-    return { success: true, data: { list: list as ItemDTO[], totalCount: count || 0 } };
+    return { success: true, data: { data, totalCount: count || 0 } };
   } catch (error) {
     console.error(error);
     return { success: false, error: '데이터를 불러오는 중 오류가 발생했습니다.' };
