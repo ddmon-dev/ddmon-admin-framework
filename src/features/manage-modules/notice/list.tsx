@@ -1,10 +1,15 @@
 'use client';
 
-import { ManageList } from '../_base/components/manage-list';
-import { type ItemDTO } from './types';
+import { ManageList } from '../_base/components';
 import { listColumns } from './list-columns';
+import { type ItemDTO } from './types';
 
-export function List({ data, totalCount }: { data: ItemDTO[]; totalCount: number }) {
+interface ListProps {
+  data: ItemDTO[];
+  totalCount: number;
+}
+
+export function List({ data, totalCount }: ListProps) {
   return (
     <ManageList
       data={data}

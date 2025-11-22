@@ -1,6 +1,6 @@
 import { RowData as BaseRowData, DbUpdate, DbInsert } from '@/shared/lib/supabase/db-helpers';
 import { CamelCaseKeys } from '@/shared/lib/utils/objects';
-import { WithFiles, type DbFilesJSONB } from '@/shared/lib/file-system';
+import { WithFiles } from '@/shared/lib/file-system';
 import { CONFIG } from './config';
 
 /**
