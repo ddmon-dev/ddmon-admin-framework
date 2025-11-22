@@ -10,6 +10,7 @@ import { FieldGroup } from '@/shared/ui/field';
 import {
   FormRadioGroup,
   FormInput,
+  FormNumberInput,
   FormEditor,
   FormFileUpload,
   FormDatePicker,
@@ -29,7 +30,11 @@ import { updateItem } from './actions/update-item';
 const formSchema = z.object({
   category: z.string().min(1, '카테고리를 선택해주세요.'),
   createdAt: z.date().optional(),
-  viewCount: z.number().optional(),
+  viewCount: z
+    .number()
+    .min(0, { message: '조회수는 0 이상이어야 합니다.' })
+    .max(999999999, { message: '조회수는 0 이상 999999999 이하여야 합니다.' })
+    .optional(),
   title: z.string().min(1, '제목을 입력해주세요.'),
   content: z.string().min(1, '내용을 입력해주세요.'),
   files: createFilesSchema(['thumbnail', 'attachments']),
@@ -61,10 +66,8 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevValues]);
 
-  console.log(prevValues);
-  console.log(form.getValues());
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
     try {
       const { files: formFiles, ...restValues } = values;
 
@@ -120,10 +123,12 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           mode='single'
           presets={true}
         />
-        <FormInput
+        <FormNumberInput
           control={form.control}
           name='viewCount'
           label='조회수'
+          min={0}
+          thousandSeparator
         />
         <FormInput
           control={form.control}
