@@ -4,9 +4,11 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { extractAllFileUrls, deleteFilesFromStorage } from '@/shared/lib/file-system';
+
+import { type UpdateResult } from '../../_base/types';
+
 import { CONFIG } from '../config';
 import { type ItemDTO, type UpdateItemValues } from '../types';
-import { type UpdateResult } from '../../_base/types';
 
 interface Params {
   id: string;

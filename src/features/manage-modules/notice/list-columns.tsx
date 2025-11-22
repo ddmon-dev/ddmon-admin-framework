@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { ModifyButton } from '../_base/components/modify-button';
+import { ModifyButton } from '../_base/components';
 import { SoftDeleteItemButton, HardDeleteItemButton } from './delete-item-button';
 import { type ItemDTO } from './types';
 

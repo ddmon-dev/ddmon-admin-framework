@@ -1,8 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { SoftDeleteButton } from '../_base/components/soft-delete-button';
-import { HardDeleteButton } from '../_base/components/hard-delete-button';
+import { SoftDeleteButton, HardDeleteButton } from '../_base/components';
 import { softDeleteItem } from './actions/soft-delete-item';
 import { hardDeleteItem } from './actions/hard-delete-item';
 
