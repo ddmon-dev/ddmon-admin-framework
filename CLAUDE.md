@@ -338,10 +338,14 @@ src/features/manage-modules/
 │   │   ├── create-button.tsx
 │   │   ├── modify-button.tsx
 │   │   ├── soft-delete-button.tsx
-│   │   └── hard-delete-button.tsx
-│   ├── utils/
-│   │   ├── db-operations.ts          # DB 유틸리티 (Soft/Hard Delete)
-│   │   └── file-operations.ts        # 파일 업로드/삭제 유틸리티
+│   │   ├── hard-delete-button.tsx
+│   │   └── index.ts                  # Barrel export
+│   ├── actions/              # 공용 Server Actions
+│   │   ├── delete.ts                 # softDelete, hardDelete
+│   │   └── index.ts                  # Barrel export
+│   ├── hooks/                # 커스텀 훅
+│   │   ├── use-manage-item.ts        # 항목 데이터 페칭 훅
+│   │   └── index.ts                  # Barrel export
 │   ├── types.ts                       # 공통 타입 정의
 │   └── config.ts                      # 기본 설정
 │
@@ -351,13 +355,13 @@ src/features/manage-modules/
     │   ├── get-item.ts
     │   ├── create-item.ts
     │   ├── update-item.ts
-    │   ├── delete-item.ts
-    │   └── upload-files.ts   # 파일 업로드
+    │   ├── soft-delete-item.ts       # Base action 활용 (3줄)
+    │   └── hard-delete-item.ts       # Base action 활용 (3줄)
     ├── list.tsx              # 목록 컴포넌트
     ├── list-columns.tsx      # 테이블 컬럼 정의
     ├── list-filters.tsx      # 필터 UI
     ├── item-form.tsx         # 항목 폼 (생성/수정)
-    ├── item-sheet.tsx        # Sheet 컨테이너
+    ├── item-sheet.tsx        # Sheet 컨테이너 (useManageItem 활용)
     ├── delete-item-button.tsx
     ├── config.ts             # 모듈별 설정
     ├── types.ts              # 모듈별 타입
@@ -388,9 +392,9 @@ openManageSheet({ id: '123', mode: 'modify' });
 - 어디서든 시트 열기/닫기 가능
 - 명확한 상태 관리
 
-#### 2. Delete 이원화
+#### 2. Delete 이원화 (Base Server Actions)
 
-데이터 삭제를 Soft Delete와 Hard Delete로 분리하여 관리합니다.
+데이터 삭제를 Soft Delete와 Hard Delete로 분리하여 관리하며, **_base/actions/delete.ts**에서 완전한 Server Actions를 제공합니다.
 
 ```typescript
 // Soft Delete: deleted 컬럼만 업데이트 (복구 가능)
@@ -400,22 +404,192 @@ openManageSheet({ id: '123', mode: 'modify' });
 <HardDeleteButton onDelete={handleHardDelete} />
 ```
 
-**구현**:
+**Base Actions 구현** (`_base/actions/delete.ts`):
 
 ```typescript
-// _base/utils/db-operations.ts
-export async function softDelete(tableName: TableName, id: string) {
-  const { data, error } = await supabase
-    .from(tableName)
-    .update({ deleted: true })
-    .eq('id', id)
-    .select()
-    .single();
-  return { data, error };
+// 완전한 Server Action (revalidatePath, 타입 변환 포함)
+export async function softDelete<T>({ tableName, id, path }: Params): Promise<DeleteResult<T>> {
+  try {
+    const supabase = createServerClient();
+    const { data, error } = await supabase
+      .from(tableName)
+      .update({ deleted: true })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    if (path) revalidatePath(path);
+
+    return { success: true, data: transformSnakeToCamel(data) as T };
+  } catch (error) {
+    return { success: false, error: '삭제 실패' };
+  }
+}
+
+export async function hardDelete<T>({ tableName, id, path }: Params): Promise<DeleteResult<T>> {
+  try {
+    const supabase = createServerClient();
+
+    // DB에서 완전 삭제
+    const { data, error } = await supabase
+      .from(tableName)
+      .delete()
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    // Storage 폴더 전체 삭제
+    await deleteFolderFromStorage(`${tableName}/${id}`);
+
+    if (path) revalidatePath(path);
+    return { success: true, data: transformSnakeToCamel(data) as T };
+  } catch (error) {
+    return { success: false, error: '삭제 실패' };
+  }
 }
 ```
 
-#### 3. Server Actions 패턴
+**모듈별 사용** (3줄로 간소화):
+
+```typescript
+// notice/actions/soft-delete-item.ts
+import { softDelete } from '../../_base/actions';
+
+export async function softDeleteItem({ id, path }: Params): Promise<DeleteResult<ItemDTO>> {
+  return await softDelete<ItemDTO>({ tableName: CONFIG.tableName, id, path });
+}
+
+// notice/actions/hard-delete-item.ts
+import { hardDelete } from '../../_base/actions';
+
+export async function hardDeleteItem({ id, path }: Params): Promise<DeleteResult<ItemDTO>> {
+  return await hardDelete<ItemDTO>({ tableName: CONFIG.tableName, id, path });
+}
+```
+
+**개선 효과**:
+- 모듈별 action: 42줄 → 3줄 (93% 감소)
+- 완전한 Server Action 제공 (utils에서 actions로 승격)
+- 제네릭 타입 지원으로 타입 안전성 보장
+- revalidatePath, transformSnakeToCamel 자동 처리
+
+#### 3. 파일 시스템 타입 계층
+
+파일 관련 타입을 도메인별로 명확히 분리하여 혼란을 방지합니다.
+
+```typescript
+// DB 레이어 (Storage에 저장된 메타데이터)
+export type DbFileMetadata = {
+  url: string;          // Storage 공개 URL
+  originalName: string; // 원본 파일명
+  size: number;         // 파일 크기 (bytes)
+  mimeType: string;     // MIME 타입
+  uploadedAt: string;   // 업로드 시각 (ISO)
+};
+
+export type DbFilesJSONB = Record<string, DbFileMetadata[]>;
+
+// Form 레이어 (클라이언트 폼 입력값)
+export type FormFileValue =
+  | (DbFileMetadata & { type: 'existing'; markedForDeletion?: boolean })
+  | { type: 'new'; file: File }
+  | null;
+
+export type FormFilesField = Record<string, FormFileValue[]>;
+
+// DTO 헬퍼 타입
+export type WithFiles<T> = T & {
+  files?: DbFilesJSONB;
+};
+```
+
+**유틸리티 함수**:
+
+```typescript
+// DB 파일 메타데이터 → 폼 업로드 형태 변환
+export function transformFilesToUploadValues(
+  files?: DbFilesJSONB
+): Record<string, FormFileValue[]> | undefined {
+  if (!files) return undefined;
+
+  return Object.fromEntries(
+    Object.entries(files).map(([category, fileList]) => [
+      category,
+      fileList.map(file => ({ type: 'existing' as const, ...file })),
+    ])
+  );
+}
+```
+
+#### 4. useManageItem 커스텀 훅
+
+항목 데이터 페칭, 파일 변환, 에러 처리를 통합한 커스텀 훅입니다.
+
+```typescript
+// _base/hooks/use-manage-item.ts
+export function useManageItem<T extends { files?: DbFilesJSONB }>(
+  getItemAction: GetItemAction<T>
+) {
+  const { manageSheetData } = useManageSheet();
+  const { id } = manageSheetData ?? {};
+
+  const [prevValues, setPrevValues] = useState<T | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchItem = async () => {
+      if (!id) {
+        setPrevValues(null);
+        return;
+      }
+
+      setIsLoading(true);
+      const { success, data, error } = await getItemAction({ id });
+
+      if (!success) {
+        setError(error || '데이터 조회 실패');
+        return;
+      }
+
+      // 파일 메타데이터 자동 변환
+      const transformedData = {
+        ...data,
+        files: transformFilesToUploadValues(data.files),
+      } as T;
+
+      setPrevValues(transformedData);
+      setIsLoading(false);
+    };
+
+    fetchItem();
+  }, [id, getItemAction]);
+
+  return { prevValues, isLoading, error };
+}
+```
+
+**사용 예시**:
+
+```typescript
+// notice/item-sheet.tsx (55줄 → 25줄, 54% 감소)
+export function ItemSheet() {
+  const { manageSheetData } = useManageSheet();
+  const { id, mode } = manageSheetData ?? {};
+  const { prevValues } = useManageItem(getItem);  // 3줄로 완료!
+
+  return (
+    <ManageSheet>
+      {mode === 'view' ? null : <ItemForm id={id} prevValues={prevValues} />}
+    </ManageSheet>
+  );
+}
+```
+
+#### 5. Server Actions 패턴
 
 모든 DB 작업은 Server Actions로 처리하며, 일관된 응답 형식을 유지합니다.
 
@@ -462,7 +636,7 @@ export async function createItem({
 - 선택적 경로 재검증 (`revalidatePath`)
 - 타입 안전성 보장
 
-#### 4. 에러 처리 패턴
+#### 6. 에러 처리 패턴
 
 **try-catch-finally** 구조로 안전하게 에러를 처리합니다.
 
@@ -498,7 +672,7 @@ const handleDelete = async () => {
 3. 버튼 컴포넌트의 `catch` 블록에서 처리
 4. `finally` 블록에서 항상 로딩 상태 해제
 
-#### 5. 파일 업로드 패턴
+#### 7. 파일 업로드 패턴
 
 Supabase Storage를 활용한 파일 업로드 시스템입니다.
 
@@ -829,9 +1003,18 @@ export default async function ProductsPage() {
 
 #### 4. 코드 재사용
 
-- \_base 컴포넌트 최대한 활용
-- 공통 패턴 유지
-- 중복 코드 최소화
+- \_base 컴포넌트/actions/hooks 최대한 활용
+- **적절한 수준의 공용화**: 100% 공통 로직만 Base로 제공 (delete actions)
+- 공통 패턴 유지하되 과도한 추상화 지양
+- Barrel exports로 import 경로 간소화
+  ```typescript
+  // Before
+  import { ManageSheet } from '../_base/components/manage-sheet';
+  import { CreateButton } from '../_base/components/create-button';
+
+  // After
+  import { ManageSheet, CreateButton } from '../_base/components';
+  ```
 
 #### 5. 성능 최적화
 
