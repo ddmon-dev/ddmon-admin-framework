@@ -54,6 +54,7 @@ type FormBaseProps<V extends FieldValues = FieldValues, N extends FieldPath<V> =
   label: ReactNode;
   description?: ReactNode;
   orientation?: 'vertical' | 'horizontal' | 'responsive';
+  optional?: boolean;
 };
 
 /**
@@ -101,6 +102,7 @@ export const FormField = <
   description,
   orientation = 'vertical',
   children,
+  optional = false,
 }: FormFieldProps<V, N>): ReactElement => {
   return (
     <Controller
@@ -112,7 +114,13 @@ export const FormField = <
           orientation={orientation}
         >
           <FieldContent>
-            <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+            <FieldLabel
+              htmlFor={field.name}
+              className={optional ? 'w-full' : ''}
+            >
+              {label}{' '}
+              {optional && <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>}
+            </FieldLabel>
             {description && <FieldDescription>{description}</FieldDescription>}
           </FieldContent>
           {children({
@@ -141,6 +149,7 @@ export const FormInput = <
   label,
   description,
   orientation,
+  optional,
   ...inputProps
 }: FormInputProps<V, N>): ReactElement => {
   return (
@@ -150,6 +159,7 @@ export const FormInput = <
       label={label}
       description={description}
       orientation={orientation}
+      optional={optional}
     >
       {({ fieldState, ...field }) => (
         <Input
@@ -177,6 +187,7 @@ export const FormTextarea = <
   label,
   description,
   orientation,
+  optional,
   ...textareaProps
 }: FormTextareaProps<V, N>): ReactElement => {
   return (
@@ -186,6 +197,7 @@ export const FormTextarea = <
       label={label}
       description={description}
       orientation={orientation}
+      optional={optional}
     >
       {({ fieldState, ...field }) => (
         <Textarea
@@ -295,6 +307,7 @@ export const FormCheckboxGroup = <
   name,
   options,
   vertical = false,
+  optional = false,
 }: FormCheckboxGroupProps<V, N>): ReactElement => {
   return (
     <Controller
@@ -305,9 +318,10 @@ export const FormCheckboxGroup = <
           <FieldContent>
             <FieldLegend
               variant='label'
-              className='mb-0'
+              className='flex mb-0'
             >
-              {label}
+              {label}{' '}
+              {optional && <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>}
             </FieldLegend>
             {description && <FieldDescription>{description}</FieldDescription>}
           </FieldContent>
@@ -369,6 +383,7 @@ export const FormRadioGroup = <
   name,
   options,
   vertical = false,
+  optional = false,
 }: FormRadioGroupProps<V, N>): ReactElement => {
   return (
     <Controller
@@ -379,9 +394,10 @@ export const FormRadioGroup = <
           <FieldContent>
             <FieldLegend
               variant='label'
-              className='mb-0'
+              className='flex mb-0'
             >
-              {label}
+              {label}{' '}
+              {optional && <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>}
             </FieldLegend>
             {description && <FieldDescription>{description}</FieldDescription>}
           </FieldContent>
@@ -436,6 +452,7 @@ export const FormSelect = <
   label,
   description,
   orientation,
+  optional,
   options,
   placeholder = 'Select',
 }: FormSelectProps<V, N>): ReactElement => {
@@ -446,6 +463,7 @@ export const FormSelect = <
       label={label}
       description={description}
       orientation={orientation}
+      optional={optional}
     >
       {({ onChange, fieldState, ...field }) => (
         <Select
@@ -498,6 +516,7 @@ export const FormCombobox = <
   label,
   description,
   orientation,
+  optional,
   options,
   placeholder,
   searchPlaceholder,
@@ -511,6 +530,7 @@ export const FormCombobox = <
       label={label}
       description={description}
       orientation={orientation}
+      optional={optional}
     >
       {({ onChange, fieldState, ...field }) => (
         <Combobox
@@ -551,6 +571,7 @@ export const FormMultiCombobox = <
   label,
   description,
   orientation,
+  optional,
   options,
   placeholder,
   searchPlaceholder,
@@ -564,6 +585,7 @@ export const FormMultiCombobox = <
       label={label}
       description={description}
       orientation={orientation}
+      optional={optional}
     >
       {({ onChange, fieldState, ...field }) => (
         <MultiCombobox
@@ -639,6 +661,7 @@ export const FormDatePicker = <
     toDate,
     captionLayout,
     showOutsideDays,
+    optional,
   } = props;
 
   const mode = props.mode ?? 'single';
@@ -650,6 +673,7 @@ export const FormDatePicker = <
       label={label}
       description={description}
       orientation={orientation}
+      optional={optional}
     >
       {({ onChange, fieldState, ...field }) => {
         if (mode === 'single') {
@@ -783,6 +807,7 @@ export const FormFileUpload = <
   name,
   label,
   description,
+  optional = false,
   max = 1,
   accept,
   acceptPreset,
@@ -812,9 +837,10 @@ export const FormFileUpload = <
             {label && (
               <FieldLegend
                 variant='label'
-                className='mb-0'
+                className='flex mb-0'
               >
-                {label}
+                {label}{' '}
+                {optional && <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>}
               </FieldLegend>
             )}
             {displayDescription && <FieldDescription>{displayDescription}</FieldDescription>}
@@ -864,6 +890,7 @@ export const FormEditor = <
   label,
   description,
   orientation,
+  optional,
   placeholder = '내용을 입력하세요...',
   className,
   uploadFolder,
@@ -878,6 +905,7 @@ export const FormEditor = <
       label={label}
       description={description}
       orientation={orientation}
+      optional={optional}
     >
       {({ onChange, fieldState, ...field }) => (
         <Editor
@@ -971,6 +999,7 @@ export const FormNumberInput = <
   label,
   description,
   orientation,
+  optional,
   min,
   max,
   thousandSeparator = false,
@@ -988,6 +1017,7 @@ export const FormNumberInput = <
       label={label}
       description={description}
       orientation={orientation}
+      optional={optional}
     >
       {({ onChange, fieldState, ...field }) => (
         <NumericFormat
