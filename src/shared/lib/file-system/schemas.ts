@@ -1,33 +1,34 @@
 import { z } from 'zod';
 
 /**
- * 기존 파일 스키마
+ * 파일 업로드 시 데이터베이스에 저장되는 파일 메타데이터의 스키마입니다.
  */
-const existingFileSchema = z.object({
+
+/* *
+ * 기존에 DB에 저장된 파일 데이터 스키마 +
+ * 클라이언트의 폼에서 컨트롤 (삭제) 하기 위한 옵션 필드 (markedForDeletion)
+ */
+const previousFileData = z.object({
   type: z.literal('existing'),
   url: z.string(),
   originalName: z.string(),
+  size: z.number(),
+  mimeType: z.string(),
+  uploadedAt: z.string(),
   markedForDeletion: z.boolean().optional(),
 });
 
-/**
- * 새 파일 스키마
- */
-const newFileSchema = z.object({
+// 클라이언트의 폼에서 새로 업로드할 파일 데이터 스키마 (파일 객체)
+const newFileData = z.object({
   type: z.literal('new'),
   file: z.instanceof(File),
 });
 
 /**
- * 파일 업로드 값 스키마 (기존 파일 | 새 파일 | null)
- *
- * @example
- * // FormFileUpload 컴포넌트의 value 타입 검증에 사용
- * const schema = z.object({
- *   attachments: z.array(fileUploadValueSchema).optional(),
- * });
+ * 파일 업로드 값 스키마
+ * 기존 파일 스키마와 새 파일 스키마를 유니온 타입으로 검증합니다.
  */
-export const fileUploadValueSchema = z.union([existingFileSchema, newFileSchema, z.null()]);
+const fileUploadValueSchema = z.union([previousFileData, newFileData, z.null()]);
 
 /**
  * 카테고리별 파일 그룹 스키마 생성 함수
@@ -39,19 +40,16 @@ export const fileUploadValueSchema = z.union([existingFileSchema, newFileSchema,
  * const formSchema = z.object({
  *   title: z.string(),
  *   content: z.string(),
- *   ...createFilesSchema(['thumbnail', 'attachments']),
+ *   files: createFilesSchema(['thumbnail', 'attachments'])   // files: { thumbnail: [], attachments: [] }
  * });
  */
 export function createFilesSchema(categories: string[]) {
-  const filesObject = categories.reduce(
-    (acc, category) => {
-      acc[category] = z.array(fileUploadValueSchema).optional();
-      return acc;
-    },
-    {} as Record<string, any>
-  );
+  const filesObject = categories.reduce((acc, category) => {
+    acc[category] = z.array(fileUploadValueSchema).optional();
+    return acc;
+  }, {} as Record<string, any>);
 
-  return {
-    files: z.object(filesObject).optional(),
-  };
+  const schema = z.object(filesObject).optional();
+
+  return schema;
 }
