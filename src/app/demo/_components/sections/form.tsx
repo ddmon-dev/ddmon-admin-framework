@@ -20,6 +20,7 @@ import {
 } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas/presets';
+import { createFilesSchema } from '@/shared/lib/file-system';
 
 const formSchema = z.object({
   name: z.string().min(1, '이름을 입력하세요'),
@@ -45,9 +46,9 @@ const formSchema = z.object({
   dateSingle: z.date({ message: '날짜를 선택해주세요' }),
   dateMultiple: z.array(z.date()).min(1, '최소 1개의 날짜를 선택해주세요'),
   dateRange: schemaPresets.dateRange,
-  fileUpload: schemaPresets.fileUpload(1),
-  imageUpload: schemaPresets.fileUpload(1),
-  multiFileUpload: schemaPresets.fileUpload(1),
+  fileUpload: createFilesSchema({ file: 1 }).shape.file,
+  imageUpload: createFilesSchema({ image: 1 }).shape.image,
+  multiFileUpload: createFilesSchema({ multiFile: 1 }).shape.multiFile,
   editor: z.string().min(1, '내용을 입력하세요'),
 });
 

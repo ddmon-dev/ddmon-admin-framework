@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { type FormFileValue } from '@/shared/ui/file-upload';
 import { type DateRange } from 'react-day-picker';
+import { createFilesSchema } from '@/shared/lib/file-system';
 
 /**
  * 복잡한 타입의 폼 필드를 위한 Zod 스키마 프리셋
@@ -10,35 +10,33 @@ import { type DateRange } from 'react-day-picker';
  *
  * @example
  * ```tsx
- * import { schemaPresets } from '@/shared/schemas/field-schemas';
+ * import { schemaPresets } from '@/shared/schemas/presets';
  *
  * const schema = z.object({
  *   name: z.string().min(1, '이름을 입력하세요'),  // 직접 작성
  *   email: z.string().email('유효한 이메일'),       // 직접 작성
- *   files: schemaPresets.fileUpload(1),              // 프리셋 사용
- *   dateRange: schemaPresets.dateRange,              // 프리셋 사용
+ *   files: schemaPresets.files(['thumbnail', 'attachments']),  // 프리셋 사용
+ *   dateRange: schemaPresets.dateRange,            // 프리셋 사용
  * });
  * ```
  */
 export const schemaPresets = {
   /**
-   * 파일 업로드 검증
-   * @param min 최소 파일 개수 (기본값: 1)
+   * 다중 카테고리 파일 업로드 검증
+   * createFilesSchema를 re-export
+   *
+   * @example
+   * // 간단 사용 (모두 선택)
+   * files: schemaPresets.files(['thumbnail', 'attachments'])
+   *
+   * @example
+   * // 고급 사용 (카테고리별 최소 개수 지정)
+   * files: schemaPresets.files({
+   *   thumbnail: 1,        // 필수, 최소 1개
+   *   attachments: 0,      // 선택
+   * })
    */
-  fileUpload: (min = 1) =>
-    z.array(z.custom<FormFileValue>()).refine(
-      files => {
-        const validFiles = files.filter(f => {
-          if (!f) return false;
-          if (f.type === 'existing' && f.markedForDeletion) return false;
-          return true;
-        });
-        return validFiles.length >= min;
-      },
-      {
-        message: min === 1 ? '파일을 업로드해주세요' : `최소 ${min}개 이상의 파일을 업로드해주세요`,
-      }
-    ),
+  files: createFilesSchema,
 
   /**
    * 날짜 범위 검증
