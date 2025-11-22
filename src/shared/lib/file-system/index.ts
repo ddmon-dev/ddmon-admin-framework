@@ -18,7 +18,12 @@ export { processFileUploads } from './upload';
 export { deleteFilesFromStorage, deleteFolderFromStorage } from '../supabase/storage';
 
 // Utils
-export { generateUniqueFileName, createFileMetadata, extractAllFileUrls } from './utils';
+export {
+  generateUniqueFileName,
+  createFileMetadata,
+  extractAllFileUrls,
+  transformFilesToUploadValues,
+} from './utils';
 
 // Client (브라우저 전용)
 export { uploadFilesWithPresignedUrl } from './client';

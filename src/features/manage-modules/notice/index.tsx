@@ -3,7 +3,7 @@ import { type SearchParams } from '@/shared/types/search-params';
 import { ManageContainer } from '../_base/components/manage-container';
 import { CreateButton } from '../_base/components/create-button';
 
-import { ListFilters } from './list-filters';
+import { Filters } from './filters';
 import { List } from './list';
 import { ItemSheet } from './item-sheet';
 
@@ -29,7 +29,7 @@ export async function ManageNotice({ searchParams }: Props) {
         <div className='flex justify-end'>
           <CreateButton>생성</CreateButton>
         </div>
-        <ListFilters />
+        <Filters />
         <List
           data={data}
           totalCount={totalCount}
