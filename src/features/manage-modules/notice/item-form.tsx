@@ -16,11 +16,8 @@ import {
   FormDatePicker,
 } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
-import {
-  processFileUploads,
-  createFilesSchema,
-  type FormFilesField,
-} from '@/shared/lib/file-system';
+import { processFileUploads, type FormFilesField } from '@/shared/lib/file-system';
+import { schemaPresets } from '@/shared/schemas/presets';
 
 import { CONFIG } from './config';
 import { type ItemDTO } from './types';
@@ -30,14 +27,10 @@ import { updateItem } from './actions/update-item';
 const formSchema = z.object({
   category: z.string().min(1, '카테고리를 선택해주세요.'),
   createdAt: z.date().optional(),
-  viewCount: z
-    .number()
-    .min(0, { message: '조회수는 0 이상이어야 합니다.' })
-    .max(999999999, { message: '조회수는 0 이상 999999999 이하여야 합니다.' })
-    .optional(),
+  viewCount: schemaPresets.viewCount.optional(),
   title: z.string().min(1, '제목을 입력해주세요.'),
   content: z.string().min(1, '내용을 입력해주세요.'),
-  files: createFilesSchema({ thumbnail: 1, attachments: 0 }),
+  files: schemaPresets.files({ thumbnail: 1, attachments: 0 }),
 });
 
 const formDefaultValues = {

@@ -22,11 +22,10 @@ import { createFilesSchema } from '@/shared/lib/file-system';
  */
 export const schemaPresets = {
   /**
-   * 다중 카테고리 파일 업로드 검증
-   * createFilesSchema를 re-export
+   * 파일 업로드 검증
    *
    * @example
-   * // 간단 사용 (모두 선택)
+   * // 간단 사용 (모두 선택 필드)
    * files: schemaPresets.files(['thumbnail', 'attachments'])
    *
    * @example
@@ -48,4 +47,13 @@ export const schemaPresets = {
       to: z.date().optional(),
     })
     .refine((data): data is DateRange => !!data.from, { message: '기간을 선택해주세요' }),
+
+  /**
+   * 조회수 검증
+   * - 0 이상 999999999 이하 (int4 컬럼 고려)
+   */
+  viewCount: z
+    .number()
+    .min(0, { message: '조회수는 0 이상이어야 합니다.' })
+    .max(999999999, { message: '조회수는 0 이상 999999999 이하여야 합니다.' }),
 } as const;
