@@ -13,15 +13,12 @@ interface Params {
 }
 
 export async function createItem({ values, path }: Params): Promise<CreateResult<ItemDTO>> {
-  const noticeId = crypto.randomUUID();
-
   try {
     const supabase = createServerClient();
 
     // DB 저장용 값 준비 (파일은 클라이언트에서 이미 업로드 완료)
     const insertValues = {
       ...values,
-      id: noticeId,
     };
 
     const snakedValues = transformCamelToSnake(insertValues);
@@ -49,7 +46,8 @@ export async function createItem({ values, path }: Params): Promise<CreateResult
     return { success: true, data: createdItem as ItemDTO };
   } catch (error) {
     console.error('Create item error:', error);
-    const errorMessage = error instanceof Error ? error.message : '데이터를 생성하는 중 오류가 발생했습니다.';
+    const errorMessage =
+      error instanceof Error ? error.message : '데이터를 생성하는 중 오류가 발생했습니다.';
     return { success: false, error: errorMessage };
   }
 }
