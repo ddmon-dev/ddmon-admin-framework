@@ -5,87 +5,13 @@ import { type ActionResult } from '@/shared/types/server-actions';
 
 const BUCKET_NAME = 'my-bucket';
 
-// 굳이 여기에 이렇게 해야할지 고민해봐야함.
-export type FileUploadResult = ActionResult<{ url: string }>;
-export type FileDeleteResult = ActionResult<void>;
-export type PresignedUploadUrlResult = ActionResult<{
+type ResultData = {
   uploadUrl: string;
   publicUrl: string;
   filePath: string;
-}>;
+};
 
-/**
- * Supabase Storage에 파일을 업로드합니다.
- *
- * @param file - 업로드할 파일
- * @param path - 저장 경로 (예: 'notices/uuid/filename.pdf')
- * @returns 업로드 결과와 공개 URL
- */
-// 안씀
-export async function uploadFileToStorage(file: File, path: string): Promise<FileUploadResult> {
-  try {
-    const supabase = createServerClient();
-
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(path, buffer, {
-      cacheControl: '3600',
-      upsert: false,
-    });
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path);
-
-    return {
-      success: true,
-      data: { url: publicUrl },
-    };
-  } catch (error) {
-    console.error('파일 업로드 실패:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : '파일 업로드에 실패했습니다.',
-    };
-  }
-}
-
-/**
- * Supabase Storage에서 파일을 삭제합니다.
- *
- * @param url - 삭제할 파일의 공개 URL
- * @returns 삭제 결과
- */
-// 안씀 (확인필요)
-export async function deleteFileFromStorage(url: string): Promise<FileDeleteResult> {
-  try {
-    const supabase = createServerClient();
-
-    const filePath = extractFilePathFromUrl(url);
-
-    const { error } = await supabase.storage.from(BUCKET_NAME).remove([filePath]);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return {
-      success: true,
-      data: undefined,
-    };
-  } catch (error) {
-    console.error('파일 삭제 실패:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : '파일 삭제에 실패했습니다.',
-    };
-  }
-}
+type PresignedUploadUrlResult = ActionResult<ResultData>;
 
 /**
  * 클라이언트가 직접 업로드할 수 있는 Presigned URL을 발급합니다.
@@ -135,14 +61,7 @@ export async function createPresignedUploadUrl(
   }
 }
 
-export type MultiPresignedUploadUrlResult = ActionResult<
-  {
-    uploadUrl: string;
-    publicUrl: string;
-    filePath: string;
-    originalName: string;
-  }[]
->;
+type MultiPresignedUploadUrlResult = ActionResult<(ResultData & { originalName: string })[]>;
 
 /**
  * 여러 파일에 대한 Presigned URL을 일괄 발급합니다.
@@ -179,6 +98,8 @@ export async function createMultiplePresignedUploadUrls(
     };
   }
 }
+
+type FileDeleteResult = ActionResult<void>;
 
 /**
  * Supabase Storage에서 여러 파일을 일괄 삭제합니다.
