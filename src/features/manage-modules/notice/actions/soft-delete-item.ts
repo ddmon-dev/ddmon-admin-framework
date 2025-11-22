@@ -16,7 +16,7 @@ interface Params {
  * Soft Delete: deleted = true로 설정
  * Storage 파일은 유지 (복구 가능)
  */
-export async function deleteItem({ id, path }: Params): Promise<DeleteResult<ItemDTO>> {
+export async function softDeleteItem({ id, path }: Params): Promise<DeleteResult<ItemDTO>> {
   try {
     // notices 테이블에서 soft delete 수행
     const { data, error } = await softDelete(CONFIG.tableName, id);

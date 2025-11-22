@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { SoftDeleteButton } from '../_base/components/soft-delete-button';
 import { HardDeleteButton } from '../_base/components/hard-delete-button';
-import { deleteItem } from './actions/delete-item';
+import { softDeleteItem } from './actions/soft-delete-item';
 import { hardDeleteItem } from './actions/hard-delete-item';
 
 interface DeleteItemButtonProps {
@@ -11,11 +11,11 @@ interface DeleteItemButtonProps {
   children?: React.ReactNode;
 }
 
-export function DeleteItemButton({ itemId, children }: DeleteItemButtonProps) {
+export function SoftDeleteItemButton({ itemId, children }: DeleteItemButtonProps) {
   const pathname = usePathname();
 
   const handleDelete = async () => {
-    const { success, error } = await deleteItem({ id: itemId, path: pathname });
+    const { success, error } = await softDeleteItem({ id: itemId, path: pathname });
 
     if (!success) {
       throw new Error(error || '삭제 실패');
