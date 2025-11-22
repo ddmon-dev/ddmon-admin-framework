@@ -1,4 +1,4 @@
-import { type FileMetadata } from './types';
+import { type FileMetadata, type FileUploadValue } from './types';
 
 /**
  * 파일명 생성: UUID + 확장자만 (한글 완벽 지원)
@@ -61,4 +61,37 @@ export function extractAllFileUrls(files?: Record<string, FileMetadata[]>): stri
   }
 
   return urls;
+}
+
+/**
+ * DB files 객체를 폼 업로드 형태로 변환
+ * FileMetadata[] → FileUploadValue[] (type: 'existing')
+ *
+ * @param files - DB에서 조회한 files 객체
+ * @returns 폼에서 사용할 수 있는 형태로 변환된 files 객체
+ *
+ * @example
+ * // DB에서 조회한 데이터
+ * const item = { files: { thumbnail: [{ url: '...', originalName: '...' }] } };
+ *
+ * // 폼 초기값으로 변환
+ * const formValues = {
+ *   ...item,
+ *   files: transformFilesToUploadValues(item.files)
+ * };
+ */
+export function transformFilesToUploadValues(
+  files?: Record<string, FileMetadata[]>
+): Record<string, FileUploadValue[]> | undefined {
+  if (!files) return undefined;
+
+  return Object.fromEntries(
+    Object.entries(files).map(([category, fileList]) => [
+      category,
+      fileList.map(file => ({
+        type: 'existing' as const,
+        ...file,
+      })),
+    ])
+  );
 }
