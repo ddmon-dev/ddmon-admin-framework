@@ -1,7 +1,7 @@
 import { ActionResult } from '@/shared/types/server-actions';
 
 export interface ListProps<T> {
-  list: T[];
+  data: T[];
   totalCount: number;
 }
 
