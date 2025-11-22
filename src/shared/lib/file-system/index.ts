@@ -4,7 +4,7 @@
  */
 
 // Types
-export type { FileMetadata, FileUploadValue, TableName, PresignedUploadInfo } from './types';
+export type { FileMetadata, FileUploadValue, PresignedUploadInfo } from './types';
 
 // Upload (Server Actions)
 export { processFileUploads } from './upload';
