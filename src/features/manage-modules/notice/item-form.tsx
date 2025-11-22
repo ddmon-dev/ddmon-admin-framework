@@ -102,7 +102,8 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           name='createdAt'
           label='작성일'
           mode='single'
-          presets={true}
+          presets
+          optional
         />
         <FormNumberInput
           control={form.control}
@@ -137,6 +138,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           acceptPreset='documents'
           maxSize={10}
           max={5}
+          optional
         />
 
         <LoadingButton
