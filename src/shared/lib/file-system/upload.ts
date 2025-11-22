@@ -14,7 +14,7 @@ import { type FileMetadata, type FileUploadValue } from './types';
  * @param files - 파일 카테고리별 업로드 값
  * @param folder - Storage 저장 폴더 경로 (예: 'notices/uuid')
  * @param onProgress - 전체 업로드 진행률 콜백 (0-100)
- * @returns 카테고리별 파일 메타데이터
+ * @returns 카테고리별 파일 메타데이터 example: { thumbnail: FileMetadata[], attachments: FileMetadata[] }
  */
 export async function processFileUploads({
   files,

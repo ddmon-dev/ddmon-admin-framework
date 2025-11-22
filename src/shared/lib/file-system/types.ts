@@ -43,3 +43,20 @@ export type PresignedUploadInfo = {
   originalName: string;
   category: string;
 };
+
+/**
+ * 파일 업로드 지원 DTO 헬퍼 타입
+ *
+ * 모든 DTO에 files 필드를 추가하는 제네릭 타입입니다.
+ * files는 optional이므로 파일이 없는 모듈에서도 사용 가능합니다.
+ *
+ * @example
+ * // 파일 있는 모듈
+ * export type NoticeDTO = WithFiles<CamelCaseKeys<RowData>>;
+ *
+ * // 파일 없는 모듈 (files는 undefined 또는 {})
+ * export type UserDTO = WithFiles<CamelCaseKeys<RowData>>;
+ */
+export type WithFiles<T> = T & {
+  files?: Record<string, FileMetadata[]>;
+};

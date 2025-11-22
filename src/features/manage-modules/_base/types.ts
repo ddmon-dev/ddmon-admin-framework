@@ -1,4 +1,4 @@
-import { type ActionResult } from '@/shared/types/server-actions';
+import { ActionResult } from '@/shared/types/server-actions';
 
 export interface ListProps<T> {
   list: T[];
@@ -11,7 +11,4 @@ export type UpdateResult<T> = ActionResult<T>;
 export type CreateResult<T> = ActionResult<T>;
 export type DeleteResult<T> = ActionResult<T>;
 
-export type {
-  FileUploadResult,
-  FileDeleteResult,
-} from '@/shared/lib/supabase/storage';
+export type { FileUploadResult, FileDeleteResult } from '@/shared/lib/supabase/storage';
