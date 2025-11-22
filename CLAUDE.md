@@ -1482,6 +1482,482 @@ deleteFilesByUrls(urls: string[]): Promise<void>
 3. **폼 스키마만 수정**: 모듈별로 필요한 카테고리만 정의
 4. **Storage 경로 규칙**: `{모듈명}/{엔티티ID}/{파일명}`
 
+## CKEditor 이미지 업로드 시스템
+
+### 개요
+
+CKEditor 이미지 업로드 시스템은 에디터 내에서 이미지를 삽입할 때 Supabase Storage로 자동 업로드하는 기능입니다. Presigned URL 패턴을 사용하여 보안성과 성능을 모두 확보했으며, 자동 경로 생성으로 개발자 경험을 개선했습니다.
+
+**핵심 특징:**
+- Presigned URL 기반 업로드 (클라이언트 직접 업로드)
+- 자동 경로 생성 (`editor/{entity}/{YYYYMMDD}/`)
+- 환경변수로 루트 폴더 커스터마이징
+- MB 단위 용량 설정 (간편한 설정)
+- 파일 타입 검증 (보안 강화)
+
+**manage-modules와의 차이:**
+- **manage-modules (FormFileUpload)**: 폼 첨부파일, DB JSONB에 메타데이터 저장, 관리 가능
+- **CKEditor**: 에디터 내 이미지, HTML에 URL 직접 임베딩, DB 저장 없음
+
+### 아키텍처
+
+**파일 구조:**
+
+```
+src/shared/ui/editor/
+├── ckeditor/
+│   ├── config.ts                    # 기본 설정 (ImageUploadConfig, DEFAULT_IMAGE_CONFIG)
+│   ├── utils.ts                     # 경로 생성 로직
+│   ├── custom-upload-adapter.ts     # CKEditor 업로드 어댑터
+│   └── index.tsx                    # CKEditor 컴포넌트
+└── editor.tsx                       # Dynamic import wrapper (SSR 비활성화)
+```
+
+**주요 파일 역할:**
+
+1. **config.ts**: 순수 설정값
+   ```typescript
+   export const DEFAULT_IMAGE_CONFIG: ImageUploadConfig = {
+     maxSizeMB: 2,
+     acceptedFormats: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
+     defaultFolder: 'editor',
+   };
+   ```
+
+2. **utils.ts**: 경로 생성 로직
+   ```typescript
+   export function generateUploadPath(uploadFolder?: string, entity?: string): string {
+     // 1순위: 명시적 uploadFolder
+     if (uploadFolder) return uploadFolder;
+
+     // 2순위: entity 기반 자동 생성
+     if (entity) {
+       const rootFolder = getEditorUploadRoot();
+       const dateString = new Date().toISOString().split('T')[0].replace(/-/g, '');
+       return `${rootFolder}/${entity}/${dateString}`;
+     }
+
+     // 3순위: 기본 폴더
+     return DEFAULT_IMAGE_CONFIG.defaultFolder;
+   }
+   ```
+
+3. **custom-upload-adapter.ts**: Presigned URL 업로드
+   - 파일 검증 (크기, MIME 타입)
+   - Presigned URL 발급
+   - Storage에 직접 업로드
+   - 공개 URL 반환
+
+4. **index.tsx**: CKEditor 컴포넌트
+   - entity prop 기반 자동 경로 생성
+   - onReady 콜백에서 CustomUploadAdapter 등록
+
+### 핵심 개념
+
+#### 1. 경로 생성 우선순위
+
+CKEditor는 3단계 우선순위로 업로드 경로를 결정합니다:
+
+```typescript
+// 1순위: 명시적 uploadFolder (커스텀 경로)
+<CKEditor uploadFolder="custom/special/path" entity="notices" />
+// → "custom/special/path" 사용 (entity 무시)
+
+// 2순위: entity 기반 자동 생성 (권장)
+<CKEditor entity="notices" />
+// → "editor/notices/20251122" 자동 생성
+
+// 3순위: 기본값
+<CKEditor />
+// → "editor" 사용
+```
+
+**권장 사용법:**
+- 일반적인 경우: `entity` prop 사용 (자동 경로 관리)
+- 특수한 경우: `uploadFolder` prop 사용 (명시적 제어)
+
+#### 2. 자동 경로 생성
+
+entity prop을 전달하면 다음 패턴으로 자동 생성됩니다:
+
+```
+{rootFolder}/{entity}/{YYYYMMDD}/
+```
+
+**예시:**
+```typescript
+// 2025년 1월 22일, entity="notices"
+// → "editor/notices/20250122/"
+
+// 환경변수 NEXT_PUBLIC_EDITOR_UPLOAD_ROOT="uploads"
+// → "uploads/notices/20250122/"
+```
+
+**장점:**
+- 날짜별 폴더 분리로 관리 용이
+- 엔티티별 격리
+- 사용처에서 경로 포맷 신경 쓰지 않음
+
+#### 3. Presigned URL 패턴
+
+**흐름:**
+
+```
+1. 클라이언트: 이미지 선택
+   ↓
+2. Server Action: Presigned URL 발급 (createPresignedUploadUrl)
+   ↓
+3. 클라이언트: Presigned URL로 Storage에 직접 업로드
+   ↓
+4. CKEditor: 공개 URL을 HTML에 삽입
+```
+
+**보안 이점:**
+- 서버 사이드에서 URL 발급 (인증 필요)
+- 토큰 만료 시간 설정 (기본 60초)
+- 클라이언트는 서비스 키 노출 없음
+
+**성능 이점:**
+- 서버를 거치지 않고 Storage 직접 업로드
+- 서버 부하 감소
+
+#### 4. 파일 검증
+
+업로드 전 클라이언트에서 검증합니다:
+
+```typescript
+// 크기 검증 (MB 단위)
+if (file.size > mbToBytes(maxSizeMB)) {
+  throw new Error(`이미지 크기는 ${maxSizeMB}MB를 초과할 수 없습니다.`);
+}
+
+// MIME 타입 검증
+if (!acceptedFormats.includes(file.type)) {
+  throw new Error('지원하지 않는 이미지 형식입니다.');
+}
+```
+
+### 환경변수 설정
+
+#### NEXT_PUBLIC_EDITOR_UPLOAD_ROOT
+
+에디터 이미지 업로드의 루트 폴더를 설정합니다.
+
+**기본값**: `'editor'` (config.ts의 defaultFolder)
+
+**설정 방법:**
+
+1. `.env.local` 파일 생성/수정
+   ```bash
+   NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
+   ```
+
+2. 다른 루트 폴더 사용
+   ```bash
+   NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=uploads
+   ```
+
+3. 개발 서버 재시작
+   ```bash
+   yarn dev
+   ```
+
+**폴백 체인:**
+```typescript
+process.env.NEXT_PUBLIC_EDITOR_UPLOAD_ROOT  // 우선
+  ↓ (없으면)
+DEFAULT_IMAGE_CONFIG.defaultFolder  // 'editor'
+```
+
+### 사용 방법
+
+#### 1. 기본 사용 (entity prop)
+
+**권장 방식**으로, entity만 전달하면 자동으로 경로가 생성됩니다.
+
+```typescript
+// notice/item-form.tsx
+import { CONFIG } from './config';
+
+<FormEditor
+  control={form.control}
+  name='content'
+  label='내용'
+  entity={CONFIG.tableName}  // "notices" → "editor/notices/20251122"
+/>
+```
+
+**결과:**
+- 저장 경로: `editor/notices/20251122/uuid-timestamp.jpg`
+- 개발자는 경로 포맷 신경 안 씀
+- 날짜가 바뀌면 자동으로 새 폴더 생성
+
+#### 2. 커스텀 경로 (uploadFolder prop)
+
+특수한 경우에만 사용합니다.
+
+```typescript
+<FormEditor
+  control={form.control}
+  name='content'
+  uploadFolder="announcements/special/2025"  // 명시적 경로
+  entity="notices"  // 무시됨
+/>
+```
+
+**사용 시나리오:**
+- 특정 캠페인용 별도 폴더
+- 레거시 경로 호환
+- 테스트용 임시 폴더
+
+#### 3. 고급 설정
+
+모든 옵션을 커스터마이징할 수 있습니다.
+
+```typescript
+<FormEditor
+  control={form.control}
+  name='content'
+  entity="notices"
+  maxImageSizeMB={5}  // 5MB 제한 (기본 2MB)
+  acceptedImageFormats={['image/jpeg', 'image/png']}  // JPEG, PNG만
+/>
+```
+
+#### 4. 일반 CKEditor 사용
+
+Form 없이 직접 사용할 수도 있습니다.
+
+```typescript
+import { CKEditor } from '@/shared/ui/editor/ckeditor';
+
+const [content, setContent] = useState('');
+
+<CKEditor
+  content={content}
+  onChange={setContent}
+  entity="blogs"
+  placeholder="내용을 입력하세요..."
+/>
+```
+
+### manage-modules와의 연관성
+
+두 시스템 모두 Supabase Storage를 사용하지만, **저장 방식과 목적이 다릅니다**.
+
+#### 비교표
+
+| 항목 | manage-modules (FormFileUpload) | CKEditor 이미지 업로드 |
+|------|--------------------------------|----------------------|
+| **용도** | 폼 첨부파일 | 에디터 내 이미지 |
+| **Storage 경로** | `{모듈명}/{엔티티ID}/` | `editor/{엔티티}/{날짜}/` |
+| **DB 저장** | JSONB 메타데이터 저장 | 저장 안 함 (HTML에 URL만) |
+| **메타데이터** | url, name, size, mimeType, uploadedAt | 없음 |
+| **삭제 관리** | softDelete/hardDelete 시 Storage도 삭제 | 자동 삭제 없음 |
+| **사용 컴포넌트** | FormFileUpload | CKEditor |
+| **업로드 방식** | processFiles() (다중 카테고리) | CustomUploadAdapter |
+| **파일 변환** | FormFileValue[] | 없음 (바로 URL) |
+
+#### 실무 시나리오
+
+**공지사항 작성:**
+```typescript
+<form onSubmit={handleSubmit}>
+  {/* 제목 */}
+  <FormInput name='title' />
+
+  {/* 내용 (CKEditor 이미지 업로드) */}
+  <FormEditor
+    name='content'
+    entity="notices"  // editor/notices/20251122/
+  />
+
+  {/* 첨부파일 (manage-modules 파일 업로드) */}
+  <FormFileUpload
+    name='files.attachments'
+    label='첨부 파일'
+  />
+</form>
+```
+
+**저장 결과:**
+```json
+{
+  "id": "uuid",
+  "title": "공지사항 제목",
+  "content": "<p>내용... <img src='https://...storage.../editor/notices/20251122/image.jpg'></p>",
+  "files": {
+    "attachments": [
+      { "url": "https://...storage.../notices/uuid/file.pdf", "name": "첨부파일.pdf", ... }
+    ]
+  }
+}
+```
+
+**차이:**
+- CKEditor 이미지: HTML에 URL 직접 삽입, DB에 메타데이터 없음
+- 첨부파일: DB JSONB에 메타데이터 저장, 관리 가능
+
+### 글로벌 유틸리티
+
+CKEditor 이미지 업로드를 계기로 범용 유틸리티 함수를 글로벌화했습니다.
+
+**위치**: `/src/shared/lib/utils/format.ts`
+
+```typescript
+/**
+ * MB를 Bytes로 변환
+ */
+export const mbToBytes = (mb: number): number => mb * 1024 * 1024;
+
+/**
+ * Bytes를 MB로 변환
+ */
+export const bytesToMB = (bytes: number): number => bytes / (1024 * 1024);
+```
+
+**사용처:**
+- CKEditor 파일 크기 검증
+- FormFileUpload 파일 크기 검증
+- 기타 파일 관련 UI/로직
+
+**장점:**
+- 1024 계산 중복 제거
+- 일관된 단위 변환
+- 에러 메시지 일관성
+
+### 베스트 프랙티스
+
+#### 1. entity prop 사용 권장
+
+```typescript
+// ✅ 권장: entity 기반 자동 경로
+<FormEditor entity={CONFIG.tableName} />
+
+// ❌ 비권장: 수동 경로 생성
+const uploadDate = new Date().toISOString().split('T')[0].replace(/-/g, '');
+<FormEditor uploadFolder={`editor/${CONFIG.tableName}/${uploadDate}`} />
+```
+
+**이유:**
+- 경로 포맷 중복 제거
+- 날짜 생성 로직 캡슐화
+- 환경변수 루트 폴더 자동 반영
+
+#### 2. 적절한 용량 설정
+
+```typescript
+// ✅ 콘텐츠 성격에 맞게 설정
+<FormEditor
+  entity="blogs"
+  maxImageSizeMB={5}  // 블로그는 고해상도 이미지 허용
+/>
+
+<FormEditor
+  entity="comments"
+  maxImageSizeMB={1}  // 댓글은 작은 이미지만
+/>
+```
+
+**기본값**: 2MB (일반적인 웹 이미지에 적합)
+
+#### 3. MIME 타입 제한
+
+```typescript
+// ✅ 필요한 형식만 허용
+<FormEditor
+  entity="notices"
+  acceptedImageFormats={['image/jpeg', 'image/png']}  // GIF, WebP 제외
+/>
+```
+
+**보안 이점:**
+- 허용되지 않은 파일 타입 차단
+- 악성 파일 업로드 방지
+
+#### 4. 환경변수 활용
+
+```bash
+# .env.local (개발)
+NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=dev-editor
+
+# .env.production (프로덕션)
+NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
+```
+
+**활용 시나리오:**
+- 개발/프로덕션 폴더 분리
+- 테스트 환경 격리
+
+### 주의사항
+
+#### 1. 이미지 삭제 로직 없음
+
+**현재 동작:**
+- 에디터에서 이미지 삭제 → HTML에서만 제거
+- Storage에는 파일이 그대로 남음
+
+**영향:**
+- 사용하지 않는 이미지가 누적될 수 있음
+- Storage 용량 증가
+
+**대응 방안:**
+1. **수동 정리**: 주기적으로 사용하지 않는 파일 삭제
+2. **별도 스크립트**: 날짜별 폴더를 분석하여 오래된 파일 정리
+3. **향후 개선**: 이미지 삭제 감지 로직 추가 (복잡도 높음)
+
+#### 2. 이미지 URL은 DB에 저장 안 됨
+
+**CKEditor 특성:**
+- 이미지 URL이 HTML에 직접 임베딩됨
+- DB에는 HTML 전체가 저장됨 (`content` 컬럼)
+
+**확인 방법:**
+```sql
+SELECT content FROM notices WHERE id = 'uuid';
+-- 결과: "<p>내용... <img src='https://...storage.../editor/notices/20251122/image.jpg'></p>"
+```
+
+**주의:**
+- 이미지 메타데이터 조회 불가
+- 특정 이미지가 어디서 사용되는지 추적 어려움
+
+**대안 (필요시):**
+- 이미지 메타데이터를 별도 테이블에 저장
+- HTML 파싱하여 이미지 URL 추출
+
+#### 3. Undo/Redo 시 이미지 처리
+
+**문제:**
+- 이미지 삽입 후 Ctrl+Z → HTML에서 제거
+- Storage에는 이미 업로드됨
+
+**현재 동작:**
+- Storage에 고아 파일로 남음
+
+**허용 이유:**
+- Undo/Redo 추적 복잡도가 매우 높음
+- 사용자 경험 저하 우려 (Undo 시 딜레이)
+- 날짜별 폴더로 정리 가능
+
+#### 4. 동시 편집 시나리오
+
+**현재:**
+- 여러 사용자가 동시 편집 시 각자 이미지 업로드
+- 같은 날짜 폴더에 저장됨 (문제 없음)
+
+**Storage 경로:**
+```
+editor/notices/20251122/
+├── uuid1-timestamp1.jpg  (사용자 A)
+├── uuid2-timestamp2.jpg  (사용자 B)
+└── uuid3-timestamp3.jpg  (사용자 A)
+```
+
+**파일명 중복 방지:**
+- `generateUniqueFileName()` 사용 (UUID + timestamp)
+- 동시 업로드해도 충돌 없음
+
 ## 새로운 기능 추가 시
 
 ### 1. features/ 레이어에 기능 추가
