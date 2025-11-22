@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { Trash2, File as FileIcon, Plus, RefreshCw } from 'lucide-react';
 import { cn } from '@/shared/lib/utils/classnames';
 import { mbToBytes, formatFileSize, truncateFileName } from '@/shared/lib/utils/format';
+import { downloadFileFromStorage } from '@/shared/lib/supabase/storage-helpers';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from './input-group';
 
 /**
@@ -225,6 +226,10 @@ export function MultiFileUpload({
     }
   };
 
+  const handleFileDownload = async (url: string, fileName: string) => {
+    await downloadFileFromStorage(url, fileName);
+  };
+
   return (
     <div
       className={cn('w-full', className)}
@@ -295,6 +300,17 @@ export function MultiFileUpload({
               : truncateFileName(file.file.name);
             const fileSize = isExisting ? null : formatFileSize(file.file.size);
 
+            const Comp = () => (
+              <>
+                {isExisting && <span className='mr-1'>(기존 파일)</span>}
+                <span className={isDeleted ? 'line-through text-destructive/70' : ''}>
+                  {fileName}
+                </span>
+                {fileSize && <span className='ml-1 text-muted-foreground'>({fileSize})</span>}
+                {isDeleted && <span className='ml-1 text-destructive'>(삭제 예정)</span>}
+              </>
+            );
+
             return (
               <li
                 key={index}
@@ -303,14 +319,19 @@ export function MultiFileUpload({
                   isDeleted && 'opacity-50'
                 )}
               >
-                <span className='truncate'>
-                  {isExisting && <span className='mr-1'>(기존 파일)</span>}
-                  <span className={isDeleted ? 'line-through text-destructive/70' : ''}>
-                    {fileName}
+                {isExisting ? (
+                  <button
+                    onClick={() => handleFileDownload(file.url, file.originalName)}
+                    className='truncate hover:underline cursor-pointer text-left'
+                    type='button'
+                  >
+                    <Comp />
+                  </button>
+                ) : (
+                  <span className='truncate'>
+                    <Comp />
                   </span>
-                  {fileSize && <span className='ml-1 text-muted-foreground'>({fileSize})</span>}
-                  {isDeleted && <span className='ml-1 text-destructive'>(삭제 예정)</span>}
-                </span>
+                )}
                 <div className='flex gap-0.5 ml-2'>
                   {isDeleted ? (
                     <InputGroupButton
