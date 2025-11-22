@@ -4,7 +4,7 @@
  */
 
 import { createMultiplePresignedUploadUrls } from '../supabase/storage';
-import { uploadMultipleFilesWithPresignedUrl } from './client';
+import { uploadFilesWithPresignedUrl } from './client';
 import { generateUniqueFileName } from './utils';
 import { type FileMetadata, type FileUploadValue } from './types';
 
@@ -79,7 +79,7 @@ export async function processFileUploads({
       }
 
       // 클라이언트에서 직접 업로드
-      await uploadMultipleFilesWithPresignedUrl(
+      await uploadFilesWithPresignedUrl(
         presignedResult.data.map((urlData, index) => ({
           file: uploadRequests[index].file,
           uploadUrl: urlData.uploadUrl,
