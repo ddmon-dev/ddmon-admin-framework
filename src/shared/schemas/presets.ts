@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { type FileUploadValue } from '@/shared/ui/file-upload';
+import { type FormFileValue } from '@/shared/ui/file-upload';
 import { type DateRange } from 'react-day-picker';
 
 /**
@@ -26,7 +26,7 @@ export const schemaPresets = {
    * @param min 최소 파일 개수 (기본값: 1)
    */
   fileUpload: (min = 1) =>
-    z.array(z.custom<FileUploadValue>()).refine(
+    z.array(z.custom<FormFileValue>()).refine(
       files => {
         const validFiles = files.filter(f => {
           if (!f) return false;
@@ -35,7 +35,9 @@ export const schemaPresets = {
         });
         return validFiles.length >= min;
       },
-      { message: min === 1 ? '파일을 업로드해주세요' : `최소 ${min}개 이상의 파일을 업로드해주세요` }
+      {
+        message: min === 1 ? '파일을 업로드해주세요' : `최소 ${min}개 이상의 파일을 업로드해주세요`,
+      }
     ),
 
   /**

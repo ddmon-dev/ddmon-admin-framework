@@ -5,9 +5,10 @@
 
 // Types
 export type {
-  FileMetadata,
-  FileUploadValue,
-  PresignedUploadInfo,
+  DbFileMetadata,
+  DbFilesJSONB,
+  FormFileValue,
+  FormFilesField,
   WithFiles,
 } from './types';
 
@@ -20,7 +21,7 @@ export { deleteFilesFromStorage, deleteFolderFromStorage } from '../supabase/sto
 // Utils
 export {
   generateUniqueFileName,
-  createFileMetadata,
+  createDbFileMetadata,
   extractAllFileUrls,
   transformFilesToUploadValues,
 } from './utils';

@@ -876,7 +876,7 @@ manage-modules는 Supabase Storage를 활용한 파일 업로드 시스템을 �
 
 **글로벌 유틸리티** (`/src/shared/lib/supabase/`)
 
-- `file-helpers.ts`: FileMetadata 타입, 파일명 생성 유틸리티
+- `file-helpers.ts`: DbFileMetadata 타입, 파일명 생성 유틸리티
 - `file-processing.ts`: 파일 처리 핵심 로직 (processFiles, rollbackFiles, deleteFilesByUrls)
 - `storage.ts`: Supabase Storage 업로드/삭제 함수
 
@@ -907,12 +907,12 @@ Supabase Storage는 한글 파일명을 지원하지 않으므로, Storage에는
 ```typescript
 // DB 스키마
 files: {
-  thumbnail?: FileMetadata[];
-  attachments?: FileMetadata[];
+  thumbnail?: DbFileMetadata[];
+  attachments?: DbFileMetadata[];
 }
 
-// FileMetadata 타입
-type FileMetadata = {
+// DbFileMetadata 타입
+type DbFileMetadata = {
   url: string;           // Storage 공개 URL
   name: string;          // 원본 파일명
   size: number;          // 파일 크기 (bytes)
@@ -964,7 +964,7 @@ try {
 
 ```
 1. 기존 데이터 조회 (getItem)
-2. item-sheet에서 FileMetadata → FormFileUpload 형태로 변환
+2. item-sheet에서 DbFileMetadata → FormFileUpload 형태로 변환
 3. 폼에서 파일 추가/삭제 표시
 4. onSubmit → updateItem({ id, values, path })
 5. updateItem에서:
@@ -991,11 +991,11 @@ try {
 
 ```typescript
 // notice/types.ts
-import { type FileMetadata } from '@/shared/lib/supabase/file-helpers';
+import { type DbFileMetadata } from '@/shared/lib/supabase/file-helpers';
 
 export type ItemFiles = {
-  thumbnail?: FileMetadata[];
-  attachments?: FileMetadata[];
+  thumbnail?: DbFileMetadata[];
+  attachments?: DbFileMetadata[];
 };
 
 export type ItemDTO = CamelCaseKeys<RowData> & {
@@ -1195,7 +1195,7 @@ useEffect(() => {
     const { success, data } = await getItem({ id });
     if (!success) return;
 
-    // FileMetadata를 FormFileUpload 형태로 변환
+    // DbFileMetadata를 FormFileUpload 형태로 변환
     const transformedData = {
       ...data,
       files: data.files
@@ -1226,11 +1226,11 @@ useEffect(() => {
 **1. types.ts 정의**
 
 ```typescript
-import { type FileMetadata } from '@/shared/lib/supabase/file-helpers';
+import { type DbFileMetadata } from '@/shared/lib/supabase/file-helpers';
 
 export type ProductFiles = {
-  images?: FileMetadata[]; // 상품 이미지 (여러 개)
-  manual?: FileMetadata[]; // 설명서 (PDF)
+  images?: DbFileMetadata[]; // 상품 이미지 (여러 개)
+  manual?: DbFileMetadata[]; // 설명서 (PDF)
 };
 
 export type ItemDTO = CamelCaseKeys<RowData> & {
@@ -1262,8 +1262,8 @@ export type ItemDTO = CamelCaseKeys<RowData> & {
 파일 업로드 및 메타데이터 생성을 동적으로 처리합니다.
 
 ```typescript
-type FilesInput = Record<string, FileUploadValue[] | undefined>;
-type ProcessedFiles = Record<string, FileMetadata[]>;
+type FilesInput = Record<string, FormFileValue[] | undefined>;
+type ProcessedFiles = Record<string, DbFileMetadata[]>;
 
 processFiles({
   filesInput: { thumbnail: [...], attachments: [...] },
