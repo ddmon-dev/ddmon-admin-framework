@@ -29,23 +29,64 @@ const fileUploadValueSchema = z.union([previousFileData, newFileData, z.null()])
 /**
  * 카테고리별 파일 그룹 스키마 생성 함수
  *
- * @param categories - 파일 카테고리 배열 (예: ['thumbnail', 'attachments'])
+ * @param config - 파일 카테고리 배열 또는 카테고리별 설정 객체
  * @returns 카테고리별로 파일 배열을 가진 객체 스키마
  *
  * @example
+ * // 간단 사용 (모두 선택)
  * const formSchema = z.object({
- *   title: z.string(),
- *   content: z.string(),
- *   files: createFilesSchema(['thumbnail', 'attachments'])   // files: { thumbnail: [], attachments: [] }
+ *   files: createFilesSchema(['thumbnail', 'attachments'])
+ * });
+ *
+ * @example
+ * // 고급 사용 (카테고리별 최소 개수 지정)
+ * const formSchema = z.object({
+ *   files: createFilesSchema({
+ *     thumbnail: 1,        // 필수, 최소 1개
+ *     attachments: 0,      // 선택 (min: 0 → optional: true)
+ *   })
  * });
  */
-export function createFilesSchema(categories: string[]) {
-  const filesObject = categories.reduce((acc, category) => {
-    acc[category] = z.array(fileUploadValueSchema).optional();
+export function createFilesSchema(
+  config: string[] | Record<string, number | { min?: number }>
+) {
+  // 배열인 경우 → 모두 선택 (min: 0)
+  if (Array.isArray(config)) {
+    const configObj = config.reduce((acc, category) => {
+      acc[category] = 0;
+      return acc;
+    }, {} as Record<string, number>);
+    return createFilesSchema(configObj);
+  }
+
+  // 객체를 Zod 스키마로 변환
+  const filesObject = Object.entries(config).reduce((acc, [category, minOrConfig]) => {
+    const min = typeof minOrConfig === 'number' ? minOrConfig : (minOrConfig.min ?? 0);
+    const optional = min === 0;
+
+    // 파일 배열 검증 (markedForDeletion 제외한 유효 파일 체크)
+    const schema = z.array(fileUploadValueSchema).refine(
+      files => {
+        const validFiles = files.filter(f => {
+          if (!f) return false;
+          if (f.type === 'existing' && f.markedForDeletion) return false;
+          return true;
+        });
+        return validFiles.length >= min;
+      },
+      {
+        message:
+          min === 1
+            ? '파일을 업로드해주세요'
+            : min > 1
+            ? `최소 ${min}개 이상의 파일을 업로드해주세요`
+            : undefined,
+      }
+    );
+
+    acc[category] = optional ? schema.optional() : schema;
     return acc;
   }, {} as Record<string, any>);
 
-  const schema = z.object(filesObject).optional();
-
-  return schema;
+  return z.object(filesObject).optional();
 }
