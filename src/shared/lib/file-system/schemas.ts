@@ -47,9 +47,7 @@ const fileUploadValueSchema = z.union([previousFileData, newFileData, z.null()])
  *   })
  * });
  */
-export function createFilesSchema(
-  config: string[] | Record<string, number | { min?: number }>
-) {
+export function createFilesSchema(config: string[] | Record<string, number | { min?: number }>) {
   // 배열인 경우 → 모두 선택 (min: 0)
   if (Array.isArray(config)) {
     const configObj = config.reduce((acc, category) => {
@@ -61,11 +59,11 @@ export function createFilesSchema(
 
   // 객체를 Zod 스키마로 변환
   const filesObject = Object.entries(config).reduce((acc, [category, minOrConfig]) => {
-    const min = typeof minOrConfig === 'number' ? minOrConfig : (minOrConfig.min ?? 0);
+    const min = typeof minOrConfig === 'number' ? minOrConfig : minOrConfig.min ?? 0;
     const optional = min === 0;
 
     // 파일 배열 검증 (markedForDeletion 제외한 유효 파일 체크)
-    const schema = z.array(fileUploadValueSchema).refine(
+    const schema = z.array(fileUploadValueSchema, { message: '파일을 업로드해주세요.' }).refine(
       files => {
         const validFiles = files.filter(f => {
           if (!f) return false;
