@@ -5,7 +5,7 @@ import { Trash2, File as FileIcon, Plus, RefreshCw } from 'lucide-react';
 import { cn } from '@/shared/lib/utils/classnames';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from './input-group';
 import {
-  type FileUploadValue,
+  type FormFileValue,
   type FileAcceptPreset,
   fileAcceptPresets,
   normalizeAccept,
@@ -14,8 +14,8 @@ import {
 } from './file-upload';
 
 interface MultiFileUploadProps {
-  value?: FileUploadValue[];
-  onValueChange?: (value: FileUploadValue[]) => void;
+  value?: FormFileValue[];
+  onValueChange?: (value: FormFileValue[]) => void;
   onError?: (message: string | null) => void;
   accept?: string;
   acceptPreset?: FileAcceptPreset;
@@ -80,7 +80,7 @@ export function MultiFileUpload({
   };
 
   const handleFiles = (files: FileList) => {
-    const newFiles: FileUploadValue[] = [...value];
+    const newFiles: FormFileValue[] = [...value];
     let addedCount = 0;
     let hasError = false;
 

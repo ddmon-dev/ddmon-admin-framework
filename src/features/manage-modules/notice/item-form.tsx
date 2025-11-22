@@ -12,12 +12,13 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 import {
   processFileUploads,
   createFilesSchema,
-  type FileUploadValue,
+  type FormFilesField,
 } from '@/shared/lib/file-system';
 
+import { CONFIG } from './config';
+import { type ItemDTO } from './types';
 import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
-import { type ItemDTO } from './types';
 
 const formSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요.'),
@@ -49,15 +50,16 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   }, [prevValues]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
     try {
-      const { files, ...restValues } = values;
+      const { files: formFiles, ...restValues } = values;
 
-      // 실제 파일이 있는지 확인
-      const hasFiles =
-        files &&
-        Object.values(files).some(fileList => Array.isArray(fileList) && fileList.length > 0);
+      // 파일 유무 체크
+      const hasFormFiles =
+        formFiles &&
+        Object.values(formFiles).some(fileList => Array.isArray(fileList) && fileList.length > 0);
 
-      // 1. DB 먼저 저장 (DB가 UUID 생성)
+      // 데이터 DB 저장
       const { success, data, error } = id
         ? await updateItem({ id, values: restValues, path: pathname })
         : await createItem({ values: restValues, path: pathname });
@@ -66,18 +68,18 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         throw new Error(error || '저장에 실패했습니다.');
       }
 
-      // 2. 파일 업로드 (실제 파일이 있을 때만)
-      if (hasFiles) {
-        const uploadedFiles = await processFileUploads({
-          files: files as Record<string, FileUploadValue[]>,
-          folder: `notices/${data.id}`,
+      // 파일 업로드
+      if (hasFormFiles) {
+        const uploadedFilesMetadata = await processFileUploads({
+          files: formFiles as FormFilesField,
+          folder: `${CONFIG.tableName}/${data.id}`,
         });
 
-        // 3. files JSONB 컬럼 업데이트 (업로드된 파일이 있을 때만)
-        if (Object.keys(uploadedFiles).length > 0) {
+        // files JSONB 컬럼 업데이트
+        if (Object.keys(uploadedFilesMetadata).length > 0) {
           await updateItem({
             id: data.id,
-            values: { files: uploadedFiles } as any,
+            values: { files: uploadedFilesMetadata },
             path: pathname,
           });
         }

@@ -1,6 +1,6 @@
 import { RowData as BaseRowData, DbUpdate, DbInsert } from '@/shared/lib/supabase/db-helpers';
 import { CamelCaseKeys } from '@/shared/lib/utils/objects';
-import { WithFiles } from '@/shared/lib/file-system';
+import { WithFiles, type DbFilesJSONB } from '@/shared/lib/file-system';
 import { CONFIG } from './config';
 
 /**
@@ -20,10 +20,10 @@ export type ItemDTO = WithFiles<CamelCaseKeys<RowData>>;
  * 업데이트 항목 값 타입
  * Presigned URL 방식에서는 files를 Server Action에서 받지 않음
  */
-export type UpdateItemValues = DbUpdate<typeof CONFIG.tableName>;
+export type UpdateItemValues = WithFiles<DbUpdate<typeof CONFIG.tableName>>;
 
 /**
  * 생성 항목 값 타입
  * Presigned URL 방식에서는 files를 Server Action에서 받지 않음
  */
-export type CreateItemValues = DbInsert<typeof CONFIG.tableName>;
+export type CreateItemValues = WithFiles<DbInsert<typeof CONFIG.tableName>>;

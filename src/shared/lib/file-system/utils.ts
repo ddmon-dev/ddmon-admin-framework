@@ -1,4 +1,4 @@
-import { type FileMetadata, type FileUploadValue } from './types';
+import { type DbFileMetadata, type FormFileValue } from './types';
 
 /**
  * 파일명 생성: UUID + 확장자만 (한글 완벽 지원)
@@ -29,7 +29,7 @@ export function generateUniqueFileName(originalFileName: string): string {
  *  mimeType: string;
  *  uploadedAt: string;
  */
-export function createFileMetadata(file: File, url: string): FileMetadata {
+export function createDbFileMetadata(file: File, url: string): DbFileMetadata {
   return {
     url,
     originalName: file.name,
@@ -49,7 +49,7 @@ export function createFileMetadata(file: File, url: string): FileMetadata {
  * const urls = extractAllFileUrls({ thumbnail: [{ url: '...' }], attachments: [{ url: '...' }] });
  * // 결과: ['url1', 'url2', 'url3']
  */
-export function extractAllFileUrls(files?: Record<string, FileMetadata[]>): string[] {
+export function extractAllFileUrls(files?: Record<string, DbFileMetadata[]>): string[] {
   if (!files) return [];
 
   const urls: string[] = [];
@@ -65,7 +65,7 @@ export function extractAllFileUrls(files?: Record<string, FileMetadata[]>): stri
 
 /**
  * DB files 객체를 폼 업로드 형태로 변환
- * FileMetadata[] → FileUploadValue[] (type: 'existing')
+ * DbFileMetadata[] → FormFileValue[] (type: 'existing')
  *
  * @param files - DB에서 조회한 files 객체
  * @returns 폼에서 사용할 수 있는 형태로 변환된 files 객체
@@ -81,8 +81,8 @@ export function extractAllFileUrls(files?: Record<string, FileMetadata[]>): stri
  * };
  */
 export function transformFilesToUploadValues(
-  files?: Record<string, FileMetadata[]>
-): Record<string, FileUploadValue[]> | undefined {
+  files?: Record<string, DbFileMetadata[]>
+): Record<string, FormFileValue[]> | undefined {
   if (!files) return undefined;
 
   return Object.fromEntries(

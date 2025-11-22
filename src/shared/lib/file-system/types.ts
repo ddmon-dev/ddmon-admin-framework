@@ -6,7 +6,7 @@
 /**
  * DB의 files 필드에 저장되는 파일 메타데이터
  */
-export type FileMetadata = {
+export type DbFileMetadata = {
   url: string;
   originalName: string;
   size: number;
@@ -15,18 +15,18 @@ export type FileMetadata = {
 };
 
 /**
+ * DB의 files 필드 타입 (카테고리별 파일 메타데이터 배열)
+ */
+export type DbFilesJSONB = Record<string, DbFileMetadata[]>;
+
+/**
  * 폼에서 받은 파일 업로드 값 타입
  */
-export type FileUploadValue =
-  | {
+export type FormFileValue =
+  | (DbFileMetadata & {
       type: 'existing';
-      url: string;
-      originalName: string;
-      size: number;
-      mimeType: string;
-      uploadedAt: string;
       markedForDeletion?: boolean;
-    }
+    })
   | {
       type: 'new';
       file: File;
@@ -34,15 +34,9 @@ export type FileUploadValue =
   | null;
 
 /**
- * Presigned URL 업로드 정보
+ * 폼에서 받은 파일 업로드 값 타입 (카테고리별 파일 메타데이터 배열)
  */
-export type PresignedUploadInfo = {
-  uploadUrl: string;
-  publicUrl: string;
-  filePath: string;
-  originalName: string;
-  category: string;
-};
+export type FormFilesField = Record<string, FormFileValue[]>;
 
 /**
  * 파일 업로드 지원 DTO 헬퍼 타입
@@ -58,5 +52,5 @@ export type PresignedUploadInfo = {
  * export type UserDTO = WithFiles<CamelCaseKeys<RowData>>;
  */
 export type WithFiles<T> = T & {
-  files?: Record<string, FileMetadata[]>;
+  files?: DbFilesJSONB;
 };

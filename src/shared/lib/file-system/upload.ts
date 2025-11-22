@@ -6,7 +6,7 @@
 import { createMultiplePresignedUploadUrls } from '../supabase/storage';
 import { uploadFilesWithPresignedUrl } from './client';
 import { generateUniqueFileName } from './utils';
-import { type FileMetadata, type FileUploadValue } from './types';
+import { type DbFileMetadata, type FormFilesField, type DbFilesJSONB } from './types';
 
 /**
  * 파일 업로드를 클라이언트에서 직접 처리하고 메타데이터를 반환
@@ -14,26 +14,26 @@ import { type FileMetadata, type FileUploadValue } from './types';
  * @param files - 파일 카테고리별 업로드 값
  * @param folder - Storage 저장 폴더 경로 (예: 'notices/uuid')
  * @param onProgress - 전체 업로드 진행률 콜백 (0-100)
- * @returns 카테고리별 파일 메타데이터 example: { thumbnail: FileMetadata[], attachments: FileMetadata[] }
+ * @returns 카테고리별 파일 메타데이터 example: { thumbnail: DbFileMetadata[], attachments: DbFileMetadata[] }
  */
 export async function processFileUploads({
   files,
   folder,
   onProgress,
 }: {
-  files?: Record<string, FileUploadValue[]>;
+  files?: FormFilesField;
   folder: string;
   onProgress?: (progress: number) => void;
-}): Promise<Record<string, FileMetadata[]>> {
+}): Promise<DbFilesJSONB> {
   if (!files) return {};
 
-  const result: Record<string, FileMetadata[]> = {};
+  const result: DbFilesJSONB = {};
 
   // 각 카테고리 처리
   for (const [category, fileList] of Object.entries(files)) {
     if (!fileList) continue;
 
-    const processedFiles: FileMetadata[] = [];
+    const processedFiles: DbFileMetadata[] = [];
 
     // 1. 기존 파일 유지 (삭제 표시 안 된 것만)
     const existingFiles = fileList.filter(

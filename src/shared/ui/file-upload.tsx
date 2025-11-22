@@ -19,7 +19,7 @@ export type NewFile = {
 /**
  * 파일 업로드 값 타입
  */
-export type FileUploadValue = ExistingFile | NewFile | null;
+export type FormFileValue = ExistingFile | NewFile | null;
 
 /**
  * 파일 확장자 프리셋

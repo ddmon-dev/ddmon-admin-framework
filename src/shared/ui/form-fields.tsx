@@ -29,7 +29,7 @@ import { Combobox } from '@/shared/ui/combobox';
 import { MultiCombobox } from '@/shared/ui/multi-combobox';
 import { DatePicker, type DatePickerBaseProps } from '@/shared/ui/date-picker';
 import {
-  type FileUploadValue,
+  type FormFileValue,
   type FileAcceptPreset,
   fileAcceptPresets,
   formatFileSize,
@@ -819,7 +819,7 @@ export const FormFileUpload = <
             {displayDescription && <FieldDescription>{displayDescription}</FieldDescription>}
           </FieldContent>
           <MultiFileUpload
-            value={field.value as FileUploadValue[]}
+            value={field.value as FormFileValue[]}
             onValueChange={field.onChange}
             onError={setValidationError}
             accept={accept}
