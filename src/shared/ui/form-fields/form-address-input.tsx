@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactElement, useRef } from 'react';
-import { type Control, type FieldValues } from 'react-hook-form';
+import { type Control, type FieldValues, Controller } from 'react-hook-form';
 import { MapPin } from 'lucide-react';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import {
@@ -11,8 +11,7 @@ import {
   InputGroupButton,
 } from '@/shared/ui/input-group';
 import { Input } from '@/shared/ui/input';
-import { FieldGroup } from '@/shared/ui/field';
-import { FormField } from './form-field';
+import { Field, FieldContent, FieldLabel, FieldDescription, FieldGroup, FieldError } from '@/shared/ui/field';
 import type { ExcludedFormProps } from './types';
 import type { DaumAddressData } from '@/shared/types/daum-postcode';
 import type { ReactNode } from 'react';
@@ -95,35 +94,28 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
   const openDaumPostcode = useDaumPostcodePopup();
 
   return (
-    <FormField
+    <Controller
       control={control}
       name={zipCodeName}
-      label={label}
-      description={description}
-      orientation={orientation}
-      optional={optional}
-    >
-      {({ fieldState: zipCodeFieldState, ...zipCodeField }) => (
-        <FormField
+      render={({ fieldState: zipCodeFieldState, field: zipCodeField }) => (
+        <Controller
           control={control}
           name={addressName}
-        >
-          {({ fieldState: addressFieldState, ...addressField }) => (
-            <FormField
+          render={({ fieldState: addressFieldState, field: addressField }) => (
+            <Controller
               control={control}
               name={addressDetailName}
-            >
-              {({ fieldState: addressDetailFieldState, ...addressDetailField }) => {
-                // 3개 필드 값
-                const zipCodeValue = zipCodeField.value || '';
-                const addressValue = addressField.value || '';
-                const addressDetailValue = addressDetailField.value || '';
-
-                // 3개 필드 중 하나라도 에러가 있으면 에러 표시
+              render={({ fieldState: addressDetailFieldState, field: addressDetailField }) => {
+                // 3개 필드 중 하나라도 에러가 있는지 확인
                 const hasError =
                   zipCodeFieldState.invalid ||
                   addressFieldState.invalid ||
                   addressDetailFieldState.invalid;
+
+                // 3개 필드 값
+                const zipCodeValue = zipCodeField.value || '';
+                const addressValue = addressField.value || '';
+                const addressDetailValue = addressDetailField.value || '';
 
                 const handleComplete = (data: DaumAddressData) => {
                   const selectedAddress =
@@ -155,57 +147,81 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
                 };
 
                 return (
-                  <FieldGroup className='gap-y-2'>
-                    {/* 주소찾기 버튼 + 우편번호 + 주소 */}
-                    <div className='flex gap-2 flex-col sm:flex-row'>
-                      <InputGroup className='w-auto shrink-0'>
-                        <InputGroupAddon
-                          align='inline-start'
-                          className='-ml-2!'
-                        >
-                          <InputGroupButton
-                            size='xs'
-                            onClick={handleSearch}
-                            type='button'
+                  <Field
+                    data-invalid={hasError}
+                    orientation={orientation}
+                  >
+                    {/* Label & Description */}
+                    {(label || description) && (
+                      <FieldContent>
+                        {label && (
+                          <FieldLabel className={optional ? 'w-full' : ''}>
+                            {label}{' '}
+                            {optional && (
+                              <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>
+                            )}
+                          </FieldLabel>
+                        )}
+                        {description && <FieldDescription>{description}</FieldDescription>}
+                      </FieldContent>
+                    )}
+
+                    {/* Input Fields */}
+                    <FieldGroup className='gap-y-2'>
+                      {/* 주소찾기 버튼 + 우편번호 + 주소 */}
+                      <div className='flex gap-2 flex-col sm:flex-row'>
+                        <InputGroup className='w-auto shrink-0'>
+                          <InputGroupAddon
+                            align='inline-start'
+                            className='-ml-2!'
                           >
-                            <MapPin className='h-4 w-4' />
-                            주소찾기
-                          </InputGroupButton>
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          {...inputProps}
-                          ref={zipCodeField.ref}
-                          value={zipCodeValue}
-                          placeholder='우편번호'
+                            <InputGroupButton
+                              size='xs'
+                              onClick={handleSearch}
+                              type='button'
+                            >
+                              <MapPin className='h-4 w-4' />
+                              주소찾기
+                            </InputGroupButton>
+                          </InputGroupAddon>
+                          <InputGroupInput
+                            {...inputProps}
+                            ref={zipCodeField.ref}
+                            value={zipCodeValue}
+                            placeholder='우편번호'
+                            readOnly
+                            aria-invalid={hasError}
+                            className='w-20 pl-3!'
+                          />
+                        </InputGroup>
+                        <Input
+                          value={addressValue}
+                          placeholder='주소'
                           readOnly
                           aria-invalid={hasError}
-                          className='w-20 pl-3!'
+                          className='sm:flex-1'
                         />
-                      </InputGroup>
-                      <Input
-                        value={addressValue}
-                        placeholder='주소'
-                        readOnly
-                        aria-invalid={hasError}
-                        className='sm:flex-1'
-                      />
-                    </div>
+                      </div>
 
-                    {/* 상세주소 */}
-                    <Input
-                      ref={addressDetailRef}
-                      value={addressDetailValue}
-                      onChange={e => addressDetailField.onChange(e.target.value)}
-                      placeholder='상세주소를 입력하세요'
-                      aria-invalid={hasError}
-                    />
-                  </FieldGroup>
+                      {/* 상세주소 */}
+                      <Input
+                        ref={addressDetailRef}
+                        value={addressDetailValue}
+                        onChange={e => addressDetailField.onChange(e.target.value)}
+                        placeholder='상세주소를 입력하세요'
+                        aria-invalid={hasError}
+                      />
+                    </FieldGroup>
+
+                    {/* 통합 에러 메시지 */}
+                    {hasError && <FieldError>주소를 입력해주세요</FieldError>}
+                  </Field>
                 );
               }}
-            </FormField>
+            />
           )}
-        </FormField>
+        />
       )}
-    </FormField>
+    />
   );
 };
