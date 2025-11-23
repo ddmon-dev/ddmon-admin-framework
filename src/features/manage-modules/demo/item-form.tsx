@@ -43,8 +43,14 @@ const formSchema = z.object({
   description: z.string().optional(),
 
   // FormNumberInput
-  age: z.number().int().min(0).max(150).optional(),
-  price: z.number().min(0).optional(),
+  age: z
+    .number()
+    .int()
+    .min(0)
+    .max(150, '나이는 0~150 사이의 숫자를 입력해주세요.')
+    .optional()
+    .nullable(),
+  price: z.number().min(0).optional().nullable(),
 
   // FormPhoneInput
   phone: z
@@ -212,8 +218,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           control={form.control}
           name='age'
           label='나이'
-          min={0}
-          max={150}
           optional
         />
 
@@ -223,7 +227,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           label='가격'
           prefix='₩'
           thousandSeparator
-          min={0}
           optional
         />
       </FieldGroup>
