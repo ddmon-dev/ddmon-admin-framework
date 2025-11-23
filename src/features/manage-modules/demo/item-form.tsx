@@ -81,7 +81,7 @@ const formSchema = z.object({
   languages: z.array(z.string()).optional(),
 
   // FormDatePicker
-  birthDate: z.date().optional(),
+  birthDate: z.date().optional().nullable(),
 
   // FormEditor
   bio: z.string().optional(),
@@ -115,7 +115,7 @@ const formDefaultValues = {
   country: '',
   city: '',
   languages: [],
-  birthDate: undefined,
+  birthDate: null,
   bio: '',
   files: undefined,
   socialLinks: [{ value: '' }],

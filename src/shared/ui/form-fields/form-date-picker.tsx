@@ -86,8 +86,8 @@ export const FormDatePicker = <
           return (
             <DatePicker
               mode='single'
-              value={field.value as Date | undefined}
-              onValueChange={onChange}
+              value={field.value as Date | null | undefined}
+              onValueChange={date => onChange(date ?? null)}
               placeholder={placeholder}
               disabled={disabled}
               fromDate={fromDate}
@@ -105,8 +105,8 @@ export const FormDatePicker = <
           return (
             <DatePicker
               mode='multiple'
-              value={field.value as Date[] | undefined}
-              onValueChange={onChange}
+              value={field.value as Date[] | null | undefined}
+              onValueChange={dates => onChange(dates ?? null)}
               placeholder={placeholder}
               disabled={disabled}
               fromDate={fromDate}
@@ -125,8 +125,8 @@ export const FormDatePicker = <
           return (
             <DatePicker
               mode='range'
-              value={field.value as DateRange | undefined}
-              onValueChange={onChange}
+              value={field.value as DateRange | null | undefined}
+              onValueChange={range => onChange(range ?? null)}
               placeholder={placeholder}
               disabled={disabled}
               fromDate={fromDate}
