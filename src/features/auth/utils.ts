@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { SALT_ROUNDS } from './auth.constants';
+import { SALT_ROUNDS } from './constants';
 
 /**
  * 비밀번호를 bcrypt로 해시

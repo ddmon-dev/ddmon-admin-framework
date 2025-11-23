@@ -1,4 +1,4 @@
-import { type MenuData } from './app-sidebar.types';
+import { type MenuData } from './types';
 import { Settings2, FileText } from 'lucide-react';
 
 export const navigationConfig: {

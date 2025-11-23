@@ -2,7 +2,7 @@ import { cn } from '@/shared/lib/utils/classnames';
 import { ContentContainer } from '@/shared/ui/container';
 import { Separator } from '@/shared/ui/separator';
 import { SidebarTrigger } from '@/shared/ui/sidebar';
-import { AppBreadcrumb } from '@/widgets/app-breadcrumb/app-breadcrumb';
+import { AppBreadcrumb } from '@/widgets/app-breadcrumb/breadcrumb';
 
 export function AppHeader() {
   return (

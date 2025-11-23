@@ -15,7 +15,7 @@ import {
   SidebarMenuSubItem,
 } from '@/shared/ui/sidebar';
 import Link from 'next/link';
-import { type MenuData, type MenuItem } from './app-sidebar.types';
+import { type MenuData, type MenuItem } from './types';
 
 export function NavMenu({ data }: { data: MenuData[] }) {
   return (
