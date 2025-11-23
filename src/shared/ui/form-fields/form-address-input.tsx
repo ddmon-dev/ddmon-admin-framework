@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactElement, useRef } from 'react';
-import { type Control, type FieldValues, Controller } from 'react-hook-form';
+import { type Control, type FieldValues, useController } from 'react-hook-form';
 import { MapPin } from 'lucide-react';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import {
@@ -90,138 +90,118 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
   const addressName = (namePrefix ? `${namePrefix}Address` : 'address') as any;
   const addressDetailName = (namePrefix ? `${namePrefix}AddressDetail` : 'addressDetail') as any;
 
+  // useController로 3개 필드 제어
+  const zipCode = useController({ control, name: zipCodeName });
+  const address = useController({ control, name: addressName });
+  const addressDetail = useController({ control, name: addressDetailName });
+
+  // 3개 필드 중 하나라도 에러가 있는지 확인
+  const hasError =
+    zipCode.fieldState.invalid || address.fieldState.invalid || addressDetail.fieldState.invalid;
+
+  // 3개 필드 값
+  const zipCodeValue = zipCode.field.value || '';
+  const addressValue = address.field.value || '';
+  const addressDetailValue = addressDetail.field.value || '';
+
   // Kakao 주소 API 팝업
   const openDaumPostcode = useDaumPostcodePopup();
 
+  const handleComplete = (data: DaumAddressData) => {
+    const selectedAddress = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+
+    // 3개 필드에 각각 값 설정
+    zipCode.field.onChange(data.zonecode);
+    address.field.onChange(selectedAddress);
+    addressDetail.field.onChange('');
+
+    // 상세주소 입력창 포커스
+    setTimeout(() => {
+      addressDetailRef.current?.focus();
+    }, 100);
+  };
+
+  const handleSearch = async () => {
+    if (onCustomSearch) {
+      const result = await onCustomSearch();
+      zipCode.field.onChange(result.zipCode);
+      address.field.onChange(result.address);
+      addressDetail.field.onChange('');
+      setTimeout(() => {
+        addressDetailRef.current?.focus();
+      }, 100);
+    } else {
+      openDaumPostcode({ onComplete: handleComplete as any });
+    }
+  };
+
   return (
-    <Controller
-      control={control}
-      name={zipCodeName}
-      render={({ fieldState: zipCodeFieldState, field: zipCodeField }) => (
-        <Controller
-          control={control}
-          name={addressName}
-          render={({ fieldState: addressFieldState, field: addressField }) => (
-            <Controller
-              control={control}
-              name={addressDetailName}
-              render={({ fieldState: addressDetailFieldState, field: addressDetailField }) => {
-                // 3개 필드 중 하나라도 에러가 있는지 확인
-                const hasError =
-                  zipCodeFieldState.invalid ||
-                  addressFieldState.invalid ||
-                  addressDetailFieldState.invalid;
-
-                // 3개 필드 값
-                const zipCodeValue = zipCodeField.value || '';
-                const addressValue = addressField.value || '';
-                const addressDetailValue = addressDetailField.value || '';
-
-                const handleComplete = (data: DaumAddressData) => {
-                  const selectedAddress =
-                    data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
-
-                  // 3개 필드에 각각 값 설정
-                  zipCodeField.onChange(data.zonecode);
-                  addressField.onChange(selectedAddress);
-                  addressDetailField.onChange('');
-
-                  // 상세주소 입력창 포커스
-                  setTimeout(() => {
-                    addressDetailRef.current?.focus();
-                  }, 100);
-                };
-
-                const handleSearch = async () => {
-                  if (onCustomSearch) {
-                    const result = await onCustomSearch();
-                    zipCodeField.onChange(result.zipCode);
-                    addressField.onChange(result.address);
-                    addressDetailField.onChange('');
-                    setTimeout(() => {
-                      addressDetailRef.current?.focus();
-                    }, 100);
-                  } else {
-                    openDaumPostcode({ onComplete: handleComplete as any });
-                  }
-                };
-
-                return (
-                  <Field
-                    data-invalid={hasError}
-                    orientation={orientation}
-                  >
-                    {/* Label & Description */}
-                    {(label || description) && (
-                      <FieldContent>
-                        {label && (
-                          <FieldLabel className={optional ? 'w-full' : ''}>
-                            {label}{' '}
-                            {optional && (
-                              <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>
-                            )}
-                          </FieldLabel>
-                        )}
-                        {description && <FieldDescription>{description}</FieldDescription>}
-                      </FieldContent>
-                    )}
-
-                    {/* Input Fields */}
-                    <FieldGroup className='gap-y-2'>
-                      {/* 주소찾기 버튼 + 우편번호 + 주소 */}
-                      <div className='flex gap-2 flex-col sm:flex-row'>
-                        <InputGroup className='w-auto shrink-0'>
-                          <InputGroupAddon
-                            align='inline-start'
-                            className='-ml-2!'
-                          >
-                            <InputGroupButton
-                              size='xs'
-                              onClick={handleSearch}
-                              type='button'
-                            >
-                              <MapPin className='h-4 w-4' />
-                              주소찾기
-                            </InputGroupButton>
-                          </InputGroupAddon>
-                          <InputGroupInput
-                            {...inputProps}
-                            ref={zipCodeField.ref}
-                            value={zipCodeValue}
-                            placeholder='우편번호'
-                            readOnly
-                            aria-invalid={hasError}
-                            className='w-20 pl-3!'
-                          />
-                        </InputGroup>
-                        <Input
-                          value={addressValue}
-                          placeholder='주소'
-                          readOnly
-                          aria-invalid={hasError}
-                          className='sm:flex-1'
-                        />
-                      </div>
-
-                      {/* 상세주소 */}
-                      <Input
-                        ref={addressDetailRef}
-                        value={addressDetailValue}
-                        onChange={e => addressDetailField.onChange(e.target.value)}
-                        placeholder='상세주소를 입력하세요'
-                        aria-invalid={hasError}
-                      />
-                    </FieldGroup>
-
-                    {/* 통합 에러 메시지 */}
-                    {hasError && <FieldError>주소를 입력해주세요</FieldError>}
-                  </Field>
-                );
-              }}
-            />
+    <Field
+      data-invalid={hasError}
+      orientation={orientation}
+    >
+      {/* Label & Description */}
+      {(label || description) && (
+        <FieldContent>
+          {label && (
+            <FieldLabel className={optional ? 'w-full' : ''}>
+              {label}{' '}
+              {optional && <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>}
+            </FieldLabel>
           )}
-        />
+          {description && <FieldDescription>{description}</FieldDescription>}
+        </FieldContent>
       )}
-    />
+
+      {/* Input Fields */}
+      <FieldGroup className='gap-y-2'>
+        {/* 주소찾기 버튼 + 우편번호 + 주소 */}
+        <div className='flex gap-2 flex-col sm:flex-row'>
+          <InputGroup className='w-auto shrink-0'>
+            <InputGroupAddon
+              align='inline-start'
+              className='-ml-2!'
+            >
+              <InputGroupButton
+                size='xs'
+                onClick={handleSearch}
+                type='button'
+              >
+                <MapPin className='h-4 w-4' />
+                주소찾기
+              </InputGroupButton>
+            </InputGroupAddon>
+            <InputGroupInput
+              {...inputProps}
+              ref={zipCode.field.ref}
+              value={zipCodeValue}
+              placeholder='우편번호'
+              readOnly
+              aria-invalid={hasError}
+              className='w-20 pl-3!'
+            />
+          </InputGroup>
+          <Input
+            value={addressValue}
+            placeholder='주소'
+            readOnly
+            aria-invalid={hasError}
+            className='sm:flex-1'
+          />
+        </div>
+
+        {/* 상세주소 */}
+        <Input
+          ref={addressDetailRef}
+          value={addressDetailValue}
+          onChange={e => addressDetail.field.onChange(e.target.value)}
+          placeholder='상세주소를 입력하세요'
+          aria-invalid={hasError}
+        />
+      </FieldGroup>
+
+      {/* 통합 에러 메시지 */}
+      {hasError && <FieldError>주소를 입력해주세요</FieldError>}
+    </Field>
   );
 };
