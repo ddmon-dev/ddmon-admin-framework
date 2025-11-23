@@ -57,8 +57,10 @@ const formSchema = z.object({
   // FormPhoneInput
   phone: schemaPresets.phone({ allowEmpty: true }),
 
-  // FormAddressInput
-  address: schemaPresets.address({ requireDetail: true }),
+  // FormAddressInput (플랫 구조 - 3개 필드)
+  zipCode: z.string().min(1, '주소를 입력해주세요'),
+  address: z.string().min(1, '주소를 입력해주세요'),
+  addressDetail: z.string().min(1, '주소를 입력해주세요'),
 
   // FormSwitch
   newsletterSubscribed: z
@@ -111,7 +113,9 @@ const formDefaultValues = {
   age: undefined,
   price: undefined,
   phone: '',
-  address: { zipCode: '', address: '', addressDetail: '' },
+  zipCode: '',
+  address: '',
+  addressDetail: '',
   newsletterSubscribed: false,
   termsAccepted: false,
   interests: [],
@@ -145,15 +149,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     try {
-      const { files: formFiles, address, ...restValues } = values;
-
-      // 주소 객체를 개별 필드로 분해
-      const submitValues = {
-        ...restValues,
-        zipCode: address?.zipCode || '',
-        address: address?.address || '',
-        addressDetail: address?.addressDetail || '',
-      };
+      const { files: formFiles, ...submitValues } = values;
 
       // 데이터 DB 저장
       const { success, data, error } = id
@@ -214,7 +210,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
         <FormAddressInput
           control={form.control}
-          name='address'
           label='주소'
         />
 
