@@ -57,22 +57,14 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     accessorKey: 'etc',
     header: () => <div className='text-right'>기타</div>,
     cell: ({ row }) => {
-      const { deleted, id } = row.original;
-
+      const { id } = row.original;
       return (
-        <div className='flex items-center justify-end gap-2'>
-          {deleted ? (
-            <HardDeleteItemButton id={id} />
-          ) : (
-            <>
-              <ModifyButton id={id} />
-              <SoftDeleteItemButton id={id} />
-            </>
-          )}
-        </div>
+        <nav className='flex gap-2'>
+          <ModifyButton itemId={id} />
+          <SoftDeleteItemButton itemId={id} />
+          <HardDeleteItemButton itemId={id} />
+        </nav>
       );
     },
-    enableSorting: false,
-    size: 100,
   },
 ];

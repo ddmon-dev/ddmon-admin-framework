@@ -81,16 +81,18 @@ const formSchema = z.object({
   bio: z.string().optional(),
 
   // FormFileUpload
-  files: schemaPresets.files({ avatar: 1, attachments: 0 }),
+  files: schemaPresets.files({ avatar: 0, attachments: 0 }),
 
   // FormFieldArray
   socialLinks: z
     .array(
       z.object({
-        value: z.string().url('올바른 URL을 입력해주세요.').optional().or(z.literal('')),
+        value: z.string().url('올바른 URL을 입력해주세요.').or(z.literal('')),
       })
     )
-    .optional(),
+    .refine(links => links.some(link => link.value.trim() !== ''), {
+      message: '최소 1개의 소셜 미디어 링크를 입력해주세요.',
+    }),
 });
 
 const formDefaultValues = {
@@ -133,22 +135,12 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     try {
-      const { files: formFiles, socialLinks, ...restValues } = values;
-
-      // socialLinks 빈 값 제거
-      const filteredSocialLinks = socialLinks?.filter(link => link.value?.trim() !== '') || [];
+      const { files: formFiles, ...restValues } = values;
 
       // 데이터 DB 저장
       const { success, data, error } = id
-        ? await updateItem({
-            id,
-            values: { ...restValues, socialLinks: filteredSocialLinks },
-            path: pathname,
-          })
-        : await createItem({
-            values: { ...restValues, socialLinks: filteredSocialLinks },
-            path: pathname,
-          });
+        ? await updateItem({ id, values: restValues, path: pathname })
+        : await createItem({ values: restValues, path: pathname });
 
       if (!success || !data) {
         throw new Error(error || '저장에 실패했습니다.');
@@ -362,17 +354,20 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           name='socialLinks'
           label='소셜 미디어 링크 (Field Array)'
           description='SNS 링크를 추가하고 순서를 변경할 수 있습니다.'
-          min={1}
           max={5}
           addButtonText='링크 추가'
-          renderField={index => (
+          defaultValue={{ value: '' }}
+        >
+          {({ index, control }) => (
             <FormInput
-              control={form.control}
+              control={control}
               name={`socialLinks.${index}.value`}
+              label=''
               placeholder='https://twitter.com/username'
+              inputMode='url'
             />
           )}
-        />
+        </FormFieldArray>
       </FieldGroup>
 
       {/* 제출 버튼 */}

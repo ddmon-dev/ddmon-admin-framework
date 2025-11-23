@@ -6,15 +6,15 @@ import { softDeleteItem } from './actions/soft-delete-item';
 import { hardDeleteItem } from './actions/hard-delete-item';
 
 interface DeleteItemButtonProps {
-  id: string;
+  itemId: string;
   children?: React.ReactNode;
 }
 
-export function SoftDeleteItemButton({ id, children }: DeleteItemButtonProps) {
+export function SoftDeleteItemButton({ itemId, children }: DeleteItemButtonProps) {
   const pathname = usePathname();
 
   const handleDelete = async () => {
-    const { success, error } = await softDeleteItem({ id, path: pathname });
+    const { success, error } = await softDeleteItem({ id: itemId, path: pathname });
 
     if (!success) {
       throw new Error(error || '삭제 실패');
@@ -24,11 +24,11 @@ export function SoftDeleteItemButton({ id, children }: DeleteItemButtonProps) {
   return <SoftDeleteButton onDelete={handleDelete}>{children}</SoftDeleteButton>;
 }
 
-export function HardDeleteItemButton({ id, children }: DeleteItemButtonProps) {
+export function HardDeleteItemButton({ itemId, children }: DeleteItemButtonProps) {
   const pathname = usePathname();
 
   const handleDelete = async () => {
-    const { success, error } = await hardDeleteItem({ id, path: pathname });
+    const { success, error } = await hardDeleteItem({ id: itemId, path: pathname });
 
     if (!success) {
       throw new Error(error || '삭제 실패');

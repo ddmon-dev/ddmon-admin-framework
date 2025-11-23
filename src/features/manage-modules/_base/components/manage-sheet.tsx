@@ -62,7 +62,7 @@ export function ManageSheet({ children }: { children: React.ReactNode }) {
           <SheetTitle>Title</SheetTitle>
           <SheetDescription>Description</SheetDescription>
         </SheetHeader>
-        <div className='overflow-y-auto'>{children}</div>
+        <div className='overflow-y-auto px-4'>{children}</div>
       </SheetContent>
     </Sheet>
   );

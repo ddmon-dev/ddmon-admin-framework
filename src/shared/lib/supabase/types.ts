@@ -69,6 +69,78 @@ export type Database = {
         }
         Relationships: []
       }
+      demo_items: {
+        Row: {
+          age: number | null
+          bio: string | null
+          birth_date: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          deleted: boolean | null
+          description: string | null
+          email: string | null
+          files: Json | null
+          gender: string | null
+          id: string
+          interests: string[] | null
+          languages: string[] | null
+          name: string
+          newsletter_subscribed: boolean | null
+          phone: string | null
+          price: number | null
+          social_links: Json | null
+          terms_accepted: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          age?: number | null
+          bio?: string | null
+          birth_date?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          deleted?: boolean | null
+          description?: string | null
+          email?: string | null
+          files?: Json | null
+          gender?: string | null
+          id?: string
+          interests?: string[] | null
+          languages?: string[] | null
+          name: string
+          newsletter_subscribed?: boolean | null
+          phone?: string | null
+          price?: number | null
+          social_links?: Json | null
+          terms_accepted?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          age?: number | null
+          bio?: string | null
+          birth_date?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          deleted?: boolean | null
+          description?: string | null
+          email?: string | null
+          files?: Json | null
+          gender?: string | null
+          id?: string
+          interests?: string[] | null
+          languages?: string[] | null
+          name?: string
+          newsletter_subscribed?: boolean | null
+          phone?: string | null
+          price?: number | null
+          social_links?: Json | null
+          terms_accepted?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       files: {
         Row: {
           category: string

@@ -1,7 +1,13 @@
 'use client';
 
 import { ReactNode, ReactElement } from 'react';
-import { Controller, type FieldPath, type FieldValues, type ControllerRenderProps, type ControllerFieldState } from 'react-hook-form';
+import {
+  Controller,
+  type FieldPath,
+  type FieldValues,
+  type ControllerRenderProps,
+  type ControllerFieldState,
+} from 'react-hook-form';
 import { Field, FieldContent, FieldLabel, FieldDescription, FieldError } from '../field';
 import type { FormBaseProps } from './types';
 
@@ -61,16 +67,22 @@ export const FormField = <
           data-invalid={fieldState.invalid}
           orientation={orientation}
         >
-          <FieldContent>
-            <FieldLabel
-              htmlFor={field.name}
-              className={optional ? 'w-full' : ''}
-            >
-              {label}{' '}
-              {optional && <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>}
-            </FieldLabel>
-            {description && <FieldDescription>{description}</FieldDescription>}
-          </FieldContent>
+          {(label || description) && (
+            <FieldContent>
+              {label && (
+                <FieldLabel
+                  htmlFor={field.name}
+                  className={optional ? 'w-full' : ''}
+                >
+                  {label}{' '}
+                  {optional && (
+                    <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>
+                  )}
+                </FieldLabel>
+              )}
+              {description && <FieldDescription>{description}</FieldDescription>}
+            </FieldContent>
+          )}
           {children({
             ...field,
             id: field.name,
