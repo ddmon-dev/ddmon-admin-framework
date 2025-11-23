@@ -9,13 +9,14 @@ import type { FormTextInputProps } from './form-text-input';
 export type FormPhoneInputProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = Omit<FormTextInputProps<V, N>, 'customFilter'>;
+> = Omit<FormTextInputProps<V, N>, 'customFilter' | 'valueTransform'>;
 
 /**
  * FormPhoneInput - 전화번호 입력 컴포넌트
  *
- * FormInput + telFilter 프리셋
- * - 02/010/070 패턴에 따라 자동 하이픈 삽입
+ * FormTextInput + telFilter 프리셋
+ * - 02/010/070 패턴에 따라 자동 하이픈 삽입 (화면 표시)
+ * - 폼에는 하이픈 제거된 숫자만 저장
  * - 숫자만 입력 허용
  * - 최대 길이 자동 제한
  *
@@ -27,6 +28,9 @@ export type FormPhoneInputProps<
  *   label="전화번호"
  *   placeholder="010-1234-5678"
  * />
+ * // 입력: "01012345678"
+ * // 화면 표시: "010-1234-5678" (telFilter)
+ * // 폼 저장: "01012345678" (valueTransform)
  * ```
  */
 export const FormPhoneInput = <
@@ -39,6 +43,7 @@ export const FormPhoneInput = <
     <FormTextInput
       {...props}
       customFilter={telFilter}
+      valueTransform={value => value.replace(/\D/g, '')}
       inputMode='tel'
     />
   );
