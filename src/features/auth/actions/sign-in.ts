@@ -1,9 +1,9 @@
 'use server';
 
 import { AuthError } from 'next-auth';
-import { nextAuthSignIn } from '../lib/auth.handler';
-import { AUTH_ERROR_MESSAGES } from '../lib/auth.constants';
-import type { SignInValues, SignInResult } from '../lib/auth.types';
+import { nextAuthSignIn } from '../handler';
+import { AUTH_ERROR_MESSAGES } from '../constants';
+import type { SignInValues, SignInResult } from '../types';
 
 export async function signIn(values: SignInValues): Promise<SignInResult> {
   try {

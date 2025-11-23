@@ -2,9 +2,9 @@ import type { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { verifyPassword } from './auth.utils';
-import { ADMIN_TABLE_NAME, AUTH_PATHS } from './auth.constants';
-import type { AdminUser } from './auth.types';
+import { verifyPassword } from './utils';
+import { ADMIN_TABLE_NAME, AUTH_PATHS } from './constants';
+import type { AdminUser } from './types';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 
 const signInSchema = z.object({

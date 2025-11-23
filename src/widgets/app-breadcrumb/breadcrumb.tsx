@@ -3,7 +3,7 @@
 import { Fragment } from 'react';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/shared/ui/breadcrumb';
 import { usePathname } from 'next/navigation';
-import { breadcrumbMap } from './app-breadcrumb.config';
+import { breadcrumbMap } from './config';
 
 export function AppBreadcrumb() {
   const pathname = usePathname();
