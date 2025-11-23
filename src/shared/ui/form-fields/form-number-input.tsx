@@ -96,6 +96,7 @@ export const FormNumberInput = <
       {({ onChange, fieldState, ...field }) => (
         <NumericFormat
           customInput={Input}
+          getInputRef={field.ref}
           value={field.value}
           onValueChange={values => {
             onChange(values.floatValue ?? null);

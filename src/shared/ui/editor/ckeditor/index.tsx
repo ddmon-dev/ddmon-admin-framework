@@ -78,6 +78,7 @@ interface CKEditorProps {
   maxImageSizeMB?: number;
   /** 허용되는 이미지 형식 (기본값: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']) */
   acceptedImageFormats?: string[];
+  ref?: React.Ref<any>;
 }
 
 export function CKEditor({
@@ -90,11 +91,12 @@ export function CKEditor({
   entity,
   maxImageSizeMB = DEFAULT_IMAGE_CONFIG.maxSizeMB,
   acceptedImageFormats = DEFAULT_IMAGE_CONFIG.acceptedFormats,
+  ref,
 }: CKEditorProps) {
   const finalUploadFolder = generateUploadPath(uploadFolder, entity);
 
   return (
-    <div className={cn('w-full', className)}>
+    <div ref={ref} className={cn('w-full', className)} tabIndex={-1}>
       <_CKEditor
         editor={ClassicEditor}
         data={content}

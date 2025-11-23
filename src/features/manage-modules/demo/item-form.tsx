@@ -60,31 +60,33 @@ const formSchema = z.object({
     .or(z.literal('')),
 
   // FormSwitch
-  newsletterSubscribed: z.boolean(),
+  newsletterSubscribed: z
+    .boolean()
+    .refine(value => value, { message: '뉴스레터 구독을 동의해주세요.' }),
 
   // FormCheckbox
-  termsAccepted: z.boolean(),
+  termsAccepted: z.boolean().refine(value => value, { message: '이용약관에 동의해주세요.' }),
 
   // FormCheckboxGroup
-  interests: z.array(z.string()).optional(),
+  interests: z.array(z.string()).min(1, '최소 1개의 관심사를 선택해주세요.'),
 
   // FormRadioGroup
-  gender: z.string().optional(),
+  gender: z.string().min(1, '성별을 선택해주세요.'),
 
   // FormSelect
-  country: z.string().optional(),
+  country: z.string().min(1, '국가를 선택해주세요.'),
 
   // FormCombobox
-  city: z.string().optional(),
+  city: z.string().min(1, '도시를 선택해주세요.'),
 
   // FormMultiCombobox
-  languages: z.array(z.string()).optional(),
+  languages: z.array(z.string()).min(1, '최소 1개의 언어를 선택해주세요.'),
 
   // FormDatePicker
   birthDate: z.date().optional().nullable(),
 
   // FormEditor
-  bio: z.string().optional(),
+  bio: z.string().min(1, '상세 자기소개를 입력해주세요.'),
 
   // FormFileUpload
   files: schemaPresets.files({ avatar: 0, attachments: 0 }),
@@ -240,7 +242,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           name='gender'
           label='성별 (Radio)'
           options={[...CONFIG.genderOptions]}
-          optional
         />
 
         <FormCheckboxGroup
@@ -248,7 +249,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           name='interests'
           label='관심사 (Checkbox Group)'
           options={[...CONFIG.interestOptions]}
-          optional
         />
 
         <FormSelect
@@ -257,7 +257,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           label='국가 (Select)'
           options={[...CONFIG.countryOptions]}
           placeholder='국가를 선택하세요'
-          optional
         />
 
         <FormCombobox
@@ -266,7 +265,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           label='도시 (Combobox)'
           options={[...CONFIG.cityOptions]}
           placeholder='도시를 검색하세요'
-          optional
         />
 
         <FormMultiCombobox
@@ -275,7 +273,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           label='언어 (Multi Combobox)'
           options={[...CONFIG.languageOptions]}
           placeholder='언어를 선택하세요'
-          optional
         />
       </FieldGroup>
 
@@ -319,7 +316,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           name='bio'
           label='상세 자기소개 (Editor)'
           entity={CONFIG.tableName}
-          optional
         />
       </FieldGroup>
 

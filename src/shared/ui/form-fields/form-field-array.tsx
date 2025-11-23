@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactElement, ReactNode, useEffect } from 'react';
-import { useFieldArray, useFormState, type Control } from 'react-hook-form';
+import { useFieldArray, useFormState, Controller, type Control } from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { FieldSet, FieldLegend, FieldContent, FieldDescription, FieldError } from '../field';
@@ -123,62 +123,70 @@ export const FormFieldArray = ({
   const canAdd = max === undefined || fields.length < max;
 
   return (
-    <FieldSet className='gap-3'>
-      <FieldContent>
-        <FieldLegend
-          variant='label'
-          className='flex mb-0'
-        >
-          {label}
-        </FieldLegend>
-        {description && <FieldDescription>{description}</FieldDescription>}
-      </FieldContent>
-
-      {/* Field Array */}
-      <div className='space-y-2'>
-        {fields.map((field, index) => (
-          <div
-            key={field.id}
-            className='flex items-start gap-1'
-          >
-            {/* 필드 콘텐츠 */}
-            <div className='flex-1'>
-              {children({
-                index,
-                name: `${name}.${index}`,
-                control,
-              })}
-            </div>
-
-            {/* 제거 버튼 */}
-            <Button
-              type='button'
-              variant='ghost'
-              size='icon'
-              onClick={() => handleRemove(index)}
-              disabled={!canRemove}
-              className='size-9 shrink-0'
+    <Controller
+      control={control}
+      name={name}
+      render={({ field: { ref } }) => (
+        <FieldSet className='gap-3'>
+          <FieldContent>
+            <FieldLegend
+              variant='label'
+              className='flex mb-0'
             >
-              <Trash2 />
-            </Button>
+              {label}
+            </FieldLegend>
+            {description && <FieldDescription>{description}</FieldDescription>}
+          </FieldContent>
+
+          {/* Field Array */}
+          <div className='space-y-2'>
+            {fields.map((field, index) => (
+              <div
+                key={field.id}
+                className='flex items-start gap-1'
+                ref={index === 0 ? ref : undefined}
+                tabIndex={index === 0 ? -1 : undefined}
+              >
+                {/* 필드 콘텐츠 */}
+                <div className='flex-1'>
+                  {children({
+                    index,
+                    name: `${name}.${index}`,
+                    control,
+                  })}
+                </div>
+
+                {/* 제거 버튼 */}
+                <Button
+                  type='button'
+                  variant='ghost'
+                  size='icon'
+                  onClick={() => handleRemove(index)}
+                  disabled={!canRemove}
+                  className='size-9 shrink-0'
+                >
+                  <Trash2 />
+                </Button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      {rootError && <FieldError errors={[rootError]} />}
+          {rootError && <FieldError errors={[rootError]} />}
 
-      {/* Add Button */}
-      <Button
-        type='button'
-        variant='default'
-        onClick={handleAdd}
-        disabled={!canAdd}
-        className='w-full'
-      >
-        <Plus />
-        {addButtonText}
-        {max !== undefined && ` (${fields.length}/${max})`}
-      </Button>
-    </FieldSet>
+          {/* Add Button */}
+          <Button
+            type='button'
+            variant='default'
+            onClick={handleAdd}
+            disabled={!canAdd}
+            className='w-full'
+          >
+            <Plus />
+            {addButtonText}
+            {max !== undefined && ` (${fields.length}/${max})`}
+          </Button>
+        </FieldSet>
+      )}
+    />
   );
 };

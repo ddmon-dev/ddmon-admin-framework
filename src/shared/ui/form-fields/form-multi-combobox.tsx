@@ -47,6 +47,7 @@ export const FormMultiCombobox = <
     >
       {({ onChange, fieldState, ...field }) => (
         <MultiCombobox
+          ref={field.ref}
           value={field.value}
           onValueChange={onChange}
           options={options}

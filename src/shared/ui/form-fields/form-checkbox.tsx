@@ -30,6 +30,7 @@ export const FormCheckbox = <
             data-invalid={fieldState.invalid}
           >
             <Checkbox
+              ref={field.ref}
               id={field.name}
               checked={field.value}
               onCheckedChange={field.onChange}

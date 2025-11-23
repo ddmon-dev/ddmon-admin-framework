@@ -25,14 +25,14 @@ type DatePickerBaseProps = {
 
 type SingleDatePickerProps = DatePickerBaseProps & {
   mode?: 'single';
-  value?: Date;
+  value?: Date | null;
   onValueChange: (date: Date | undefined) => void;
   presets?: boolean | { label: string; date: Date }[];
 };
 
 type MultipleDatePickerProps = DatePickerBaseProps & {
   mode: 'multiple';
-  value?: Date[];
+  value?: Date[] | null;
   onValueChange: (dates: Date[] | undefined) => void;
   min?: number;
   max?: number;
@@ -40,7 +40,7 @@ type MultipleDatePickerProps = DatePickerBaseProps & {
 
 type RangeDatePickerProps = DatePickerBaseProps & {
   mode: 'range';
-  value?: DateRange;
+  value?: DateRange | null;
   onValueChange: (range: DateRange | undefined) => void;
   numberOfMonths?: number;
   min?: number;
@@ -64,19 +64,20 @@ const DEFAULT_PRESETS = [
   { label: '한 달 후', date: addMonths(new Date(), 1) },
 ];
 
-export function DatePicker(props: DatePickerProps) {
-  const [open, setOpen] = React.useState(false);
+export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
+  (props, ref) => {
+    const [open, setOpen] = React.useState(false);
 
-  const {
-    placeholder = '날짜 선택',
-    disabled,
-    fromDate,
-    toDate,
-    captionLayout = 'label',
-    showOutsideDays = true,
-    className,
-    'aria-invalid': ariaInvalid,
-  } = props;
+    const {
+      placeholder = '날짜 선택',
+      disabled,
+      fromDate,
+      toDate,
+      captionLayout = 'label',
+      showOutsideDays = true,
+      className,
+      'aria-invalid': ariaInvalid,
+    } = props;
 
   const mode = props.mode ?? 'single';
 
@@ -127,7 +128,7 @@ export function DatePicker(props: DatePickerProps) {
       return (
         <Calendar
           mode='single'
-          selected={value}
+          selected={value ?? undefined}
           onSelect={date => {
             onValueChange(date);
             setOpen(false);
@@ -148,7 +149,7 @@ export function DatePicker(props: DatePickerProps) {
       return (
         <Calendar
           mode='multiple'
-          selected={value}
+          selected={value ?? undefined}
           onSelect={onValueChange}
           disabled={disabled}
           fromDate={fromDate}
@@ -168,7 +169,7 @@ export function DatePicker(props: DatePickerProps) {
       return (
         <Calendar
           mode='range'
-          selected={value}
+          selected={value ?? undefined}
           onSelect={onValueChange}
           disabled={disabled}
           fromDate={fromDate}
@@ -237,41 +238,45 @@ export function DatePicker(props: DatePickerProps) {
     );
   };
 
-  return (
-    <div className='space-y-2'>
-      <Popover
-        open={open}
-        onOpenChange={setOpen}
-      >
-        <PopoverTrigger asChild>
-          <Button
-            variant='outline'
-            aria-invalid={ariaInvalid}
-            data-placeholder={!hasValue()}
-            className={cn(
-              "border-input data-[placeholder=true]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-start gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-              'w-full hover:bg-background font-normal',
-              className
-            )}
-          >
-            <CalendarIcon className='opacity-50' />
-            {renderButtonText()}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className={cn('w-auto p-0', hasPresets && 'flex flex-col space-y-2 p-2')}
-          align='start'
+    return (
+      <div className='space-y-2'>
+        <Popover
+          open={open}
+          onOpenChange={setOpen}
         >
-          {renderPresets()}
-          {hasPresets ? (
-            <div className='rounded-md border'>{renderCalendar()}</div>
-          ) : (
-            renderCalendar()
-          )}
-        </PopoverContent>
-      </Popover>
+          <PopoverTrigger asChild>
+            <Button
+              ref={ref}
+              variant='outline'
+              aria-invalid={ariaInvalid}
+              data-placeholder={!hasValue()}
+              className={cn(
+                "border-input data-[placeholder=true]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-start gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+                'w-full hover:bg-background font-normal',
+                className
+              )}
+            >
+              <CalendarIcon className='opacity-50' />
+              {renderButtonText()}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className={cn('w-auto p-0', hasPresets && 'flex flex-col space-y-2 p-2')}
+            align='start'
+          >
+            {renderPresets()}
+            {hasPresets ? (
+              <div className='rounded-md border'>{renderCalendar()}</div>
+            ) : (
+              renderCalendar()
+            )}
+          </PopoverContent>
+        </Popover>
 
-      {renderMultipleBadges()}
-    </div>
-  );
-}
+        {renderMultipleBadges()}
+      </div>
+    );
+  }
+);
+
+DatePicker.displayName = 'DatePicker';

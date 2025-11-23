@@ -69,6 +69,7 @@ export const FormPhoneInput = <
       {({ onChange, fieldState, ...field }) => (
         <PatternFormat
           customInput={Input}
+          getInputRef={field.ref}
           value={field.value || ''}
           format='###-####-####'
           mask='_'

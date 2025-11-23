@@ -115,6 +115,7 @@ export const FormFileUpload = <
             {displayDescription && <FieldDescription>{displayDescription}</FieldDescription>}
           </FieldContent>
           <MultiFileUpload
+            ref={field.ref}
             value={field.value as FormFileValue[]}
             onValueChange={field.onChange}
             onError={setValidationError}

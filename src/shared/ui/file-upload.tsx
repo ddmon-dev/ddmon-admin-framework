@@ -77,6 +77,7 @@ interface MultiFileUploadProps {
   placeholder?: string;
   className?: string;
   'aria-invalid'?: boolean;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 export function MultiFileUpload({
@@ -91,6 +92,7 @@ export function MultiFileUpload({
   placeholder = '파일을 선택하세요...',
   className,
   'aria-invalid': ariaInvalid,
+  ref,
 }: MultiFileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -232,8 +234,10 @@ export function MultiFileUpload({
 
   return (
     <div
+      ref={ref}
       className={cn('w-full', className)}
       data-slot='multi-file-upload'
+      tabIndex={-1}
     >
       <input
         ref={inputRef}

@@ -85,6 +85,7 @@ export const FormDatePicker = <
 
           return (
             <DatePicker
+              ref={field.ref}
               mode='single'
               value={field.value as Date | null | undefined}
               onValueChange={date => onChange(date ?? null)}
@@ -104,6 +105,7 @@ export const FormDatePicker = <
           const { min, max } = props as FormMultipleDatePickerProps<V, N>;
           return (
             <DatePicker
+              ref={field.ref}
               mode='multiple'
               value={field.value as Date[] | null | undefined}
               onValueChange={dates => onChange(dates ?? null)}
@@ -124,6 +126,7 @@ export const FormDatePicker = <
           const { numberOfMonths, min, max } = props as FormRangeDatePickerProps<V, N>;
           return (
             <DatePicker
+              ref={field.ref}
               mode='range'
               value={field.value as DateRange | null | undefined}
               onValueChange={range => onChange(range ?? null)}
