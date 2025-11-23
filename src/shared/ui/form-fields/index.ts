@@ -73,6 +73,10 @@ export type { FormNumberInputProps } from './form-number-input';
 export { FormPhoneInput } from './form-phone-input';
 export type { FormPhoneInputProps } from './form-phone-input';
 
+// FormAddressInput
+export { FormAddressInput } from './form-address-input';
+export type { FormAddressInputProps } from './form-address-input';
+
 // FormFieldArray
 export { FormFieldArray } from './form-field-array';
 export type { FormFieldArrayProps } from './form-field-array';
