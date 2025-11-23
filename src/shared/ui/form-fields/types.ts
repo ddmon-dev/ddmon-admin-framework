@@ -13,7 +13,7 @@ export type ExcludedFormProps = 'name' | 'value' | 'onChange' | 'onBlur' | 'ref'
 export type FormBaseProps<V extends FieldValues = FieldValues, N extends FieldPath<V> = FieldPath<V>> = {
   control: Control<V>;
   name: N;
-  label: ReactNode;
+  label?: ReactNode;
   description?: ReactNode;
   orientation?: 'vertical' | 'horizontal' | 'responsive';
   optional?: boolean;
