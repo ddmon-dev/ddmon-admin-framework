@@ -58,9 +58,9 @@ const formSchema = z.object({
   phone: schemaPresets.phone({ allowEmpty: true }),
 
   // FormAddressInput (플랫 구조 - 3개 필드)
-  zipCode: z.string().min(1, '주소를 입력해주세요'),
-  address: z.string().min(1, '주소를 입력해주세요'),
-  addressDetail: z.string().min(1, '주소를 입력해주세요'),
+  zipCode: z.string().min(1),
+  address: z.string().min(1),
+  addressDetail: z.string().min(1),
 
   // FormSwitch
   newsletterSubscribed: z

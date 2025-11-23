@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactElement, useRef } from 'react';
+import { ReactElement, useRef, useEffect } from 'react';
 import { type Control, type FieldValues } from 'react-hook-form';
 import { MapPin } from 'lucide-react';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
@@ -84,6 +84,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
     onCustomSearch,
     ...inputProps
   } = props;
+  const zipCodeRef = useRef<HTMLInputElement>(null);
   const addressDetailRef = useRef<HTMLInputElement>(null);
 
   // 필드명 생성
@@ -124,6 +125,13 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
                   zipCodeFieldState.invalid ||
                   addressFieldState.invalid ||
                   addressDetailFieldState.invalid;
+
+                // 에러 발생 시 zipCode 필드로 포커스
+                useEffect(() => {
+                  if (hasError && zipCodeRef.current) {
+                    zipCodeRef.current.focus();
+                  }
+                }, [hasError]);
 
                 const handleComplete = (data: DaumAddressData) => {
                   const selectedAddress =
@@ -174,6 +182,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
                         </InputGroupAddon>
                         <InputGroupInput
                           {...inputProps}
+                          ref={zipCodeRef}
                           value={zipCodeValue}
                           placeholder='우편번호'
                           readOnly
