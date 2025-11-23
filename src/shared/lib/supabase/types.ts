@@ -71,6 +71,8 @@ export type Database = {
       }
       demo_items: {
         Row: {
+          address: string | null
+          address_detail: string | null
           age: number | null
           bio: string | null
           birth_date: string | null
@@ -92,8 +94,11 @@ export type Database = {
           social_links: Json | null
           terms_accepted: boolean | null
           updated_at: string | null
+          zip_code: string | null
         }
         Insert: {
+          address?: string | null
+          address_detail?: string | null
           age?: number | null
           bio?: string | null
           birth_date?: string | null
@@ -115,8 +120,11 @@ export type Database = {
           social_links?: Json | null
           terms_accepted?: boolean | null
           updated_at?: string | null
+          zip_code?: string | null
         }
         Update: {
+          address?: string | null
+          address_detail?: string | null
           age?: number | null
           bio?: string | null
           birth_date?: string | null
@@ -138,6 +146,7 @@ export type Database = {
           social_links?: Json | null
           terms_accepted?: boolean | null
           updated_at?: string | null
+          zip_code?: string | null
         }
         Relationships: []
       }

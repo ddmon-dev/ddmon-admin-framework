@@ -145,12 +145,20 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     try {
-      const { files: formFiles, ...restValues } = values;
+      const { files: formFiles, address, ...restValues } = values;
+
+      // 주소 객체를 개별 필드로 분해
+      const submitValues = {
+        ...restValues,
+        zipCode: address?.zipCode || '',
+        address: address?.address || '',
+        addressDetail: address?.addressDetail || '',
+      };
 
       // 데이터 DB 저장
       const { success, data, error } = id
-        ? await updateItem({ id, values: restValues, path: pathname })
-        : await createItem({ values: restValues, path: pathname });
+        ? await updateItem({ id, values: submitValues, path: pathname })
+        : await createItem({ values: submitValues, path: pathname });
 
       if (!success || !data) {
         throw new Error(error || '저장에 실패했습니다.');
