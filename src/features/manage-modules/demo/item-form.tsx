@@ -38,7 +38,7 @@ import { updateItem } from './actions/update-item';
 const formSchema = z.object({
   // FormTextInput
   name: z.string().min(1, '이름을 입력해주세요.'),
-  email: z.string().email('올바른 이메일을 입력해주세요.').optional().or(z.literal('')),
+  email: schemaPresets.email({ allowEmpty: true }),
 
   // FormTextarea
   description: z.string().optional(),
@@ -54,11 +54,7 @@ const formSchema = z.object({
   price: z.number().min(0).int().optional().nullable(),
 
   // FormPhoneInput
-  phone: z
-    .string()
-    .regex(/^0[0-9]{9,10}$/, '올바른 전화번호를 입력해주세요.')
-    .optional()
-    .or(z.literal('')),
+  phone: schemaPresets.phone({ allowEmpty: true }),
 
   // FormSwitch
   newsletterSubscribed: z
@@ -96,10 +92,10 @@ const formSchema = z.object({
   socialLinks: z
     .array(
       z.object({
-        value: z.string().url('올바른 URL을 입력해주세요.').or(z.literal('')),
+        value: schemaPresets.url({ allowEmpty: true }),
       })
     )
-    .refine(links => links.some(link => link.value.trim() !== ''), {
+    .refine(links => links.some(link => link.value && link.value.trim() !== ''), {
       message: '최소 1개의 소셜 미디어 링크를 입력해주세요.',
     }),
 });

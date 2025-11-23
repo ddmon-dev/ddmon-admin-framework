@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactElement } from 'react';
+import { ReactElement, useState, useEffect } from 'react';
 import { type FieldPath, type FieldValues } from 'react-hook-form';
 import { Input } from '@/shared/ui/input';
 import { FormField } from './form-field';
@@ -12,6 +12,7 @@ export type FormTextInputProps<
 > = FormBaseProps<V, N> &
   Omit<React.InputHTMLAttributes<HTMLInputElement>, ExcludedFormProps | 'type'> & {
     customFilter?: (value: string) => string;
+    valueTransform?: (displayValue: string) => string;
   };
 
 export const FormTextInput = <
@@ -25,6 +26,7 @@ export const FormTextInput = <
   orientation,
   optional,
   customFilter,
+  valueTransform,
   ...inputProps
 }: FormTextInputProps<V, N>): ReactElement => {
   return (
@@ -36,14 +38,41 @@ export const FormTextInput = <
       orientation={orientation}
       optional={optional}
     >
-      {({ fieldState, ...field }) => (
-        <Input
-          {...field}
-          aria-invalid={fieldState.invalid}
-          customFilter={customFilter}
-          {...inputProps}
-        />
-      )}
+      {({ onChange, fieldState, ...field }) => {
+        const [displayValue, setDisplayValue] = useState(field.value || '');
+
+        // field.value 변경 시 (외부에서 값 설정 시) displayValue 업데이트
+        useEffect(() => {
+          const rawValue = field.value || '';
+          setDisplayValue(customFilter ? customFilter(rawValue) : rawValue);
+        }, [field.value, customFilter]);
+
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          const inputValue = e.target.value;
+
+          // 1. 화면 표시값 생성 (customFilter 적용)
+          const newDisplayValue = customFilter ? customFilter(inputValue) : inputValue;
+          setDisplayValue(newDisplayValue);
+
+          // 2. 폼 저장값 생성 (valueTransform 적용)
+          const transformedValue = valueTransform
+            ? valueTransform(newDisplayValue)
+            : newDisplayValue;
+
+          // 3. react-hook-form에 저장값 전달
+          onChange(transformedValue);
+        };
+
+        return (
+          <Input
+            {...field}
+            value={displayValue}
+            onChange={handleChange}
+            aria-invalid={fieldState.invalid}
+            {...inputProps}
+          />
+        );
+      }}
     </FormField>
   );
 };

@@ -3,8 +3,12 @@
 import { ReactElement, useState } from 'react';
 import { type FieldPath, type FieldValues } from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
-import { Input } from '@/shared/ui/input';
-import { Button } from '@/shared/ui/button';
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupAddon,
+  InputGroupButton,
+} from '@/shared/ui/input-group';
 import { FormField } from './form-field';
 import type { FormBaseProps, ExcludedFormProps } from './types';
 
@@ -20,7 +24,9 @@ export type FormPasswordInputProps<
 /**
  * FormPasswordInput - 비밀번호 입력 컴포넌트
  *
- * type="password" + 표시/숨김 토글 버튼
+ * InputGroup 기반 구현:
+ * - type="password" + 표시/숨김 토글 버튼
+ * - InputGroup으로 깔끔한 통합 UI
  *
  * @example
  * ```tsx
@@ -64,33 +70,34 @@ export const FormPasswordInput = <
       orientation={orientation}
       optional={optional}
     >
-      {({ fieldState, ...field }) => (
-        <div className='relative'>
-          <Input
+      {({ fieldState, ...field }) =>
+        showToggle ? (
+          <InputGroup>
+            <InputGroupInput
+              {...field}
+              {...inputProps}
+              type={showPassword ? 'text' : 'password'}
+              aria-invalid={fieldState.invalid}
+            />
+            <InputGroupAddon align='inline-end'>
+              <InputGroupButton
+                size='icon-xs'
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff /> : <Eye />}
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        ) : (
+          <InputGroupInput
             {...field}
             {...inputProps}
-            type={showPassword ? 'text' : 'password'}
+            type='password'
             aria-invalid={fieldState.invalid}
-            className={showToggle ? 'pr-10' : undefined}
           />
-          {showToggle && (
-            <Button
-              type='button'
-              variant='ghost'
-              size='icon-sm'
-              onClick={() => setShowPassword(!showPassword)}
-              className='absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7'
-              tabIndex={-1}
-            >
-              {showPassword ? (
-                <EyeOff className='h-4 w-4' />
-              ) : (
-                <Eye className='h-4 w-4' />
-              )}
-            </Button>
-          )}
-        </div>
-      )}
+        )
+      }
     </FormField>
   );
 };
