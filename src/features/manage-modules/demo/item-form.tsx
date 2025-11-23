@@ -13,6 +13,7 @@ import {
   FormTextarea,
   FormNumberInput,
   FormPhoneInput,
+  FormAddressInput,
   FormSwitch,
   FormCheckbox,
   FormCheckboxGroup,
@@ -55,6 +56,9 @@ const formSchema = z.object({
 
   // FormPhoneInput
   phone: schemaPresets.phone({ allowEmpty: true }),
+
+  // FormAddressInput
+  address: schemaPresets.address({ requireDetail: true }),
 
   // FormSwitch
   newsletterSubscribed: z
@@ -107,6 +111,7 @@ const formDefaultValues = {
   age: undefined,
   price: undefined,
   phone: '',
+  address: { zipCode: '', address: '', addressDetail: '' },
   newsletterSubscribed: false,
   termsAccepted: false,
   interests: [],
@@ -197,6 +202,12 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           label='전화번호'
           placeholder='010-1234-5678'
           optional
+        />
+
+        <FormAddressInput
+          control={form.control}
+          name='address'
+          label='주소'
         />
 
         <FormTextarea

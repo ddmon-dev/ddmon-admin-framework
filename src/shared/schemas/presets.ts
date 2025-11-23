@@ -189,6 +189,37 @@ export const schemaPresets = {
   },
 
   /**
+   * 주소 검증
+   * - 우편번호, 주소, 상세주소를 nested object로 검증
+   * - FormAddressInput과 함께 사용
+   *
+   * @example
+   * // 모두 필수 (상세주소 포함)
+   * address: schemaPresets.address()
+   *
+   * @example
+   * // 상세주소 선택 (배송지 등)
+   * shippingAddress: schemaPresets.address({ requireDetail: false })
+   *
+   * @example
+   * // 전체 선택 (프로필 수정 등)
+   * address: schemaPresets.address({ allowEmpty: true })
+   */
+  address: (options?: { requireDetail?: boolean; allowEmpty?: boolean }) => {
+    const requireDetail = options?.requireDetail ?? true;
+
+    const schema = z.object({
+      zipCode: z.string().min(1, '우편번호를 입력해주세요.'),
+      address: z.string().min(1, '주소를 입력해주세요.'),
+      addressDetail: requireDetail
+        ? z.string().min(1, '상세주소를 입력해주세요.')
+        : z.string().optional(),
+    });
+
+    return options?.allowEmpty ? schema.optional() : schema;
+  },
+
+  /**
    * 파일 업로드 검증
    *
    * @example
@@ -223,4 +254,4 @@ export const schemaPresets = {
     .number()
     .min(0, { message: '조회수는 0 이상이어야 합니다.' })
     .max(999999999, { message: '조회수는 0 이상 999999999 이하여야 합니다.' }),
-} as const;
+};
