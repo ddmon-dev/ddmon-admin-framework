@@ -9,7 +9,10 @@ import type { FormBaseProps, ExcludedFormProps } from './types';
 export type FormInputProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = FormBaseProps<V, N> & Omit<React.InputHTMLAttributes<HTMLInputElement>, ExcludedFormProps>;
+> = FormBaseProps<V, N> &
+  Omit<React.InputHTMLAttributes<HTMLInputElement>, ExcludedFormProps> & {
+    customFilter?: (value: string) => string;
+  };
 
 export const FormInput = <
   V extends FieldValues = FieldValues,
@@ -21,6 +24,7 @@ export const FormInput = <
   description,
   orientation,
   optional,
+  customFilter,
   ...inputProps
 }: FormInputProps<V, N>): ReactElement => {
   return (
@@ -36,6 +40,7 @@ export const FormInput = <
         <Input
           {...field}
           aria-invalid={fieldState.invalid}
+          customFilter={customFilter}
           {...inputProps}
         />
       )}

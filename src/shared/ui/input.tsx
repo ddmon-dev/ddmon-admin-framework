@@ -2,7 +2,18 @@ import * as React from 'react';
 
 import { cn } from '@/shared/lib/utils/classnames';
 
-function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
+type InputProps = React.ComponentProps<'input'> & {
+  customFilter?: (value: string) => string;
+};
+
+function Input({ className, type, customFilter, onChange, ...props }: InputProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (customFilter) {
+      e.target.value = customFilter(e.target.value);
+    }
+    onChange?.(e);
+  };
+
   return (
     <input
       type={type}
@@ -13,6 +24,7 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
         'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
         className
       )}
+      onChange={handleChange}
       {...props}
     />
   );
