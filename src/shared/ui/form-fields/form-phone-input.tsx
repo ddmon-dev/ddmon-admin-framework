@@ -70,8 +70,8 @@ export const FormPhoneInput = <
         <PatternFormat
           customInput={Input}
           value={field.value || ''}
-          format="###-####-####"
-          mask="_"
+          format='###-####-####'
+          mask='_'
           allowEmptyFormatting={false}
           onValueChange={values => {
             // values.formattedValue: "010-1234-5678" (하이픈 포함, 표시용)

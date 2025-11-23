@@ -11,10 +11,6 @@ export type FormNumberInputProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
 > = FormBaseProps<V, N> & {
-  /** 최소값 */
-  min?: number;
-  /** 최대값 */
-  max?: number;
   /** 천 단위 구분자 (기본: false) */
   thousandSeparator?: boolean | string;
   /** 접두사 (예: '₩', '$') */
@@ -41,8 +37,6 @@ export type FormNumberInputProps<
  *   control={form.control}
  *   name="age"
  *   label="나이"
- *   min={0}
- *   max={120}
  * />
  *
  * // 천 단위 구분자
@@ -67,8 +61,6 @@ export type FormNumberInputProps<
  *   control={form.control}
  *   name="rating"
  *   label="평점"
- *   min={0}
- *   max={5}
  *   allowDecimal
  *   decimalScale={1}
  * />
@@ -84,8 +76,6 @@ export const FormNumberInput = <
   description,
   orientation,
   optional,
-  min,
-  max,
   thousandSeparator = false,
   prefix,
   suffix,
@@ -108,7 +98,7 @@ export const FormNumberInput = <
           customInput={Input}
           value={field.value}
           onValueChange={values => {
-            onChange(values.floatValue ?? 0);
+            onChange(values.floatValue ?? null);
           }}
           thousandSeparator={thousandSeparator}
           prefix={prefix}
@@ -117,13 +107,6 @@ export const FormNumberInput = <
           decimalScale={allowDecimal ? decimalScale : 0}
           fixedDecimalScale={allowDecimal && decimalScale !== undefined}
           placeholder={placeholder}
-          isAllowed={values => {
-            const { floatValue } = values;
-            if (floatValue === undefined) return true;
-            if (min !== undefined && floatValue < min) return false;
-            if (max !== undefined && floatValue > max) return false;
-            return true;
-          }}
           aria-invalid={fieldState.invalid}
         />
       )}
