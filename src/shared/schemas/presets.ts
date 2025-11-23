@@ -208,20 +208,18 @@ export const schemaPresets = {
   address: (options?: { requireDetail?: boolean; allowEmpty?: boolean }) => {
     const requireDetail = options?.requireDetail ?? true;
 
-    const schema = z
-      .object({
-        zipCode: z.string().default(''),
-        address: z.string().default(''),
-        addressDetail: z.string().optional().default(''),
-      })
-      .refine(
-        (data) => {
-          if (!data.zipCode || !data.address) return false;
-          if (requireDetail && !data.addressDetail) return false;
-          return true;
-        },
-        { message: '주소를 입력해주세요.' }
-      );
+    const schema = z.object({
+      zipCode: z.string(),
+      address: z.string(),
+      addressDetail: z.string(),
+    }).refine(
+      (data) => {
+        if (!data.zipCode || !data.address) return false;
+        if (requireDetail && !data.addressDetail) return false;
+        return true;
+      },
+      { message: '주소를 입력해주세요.' }
+    );
 
     return options?.allowEmpty ? schema.optional() : schema;
   },
