@@ -11,7 +11,7 @@ import {
   InputGroupButton,
 } from '@/shared/ui/input-group';
 import { Input } from '@/shared/ui/input';
-import { FieldGroup } from '@/shared/ui/field';
+import { FieldGroup, FieldError } from '@/shared/ui/field';
 import { FormField } from './form-field';
 import type { ExcludedFormProps } from './types';
 import type { DaumAddressData } from '@/shared/types/daum-postcode';
@@ -198,6 +198,9 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
                       placeholder='상세주소를 입력하세요'
                       aria-invalid={hasError}
                     />
+
+                    {/* 통합 에러 메시지 */}
+                    {hasError && <FieldError>주소를 입력해주세요</FieldError>}
                   </FieldGroup>
                 );
               }}
