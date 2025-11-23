@@ -56,3 +56,7 @@ export type { FormEditorProps } from './form-editor';
 // FormNumberInput
 export { FormNumberInput } from './form-number-input';
 export type { FormNumberInputProps } from './form-number-input';
+
+// FormPhoneInput
+export { FormPhoneInput } from './form-phone-input';
+export type { FormPhoneInputProps } from './form-phone-input';
