@@ -35,12 +35,11 @@ export type FormFieldArrayProps = {
  *   defaultValue=""
  * >
  *   {({ name, control }) => (
- *     <FormInput
+ *     <FormEmailInput
  *       control={control}
  *       name={name}
  *       label=""
  *       placeholder="이메일 입력"
- *       type="email"
  *     />
  *   )}
  * </FormFieldArray>
@@ -54,13 +53,13 @@ export type FormFieldArrayProps = {
  * >
  *   {({ index, control }) => (
  *     <div className="grid grid-cols-2 gap-2">
- *       <FormInput
+ *       <FormTextInput
  *         control={control}
  *         name={`contacts.${index}.name`}
  *         label=""
  *         placeholder="이름"
  *       />
- *       <FormInput
+ *       <FormPhoneInput
  *         control={control}
  *         name={`contacts.${index}.phone`}
  *         label=""

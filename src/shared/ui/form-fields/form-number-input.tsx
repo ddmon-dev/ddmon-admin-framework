@@ -109,6 +109,7 @@ export const FormNumberInput = <
           fixedDecimalScale={allowDecimal && decimalScale !== undefined}
           placeholder={placeholder}
           aria-invalid={fieldState.invalid}
+          inputMode={allowDecimal ? 'decimal' : 'numeric'}
         />
       )}
     </FormField>

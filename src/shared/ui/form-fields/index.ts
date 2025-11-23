@@ -5,9 +5,21 @@ export type { FormBaseProps, ExcludedFormProps } from './types';
 export { FormField } from './form-field';
 export type { FormFieldProps } from './form-field';
 
-// FormInput
-export { FormInput } from './form-input';
-export type { FormInputProps } from './form-input';
+// FormTextInput
+export { FormTextInput } from './form-text-input';
+export type { FormTextInputProps } from './form-text-input';
+
+// FormEmailInput
+export { FormEmailInput } from './form-email-input';
+export type { FormEmailInputProps } from './form-email-input';
+
+// FormUrlInput
+export { FormUrlInput } from './form-url-input';
+export type { FormUrlInputProps } from './form-url-input';
+
+// FormPasswordInput
+export { FormPasswordInput } from './form-password-input';
+export type { FormPasswordInputProps } from './form-password-input';
 
 // FormTextarea
 export { FormTextarea } from './form-textarea';

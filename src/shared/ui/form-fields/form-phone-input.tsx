@@ -3,13 +3,13 @@
 import { ReactElement } from 'react';
 import { type FieldPath, type FieldValues } from 'react-hook-form';
 import { telFilter } from '@/shared/lib/utils/input-filters';
-import { FormInput } from './form-input';
-import type { FormInputProps } from './form-input';
+import { FormTextInput } from './form-text-input';
+import type { FormTextInputProps } from './form-text-input';
 
 export type FormPhoneInputProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = Omit<FormInputProps<V, N>, 'customFilter'>;
+> = Omit<FormTextInputProps<V, N>, 'customFilter'>;
 
 /**
  * FormPhoneInput - 전화번호 입력 컴포넌트
@@ -36,9 +36,10 @@ export const FormPhoneInput = <
   props: FormPhoneInputProps<V, N>
 ): ReactElement => {
   return (
-    <FormInput
+    <FormTextInput
       {...props}
       customFilter={telFilter}
+      inputMode='tel'
     />
   );
 };

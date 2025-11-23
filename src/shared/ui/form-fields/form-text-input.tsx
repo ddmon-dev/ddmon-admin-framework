@@ -6,15 +6,15 @@ import { Input } from '@/shared/ui/input';
 import { FormField } from './form-field';
 import type { FormBaseProps, ExcludedFormProps } from './types';
 
-export type FormInputProps<
+export type FormTextInputProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
 > = FormBaseProps<V, N> &
-  Omit<React.InputHTMLAttributes<HTMLInputElement>, ExcludedFormProps> & {
+  Omit<React.InputHTMLAttributes<HTMLInputElement>, ExcludedFormProps | 'type'> & {
     customFilter?: (value: string) => string;
   };
 
-export const FormInput = <
+export const FormTextInput = <
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
 >({
@@ -26,7 +26,7 @@ export const FormInput = <
   optional,
   customFilter,
   ...inputProps
-}: FormInputProps<V, N>): ReactElement => {
+}: FormTextInputProps<V, N>): ReactElement => {
   return (
     <FormField
       control={control}
