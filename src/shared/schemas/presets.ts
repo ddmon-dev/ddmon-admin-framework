@@ -189,42 +189,6 @@ export const schemaPresets = {
   },
 
   /**
-   * 주소 검증
-   * - 우편번호, 주소, 상세주소를 nested object로 검증
-   * - FormAddressInput과 함께 사용
-   *
-   * @example
-   * // 모두 필수 (상세주소 포함)
-   * address: schemaPresets.address()
-   *
-   * @example
-   * // 상세주소 선택 (배송지 등)
-   * shippingAddress: schemaPresets.address({ requireDetail: false })
-   *
-   * @example
-   * // 전체 선택 (프로필 수정 등)
-   * address: schemaPresets.address({ allowEmpty: true })
-   */
-  address: (options?: { requireDetail?: boolean; allowEmpty?: boolean }) => {
-    const requireDetail = options?.requireDetail ?? true;
-
-    const schema = z.object({
-      zipCode: z.string(),
-      address: z.string(),
-      addressDetail: z.string(),
-    }).refine(
-      (data) => {
-        if (!data.zipCode || !data.address) return false;
-        if (requireDetail && !data.addressDetail) return false;
-        return true;
-      },
-      { message: '주소를 입력해주세요.' }
-    );
-
-    return options?.allowEmpty ? schema.optional() : schema;
-  },
-
-  /**
    * 파일 업로드 검증
    *
    * @example
