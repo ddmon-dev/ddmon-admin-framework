@@ -368,7 +368,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
             <FormTextInput
               control={control}
               name={`socialLinks.${index}.value`}
-              label=''
               placeholder='https://twitter.com/username'
               inputMode='url'
             />
