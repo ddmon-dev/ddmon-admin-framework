@@ -42,6 +42,7 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.81.1",
     "@tanstack/react-table": "^8.21.3",
+    "bcryptjs": "^3.0.3",
     "ckeditor5": "^47.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -51,6 +52,7 @@
     "input-otp": "^1.4.2",
     "lucide-react": "^0.553.0",
     "next": "16.0.3",
+    "next-auth": "^5.0.0-beta.30",
     "next-themes": "^0.4.6",
     "react": "19.2.0",
     "react-day-picker": "^9.11.1",
@@ -67,6 +69,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

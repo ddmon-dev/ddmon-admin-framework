@@ -39,6 +39,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admins: {
+        Row: {
+          created_at: string | null
+          deleted: boolean | null
+          id: string
+          name: string
+          password: string
+          super_admin: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          deleted?: boolean | null
+          id?: string
+          name: string
+          password: string
+          super_admin?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          deleted?: boolean | null
+          id?: string
+          name?: string
+          password?: string
+          super_admin?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       files: {
         Row: {
           category: string
