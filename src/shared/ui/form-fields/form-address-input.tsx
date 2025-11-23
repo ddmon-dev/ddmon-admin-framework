@@ -147,6 +147,7 @@ export const FormAddressInput = <
                 </InputGroupAddon>
                 <InputGroupInput
                   {...inputProps}
+                  ref={field.ref}
                   value={value.zipCode}
                   placeholder='우편번호'
                   readOnly
