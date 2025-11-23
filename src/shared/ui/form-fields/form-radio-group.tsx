@@ -61,6 +61,7 @@ export const FormRadioGroup = <
                 data-invalid={fieldState.invalid}
               >
                 <RadioGroupItem
+                  ref={index === 0 ? field.ref : undefined}
                   id={`${field.name}-${index}`}
                   value={option.value}
                   aria-invalid={fieldState.invalid}

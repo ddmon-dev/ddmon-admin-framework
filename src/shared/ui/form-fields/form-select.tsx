@@ -46,6 +46,7 @@ export const FormSelect = <
           onValueChange={onChange}
         >
           <SelectTrigger
+            ref={field.ref}
             id={field.name}
             aria-invalid={fieldState.invalid}
           >

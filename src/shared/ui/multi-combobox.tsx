@@ -25,6 +25,7 @@ type MultiComboboxProps = {
   emptyMessage?: string;
   className?: string;
   'aria-invalid'?: boolean;
+  ref?: React.Ref<HTMLButtonElement>;
 };
 
 export function MultiCombobox({
@@ -36,6 +37,7 @@ export function MultiCombobox({
   emptyMessage = 'No results found',
   className,
   'aria-invalid': ariaInvalid,
+  ref,
 }: MultiComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -59,6 +61,7 @@ export function MultiCombobox({
       >
         <PopoverTrigger asChild>
           <Button
+            ref={ref}
             variant='outline'
             role='combobox'
             aria-expanded={open}

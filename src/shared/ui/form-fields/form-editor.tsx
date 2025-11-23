@@ -50,6 +50,7 @@ export const FormEditor = <
     >
       {({ onChange, fieldState, ...field }) => (
         <Editor
+          ref={field.ref}
           content={field.value as string}
           onChange={onChange}
           placeholder={placeholder}

@@ -30,6 +30,7 @@ export const FormSwitch = <
             data-invalid={fieldState.invalid}
           >
             <Switch
+              ref={field.ref}
               id={field.name}
               checked={field.value}
               onCheckedChange={field.onChange}

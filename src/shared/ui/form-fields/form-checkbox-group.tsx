@@ -60,6 +60,7 @@ export const FormCheckboxGroup = <
                 data-invalid={fieldState.invalid}
               >
                 <Checkbox
+                  ref={index === 0 ? field.ref : undefined}
                   id={`${field.name}-${index}`}
                   name={field.name}
                   aria-invalid={fieldState.invalid}

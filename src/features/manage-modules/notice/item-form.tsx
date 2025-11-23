@@ -109,7 +109,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           control={form.control}
           name='viewCount'
           label='조회수'
-          min={0}
           thousandSeparator
         />
         <FormInput

@@ -47,6 +47,7 @@ export const FormCombobox = <
     >
       {({ onChange, fieldState, ...field }) => (
         <Combobox
+          ref={field.ref}
           value={field.value}
           onValueChange={onChange}
           options={options}
