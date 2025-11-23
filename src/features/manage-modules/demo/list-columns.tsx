@@ -1,0 +1,78 @@
+import { ColumnDef } from '@tanstack/react-table';
+import { ModifyButton } from '../_base/components';
+import { SoftDeleteItemButton, HardDeleteItemButton } from './delete-item-button';
+import { type ItemDTO } from './types';
+
+export const listColumns: ColumnDef<ItemDTO>[] = [
+  {
+    accessorKey: 'name',
+    header: '이름',
+    size: 150,
+  },
+  {
+    accessorKey: 'email',
+    header: '이메일',
+    size: 200,
+  },
+  {
+    accessorKey: 'phone',
+    header: '전화번호',
+    size: 120,
+    cell: ({ row }) => {
+      const phone = row.getValue('phone') as string | null;
+      if (!phone) return '-';
+
+      // 전화번호 포맷팅: 01012345678 → 010-1234-5678
+      if (phone.length === 11) {
+        return phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+      } else if (phone.length === 10) {
+        if (phone.startsWith('02')) {
+          return phone.replace(/(\d{2})(\d{4})(\d{4})/, '$1-$2-$3');
+        }
+        return phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+      }
+      return phone;
+    },
+  },
+  {
+    accessorKey: 'age',
+    header: () => <div className='text-right'>나이</div>,
+    size: 80,
+    cell: ({ row }) => {
+      const age = row.getValue('age') as number | null;
+      return <div className='text-right'>{age ?? '-'}</div>;
+    },
+  },
+  {
+    accessorKey: 'createdAt',
+    header: '생성일',
+    size: 120,
+    cell: ({ row }) => {
+      const { createdAt } = row.original;
+      const date = new Date(createdAt);
+      return <div className='text-right'>{date.toLocaleDateString()}</div>;
+    },
+  },
+  {
+    accessorKey: 'etc',
+    header: () => <div className='text-right'>기타</div>,
+    cell: ({ row }) => {
+      const { deleted, id } = row.original;
+
+      return (
+        <div className='flex items-center justify-end gap-2'>
+          {deleted ? (
+            <HardDeleteItemButton id={id} />
+          ) : (
+            <>
+              <ModifyButton id={id} />
+              <SoftDeleteItemButton id={id} />
+            </>
+          )}
+        </div>
+      );
+    },
+    enableSorting: false,
+    size: 100,
+  },
+];
