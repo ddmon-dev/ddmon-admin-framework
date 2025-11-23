@@ -1,0 +1,19 @@
+'use client';
+
+import { ManageList } from '../_base/components';
+import { listColumns } from './list-columns';
+import { type ItemDTO } from './types';
+
+interface ListProps {
+  data: ItemDTO[];
+  totalCount: number;
+}
+
+export function List({ data, totalCount }: ListProps) {
+  return (
+    <div className='space-y-4'>
+      {/* 테이블 */}
+      <ManageList data={data} totalCount={totalCount} listColumns={listColumns} />
+    </div>
+  );
+}

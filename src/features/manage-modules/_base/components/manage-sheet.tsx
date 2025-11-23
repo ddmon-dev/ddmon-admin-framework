@@ -57,12 +57,12 @@ export function ManageSheet({ children }: { children: React.ReactNode }) {
       open={isOpen}
       onOpenChange={open => !open && closeManageSheet()}
     >
-      <SheetContent>
+      <SheetContent className='max-w-4xl!'>
         <SheetHeader>
           <SheetTitle>Title</SheetTitle>
           <SheetDescription>Description</SheetDescription>
         </SheetHeader>
-        {children}
+        <div className='overflow-y-auto'>{children}</div>
       </SheetContent>
     </Sheet>
   );
