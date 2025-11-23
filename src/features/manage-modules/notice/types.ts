@@ -17,13 +17,13 @@ export type RowData = BaseRowData<typeof CONFIG.tableName>;
 export type ItemDTO = WithFiles<CamelCaseKeys<RowData>>;
 
 /**
- * 업데이트 항목 값 타입
- * Presigned URL 방식에서는 files를 Server Action에서 받지 않음
- */
-export type UpdateItemValues = WithFiles<DbUpdate<typeof CONFIG.tableName>>;
-
-/**
  * 생성 항목 값 타입
  * Presigned URL 방식에서는 files를 Server Action에서 받지 않음
  */
 export type CreateItemValues = WithFiles<DbInsert<typeof CONFIG.tableName>>;
+
+/**
+ * 업데이트 항목 값 타입
+ * Presigned URL 방식에서는 files를 Server Action에서 받지 않음
+ */
+export type UpdateItemValues = WithFiles<DbUpdate<typeof CONFIG.tableName>>;

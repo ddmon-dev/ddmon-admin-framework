@@ -1,33 +1,16 @@
-import type { BaseRowData, CamelCaseKeys, DbInsert, DbUpdate } from '@/shared/lib/supabase/types';
-import type { DbFileMetadata } from '@/shared/lib/supabase/file-helpers';
+import { RowData as BaseRowData, DbUpdate, DbInsert } from '@/shared/lib/supabase/db-helpers';
+import { CamelCaseKeys } from '@/shared/lib/utils/objects';
+import { WithFiles } from '@/shared/lib/file-system';
+import { CONFIG } from './config';
 
-export type RowData = BaseRowData<'demo_items'>;
-export type ItemDTO = CamelCaseKeys<RowData>;
+export type RowData = BaseRowData<typeof CONFIG.tableName>;
+export type ItemDTO = WithFiles<CamelCaseKeys<RowData>>;
 
-export type ItemFiles = {
-  attachments?: DbFileMetadata[];
-  avatar?: DbFileMetadata[];
-};
-
-export type ItemDTOWithFiles = ItemDTO & {
-  files?: ItemFiles;
-};
-
-export type CreateItemValues = DbInsert<'demo_items'>;
-export type UpdateItemValues = DbUpdate<'demo_items'>;
+export type CreateItemValues = WithFiles<DbInsert<typeof CONFIG.tableName>>;
+export type UpdateItemValues = WithFiles<DbUpdate<typeof CONFIG.tableName>>;
 
 // Server Action 공통 파라미터
 export interface Params {
   id: string;
   path?: string;
 }
-
-// Action Result 타입
-export type ActionResult<T> = {
-  success: boolean;
-  data?: T;
-  error?: string;
-};
-
-// Delete Result 타입
-export type DeleteResult<T> = ActionResult<T>;
