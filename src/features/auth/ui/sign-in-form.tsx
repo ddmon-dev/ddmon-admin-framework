@@ -3,32 +3,49 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { FieldGroup } from '@/shared/ui/field';
 import { FormInput } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
+import { signIn } from '../actions';
 
 const signInSchema = z.object({
-  id: z.string().min(1, { message: '아이디를 입력해주세요.' }),
-  password: z
-    .string()
-    .min(1, { message: '비밀번호를 입력해주세요.' })
-    .min(6, { message: '비밀번호는 최소 6자 이상이어야 합니다.' }),
+  name: z.string().min(1, { message: '아이디를 입력해주세요.' }),
+  password: z.string().min(1, { message: '비밀번호를 입력해주세요.' }),
 });
 
 const defaultValues = {
-  id: '',
+  name: '',
   password: '',
 };
 
 export function SignInForm() {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+
   const form = useForm<z.infer<typeof signInSchema>>({
     defaultValues,
     resolver: zodResolver(signInSchema),
   });
 
   async function onSubmit(values: z.infer<typeof signInSchema>) {
-    console.log('Sign in form submitted:', values);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    setError(null);
+
+    try {
+      const result = await signIn(values);
+
+      if (!result.success) {
+        setError(result.error || '로그인에 실패했습니다.');
+        return;
+      }
+
+      router.push('/');
+      router.refresh();
+    } catch (error) {
+      console.error('로그인 에러:', error);
+      setError('로그인 중 오류가 발생했습니다.');
+    }
   }
 
   return (
@@ -36,10 +53,10 @@ export function SignInForm() {
       <FieldGroup className='gap-y-6'>
         <FieldGroup className='gap-y-4'>
           <FormInput
-            name='id'
+            name='name'
             label='아이디'
             control={form.control}
-            type='email'
+            type='text'
             placeholder='아이디를 입력하세요'
             autoComplete='username'
             autoFocus
@@ -54,11 +71,17 @@ export function SignInForm() {
           />
         </FieldGroup>
 
+        {error && (
+          <div className='rounded-md bg-destructive/15 p-3 text-sm text-destructive'>
+            {error}
+          </div>
+        )}
+
         <LoadingButton
           type='submit'
           isLoading={form.formState.isSubmitting}
         >
-          Log-in
+          로그인
         </LoadingButton>
       </FieldGroup>
     </form>

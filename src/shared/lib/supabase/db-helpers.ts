@@ -5,7 +5,10 @@
  */
 
 import { Database } from './types';
-import { transformSnakeToCamel, type CamelCaseKeys } from '../utils/objects';
+import { transformSnakeToCamel, transformCamelToSnake, type CamelCaseKeys } from '../utils/objects';
+
+// Re-export 변환 함수
+export { transformSnakeToCamel, transformCamelToSnake, type CamelCaseKeys };
 
 /**
  * 테이블 이름 타입

@@ -6,10 +6,15 @@ import { AppSidebarIdentity } from '@/widgets/app-sidebar/app-sidebar-identity';
 import { NavMenu } from '@/widgets/app-sidebar/app-sidebar-nav-menu';
 import { NavUser } from '@/widgets/app-sidebar/app-sidebar-nav-user';
 import { ThemeToggle } from '@/shared/ui/theme-switcher';
+import type { AdminUser } from '@/features/auth/lib/auth.types';
 
 import { navigationConfig } from '@/widgets/app-sidebar/app-sidebar.config';
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  user: AdminUser;
+};
+
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
     <Sidebar
       collapsible='offcanvas'
@@ -26,7 +31,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <div className={cn('px-0')}>
           <ThemeToggle />
         </div>
-        <NavUser user={navigationConfig.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );
