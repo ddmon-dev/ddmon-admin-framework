@@ -11,7 +11,7 @@ import {
   InputGroupButton,
 } from '@/shared/ui/input-group';
 import { Input } from '@/shared/ui/input';
-import { FieldGroup, FieldError } from '@/shared/ui/field';
+import { Field, FieldContent, FieldLabel, FieldDescription, FieldGroup, FieldError } from '@/shared/ui/field';
 import { FormField } from './form-field';
 import type { ExcludedFormProps } from './types';
 import type { DaumAddressData } from '@/shared/types/daum-postcode';
@@ -84,7 +84,6 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
     onCustomSearch,
     ...inputProps
   } = props;
-  const zipCodeRef = useRef<HTMLInputElement>(null);
   const addressDetailRef = useRef<HTMLInputElement>(null);
 
   // 필드명 생성
@@ -96,42 +95,63 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
   const openDaumPostcode = useDaumPostcodePopup();
 
   return (
-    <FormField
-      control={control}
-      name={zipCodeName}
-      label={label}
-      description={description}
+    <Field
+      data-invalid={undefined}
       orientation={orientation}
-      optional={optional}
     >
-      {({ fieldState: zipCodeFieldState, ...zipCodeField }) => (
-        <FormField
-          control={control}
-          name={addressName}
-        >
-          {({ fieldState: addressFieldState, ...addressField }) => (
+      {(label || description) && (
+        <FieldContent>
+          {label && (
+            <FieldLabel className={optional ? 'w-full' : ''}>
+              {label}{' '}
+              {optional && (
+                <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>
+              )}
+            </FieldLabel>
+          )}
+          {description && <FieldDescription>{description}</FieldDescription>}
+        </FieldContent>
+      )}
+
+      <FormField
+        control={control}
+        name={zipCodeName}
+      >
+        {({ fieldState: zipCodeFieldState, ...zipCodeField }) => (
+          <>
             <FormField
               control={control}
-              name={addressDetailName}
+              name={addressName}
             >
-              {({ fieldState: addressDetailFieldState, ...addressDetailField }) => {
-                // 3개 필드 값
-                const zipCodeValue = zipCodeField.value || '';
-                const addressValue = addressField.value || '';
-                const addressDetailValue = addressDetailField.value || '';
+              {({ fieldState: addressFieldState, ...addressField }) => (
+                <FormField
+                  control={control}
+                  name={addressDetailName}
+                >
+                  {({ fieldState: addressDetailFieldState, ...addressDetailField }) => {
+                  // 3개 필드 값
+                  const zipCodeValue = zipCodeField.value || '';
+                  const addressValue = addressField.value || '';
+                  const addressDetailValue = addressDetailField.value || '';
 
-                // 3개 필드 중 하나라도 에러가 있으면 에러 표시
-                const hasError =
-                  zipCodeFieldState.invalid ||
-                  addressFieldState.invalid ||
-                  addressDetailFieldState.invalid;
+                  // 3개 필드 중 하나라도 에러가 있으면 에러 표시
+                  const hasError =
+                    zipCodeFieldState.invalid ||
+                    addressFieldState.invalid ||
+                    addressDetailFieldState.invalid;
 
-                // 에러 발생 시 zipCode 필드로 포커스
-                useEffect(() => {
-                  if (hasError && zipCodeRef.current) {
-                    zipCodeRef.current.focus();
-                  }
-                }, [hasError]);
+                  // 에러 발생 시 zipCode 필드로 포커스
+                  useEffect(() => {
+                    if (hasError) {
+                      // InputGroupInput을 찾아서 포커스
+                      const input = document.querySelector<HTMLInputElement>(
+                        `input[name="${zipCodeName}"]`
+                      );
+                      if (input) {
+                        input.focus();
+                      }
+                    }
+                  }, [hasError, zipCodeName]);
 
                 const handleComplete = (data: DaumAddressData) => {
                   const selectedAddress =
@@ -175,6 +195,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
                             size='xs'
                             onClick={handleSearch}
                             type='button'
+                            tabIndex={-1}
                           >
                             <MapPin className='h-4 w-4' />
                             주소찾기
@@ -182,7 +203,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
                         </InputGroupAddon>
                         <InputGroupInput
                           {...inputProps}
-                          ref={zipCodeRef}
+                          name={zipCodeName}
                           value={zipCodeValue}
                           placeholder='우편번호'
                           readOnly
@@ -216,7 +237,9 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
             </FormField>
           )}
         </FormField>
-      )}
-    </FormField>
+          </>
+        )}
+      </FormField>
+    </Field>
   );
 };
