@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactElement, useRef } from 'react';
+import { ReactElement, useRef, type RefObject } from 'react';
 import { type Control, type FieldValues, useController } from 'react-hook-form';
 import { MapPin } from 'lucide-react';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
@@ -83,7 +83,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
     onCustomSearch,
     ...inputProps
   } = props;
-  const addressDetailRef = useRef<HTMLInputElement>(null);
+  const searchButtonRef = useRef<HTMLButtonElement>(null);
 
   // 필드명 생성
   const zipCodeName = (namePrefix ? `${namePrefix}ZipCode` : 'zipCode') as any;
@@ -91,9 +91,20 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
   const addressDetailName = (namePrefix ? `${namePrefix}AddressDetail` : 'addressDetail') as any;
 
   // useController로 3개 필드 제어
-  const zipCode = useController({ control, name: zipCodeName });
+  const zipCode = useController({
+    control,
+    name: zipCodeName,
+  });
   const address = useController({ control, name: addressName });
   const addressDetail = useController({ control, name: addressDetailName });
+
+  // zipCode의 ref를 주소찾기 버튼에 연결 (RefCallback 타입)
+  const setZipCodeRef = (element: HTMLButtonElement | null) => {
+    searchButtonRef.current = element;
+    if (typeof zipCode.field.ref === 'function') {
+      zipCode.field.ref(element);
+    }
+  };
 
   // 3개 필드 중 하나라도 에러가 있는지 확인
   const hasError =
@@ -117,7 +128,8 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
 
     // 상세주소 입력창 포커스
     setTimeout(() => {
-      addressDetailRef.current?.focus();
+      const ref = addressDetail.field.ref as unknown as RefObject<HTMLInputElement>;
+      ref.current?.focus();
     }, 100);
   };
 
@@ -128,7 +140,8 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
       address.field.onChange(result.address);
       addressDetail.field.onChange('');
       setTimeout(() => {
-        addressDetailRef.current?.focus();
+        const ref = addressDetail.field.ref as unknown as RefObject<HTMLInputElement>;
+        ref.current?.focus();
       }, 100);
     } else {
       openDaumPostcode({ onComplete: handleComplete as any });
@@ -163,6 +176,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
               className='-ml-2!'
             >
               <InputGroupButton
+                ref={setZipCodeRef}
                 size='xs'
                 onClick={handleSearch}
                 type='button'
@@ -173,7 +187,6 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
             </InputGroupAddon>
             <InputGroupInput
               {...inputProps}
-              ref={zipCode.field.ref}
               value={zipCodeValue}
               placeholder='우편번호'
               readOnly
@@ -192,7 +205,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
 
         {/* 상세주소 */}
         <Input
-          ref={addressDetailRef}
+          ref={addressDetail.field.ref}
           value={addressDetailValue}
           onChange={e => addressDetail.field.onChange(e.target.value)}
           placeholder='상세주소를 입력하세요'
