@@ -8,7 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { FieldGroup } from '@/shared/ui/field';
 import {
-  FormInput,
+  FormTextInput,
+  FormEmailInput,
   FormTextarea,
   FormNumberInput,
   FormPhoneInput,
@@ -35,7 +36,7 @@ import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
 
 const formSchema = z.object({
-  // FormInput
+  // FormTextInput
   name: z.string().min(1, '이름을 입력해주세요.'),
   email: z.string().email('올바른 이메일을 입력해주세요.').optional().or(z.literal('')),
 
@@ -45,12 +46,12 @@ const formSchema = z.object({
   // FormNumberInput
   age: z
     .number()
-    .int()
     .min(0)
     .max(150, '나이는 0~150 사이의 숫자를 입력해주세요.')
+    .int()
     .optional()
     .nullable(),
-  price: z.number().min(0).optional().nullable(),
+  price: z.number().min(0).int().optional().nullable(),
 
   // FormPhoneInput
   phone: z
@@ -179,18 +180,17 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       <FieldGroup>
         <h3 className='text-lg font-semibold'>기본 정보</h3>
 
-        <FormInput
+        <FormTextInput
           control={form.control}
           name='name'
           label='이름'
           placeholder='홍길동'
         />
 
-        <FormInput
+        <FormEmailInput
           control={form.control}
           name='email'
           label='이메일'
-          type='email'
           placeholder='example@example.com'
           optional
         />
@@ -358,7 +358,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           defaultValue={{ value: '' }}
         >
           {({ index, control }) => (
-            <FormInput
+            <FormTextInput
               control={control}
               name={`socialLinks.${index}.value`}
               label=''

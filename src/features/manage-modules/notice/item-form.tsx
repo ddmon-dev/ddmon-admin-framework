@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FieldGroup } from '@/shared/ui/field';
 import {
   FormRadioGroup,
-  FormInput,
+  FormTextInput,
   FormNumberInput,
   FormEditor,
   FormFileUpload,
@@ -111,7 +111,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           label='조회수'
           thousandSeparator
         />
-        <FormInput
+        <FormTextInput
           control={form.control}
           name='title'
           label='제목'

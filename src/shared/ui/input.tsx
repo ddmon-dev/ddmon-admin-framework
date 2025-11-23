@@ -6,7 +6,7 @@ type InputProps = React.ComponentProps<'input'> & {
   customFilter?: (value: string) => string;
 };
 
-function Input({ className, type, customFilter, onChange, ...props }: InputProps) {
+function Input({ className, type = 'text', customFilter, onChange, ...props }: InputProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (customFilter) {
       e.target.value = customFilter(e.target.value);
