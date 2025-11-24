@@ -2,7 +2,7 @@
 
 import { ManageList } from '../_base/ui';
 import { listColumns } from './list-columns';
-import { type ItemDTO } from './types';
+import { type ItemDTO } from './config';
 
 interface ListProps {
   data: ItemDTO[];

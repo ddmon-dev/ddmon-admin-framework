@@ -4,10 +4,10 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 
 import { BASE_CONFIG } from '../../_base/config';
-import { type GetListResult } from '../../_base/types';
+import { type GetListResult } from '../../_base/config';
 
 import { CONFIG } from '../config';
-import { type ItemDTO } from '../types';
+import { type ItemDTO } from '../config';
 
 interface Params {
   page?: string;

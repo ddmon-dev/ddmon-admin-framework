@@ -5,7 +5,7 @@ import { type ExcelColumn } from '@/shared/lib/excel';
 
 import { ManageList } from '../_base/ui';
 import { listColumns } from './list-columns';
-import { type ItemDTO } from './types';
+import { type ItemDTO } from './config';
 import { getExportData } from './actions/get-export-data';
 
 interface ListProps {

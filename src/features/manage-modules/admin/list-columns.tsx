@@ -2,7 +2,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ModifyButton, SoftDeleteButton } from '../_base/ui';
 
 import { CONFIG } from './config';
-import { type ItemDTO } from './types';
+import { type ItemDTO } from './config';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
   {
