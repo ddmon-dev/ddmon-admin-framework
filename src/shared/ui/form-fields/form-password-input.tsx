@@ -76,6 +76,9 @@ export const FormPasswordInput = <
               {...inputProps}
               type={showPassword ? 'text' : 'password'}
               aria-invalid={fieldState.invalid}
+              autoComplete='off'
+              data-lpignore='true'
+              data-form-type='other'
             />
             <InputGroupAddon align='inline-end'>
               <InputGroupButton
@@ -93,6 +96,9 @@ export const FormPasswordInput = <
             {...inputProps}
             type='password'
             aria-invalid={fieldState.invalid}
+            autoComplete='off'
+            data-lpignore='true'
+            data-form-type='other'
           />
         )
       }

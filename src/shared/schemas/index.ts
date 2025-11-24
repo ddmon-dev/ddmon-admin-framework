@@ -1,5 +1,6 @@
 import { email, phone, url, files, dateRange, numberRange } from './presets/common';
 import { password } from './presets/password';
+import { id } from './presets/id';
 
 // 타입 re-export
 export type { PasswordStrength, PasswordPresetOptions } from './presets/password';
@@ -29,6 +30,7 @@ export const schemaPresets = {
   phone,
   url,
   password,
+  id,
   files,
   dateRange,
   numberRange,
