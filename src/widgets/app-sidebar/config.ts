@@ -1,5 +1,5 @@
 import { type MenuData } from './types';
-import { Settings2, FileText, HelpCircle } from 'lucide-react';
+import { Settings2, FileText, HelpCircle, Newspaper } from 'lucide-react';
 
 export const navigationConfig: {
   user: {
@@ -39,6 +39,12 @@ export const navigationConfig: {
           title: '공지사항',
           url: '/manage-notice',
           icon: FileText,
+          isActive: true,
+        },
+        {
+          title: '뉴스',
+          url: '/manage-news',
+          icon: Newspaper,
           isActive: true,
         },
         {
