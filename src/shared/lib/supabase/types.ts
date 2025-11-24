@@ -99,9 +99,48 @@ export type Database = {
         }
         Relationships: []
       }
+      news: {
+        Row: {
+          author: string | null
+          content: string | null
+          created_at: string
+          deleted: boolean
+          files: Json | null
+          id: string
+          order: number
+          title: string
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          author?: string | null
+          content?: string | null
+          created_at?: string
+          deleted?: boolean
+          files?: Json | null
+          id?: string
+          order?: number
+          title: string
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          author?: string | null
+          content?: string | null
+          created_at?: string
+          deleted?: boolean
+          files?: Json | null
+          id?: string
+          order?: number
+          title?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Relationships: []
+      }
       notices: {
         Row: {
-          author: string
+          author: string | null
           category: string
           content: string | null
           created_at: string
@@ -114,7 +153,7 @@ export type Database = {
           view_count: number
         }
         Insert: {
-          author: string
+          author?: string | null
           category?: string
           content?: string | null
           created_at?: string
@@ -127,7 +166,7 @@ export type Database = {
           view_count?: number
         }
         Update: {
-          author?: string
+          author?: string | null
           category?: string
           content?: string | null
           created_at?: string
@@ -227,7 +266,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_board_table: {
+        Args: {
+          has_category?: boolean
+          has_files?: boolean
+          table_name: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

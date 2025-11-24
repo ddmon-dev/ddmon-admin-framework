@@ -8,7 +8,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { FieldGroup } from '@/shared/ui/field';
 import {
-  FormRadioGroup,
   FormTextInput,
   FormNumberInput,
   FormEditor,
@@ -25,16 +24,14 @@ import { type ItemDTO } from './types';
 import { createItem, updateItem } from './actions';
 
 const formSchema = z.object({
-  category: z.string().min(1, '카테고리를 선택해주세요.'),
   createdAt: z.date().nullish(),
   viewCount: schemaPresets.numberRange(),
   title: z.string().min(1, '제목을 입력해주세요.'),
   content: z.string().min(1, '내용을 입력해주세요.'),
-  files: schemaPresets.files({ thumbnail: 0, attachments: 0 }),
+  files: schemaPresets.files({ thumbnail: 1, attachments: 0 }),
 });
 
 const formDefaultValues = {
-  category: CONFIG.categoryOptions[0].value,
   createdAt: new Date(),
   viewCount: 0,
   title: '',
@@ -90,12 +87,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
-        <FormRadioGroup
-          control={form.control}
-          name='category'
-          label='카테고리'
-          options={[...CONFIG.categoryOptions]}
-        />
         <FormDatePicker
           control={form.control}
           name='createdAt'
