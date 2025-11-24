@@ -16,7 +16,7 @@ import {
   FormDatePicker,
 } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
-import { schemaPresets } from '@/shared/schemas/presets';
+import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField } from '@/shared/lib/file-system';
 import { handleFileUploads } from '../_base/utils';
 
@@ -27,8 +27,8 @@ import { updateItem } from './actions/update-item';
 
 const formSchema = z.object({
   category: z.string().min(1, '카테고리를 선택해주세요.'),
-  createdAt: z.date().optional(),
-  viewCount: schemaPresets.viewCount.optional(),
+  createdAt: z.date().nullish(),
+  viewCount: schemaPresets.viewCount,
   title: z.string().min(1, '제목을 입력해주세요.'),
   content: z.string().min(1, '내용을 입력해주세요.'),
   files: schemaPresets.files({ thumbnail: 1, attachments: 0 }),

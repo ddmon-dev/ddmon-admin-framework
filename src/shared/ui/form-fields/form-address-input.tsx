@@ -11,7 +11,14 @@ import {
   InputGroupButton,
 } from '@/shared/ui/input-group';
 import { Input } from '@/shared/ui/input';
-import { Field, FieldContent, FieldLabel, FieldDescription, FieldGroup, FieldError } from '@/shared/ui/field';
+import {
+  Field,
+  FieldContent,
+  FieldLabel,
+  FieldDescription,
+  FieldGroup,
+  FieldError,
+} from '@/shared/ui/field';
 import type { ExcludedFormProps } from './types';
 import type { DaumAddressData } from '@/shared/types/daum-postcode';
 import type { ReactNode } from 'react';
@@ -21,28 +28,31 @@ export type FormAddressInputProps<V extends FieldValues = FieldValues> = Omit<
   ExcludedFormProps
 > & {
   control: Control<V>;
-  /** 필드명 접두어 (optional) - 예: 'shipping' → shippingZipCode, shippingAddress, shippingAddressDetail */
+  // 필드명 접두어 (optional) - 예: 'shipping' → shippingZipCode, shippingAddress, shippingAddressDetail
   namePrefix?: string;
   label?: ReactNode;
   description?: ReactNode;
   orientation?: 'vertical' | 'horizontal' | 'responsive';
   optional?: boolean;
-  /** 커스텀 주소 검색 API 함수 (Kakao 대신 사용) */
+  // 커스텀 주소 검색 API 함수 (Kakao 대신 사용)
   onCustomSearch?: () => Promise<{ zipCode: string; address: string }>;
 };
 
 /**
- * FormAddressInput - 주소 입력 컴포넌트 (플랫 구조)
+ * 주소 입력 컴포넌트
  *
- * Kakao 주소 API 기반 구현:
+ * Kakao 주소 API 기반:
  * - 우편번호 + 주소찾기 버튼 (InputGroup)
  * - 주소 (readOnly)
  * - 상세주소 (직접 입력)
  *
- * 3개의 독립된 필드로 관리:
+ * 독립된 필드로 관리:
  * - {namePrefix}ZipCode (또는 zipCode)
  * - {namePrefix}Address (또는 address)
  * - {namePrefix}AddressDetail (또는 addressDetail)
+ *
+ * namePrefix:
+ * - 필드명 접두어 (optional) - 예: 'shipping' → shippingZipCode, shippingAddress, shippingAddressDetail
  *
  * @example
  * ```tsx

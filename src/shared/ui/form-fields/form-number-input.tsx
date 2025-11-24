@@ -28,7 +28,7 @@ export type FormNumberInputProps<
 };
 
 /**
- * FormNumberInput - 숫자 입력 전용 컴포넌트 (react-number-format 기반)
+ * 숫자 입력 전용 컴포넌트 (react-number-format 기반)
  *
  * @example
  * ```tsx
