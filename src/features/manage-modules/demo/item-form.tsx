@@ -38,7 +38,7 @@ import { updateItem } from './actions/update-item';
 
 const formSchema = z.object({
   name: z.string().min(1, '이름을 입력해주세요.'),
-  email: schemaPresets.email({ allowEmpty: false }),
+  email: schemaPresets.email({ optional: false }),
   phone: schemaPresets.phone(),
   zipCode: z.string().min(1),
   address: z.string().min(1),
@@ -61,7 +61,7 @@ const formSchema = z.object({
   socialLinks: z
     .array(
       z.object({
-        value: schemaPresets.url({ allowEmpty: true }),
+        value: schemaPresets.url({ optional: true }),
       })
     )
     .refine(links => links.some(link => link.value && link.value.trim() !== ''), {

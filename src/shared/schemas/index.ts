@@ -1,4 +1,4 @@
-import { email, phone, url, files, dateRange, viewCount } from './presets/common';
+import { email, phone, url, files, dateRange, numberRange } from './presets/common';
 import { password } from './presets/password';
 
 // 타입 re-export
@@ -15,11 +15,12 @@ export type { PasswordStrength, PasswordPresetOptions } from './presets/password
  *
  * const schema = z.object({
  *   name: z.string().min(1, '이름을 입력하세요'),  // 단순 검증
- *   email: schemaPresets.email({ allowEmpty: true }),  // 프리셋 사용
- *   phone: schemaPresets.phone({ allowEmpty: true }),
- *   website: schemaPresets.url({ allowEmpty: true }),
+ *   email: schemaPresets.email({ optional: true }),  // 프리셋 사용
+ *   phone: schemaPresets.phone({ optional: true }),
+ *   website: schemaPresets.url({ optional: true }),
  *   password: schemaPresets.password({ strength: 'strong' }),  // 비밀번호 검증
  *   files: schemaPresets.files({ thumbnail: 1, attachments: 0 }),
+ *   viewCount: schemaPresets.numberRange(),  // 숫자 범위 검증
  * });
  * ```
  */
@@ -30,5 +31,5 @@ export const schemaPresets = {
   password,
   files,
   dateRange,
-  viewCount,
+  numberRange,
 };

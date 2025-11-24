@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { type DateRange } from 'react-day-picker';
 import { createFilesSchema } from '@/shared/lib/file-system';
+import type { PresetSchema } from './types';
 
 /**
  * 이메일 검증
@@ -12,16 +13,18 @@ import { createFilesSchema } from '@/shared/lib/file-system';
  * email: schemaPresets.email()
  *
  * @example
- * // 선택 필드 (빈 문자열 허용)
- * email: schemaPresets.email({ allowEmpty: true })
+ * // 선택 필드
+ * email: schemaPresets.email({ optional: true })
  *
  * @example
  * // 커스텀 메시지
  * email: schemaPresets.email({ message: '회사 이메일을 입력하세요' })
  */
-export const email = (options?: { message?: string; allowEmpty?: boolean }) => {
+export const email = <T extends { message?: string; optional?: boolean } | undefined = undefined>(
+  options?: T
+): PresetSchema<T> => {
   const schema = z.string().email(options?.message || '올바른 이메일을 입력해주세요.');
-  return options?.allowEmpty ? schema.nullish().or(z.literal('')) : schema;
+  return (options?.optional ? schema.nullish().or(z.literal('')) : schema) as PresetSchema<T>;
 };
 
 /**
@@ -35,8 +38,8 @@ export const email = (options?: { message?: string; allowEmpty?: boolean }) => {
  * phone: schemaPresets.phone()
  *
  * @example
- * // 선택 필드 (빈 문자열 허용)
- * phone: schemaPresets.phone({ allowEmpty: true })
+ * // 선택 필드
+ * phone: schemaPresets.phone({ optional: true })
  *
  * @example
  * // 커스텀 패턴 (국제 전화번호)
@@ -45,11 +48,15 @@ export const email = (options?: { message?: string; allowEmpty?: boolean }) => {
  *   message: '국제 전화번호 형식으로 입력하세요'
  * })
  */
-export const phone = (options?: { message?: string; allowEmpty?: boolean; pattern?: RegExp }) => {
+export const phone = <
+  T extends { message?: string; optional?: boolean; pattern?: RegExp } | undefined = undefined
+>(
+  options?: T
+): PresetSchema<T> => {
   const pattern = options?.pattern || /^0[0-9]{9,10}$/;
   const message = options?.message || '올바른 전화번호를 입력해주세요.';
   const schema = z.string().regex(pattern, message);
-  return options?.allowEmpty ? schema.nullish().or(z.literal('')) : schema;
+  return (options?.optional ? schema.nullish().or(z.literal('')) : schema) as PresetSchema<T>;
 };
 
 /**
@@ -63,16 +70,18 @@ export const phone = (options?: { message?: string; allowEmpty?: boolean; patter
  * website: schemaPresets.url()
  *
  * @example
- * // 선택 필드 (빈 문자열 허용)
- * website: schemaPresets.url({ allowEmpty: true })
+ * // 선택 필드
+ * website: schemaPresets.url({ optional: true })
  *
  * @example
  * // 커스텀 메시지
  * website: schemaPresets.url({ message: 'https://로 시작하는 URL을 입력하세요' })
  */
-export const url = (options?: { message?: string; allowEmpty?: boolean }) => {
+export const url = <T extends { message?: string; optional?: boolean } | undefined = undefined>(
+  options?: T
+): PresetSchema<T> => {
   const schema = z.string().url(options?.message || '올바른 URL을 입력해주세요.');
-  return options?.allowEmpty ? schema.nullish().or(z.literal('')) : schema;
+  return (options?.optional ? schema.nullish().or(z.literal('')) : schema) as PresetSchema<T>;
 };
 
 /**
@@ -93,20 +102,64 @@ export const files = createFilesSchema;
 
 /**
  * 날짜 범위 검증
- * - from 날짜 필수
+ *
+ * @example
+ * // 필수 (from 날짜 필수)
+ * period: schemaPresets.dateRange()
+ *
+ * @example
+ * // 선택 (from, to 모두 선택)
+ * searchPeriod: schemaPresets.dateRange({ optional: true })
  */
-export const dateRange = z
-  .object({
+export const dateRange = (options?: { optional?: boolean }) => {
+  const baseSchema = z.object({
     from: z.date().nullish(),
     to: z.date().nullish(),
-  })
-  .refine((data): data is DateRange => !!data.from, { message: '기간을 선택해주세요' });
+  });
+
+  if (options?.optional) {
+    return baseSchema;
+  }
+
+  return baseSchema.refine((data): data is DateRange => !!data.from, {
+    message: '기간을 선택해주세요',
+  });
+};
 
 /**
- * 조회수 검증
- * - 0 이상 999999999 이하 (int4 컬럼 고려)
+ * 숫자 범위 검증
+ * - 기본: 0 이상 999999999 이하 (int4 컬럼 고려)
+ * - min, max 커스터마이징 가능
+ * - 조회수, 점수, 평점, 수량 등 다양한 숫자 필드에 사용
+ *
+ * @example
+ * // 조회수 (기본, 0~999999999)
+ * viewCount: schemaPresets.numberRange()
+ *
+ * @example
+ * // 선택 필드
+ * viewCount: schemaPresets.numberRange({ optional: true })
+ *
+ * @example
+ * // 범위 커스터마이징
+ * score: schemaPresets.numberRange({ min: 0, max: 100 })
+ * rating: schemaPresets.numberRange({ min: 1, max: 5 })
+ * quantity: schemaPresets.numberRange({ min: 1, max: 9999 })
  */
-export const viewCount = z
-  .number({ message: '조회수를 입력해주세요.' })
-  .min(0, { message: '조회수는 0 이상이어야 합니다.' })
-  .max(999999999, { message: '조회수는 0 이상 999999999 이하여야 합니다.' });
+export const numberRange = (options?: {
+  min?: number;
+  max?: number;
+  optional?: boolean;
+  message?: string;
+}) => {
+  const minValue = options?.min ?? 0;
+  const maxValue = options?.max ?? 999999999;
+  const message = options?.message || '숫자를 입력해주세요.';
+
+  const schema = z
+    .number({ message })
+    .min(minValue, { message: `${minValue} 이상이어야 합니다.` })
+    .max(maxValue, { message: `${minValue} 이상 ${maxValue} 이하여야 합니다.` });
+
+  return options?.optional ? schema.nullish() : schema;
+};
