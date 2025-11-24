@@ -11,10 +11,10 @@ import { type ItemDTO, type CreateItemValues } from '../types';
 
 interface Params {
   values: CreateItemValues;
-  path?: string;
+  pathname?: string;
 }
 
-export async function createItem({ values, path }: Params): Promise<CreateResult<ItemDTO>> {
+export async function createItem({ values, pathname }: Params): Promise<CreateResult<ItemDTO>> {
   try {
     const supabase = createServerClient();
 
@@ -38,8 +38,8 @@ export async function createItem({ values, path }: Params): Promise<CreateResult
     }
 
     // 패스 재검증
-    if (path) {
-      revalidatePath(path);
+    if (pathname) {
+      revalidatePath(pathname);
     }
 
     // snake_case → camelCase 변환

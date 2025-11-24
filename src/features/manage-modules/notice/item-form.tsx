@@ -67,8 +67,8 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
       // 데이터 DB 저장
       const { success, data, error } = id
-        ? await updateItem({ id, values: restValues, path: pathname })
-        : await createItem({ values: restValues, path: pathname });
+        ? await updateItem({ id, values: restValues, pathname })
+        : await createItem({ values: restValues, pathname });
 
       if (!success || !data) {
         throw new Error(error || '저장에 실패했습니다.');
@@ -77,7 +77,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       // 파일 업로드
       await handleFileUploads({
         formFiles: formFiles as FormFilesField,
-        itemId: data.id,
+        id: data.id,
         tableName: CONFIG.tableName,
         pathname,
         updateItemAction: updateItem,

@@ -332,37 +332,54 @@ export default nextConfig;
 ```
 src/features/manage-modules/
 ├── _base/                    # 공통 인프라 레이어
-│   ├── components/           # 재사용 가능한 공통 컴포넌트
-│   │   ├── manage-module-container.tsx
+│   ├── ui/                   # 재사용 가능한 공통 UI 컴포넌트
+│   │   ├── manage-container.tsx
 │   │   ├── manage-sheet.tsx          # Context & Sheet UI
+│   │   ├── manage-list.tsx           # 공통 리스트 컴포넌트
 │   │   ├── create-button.tsx
 │   │   ├── modify-button.tsx
-│   │   ├── soft-delete-button.tsx
-│   │   ├── hard-delete-button.tsx
+│   │   ├── delete-button.tsx         # SoftDeleteButton, HardDeleteButton export
 │   │   └── index.ts                  # Barrel export
 │   ├── actions/              # 공용 Server Actions
 │   │   ├── delete.ts                 # softDelete, hardDelete
 │   │   └── index.ts                  # Barrel export
 │   ├── hooks/                # 커스텀 훅
-│   │   ├── use-manage-item.ts        # 항목 데이터 페칭 훅
+│   │   ├── use-manage-item-data.ts   # 항목 데이터 페칭 훅
 │   │   └── index.ts                  # Barrel export
-│   ├── types.ts                       # 공통 타입 정의
-│   └── config.ts                      # 기본 설정
+│   ├── utils/                # 유틸리티 함수
+│   │   ├── handle-file-uploads.ts
+│   │   └── index.ts                  # Barrel export
+│   ├── types.ts              # 공통 타입 정의
+│   └── config.ts             # 기본 설정
 │
-└── notice/                   # 구체적 구현 (공지사항 모듈)
+├── _template/                # 새 모듈 추가 시 참고하는 템플릿
+│   ├── actions/              # Server Actions 템플릿
+│   │   ├── get-list.ts
+│   │   ├── get-item.ts
+│   │   ├── create-item.ts
+│   │   ├── update-item.ts
+│   │   └── index.ts
+│   ├── list.tsx              # 목록 컴포넌트
+│   ├── list-columns.tsx      # 테이블 컬럼 정의
+│   ├── filters.tsx           # 필터 UI
+│   ├── item-form.tsx         # 항목 폼 (생성/수정)
+│   ├── item-sheet.tsx        # Sheet 컨테이너
+│   ├── config.ts             # 모듈별 설정
+│   ├── types.ts              # 모듈별 타입
+│   └── index.ts              # 공개 API
+│
+└── notice/                   # 실제 구현 (공지사항 모듈)
     ├── actions/              # Server Actions
     │   ├── get-list.ts
     │   ├── get-item.ts
     │   ├── create-item.ts
     │   ├── update-item.ts
-    │   ├── soft-delete-item.ts       # Base action 활용 (3줄)
-    │   └── hard-delete-item.ts       # Base action 활용 (3줄)
+    │   └── index.ts
     ├── list.tsx              # 목록 컴포넌트
     ├── list-columns.tsx      # 테이블 컬럼 정의
-    ├── list-filters.tsx      # 필터 UI
+    ├── filters.tsx           # 필터 UI
     ├── item-form.tsx         # 항목 폼 (생성/수정)
-    ├── item-sheet.tsx        # Sheet 컨테이너 (useManageItem 활용)
-    ├── delete-item-button.tsx
+    ├── item-sheet.tsx        # Sheet 컨테이너 (useManageItemData 활용)
     ├── config.ts             # 모듈별 설정
     ├── types.ts              # 모듈별 타입
     └── index.ts              # 공개 API
@@ -375,7 +392,7 @@ src/features/manage-modules/
 `ManageSheetContext`를 통해 시트 상태를 전역으로 관리합니다.
 
 ```typescript
-// _base/components/manage-sheet.tsx
+// _base/ui/manage-sheet.tsx
 type ManageSheetData = {
   id?: string;
   mode: 'view' | 'modify' | 'create';
@@ -392,11 +409,28 @@ openManageSheet({ id: '123', mode: 'modify' });
 - 어디서든 시트 열기/닫기 가능
 - 명확한 상태 관리
 
-#### 2. Delete 이원화 (Base Server Actions)
+#### 2. Delete 이원화 (Base UI Components & Server Actions)
 
-데이터 삭제를 Soft Delete와 Hard Delete로 분리하여 관리하며, **_base/actions/delete.ts**에서 완전한 Server Actions를 제공합니다.
+데이터 삭제를 Soft Delete와 Hard Delete로 분리하여 관리합니다. **\_base/ui/delete-button.tsx**에서 두 개의 버튼 컴포넌트를 export하고, **\_base/actions/delete.ts**에서 완전한 Server Actions를 제공합니다.
+
+**UI 컴포넌트** (`_base/ui/delete-button.tsx`):
 
 ```typescript
+// 두 컴포넌트를 하나의 파일에서 export
+export function SoftDeleteButton({ onDelete }: Props) {
+  // Soft Delete UI 처리
+}
+
+export function HardDeleteButton({ onDelete }: Props) {
+  // Hard Delete UI 처리
+}
+```
+
+**사용 예시:**
+
+```typescript
+import { SoftDeleteButton, HardDeleteButton } from '../../_base/ui';
+
 // Soft Delete: deleted 컬럼만 업데이트 (복구 가능)
 <SoftDeleteButton onDelete={handleSoftDelete} />
 
@@ -432,12 +466,7 @@ export async function hardDelete<T>({ tableName, id, path }: Params): Promise<De
     const supabase = createServerClient();
 
     // DB에서 완전 삭제
-    const { data, error } = await supabase
-      .from(tableName)
-      .delete()
-      .eq('id', id)
-      .select()
-      .single();
+    const { data, error } = await supabase.from(tableName).delete().eq('id', id).select().single();
 
     if (error) throw new Error(error.message);
 
@@ -471,6 +500,7 @@ export async function hardDeleteItem({ id, path }: Params): Promise<DeleteResult
 ```
 
 **개선 효과**:
+
 - 모듈별 action: 42줄 → 3줄 (93% 감소)
 - 완전한 Server Action 제공 (utils에서 actions로 승격)
 - 제네릭 타입 지원으로 타입 안전성 보장
@@ -483,11 +513,11 @@ export async function hardDeleteItem({ id, path }: Params): Promise<DeleteResult
 ```typescript
 // DB 레이어 (Storage에 저장된 메타데이터)
 export type DbFileMetadata = {
-  url: string;          // Storage 공개 URL
+  url: string; // Storage 공개 URL
   originalName: string; // 원본 파일명
-  size: number;         // 파일 크기 (bytes)
-  mimeType: string;     // MIME 타입
-  uploadedAt: string;   // 업로드 시각 (ISO)
+  size: number; // 파일 크기 (bytes)
+  mimeType: string; // MIME 타입
+  uploadedAt: string; // 업로드 시각 (ISO)
 };
 
 export type DbFilesJSONB = Record<string, DbFileMetadata[]>;
@@ -524,13 +554,13 @@ export function transformFilesToUploadValues(
 }
 ```
 
-#### 4. useManageItem 커스텀 훅
+#### 4. useManageItemData 커스텀 훅
 
 항목 데이터 페칭, 파일 변환, 에러 처리를 통합한 커스텀 훅입니다.
 
 ```typescript
-// _base/hooks/use-manage-item.ts
-export function useManageItem<T extends { files?: DbFilesJSONB }>(
+// _base/hooks/use-manage-item-data.ts
+export function useManageItemData<T extends { files?: DbFilesJSONB }>(
   getItemAction: GetItemAction<T>
 ) {
   const { manageSheetData } = useManageSheet();
@@ -579,11 +609,16 @@ export function useManageItem<T extends { files?: DbFilesJSONB }>(
 export function ItemSheet() {
   const { manageSheetData } = useManageSheet();
   const { id, mode } = manageSheetData ?? {};
-  const { prevValues } = useManageItem(getItem);  // 3줄로 완료!
+  const { prevValues } = useManageItemData(getItem); // 3줄로 완료!
 
   return (
     <ManageSheet>
-      {mode === 'view' ? null : <ItemForm id={id} prevValues={prevValues} />}
+      {mode === 'view' ? null : (
+        <ItemForm
+          id={id}
+          prevValues={prevValues}
+        />
+      )}
     </ManageSheet>
   );
 }
@@ -893,7 +928,23 @@ revalidatePath(path)
 
 새로운 관리 모듈(예: `products`)을 추가하는 단계입니다.
 
-#### 1. 디렉토리 생성
+**권장 방법**: `_template/` 모듈을 복사하여 시작하면 모든 기본 구조와 패턴이 포함되어 있습니다.
+
+#### 0. _template 모듈 복사 (권장)
+
+```bash
+# 1. _template 폴더를 새 모듈명으로 복사
+cp -r src/features/manage-modules/_template src/features/manage-modules/products
+
+# 2. 이후 config.ts, types.ts, actions 등만 수정
+```
+
+**_template의 장점:**
+- 모든 기본 패턴과 구조 포함
+- _base 컴포넌트 활용 예시 시연
+- 완전히 동작하는 예제 코드
+
+#### 1. 디렉토리 생성 (수동 생성 시)
 
 ```bash
 mkdir -p src/features/manage-modules/products/actions
@@ -926,7 +977,7 @@ export type UpdateItemValues = DbUpdate<'products'>;
 
 #### 3. Server Actions 구현
 
-`notice` 모듈의 Server Actions를 복사하고 다음을 수정:
+`_template` 또는 `notice` 모듈의 Server Actions를 참고하여 다음을 수정:
 
 - `tableName`: `'products'`로 변경
 - 필터링 로직: 필요한 컬럼에 맞게 수정
@@ -944,20 +995,27 @@ const { data, error } = await supabase
 
 #### 4. 컴포넌트 작성
 
+`_template`을 복사했다면 이미 모든 컴포넌트가 있으므로, 다음만 수정:
+
+- `list-columns.tsx`: 컬럼 정의 (제품에 맞게)
+- `filters.tsx`: 필터 UI (필요한 필터만)
+- `item-form.tsx`: 폼 (Zod 스키마 및 필드 수정)
+
+수동 생성 시 필요한 파일:
 - `list.tsx`: 데이터 테이블
 - `list-columns.tsx`: 컬럼 정의
-- `list-filters.tsx`: 필터 UI
+- `filters.tsx`: 필터 UI
 - `item-form.tsx`: 폼 (Zod 스키마 수정)
 - `item-sheet.tsx`: Sheet 컨테이너
-- `delete-item-button.tsx`: 삭제 버튼
 
 #### 5. index.ts 작성
 
 ```typescript
 export { List as ProductList } from './list';
 export { ItemSheet as ProductItemSheet } from './item-sheet';
-export { DeleteItemButton as DeleteProductButton } from './delete-item-button';
 ```
+
+**참고**: 삭제 버튼은 `_base/ui`에서 제공하므로 모듈별로 만들 필요 없습니다.
 
 #### 6. 페이지 통합
 
@@ -1007,13 +1065,14 @@ export default async function ProductsPage() {
 - **적절한 수준의 공용화**: 100% 공통 로직만 Base로 제공 (delete actions)
 - 공통 패턴 유지하되 과도한 추상화 지양
 - Barrel exports로 import 경로 간소화
+
   ```typescript
   // Before
-  import { ManageSheet } from '../_base/components/manage-sheet';
-  import { CreateButton } from '../_base/components/create-button';
+  import { ManageSheet } from '../_base/ui/manage-sheet';
+  import { CreateButton } from '../_base/ui/create-button';
 
   // After
-  import { ManageSheet, CreateButton } from '../_base/components';
+  import { ManageSheet, CreateButton } from '../_base/ui';
   ```
 
 #### 5. 성능 최적화
@@ -1489,6 +1548,7 @@ deleteFilesByUrls(urls: string[]): Promise<void>
 CKEditor 이미지 업로드 시스템은 에디터 내에서 이미지를 삽입할 때 Supabase Storage로 자동 업로드하는 기능입니다. Presigned URL 패턴을 사용하여 보안성과 성능을 모두 확보했으며, 자동 경로 생성으로 개발자 경험을 개선했습니다.
 
 **핵심 특징:**
+
 - Presigned URL 기반 업로드 (클라이언트 직접 업로드)
 - 자동 경로 생성 (`editor/{entity}/{YYYYMMDD}/`)
 - 환경변수로 루트 폴더 커스터마이징
@@ -1496,6 +1556,7 @@ CKEditor 이미지 업로드 시스템은 에디터 내에서 이미지를 삽�
 - 파일 타입 검증 (보안 강화)
 
 **manage-modules와의 차이:**
+
 - **manage-modules (FormFileUpload)**: 폼 첨부파일, DB JSONB에 메타데이터 저장, 관리 가능
 - **CKEditor**: 에디터 내 이미지, HTML에 URL 직접 임베딩, DB 저장 없음
 
@@ -1516,6 +1577,7 @@ src/shared/ui/editor/
 **주요 파일 역할:**
 
 1. **config.ts**: 순수 설정값
+
    ```typescript
    export const DEFAULT_IMAGE_CONFIG: ImageUploadConfig = {
      maxSizeMB: 2,
@@ -1525,6 +1587,7 @@ src/shared/ui/editor/
    ```
 
 2. **utils.ts**: 경로 생성 로직
+
    ```typescript
    export function generateUploadPath(uploadFolder?: string, entity?: string): string {
      // 1순위: 명시적 uploadFolder
@@ -1543,6 +1606,7 @@ src/shared/ui/editor/
    ```
 
 3. **custom-upload-adapter.ts**: Presigned URL 업로드
+
    - 파일 검증 (크기, MIME 타입)
    - Presigned URL 발급
    - Storage에 직접 업로드
@@ -1573,6 +1637,7 @@ CKEditor는 3단계 우선순위로 업로드 경로를 결정합니다:
 ```
 
 **권장 사용법:**
+
 - 일반적인 경우: `entity` prop 사용 (자동 경로 관리)
 - 특수한 경우: `uploadFolder` prop 사용 (명시적 제어)
 
@@ -1585,6 +1650,7 @@ entity prop을 전달하면 다음 패턴으로 자동 생성됩니다:
 ```
 
 **예시:**
+
 ```typescript
 // 2025년 1월 22일, entity="notices"
 // → "editor/notices/20250122/"
@@ -1594,6 +1660,7 @@ entity prop을 전달하면 다음 패턴으로 자동 생성됩니다:
 ```
 
 **장점:**
+
 - 날짜별 폴더 분리로 관리 용이
 - 엔티티별 격리
 - 사용처에서 경로 포맷 신경 쓰지 않음
@@ -1613,11 +1680,13 @@ entity prop을 전달하면 다음 패턴으로 자동 생성됩니다:
 ```
 
 **보안 이점:**
+
 - 서버 사이드에서 URL 발급 (인증 필요)
 - 토큰 만료 시간 설정 (기본 60초)
 - 클라이언트는 서비스 키 노출 없음
 
 **성능 이점:**
+
 - 서버를 거치지 않고 Storage 직접 업로드
 - 서버 부하 감소
 
@@ -1648,11 +1717,13 @@ if (!acceptedFormats.includes(file.type)) {
 **설정 방법:**
 
 1. `.env.local` 파일 생성/수정
+
    ```bash
    NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
    ```
 
 2. 다른 루트 폴더 사용
+
    ```bash
    NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=uploads
    ```
@@ -1663,6 +1734,7 @@ if (!acceptedFormats.includes(file.type)) {
    ```
 
 **폴백 체인:**
+
 ```typescript
 process.env.NEXT_PUBLIC_EDITOR_UPLOAD_ROOT  // 우선
   ↓ (없으면)
@@ -1683,11 +1755,12 @@ import { CONFIG } from './config';
   control={form.control}
   name='content'
   label='내용'
-  entity={CONFIG.tableName}  // "notices" → "editor/notices/20251122"
-/>
+  entity={CONFIG.tableName} // "notices" → "editor/notices/20251122"
+/>;
 ```
 
 **결과:**
+
 - 저장 경로: `editor/notices/20251122/uuid-timestamp.jpg`
 - 개발자는 경로 포맷 신경 안 씀
 - 날짜가 바뀌면 자동으로 새 폴더 생성
@@ -1700,12 +1773,13 @@ import { CONFIG } from './config';
 <FormEditor
   control={form.control}
   name='content'
-  uploadFolder="announcements/special/2025"  // 명시적 경로
-  entity="notices"  // 무시됨
+  uploadFolder='announcements/special/2025' // 명시적 경로
+  entity='notices' // 무시됨
 />
 ```
 
 **사용 시나리오:**
+
 - 특정 캠페인용 별도 폴더
 - 레거시 경로 호환
 - 테스트용 임시 폴더
@@ -1718,9 +1792,9 @@ import { CONFIG } from './config';
 <FormEditor
   control={form.control}
   name='content'
-  entity="notices"
-  maxImageSizeMB={5}  // 5MB 제한 (기본 2MB)
-  acceptedImageFormats={['image/jpeg', 'image/png']}  // JPEG, PNG만
+  entity='notices'
+  maxImageSizeMB={5} // 5MB 제한 (기본 2MB)
+  acceptedImageFormats={['image/jpeg', 'image/png']} // JPEG, PNG만
 />
 ```
 
@@ -1736,9 +1810,9 @@ const [content, setContent] = useState('');
 <CKEditor
   content={content}
   onChange={setContent}
-  entity="blogs"
-  placeholder="내용을 입력하세요..."
-/>
+  entity='blogs'
+  placeholder='내용을 입력하세요...'
+/>;
 ```
 
 ### manage-modules와의 연관성
@@ -1747,20 +1821,21 @@ const [content, setContent] = useState('');
 
 #### 비교표
 
-| 항목 | manage-modules (FormFileUpload) | CKEditor 이미지 업로드 |
-|------|--------------------------------|----------------------|
-| **용도** | 폼 첨부파일 | 에디터 내 이미지 |
-| **Storage 경로** | `{모듈명}/{엔티티ID}/` | `editor/{엔티티}/{날짜}/` |
-| **DB 저장** | JSONB 메타데이터 저장 | 저장 안 함 (HTML에 URL만) |
-| **메타데이터** | url, name, size, mimeType, uploadedAt | 없음 |
-| **삭제 관리** | softDelete/hardDelete 시 Storage도 삭제 | 자동 삭제 없음 |
-| **사용 컴포넌트** | FormFileUpload | CKEditor |
-| **업로드 방식** | processFiles() (다중 카테고리) | CustomUploadAdapter |
-| **파일 변환** | FormFileValue[] | 없음 (바로 URL) |
+| 항목              | manage-modules (FormFileUpload)         | CKEditor 이미지 업로드    |
+| ----------------- | --------------------------------------- | ------------------------- |
+| **용도**          | 폼 첨부파일                             | 에디터 내 이미지          |
+| **Storage 경로**  | `{모듈명}/{엔티티ID}/`                  | `editor/{엔티티}/{날짜}/` |
+| **DB 저장**       | JSONB 메타데이터 저장                   | 저장 안 함 (HTML에 URL만) |
+| **메타데이터**    | url, name, size, mimeType, uploadedAt   | 없음                      |
+| **삭제 관리**     | softDelete/hardDelete 시 Storage도 삭제 | 자동 삭제 없음            |
+| **사용 컴포넌트** | FormFileUpload                          | CKEditor                  |
+| **업로드 방식**   | processFiles() (다중 카테고리)          | CustomUploadAdapter       |
+| **파일 변환**     | FormFileValue[]                         | 없음 (바로 URL)           |
 
 #### 실무 시나리오
 
 **공지사항 작성:**
+
 ```typescript
 <form onSubmit={handleSubmit}>
   {/* 제목 */}
@@ -1769,7 +1844,7 @@ const [content, setContent] = useState('');
   {/* 내용 (CKEditor 이미지 업로드) */}
   <FormEditor
     name='content'
-    entity="notices"  // editor/notices/20251122/
+    entity='notices' // editor/notices/20251122/
   />
 
   {/* 첨부파일 (manage-modules 파일 업로드) */}
@@ -1781,6 +1856,7 @@ const [content, setContent] = useState('');
 ```
 
 **저장 결과:**
+
 ```json
 {
   "id": "uuid",
@@ -1795,6 +1871,7 @@ const [content, setContent] = useState('');
 ```
 
 **차이:**
+
 - CKEditor 이미지: HTML에 URL 직접 삽입, DB에 메타데이터 없음
 - 첨부파일: DB JSONB에 메타데이터 저장, 관리 가능
 
@@ -1817,11 +1894,13 @@ export const bytesToMB = (bytes: number): number => bytes / (1024 * 1024);
 ```
 
 **사용처:**
+
 - CKEditor 파일 크기 검증
 - FormFileUpload 파일 크기 검증
 - 기타 파일 관련 UI/로직
 
 **장점:**
+
 - 1024 계산 중복 제거
 - 일관된 단위 변환
 - 에러 메시지 일관성
@@ -1832,14 +1911,15 @@ export const bytesToMB = (bytes: number): number => bytes / (1024 * 1024);
 
 ```typescript
 // ✅ 권장: entity 기반 자동 경로
-<FormEditor entity={CONFIG.tableName} />
+<FormEditor entity={CONFIG.tableName} />;
 
 // ❌ 비권장: 수동 경로 생성
 const uploadDate = new Date().toISOString().split('T')[0].replace(/-/g, '');
-<FormEditor uploadFolder={`editor/${CONFIG.tableName}/${uploadDate}`} />
+<FormEditor uploadFolder={`editor/${CONFIG.tableName}/${uploadDate}`} />;
 ```
 
 **이유:**
+
 - 경로 포맷 중복 제거
 - 날짜 생성 로직 캡슐화
 - 환경변수 루트 폴더 자동 반영
@@ -1866,12 +1946,13 @@ const uploadDate = new Date().toISOString().split('T')[0].replace(/-/g, '');
 ```typescript
 // ✅ 필요한 형식만 허용
 <FormEditor
-  entity="notices"
-  acceptedImageFormats={['image/jpeg', 'image/png']}  // GIF, WebP 제외
+  entity='notices'
+  acceptedImageFormats={['image/jpeg', 'image/png']} // GIF, WebP 제외
 />
 ```
 
 **보안 이점:**
+
 - 허용되지 않은 파일 타입 차단
 - 악성 파일 업로드 방지
 
@@ -1886,6 +1967,7 @@ NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
 ```
 
 **활용 시나리오:**
+
 - 개발/프로덕션 폴더 분리
 - 테스트 환경 격리
 
@@ -1894,14 +1976,17 @@ NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
 #### 1. 이미지 삭제 로직 없음
 
 **현재 동작:**
+
 - 에디터에서 이미지 삭제 → HTML에서만 제거
 - Storage에는 파일이 그대로 남음
 
 **영향:**
+
 - 사용하지 않는 이미지가 누적될 수 있음
 - Storage 용량 증가
 
 **대응 방안:**
+
 1. **수동 정리**: 주기적으로 사용하지 않는 파일 삭제
 2. **별도 스크립트**: 날짜별 폴더를 분석하여 오래된 파일 정리
 3. **향후 개선**: 이미지 삭제 감지 로직 추가 (복잡도 높음)
@@ -1909,33 +1994,40 @@ NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
 #### 2. 이미지 URL은 DB에 저장 안 됨
 
 **CKEditor 특성:**
+
 - 이미지 URL이 HTML에 직접 임베딩됨
 - DB에는 HTML 전체가 저장됨 (`content` 컬럼)
 
 **확인 방법:**
+
 ```sql
 SELECT content FROM notices WHERE id = 'uuid';
 -- 결과: "<p>내용... <img src='https://...storage.../editor/notices/20251122/image.jpg'></p>"
 ```
 
 **주의:**
+
 - 이미지 메타데이터 조회 불가
 - 특정 이미지가 어디서 사용되는지 추적 어려움
 
 **대안 (필요시):**
+
 - 이미지 메타데이터를 별도 테이블에 저장
 - HTML 파싱하여 이미지 URL 추출
 
 #### 3. Undo/Redo 시 이미지 처리
 
 **문제:**
+
 - 이미지 삽입 후 Ctrl+Z → HTML에서 제거
 - Storage에는 이미 업로드됨
 
 **현재 동작:**
+
 - Storage에 고아 파일로 남음
 
 **허용 이유:**
+
 - Undo/Redo 추적 복잡도가 매우 높음
 - 사용자 경험 저하 우려 (Undo 시 딜레이)
 - 날짜별 폴더로 정리 가능
@@ -1943,10 +2035,12 @@ SELECT content FROM notices WHERE id = 'uuid';
 #### 4. 동시 편집 시나리오
 
 **현재:**
+
 - 여러 사용자가 동시 편집 시 각자 이미지 업로드
 - 같은 날짜 폴더에 저장됨 (문제 없음)
 
 **Storage 경로:**
+
 ```
 editor/notices/20251122/
 ├── uuid1-timestamp1.jpg  (사용자 A)
@@ -1955,6 +2049,7 @@ editor/notices/20251122/
 ```
 
 **파일명 중복 방지:**
+
 - `generateUniqueFileName()` 사용 (UUID + timestamp)
 - 동시 업로드해도 충돌 없음
 

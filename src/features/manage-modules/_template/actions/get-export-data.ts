@@ -22,7 +22,7 @@ interface GetListForExportResult {
  * - 페이지네이션 없음
  * - 필터링 조건은 getList와 동일
  */
-export async function getListForExport({
+export async function getExportData({
   search = '',
   category = '',
 }: Params = {}): Promise<GetListForExportResult> {
@@ -30,10 +30,7 @@ export async function getListForExport({
     const supabase = createServerClient();
 
     // 기본 쿼리
-    let query = supabase
-      .from(CONFIG.tableName)
-      .select('*')
-      .eq('deleted', false); // 삭제된 데이터는 제외
+    let query = supabase.from(CONFIG.tableName).select('*').eq('deleted', false); // 삭제된 데이터는 제외
 
     // 검색 필터
     if (search) {

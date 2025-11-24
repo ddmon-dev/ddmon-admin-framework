@@ -13,10 +13,10 @@ import { type ItemDTO, type UpdateItemValues } from '../types';
 interface Params {
   id: string;
   values: UpdateItemValues;
-  path?: string;
+  pathname?: string;
 }
 
-export async function updateItem({ id, values, path }: Params): Promise<UpdateResult<ItemDTO>> {
+export async function updateItem({ id, values, pathname }: Params): Promise<UpdateResult<ItemDTO>> {
   try {
     if (!id) {
       throw new Error('ID값이 없습니다.');
@@ -62,8 +62,8 @@ export async function updateItem({ id, values, path }: Params): Promise<UpdateRe
     }
 
     // 패스 재검증
-    if (path) {
-      revalidatePath(path);
+    if (pathname) {
+      revalidatePath(pathname);
     }
 
     // snake_case → camelCase 변환
