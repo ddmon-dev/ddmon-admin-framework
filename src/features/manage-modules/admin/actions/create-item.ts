@@ -8,10 +8,10 @@ import { auth } from '@/features/auth';
 import { hashPassword } from '@/features/auth/utils';
 import { AUTH_POLICIES } from '@/features/auth/constants';
 
-import { type CreateResult } from '../../_base/types';
+import { type CreateResult } from '../../_base/config';
 
 import { CONFIG } from '../config';
-import { type ItemDTO } from '../types';
+import { type ItemDTO } from '../config';
 
 interface Params {
   values: Partial<ItemDTO>;

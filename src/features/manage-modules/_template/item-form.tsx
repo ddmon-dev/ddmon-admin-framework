@@ -32,7 +32,7 @@ import { type FormFilesField } from '@/shared/lib/file-system';
 import { handleFileUploads } from '../_base/utils';
 
 import { CONFIG } from './config';
-import { type ItemDTO } from './types';
+import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
 const formSchema = z.object({

@@ -5,10 +5,10 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { extractAllFileUrls, deleteFilesFromStorage } from '@/shared/lib/file-system';
 
-import { type UpdateResult } from '../../_base/types';
+import { type UpdateResult } from '../../_base/config';
 
 import { CONFIG } from '../config';
-import { type ItemDTO } from '../types';
+import { type ItemDTO } from '../config';
 
 interface Params {
   id: string;

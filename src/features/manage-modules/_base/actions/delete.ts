@@ -5,7 +5,7 @@ import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { deleteFolderFromStorage } from '@/shared/lib/file-system';
 import { type TableName } from '@/shared/lib/supabase/db-helpers';
-import { type DeleteResult } from '../types';
+import { type DeleteResult } from '../config';
 
 interface Params {
   tableName: TableName;

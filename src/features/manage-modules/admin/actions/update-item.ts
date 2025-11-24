@@ -8,10 +8,10 @@ import { hashPassword } from '@/features/auth/utils';
 import { auth } from '@/features/auth';
 import { AUTH_POLICIES } from '@/features/auth/constants';
 
-import { type UpdateResult } from '../../_base/types';
+import { type UpdateResult } from '../../_base/config';
 
 import { CONFIG } from '../config';
-import { type ItemDTO } from '../types';
+import { type ItemDTO } from '../config';
 
 interface Params {
   id: string;

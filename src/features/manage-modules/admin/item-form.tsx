@@ -12,7 +12,7 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 
 import { AUTH_POLICIES } from '@/features/auth/constants';
-import { type ItemDTO } from './types';
+import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
 const createFormSchema = (isEdit: boolean) => {

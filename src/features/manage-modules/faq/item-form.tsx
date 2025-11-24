@@ -10,7 +10,7 @@ import { FieldGroup } from '@/shared/ui/field';
 import { FormTextInput, FormTextarea, FormDatePicker } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 
-import { type ItemDTO } from './types';
+import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
 const formSchema = z.object({
