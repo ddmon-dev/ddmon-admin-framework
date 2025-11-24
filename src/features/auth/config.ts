@@ -8,7 +8,7 @@ import type { AdminUser } from './types';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 
 const signInSchema = z.object({
-  name: z.string().min(1, '아이디를 입력하세요'),
+  id: z.string().min(1, '아이디를 입력하세요'),
   password: z.string().min(1, '비밀번호를 입력하세요'),
 });
 
@@ -23,7 +23,7 @@ export default {
           return null;
         }
 
-        const { name, password } = validatedFields.data;
+        const { id, password } = validatedFields.data;
 
         try {
           // DB에서 관리자 조회
@@ -32,7 +32,7 @@ export default {
           const { data, error } = await supabase
             .from(ADMIN_TABLE_NAME)
             .select('*')
-            .eq('name', name)
+            .eq('id', id)
             .eq('deleted', false)
             .single();
 

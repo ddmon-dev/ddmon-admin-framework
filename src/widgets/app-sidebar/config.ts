@@ -1,5 +1,5 @@
 import { type MenuData } from './types';
-import { Settings2, FileText, HelpCircle, Newspaper } from 'lucide-react';
+import { Settings2, FileText, HelpCircle, Newspaper, Users } from 'lucide-react';
 
 export const navigationConfig: {
   user: {
@@ -51,6 +51,17 @@ export const navigationConfig: {
           title: 'FAQ',
           url: '/manage-faq',
           icon: HelpCircle,
+          isActive: true,
+        },
+      ],
+    },
+    {
+      title: '관리자',
+      items: [
+        {
+          title: '관리자 계정 관리',
+          url: '/manage-admin',
+          icon: Users,
           isActive: true,
         },
       ],

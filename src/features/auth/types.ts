@@ -9,7 +9,7 @@ export type AuthSession = {
 };
 
 export type SignInValues = {
-  name: string;
+  id: string;
   password: string;
 };
 

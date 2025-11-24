@@ -11,12 +11,12 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 import { signIn } from '../actions';
 
 const signInSchema = z.object({
-  name: z.string().min(1, { message: '아이디를 입력해주세요.' }),
+  id: z.string().min(1, { message: '아이디를 입력해주세요.' }),
   password: z.string().min(1, { message: '비밀번호를 입력해주세요.' }),
 });
 
 const defaultValues = {
-  name: '',
+  id: '',
   password: '',
 };
 
@@ -53,7 +53,7 @@ export function SignInForm() {
       <FieldGroup className='gap-y-6'>
         <FieldGroup className='gap-y-4'>
           <FormTextInput
-            name='name'
+            name='id'
             label='아이디'
             control={form.control}
             placeholder='아이디를 입력하세요'

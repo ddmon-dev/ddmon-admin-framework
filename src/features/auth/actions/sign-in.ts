@@ -8,7 +8,7 @@ import type { SignInValues, SignInResult } from '../types';
 export async function signIn(values: SignInValues): Promise<SignInResult> {
   try {
     await nextAuthSignIn('credentials', {
-      name: values.name,
+      id: values.id,
       password: values.password,
       redirect: false,
     });

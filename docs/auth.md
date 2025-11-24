@@ -133,9 +133,14 @@ export const config = {
 ```typescript
 // features/auth/types.ts
 export type AdminUser = {
-  id: string;
-  email: string;
-  role: 'admin' | 'user';
+  id: string;        // UUID (데이터베이스 Primary Key)
+  name: string;      // 실제 이름
+  superAdmin: boolean;
+};
+
+export type SignInValues = {
+  id: string;        // 로그인 아이디
+  password: string;
 };
 ```
 

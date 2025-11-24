@@ -41,31 +41,31 @@ export type Database = {
     Tables: {
       admins: {
         Row: {
-          created_at: string | null
+          created_at: string
           deleted: boolean | null
           id: string
           name: string
           password: string
           super_admin: boolean | null
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           deleted?: boolean | null
           id?: string
           name: string
           password: string
           super_admin?: boolean | null
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           deleted?: boolean | null
           id?: string
           name?: string
           password?: string
           super_admin?: boolean | null
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
