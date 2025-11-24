@@ -11,7 +11,7 @@ type GetItemAction<T> = (params: { id: string }) => Promise<ActionResult<T>>;
 /**
  * 공통 날짜 필드 목록 (자동으로 Date 객체로 변환됨)
  */
-const DEFAULT_DATE_FIELDS = ['createdAt', 'modifiedAt', 'updatedAt'];
+const DEFAULT_DATE_FIELDS = ['createdAt', 'updatedAt'];
 
 /**
  * 관리 모듈의 항목 데이터를 페칭하고 처리하는 커스텀 훅
