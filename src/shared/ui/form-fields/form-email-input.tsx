@@ -11,7 +11,7 @@ export type FormEmailInputProps<
 > = Omit<FormTextInputProps<V, N>, 'inputMode'>;
 
 /**
- * FormEmailInput - 이메일 입력 컴포넌트
+ * 이메일 입력 컴포넌트
  *
  * type="text" + inputMode="email" 프리셋
  * - 브라우저 자동 검증 비활성화 (Zod 스키마로 정확한 검증)
@@ -36,7 +36,7 @@ export const FormEmailInput = <
   return (
     <FormTextInput
       {...props}
-      inputMode="email"
+      inputMode='email'
     />
   );
 };

@@ -11,9 +11,6 @@ import {
 import { Field, FieldContent, FieldLabel, FieldDescription, FieldError } from '../field';
 import type { FormBaseProps } from './types';
 
-/**
- * FormField Props - Render Props 패턴
- */
 export type FormFieldProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
@@ -27,7 +24,7 @@ export type FormFieldProps<
 };
 
 /**
- * FormField - 최대 유연성을 위한 Render Props 패턴
+ * Render Props 패턴
  *
  * @example
  * ```tsx

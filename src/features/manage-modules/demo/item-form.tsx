@@ -27,7 +27,7 @@ import {
   FormFieldArray,
 } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
-import { schemaPresets } from '@/shared/schemas/presets';
+import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField } from '@/shared/lib/file-system';
 import { handleFileUploads } from '../_base/utils';
 
@@ -37,64 +37,27 @@ import { createItem } from './actions/create-item';
 import { updateItem } from './actions/update-item';
 
 const formSchema = z.object({
-  // FormTextInput
   name: z.string().min(1, '이름을 입력해주세요.'),
-  email: schemaPresets.email({ allowEmpty: true }),
-
-  // FormTextarea
-  description: z.string().optional(),
-
-  // FormNumberInput
-  age: z
-    .number()
-    .min(0)
-    .max(150, '나이는 0~150 사이의 숫자를 입력해주세요.')
-    .int()
-    .optional()
-    .nullable(),
-  price: z.number().min(0).int().optional().nullable(),
-
-  // FormPhoneInput
-  phone: schemaPresets.phone({ allowEmpty: true }),
-
-  // FormAddressInput (플랫 구조 - 3개 필드)
+  email: schemaPresets.email({ allowEmpty: false }),
+  phone: schemaPresets.phone(),
   zipCode: z.string().min(1),
   address: z.string().min(1),
   addressDetail: z.string().min(1),
-
-  // FormSwitch
+  description: z.string().nullish(),
+  age: z.number().min(0).max(150, '나이는 0~150 사이의 숫자를 입력해주세요.').int().nullish(),
+  price: z.number().min(0).int().nullish(),
+  gender: z.string().min(1, '성별을 선택해주세요.'),
+  interests: z.array(z.string()).min(1, '최소 1개의 관심사를 선택해주세요.'),
+  country: z.string().min(1, '국가를 선택해주세요.'),
+  city: z.string().min(1, '도시를 선택해주세요.'),
+  languages: z.array(z.string()).min(1, '최소 1개의 언어를 선택해주세요.'),
   newsletterSubscribed: z
     .boolean()
     .refine(value => value, { message: '뉴스레터 구독을 동의해주세요.' }),
-
-  // FormCheckbox
   termsAccepted: z.boolean().refine(value => value, { message: '이용약관에 동의해주세요.' }),
-
-  // FormCheckboxGroup
-  interests: z.array(z.string()).min(1, '최소 1개의 관심사를 선택해주세요.'),
-
-  // FormRadioGroup
-  gender: z.string().min(1, '성별을 선택해주세요.'),
-
-  // FormSelect
-  country: z.string().min(1, '국가를 선택해주세요.'),
-
-  // FormCombobox
-  city: z.string().min(1, '도시를 선택해주세요.'),
-
-  // FormMultiCombobox
-  languages: z.array(z.string()).min(1, '최소 1개의 언어를 선택해주세요.'),
-
-  // FormDatePicker
-  birthDate: z.date().optional().nullable(),
-
-  // FormEditor
+  birthDate: z.date().nullish(),
   bio: z.string().min(1, '상세 자기소개를 입력해주세요.'),
-
-  // FormFileUpload
   files: schemaPresets.files({ avatar: 0, attachments: 0 }),
-
-  // FormFieldArray
   socialLinks: z
     .array(
       z.object({
@@ -147,7 +110,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   }, [prevValues]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     try {
       const { files: formFiles, ...submitValues } = values;
 

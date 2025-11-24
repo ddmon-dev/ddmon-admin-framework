@@ -12,7 +12,7 @@ export type FormPhoneInputProps<
 > = Omit<FormTextInputProps<V, N>, 'customFilter' | 'valueTransform'>;
 
 /**
- * FormPhoneInput - 전화번호 입력 컴포넌트
+ * 전화번호 입력 컴포넌트
  *
  * FormTextInput + telFilter 프리셋
  * - 02/010/070 패턴에 따라 자동 하이픈 삽입 (화면 표시)

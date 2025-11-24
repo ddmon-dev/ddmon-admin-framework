@@ -11,7 +11,7 @@ export type FormUrlInputProps<
 > = Omit<FormTextInputProps<V, N>, 'inputMode'>;
 
 /**
- * FormUrlInput - URL 입력 컴포넌트
+ * URL 입력 컴포넌트
  *
  * type="text" + inputMode="url" 프리셋
  * - 브라우저 자동 검증 비활성화 (Zod 스키마로 정확한 검증)
@@ -36,7 +36,7 @@ export const FormUrlInput = <
   return (
     <FormTextInput
       {...props}
-      inputMode="url"
+      inputMode='url'
     />
   );
 };

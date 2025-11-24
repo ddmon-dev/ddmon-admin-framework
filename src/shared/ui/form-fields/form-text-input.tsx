@@ -50,16 +50,16 @@ export const FormTextInput = <
         const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           const inputValue = e.target.value;
 
-          // 1. 화면 표시값 생성 (customFilter 적용)
+          // 화면 표시값 생성 (customFilter 적용)
           const newDisplayValue = customFilter ? customFilter(inputValue) : inputValue;
           setDisplayValue(newDisplayValue);
 
-          // 2. 폼 저장값 생성 (valueTransform 적용)
+          // 폼 저장값 생성 (valueTransform 적용)
           const transformedValue = valueTransform
             ? valueTransform(newDisplayValue)
             : newDisplayValue;
 
-          // 3. react-hook-form에 저장값 전달
+          // react-hook-form에 저장값 전달
           onChange(transformedValue);
         };
 

@@ -22,11 +22,9 @@ export type FormPasswordInputProps<
   };
 
 /**
- * FormPasswordInput - 비밀번호 입력 컴포넌트
+ * 비밀번호 입력 컴포넌트
  *
- * InputGroup 기반 구현:
  * - type="password" + 표시/숨김 토글 버튼
- * - InputGroup으로 깔끔한 통합 UI
  *
  * @example
  * ```tsx

@@ -19,9 +19,7 @@ export type FormFieldArrayProps = {
 };
 
 /**
- * FormFieldArray - 동적 필드 배열 컴포넌트
- *
- * 항목 추가/제거, 최소/최대 개수 제한 지원
+ * 동적 필드 배열 컴포넌트
  *
  * @example
  * ```tsx
@@ -30,7 +28,7 @@ export type FormFieldArrayProps = {
  *   control={form.control}
  *   name="emails"
  *   label="이메일 목록"
- *   min={1}
+ *   min={2}
  *   max={5}
  *   defaultValue=""
  * >
@@ -69,12 +67,6 @@ export type FormFieldArrayProps = {
  *   )}
  * </FormFieldArray>
  * ```
- *
- * @remarks
- * - Primitive 배열과 객체 배열 모두 지원
- * - Render prop 패턴으로 타입 안전성 보장
- * - index, name, control을 제공받아 사용
- * - 최소/최대 개수 제한
  */
 export const FormFieldArray = ({
   control,
