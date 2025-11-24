@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { PresetSchema } from './types';
 
 /**
  * 비밀번호 강도 레벨
@@ -15,18 +16,11 @@ export type PasswordPresetOptions = {
   minLength?: number;
   /** 최대 길이 (기본: 64, NIST 권장) */
   maxLength?: number;
-  /** 빈 문자열 허용 (선택 필드용) */
-  allowEmpty?: boolean;
+  /** 선택 필드 (null, undefined, 빈 문자열 허용) */
+  optional?: boolean;
   /** 커스텀 에러 메시지 */
   message?: string;
 };
-
-/**
- * 비밀번호 스키마 반환 타입 (조건부 타입)
- */
-type PasswordSchema<T extends PasswordPresetOptions | undefined> = T extends { allowEmpty: true }
-  ? z.ZodOptional<z.ZodString>
-  : z.ZodString;
 
 /**
  * 비밀번호 정책 설정 (NIST 2025 기반)
@@ -87,11 +81,11 @@ const PASSWORD_POLICIES = {
  *
  * @example
  * // 선택 필드 (비밀번호 변경)
- * newPassword: schemaPresets.password({ allowEmpty: true })
+ * newPassword: schemaPresets.password({ optional: true })
  */
 export const password = <T extends PasswordPresetOptions | undefined = undefined>(
   options?: T
-): PasswordSchema<T> => {
+): PresetSchema<T> => {
   const strength = options?.strength || 'medium';
   const policy = PASSWORD_POLICIES[strength];
   const minLength = options?.minLength || policy.minLength;
@@ -104,5 +98,5 @@ export const password = <T extends PasswordPresetOptions | undefined = undefined
     .max(maxLength, { message: `비밀번호는 ${maxLength}자를 초과할 수 없습니다.` })
     .regex(policy.pattern, { message });
 
-  return (options?.allowEmpty ? schema.nullish().or(z.literal('')) : schema) as PasswordSchema<T>;
+  return (options?.optional ? schema.nullish().or(z.literal('')) : schema) as PresetSchema<T>;
 };
