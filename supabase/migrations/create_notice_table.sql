@@ -1,7 +1,4 @@
--- 1. 기존 테이블 삭제 (있다면)
-DROP TABLE IF EXISTS public.notices CASCADE;
-
--- 2. 테이블 생성 (JSONB files 컬럼 포함)
+-- 테이블 생성 (JSONB files 컬럼 포함)
 CREATE TABLE public.notices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
@@ -18,13 +15,31 @@ CREATE TABLE public.notices (
 
   deleted BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  modified_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- 3. GIN 인덱스 생성 (JSONB 쿼리 성능 향상)
+-- GIN 인덱스 생성 (JSONB 쿼리 성능 향상)
 CREATE INDEX idx_notices_files_gin ON public.notices USING gin(files);
 
--- 4. 목 데이터 30개 삽입
+-- updated_at 자동 업데이트 트리거 (기존 함수 사용)
+CREATE TRIGGER trigger_notices_updated_at
+  BEFORE UPDATE ON public.notices
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- RLS (Row Level Security) 활성화
+ALTER TABLE public.notices ENABLE ROW LEVEL SECURITY;
+
+-- 정책: 모든 사용자가 조회 가능 (deleted = false인 항목만)
+CREATE POLICY "Notices are viewable by everyone"
+  ON public.notices
+  FOR SELECT
+  USING (deleted = false);
+
+-- 생성/수정/삭제는 서버에서 Service Role Key로만 처리
+-- (정책 없음 = 일반 사용자 접근 불가, service_role은 RLS 우회)
+
+-- 목 데이터 30개 삽입
 INSERT INTO public.notices (title, content, author, category, view_count, "order") VALUES
   ('[중요] 2024년 신년 인사', '새해 복 많이 받으세요! 2024년에도 저희 서비스를 이용해주셔서 감사합니다.', '관리자', 'notice', 1245, 100),
   ('[공지] 시스템 정기 점검 안내', '2024년 1월 15일 02:00~06:00 시스템 정기 점검이 진행됩니다.', '관리자', 'notice', 892, 90),

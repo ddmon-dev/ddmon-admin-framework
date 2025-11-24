@@ -69,92 +69,74 @@ export type Database = {
         }
         Relationships: []
       }
-      files: {
+      faqs: {
         Row: {
-          category: string
-          created_at: string | null
-          deleted: boolean | null
+          answer: string
+          created_at: string
+          deleted: boolean
           id: string
-          mime_type: string
-          original_name: string
-          parent_id: string
-          size: number
-          table_name: string
-          updated_at: string | null
-          uploaded_at: string | null
-          url: string
+          order: number
+          question: string
+          updated_at: string
         }
         Insert: {
-          category: string
-          created_at?: string | null
-          deleted?: boolean | null
+          answer: string
+          created_at?: string
+          deleted?: boolean
           id?: string
-          mime_type: string
-          original_name: string
-          parent_id: string
-          size: number
-          table_name: string
-          updated_at?: string | null
-          uploaded_at?: string | null
-          url: string
+          order?: number
+          question: string
+          updated_at?: string
         }
         Update: {
-          category?: string
-          created_at?: string | null
-          deleted?: boolean | null
+          answer?: string
+          created_at?: string
+          deleted?: boolean
           id?: string
-          mime_type?: string
-          original_name?: string
-          parent_id?: string
-          size?: number
-          table_name?: string
-          updated_at?: string | null
-          uploaded_at?: string | null
-          url?: string
+          order?: number
+          question?: string
+          updated_at?: string
         }
         Relationships: []
       }
       notices: {
         Row: {
-          author: string | null
+          author: string
           category: string
           content: string | null
           created_at: string
           deleted: boolean
           files: Json | null
           id: string
-          modified_at: string
           order: number
-          phone_number: string | null
           title: string
+          updated_at: string
           view_count: number
         }
         Insert: {
-          author?: string | null
+          author: string
           category?: string
           content?: string | null
           created_at?: string
           deleted?: boolean
           files?: Json | null
           id?: string
-          modified_at?: string
           order?: number
-          phone_number?: string | null
           title: string
+          updated_at?: string
           view_count?: number
         }
         Update: {
-          author?: string | null
+          author?: string
           category?: string
           content?: string | null
           created_at?: string
           deleted?: boolean
           files?: Json | null
           id?: string
-          modified_at?: string
           order?: number
-          phone_number?: string | null
           title?: string
+          updated_at?: string
           view_count?: number
         }
         Relationships: []
