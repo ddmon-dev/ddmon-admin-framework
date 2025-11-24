@@ -12,7 +12,7 @@ interface Props {
   searchParams: SearchParams;
 }
 
-export async function ManageNotice({ searchParams }: Props) {
+export async function ManageFAQ({ searchParams }: Props) {
   const params = await searchParams;
   const result = await getList(params);
 
@@ -26,8 +26,8 @@ export async function ManageNotice({ searchParams }: Props) {
     <ManageContainer>
       <div className='space-y-4'>
         <div className='flex justify-between items-center'>
-          <h1 className='text-2xl font-bold'>공지 관리</h1>
-          <CreateButton>생성</CreateButton>
+          <h1 className='text-2xl font-bold'>FAQ 관리</h1>
+          <CreateButton>FAQ 생성</CreateButton>
         </div>
         <Filters />
         <List

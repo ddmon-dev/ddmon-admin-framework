@@ -17,34 +17,14 @@ export function List({ data, totalCount }: ListProps) {
   // 엑셀 컬럼 정의
   const excelColumns: ExcelColumn<ItemDTO>[] = [
     {
-      header: '이름',
-      accessorKey: 'name',
+      header: '질문',
+      accessorKey: 'question',
       width: 40,
     },
     {
-      header: '이메일',
-      accessorKey: 'email',
+      header: '답변',
+      accessorKey: 'answer',
       width: 15,
-    },
-    {
-      header: '전화번호',
-      accessorKey: 'phone',
-      width: 10,
-    },
-    {
-      header: '우편번호',
-      accessorKey: 'zipCode',
-      width: 10,
-    },
-    {
-      header: '주소',
-      accessorKey: 'address',
-      width: 10,
-    },
-    {
-      header: '주소 상세',
-      accessorKey: 'addressDetail',
-      width: 10,
     },
     {
       header: '작성일',
