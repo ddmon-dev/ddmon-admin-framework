@@ -1,7 +1,6 @@
 import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
-import { CamelCaseKeys } from '@/shared/lib/utils/objects';
-import { WithFiles } from '@/shared/lib/file-system';
 import { CONFIG } from './config';
+import { ItemDTO as BaseItemDTO } from '../_base/types';
 
 export type RowData = BaseRowData<typeof CONFIG.tableName>;
-export type ItemDTO = WithFiles<CamelCaseKeys<RowData>>;
+export type ItemDTO = BaseItemDTO<typeof CONFIG.tableName>;

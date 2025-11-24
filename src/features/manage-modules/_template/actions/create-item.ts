@@ -7,10 +7,10 @@ import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils
 import { type CreateResult } from '../../_base/types';
 
 import { CONFIG } from '../config';
-import { type ItemDTO, type CreateItemValues } from '../types';
+import { type ItemDTO } from '../types';
 
 interface Params {
-  values: CreateItemValues;
+  values: Partial<ItemDTO>;
   pathname?: string;
 }
 
