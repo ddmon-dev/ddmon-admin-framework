@@ -2,6 +2,7 @@ import { type SearchParams } from '@/shared/types/search-params';
 
 import { ManageContainer, CreateButton } from '../_base/ui';
 
+import { CONFIG } from './config';
 import { Filters } from './filters';
 import { List } from './list';
 import { ItemSheet } from './item-sheet';
@@ -12,7 +13,7 @@ interface Props {
   searchParams: SearchParams;
 }
 
-export async function ManageFAQ({ searchParams }: Props) {
+export default async function ManageModule({ searchParams }: Props) {
   const params = await searchParams;
   const result = await getList(params);
 
@@ -26,8 +27,8 @@ export async function ManageFAQ({ searchParams }: Props) {
     <ManageContainer>
       <div className='space-y-4'>
         <div className='flex justify-between items-center'>
-          <h1 className='text-2xl font-bold'>FAQ 관리</h1>
-          <CreateButton>FAQ 생성</CreateButton>
+          <h1 className='text-2xl font-bold'>{CONFIG.moduleName} 관리</h1>
+          <CreateButton>{CONFIG.moduleName} 생성</CreateButton>
         </div>
         <Filters />
         <List

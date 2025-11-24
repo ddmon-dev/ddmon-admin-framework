@@ -9,17 +9,6 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     accessorKey: 'title',
     header: '제목',
     size: 400,
-    cell: ({ row }) => {
-      const notice = row.original;
-      const isNotice = notice.category === 'notice';
-
-      return (
-        <>
-          {isNotice && <strong className='text-primary mr-1'>[공지]</strong>}
-          {notice.title}
-        </>
-      );
-    },
   },
   {
     accessorKey: 'author',

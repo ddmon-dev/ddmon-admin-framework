@@ -60,7 +60,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   }, [prevValues]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     try {
       const { files: formFiles, ...restValues } = values;
 
