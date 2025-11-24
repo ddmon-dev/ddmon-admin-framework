@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { ManageList } from '../_base/components';
+import { ManageList } from '../_base/ui';
 import { listColumns } from './list-columns';
 import { type ItemDTO } from './types';
 import { ExcelExportButton } from '@/shared/ui/excel-export-button';
@@ -68,7 +68,11 @@ export function List({ data, totalCount }: ListProps) {
       </div>
 
       {/* 테이블 */}
-      <ManageList data={data} totalCount={totalCount} listColumns={listColumns} />
+      <ManageList
+        data={data}
+        totalCount={totalCount}
+        listColumns={listColumns}
+      />
     </div>
   );
 }

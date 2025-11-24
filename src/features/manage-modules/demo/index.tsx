@@ -1,6 +1,6 @@
 import { type SearchParams } from '@/shared/types/search-params';
 
-import { ManageContainer, CreateButton } from '../_base/components';
+import { ManageContainer, CreateButton } from '../_base/ui';
 
 import { Filters } from './filters';
 import { List } from './list';
@@ -30,7 +30,10 @@ export async function ManageDemo({ searchParams }: Props) {
           <CreateButton>데이터 생성</CreateButton>
         </div>
         <Filters />
-        <List data={data} totalCount={totalCount} />
+        <List
+          data={data}
+          totalCount={totalCount}
+        />
         <ItemSheet />
       </div>
     </ManageContainer>

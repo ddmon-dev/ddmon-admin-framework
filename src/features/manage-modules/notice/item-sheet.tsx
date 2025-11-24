@@ -1,6 +1,6 @@
 'use client';
 
-import { ManageSheet, useManageSheet } from '../_base/components';
+import { ManageSheet, useManageSheet } from '../_base/ui';
 import { useManageItem } from '../_base/hooks';
 import { ItemForm } from './item-form';
 import { getItem } from './actions/get-item';
