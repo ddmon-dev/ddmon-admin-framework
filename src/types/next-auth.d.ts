@@ -4,6 +4,7 @@ declare module 'next-auth' {
   interface User {
     id: string;
     name: string;
+    email: string;
     superAdmin: boolean;
   }
 
@@ -16,6 +17,7 @@ declare module '@auth/core/jwt' {
   interface JWT {
     id?: string;
     name?: string;
+    email?: string;
     superAdmin?: boolean;
   }
 }

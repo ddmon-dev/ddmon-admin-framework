@@ -1,10 +1,9 @@
-import type { NextAuthConfig } from 'next-auth';
+import type { NextAuthConfig, User } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { verifyPassword } from './utils';
 import { ADMIN_TABLE_NAME, AUTH_PATHS } from './constants';
-import type { AdminUser } from './types';
 import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
 
 const signInSchema = z.object({
@@ -55,7 +54,7 @@ export default {
             name: admin.name,
             email: admin.email,
             superAdmin: admin.superAdmin ?? false,
-          } satisfies AdminUser;
+          } satisfies User;
         } catch (error) {
           console.error('로그인 에러:', error);
           return null;

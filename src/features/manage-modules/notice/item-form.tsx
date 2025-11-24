@@ -65,8 +65,8 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
       // 데이터 DB 저장
       const { success, data, error } = id
-        ? await updateItem({ id, values: restValues, pathname })
-        : await createItem({ values: restValues, pathname });
+        ? await updateItem({ id, values: restValues as Partial<ItemDTO>, pathname })
+        : await createItem({ values: restValues as Partial<ItemDTO>, pathname });
 
       if (!success || !data) {
         throw new Error(error || '저장에 실패했습니다.');

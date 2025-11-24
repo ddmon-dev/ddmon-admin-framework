@@ -8,11 +8,11 @@ import { extractAllFileUrls, deleteFilesFromStorage } from '@/shared/lib/file-sy
 import { type UpdateResult } from '../../_base/types';
 
 import { CONFIG } from '../config';
-import { type ItemDTO, type UpdateItemValues } from '../types';
+import { type ItemDTO } from '../types';
 
 interface Params {
   id: string;
-  values: UpdateItemValues;
+  values: Partial<ItemDTO>;
   pathname?: string;
 }
 
