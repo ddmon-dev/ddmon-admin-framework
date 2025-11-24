@@ -6,20 +6,19 @@ import { type ItemDTO } from './types';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
   {
+    accessorKey: 'category',
+    header: '카테고리',
+    size: 100,
+    cell: ({ row }) => {
+      const { category } = row.original;
+      const categoryLabel = CONFIG.categoryOptions.find(option => option.value === category)?.label;
+      return categoryLabel;
+    },
+  },
+  {
     accessorKey: 'title',
     header: '제목',
     size: 400,
-    cell: ({ row }) => {
-      const notice = row.original;
-      const isNotice = notice.category === 'notice';
-
-      return (
-        <>
-          {isNotice && <strong className='text-primary mr-1'>[공지]</strong>}
-          {notice.title}
-        </>
-      );
-    },
   },
   {
     accessorKey: 'author',
