@@ -33,8 +33,7 @@ import { handleFileUploads } from '../_base/utils';
 
 import { CONFIG } from './config';
 import { type ItemDTO } from './types';
-import { createItem } from './actions/create-item';
-import { updateItem } from './actions/update-item';
+import { createItem, updateItem } from './actions';
 
 const formSchema = z.object({
   name: z.string().min(1, '이름을 입력해주세요.'),
