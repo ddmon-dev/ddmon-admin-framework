@@ -23,15 +23,15 @@ const DEFAULT_DATE_FIELDS = ['createdAt', 'modifiedAt', 'updatedAt'];
  *
  * @example
  * // 기본 사용 (createdAt, modifiedAt, updatedAt 자동 변환)
- * const { prevValues } = useManageItem(getItem);
+ * const { prevValues } = useManageItemData(getItem);
  *
  * @example
  * // 커스텀 날짜 필드 추가
- * const { prevValues } = useManageItem(getItem, {
+ * const { prevValues } = useManageItemData(getItem, {
  *   additionalDateFields: ['publishedAt', 'expiredAt']
  * });
  */
-export function useManageItem<T extends { files?: DbFilesJSONB }>(
+export function useManageItemData<T extends { files?: DbFilesJSONB }>(
   getItemAction: GetItemAction<T>,
   options?: {
     additionalDateFields?: string[];

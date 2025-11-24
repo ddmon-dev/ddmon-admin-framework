@@ -12,7 +12,7 @@ interface Props {
   searchParams: SearchParams;
 }
 
-export async function ManageDemo({ searchParams }: Props) {
+export async function ManageTemplate({ searchParams }: Props) {
   const params = await searchParams;
   const result = await getList(params);
 
@@ -26,7 +26,7 @@ export async function ManageDemo({ searchParams }: Props) {
     <ManageContainer>
       <div className='space-y-4'>
         <div className='flex justify-between items-center'>
-          <h1 className='text-2xl font-bold'>Form Fields 데모</h1>
+          <h1 className='text-2xl font-bold'>관리모듈 템플릿</h1>
           <CreateButton>데이터 생성</CreateButton>
         </div>
         <Filters />

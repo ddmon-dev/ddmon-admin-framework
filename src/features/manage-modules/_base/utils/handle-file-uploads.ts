@@ -6,7 +6,7 @@ import { processFileUploads, type FormFilesField } from '@/shared/lib/file-syste
  * 폼에서 제출된 파일을 Storage에 업로드하고 DB에 메타데이터를 저장합니다.
  *
  * @param formFiles - 폼에서 제출된 파일 데이터
- * @param itemId - 아이템 ID (Storage 폴더명으로 사용)
+ * @param id - 아이템 ID (Storage 폴더명으로 사용)
  * @param tableName - 테이블명 (Storage 폴더명으로 사용)
  * @param pathname - 현재 경로 (revalidatePath용)
  * @param updateItemAction - 아이템 업데이트 Server Action
@@ -15,7 +15,7 @@ import { processFileUploads, type FormFilesField } from '@/shared/lib/file-syste
  * ```typescript
  * await handleFileUploads({
  *   formFiles,
- *   itemId: data.id,
+ *   id: data.id,
  *   tableName: CONFIG.tableName,
  *   pathname,
  *   updateItemAction: updateItem,
@@ -24,16 +24,16 @@ import { processFileUploads, type FormFilesField } from '@/shared/lib/file-syste
  */
 export async function handleFileUploads({
   formFiles,
-  itemId,
+  id,
   tableName,
   pathname,
   updateItemAction,
 }: {
   formFiles?: FormFilesField;
-  itemId: string;
+  id: string;
   tableName: string;
   pathname: string;
-  updateItemAction: (params: { id: string; values: any; path: string }) => Promise<any>;
+  updateItemAction: (params: { id: string; values: any; pathname: string }) => Promise<any>;
 }): Promise<void> {
   // 파일 유무 체크
   const hasFormFiles =
@@ -45,15 +45,15 @@ export async function handleFileUploads({
   // 파일 업로드
   const uploadedFilesMetadata = await processFileUploads({
     files: formFiles,
-    folder: `${tableName}/${itemId}`,
+    folder: `${tableName}/${id}`,
   });
 
   // files JSONB 컬럼 업데이트
   if (Object.keys(uploadedFilesMetadata).length > 0) {
     await updateItemAction({
-      id: itemId,
+      id,
       values: { files: uploadedFilesMetadata },
-      path: pathname,
+      pathname,
     });
   }
 }

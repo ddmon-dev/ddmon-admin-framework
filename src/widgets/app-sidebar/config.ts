@@ -16,17 +16,17 @@ export const navigationConfig: {
   },
   navMain: [
     {
-      title: 'Demo',
+      title: '템플릿',
       items: [
         {
-          title: 'Demo',
+          title: '템플릿',
           url: '#',
           icon: Settings2,
           isActive: true,
           items: [
             {
-              title: 'Component Demo',
-              url: '/demo',
+              title: '템플릿',
+              url: '/template',
             },
           ],
         },

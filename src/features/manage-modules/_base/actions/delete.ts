@@ -10,13 +10,13 @@ import { type DeleteResult } from '../types';
 interface Params {
   tableName: TableName;
   id: string;
-  path?: string;
+  pathname?: string;
 }
 
 /**
  * Soft delete: deleted 컬럼을 true로 설정
  */
-export async function softDelete<T>({ tableName, id, path }: Params): Promise<DeleteResult<T>> {
+export async function softDelete<T>({ tableName, id, pathname }: Params): Promise<DeleteResult<T>> {
   try {
     if (!id) {
       throw new Error('ID값이 없습니다.');
@@ -36,8 +36,8 @@ export async function softDelete<T>({ tableName, id, path }: Params): Promise<De
     }
 
     // 패스 재검증
-    if (path) {
-      revalidatePath(path);
+    if (pathname) {
+      revalidatePath(pathname);
     }
 
     const deletedItem = transformSnakeToCamel(data);
@@ -52,7 +52,7 @@ export async function softDelete<T>({ tableName, id, path }: Params): Promise<De
 /**
  * Hard delete: 실제로 데이터를 삭제
  */
-export async function hardDelete<T>({ tableName, id, path }: Params): Promise<DeleteResult<T>> {
+export async function hardDelete<T>({ tableName, id, pathname }: Params): Promise<DeleteResult<T>> {
   try {
     if (!id) {
       throw new Error('ID값이 없습니다.');
@@ -72,8 +72,8 @@ export async function hardDelete<T>({ tableName, id, path }: Params): Promise<De
     await deleteFolderFromStorage(folderPath);
 
     // 패스 재검증
-    if (path) {
-      revalidatePath(path);
+    if (pathname) {
+      revalidatePath(pathname);
     }
 
     const deletedItem = transformSnakeToCamel(data);

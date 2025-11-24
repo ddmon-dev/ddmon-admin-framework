@@ -1,1 +1,1 @@
-export { useManageItem } from './use-manage-item';
+export { useManageItemData } from './use-manage-item-data';

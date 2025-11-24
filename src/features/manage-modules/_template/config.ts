@@ -1,5 +1,5 @@
 export const CONFIG = {
-  tableName: 'demo_items',
+  tableName: 'templates',
 
   // FormCheckboxGroup 옵션
   interestOptions: [
