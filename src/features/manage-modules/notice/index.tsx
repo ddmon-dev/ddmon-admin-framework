@@ -1,6 +1,6 @@
 import { type SearchParams } from '@/shared/types/search-params';
 
-import { ManageContainer, CreateButton } from '../_base/components';
+import { ManageContainer, CreateButton } from '../_base/ui';
 
 import { Filters } from './filters';
 import { List } from './list';
