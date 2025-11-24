@@ -18,7 +18,7 @@ export async function getItem({ id }: Params): Promise<GetItemResult<ItemDTO>> {
 
     const { data: rawData, error } = await supabase
       .from(CONFIG.tableName)
-      .select('*')
+      .select('id, name, email, super_admin, created_at, updated_at, deleted')
       .eq('id', id)
       .single();
 

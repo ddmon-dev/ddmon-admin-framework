@@ -14,10 +14,11 @@ import {
 } from '@/shared/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/shared/ui/sidebar';
 
-import { signOut, type AdminUser } from '@/features/auth';
+import { signOut } from '@/features/auth';
+import type { User } from 'next-auth';
 
 type NavUserProps = {
-  user: AdminUser;
+  user: User;
 };
 
 export function NavUser({ user }: NavUserProps) {

@@ -133,8 +133,9 @@ export const config = {
 ```typescript
 // features/auth/types.ts
 export type AdminUser = {
-  id: string;        // UUID (데이터베이스 Primary Key)
+  id: string;        // 로그인 아이디 (Primary Key)
   name: string;      // 실제 이름
+  email: string;     // 이메일
   superAdmin: boolean;
 };
 

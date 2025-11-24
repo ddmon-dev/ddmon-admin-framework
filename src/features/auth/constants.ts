@@ -1,3 +1,5 @@
+import { type PasswordStrength } from '@/shared/schemas';
+
 // 관리자 테이블명
 export const ADMIN_TABLE_NAME = 'admins';
 
@@ -13,4 +15,9 @@ export const AUTH_ERROR_MESSAGES = {
 export const AUTH_PATHS = {
   SIGN_IN: '/auth/sign-in',
   SIGN_OUT: '/auth/sign-out',
+};
+
+export const AUTH_POLICIES = {
+  ID_MIN_LENGTH: 5,
+  PASSWORD_STRENGTH: 'minimum' as PasswordStrength,
 };

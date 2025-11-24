@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { ModifyButton, SoftDeleteButton, HardDeleteButton } from '../_base/ui';
+import { ModifyButton, SoftDeleteButton } from '../_base/ui';
 
 import { CONFIG } from './config';
 import { type ItemDTO } from './types';
@@ -14,6 +14,15 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     accessorKey: 'name',
     header: '이름',
     size: 150,
+  },
+  {
+    accessorKey: 'superAdmin',
+    header: '구분',
+    size: 150,
+    cell: ({ row }) => {
+      const { superAdmin } = row.original;
+      return <>{superAdmin ? '최고관리자' : '일반관리자'}</>;
+    },
   },
   {
     accessorKey: 'createdAt',
@@ -32,12 +41,8 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
       const { id } = row.original;
       return (
         <nav className='flex gap-2'>
-          <ModifyButton id={id} />
+          <ModifyButton id={id}>정보수정</ModifyButton>
           <SoftDeleteButton
-            tableName={CONFIG.tableName}
-            id={id}
-          />
-          <HardDeleteButton
             tableName={CONFIG.tableName}
             id={id}
           />

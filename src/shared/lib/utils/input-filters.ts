@@ -48,3 +48,10 @@ export function telFilter(value: string): string {
     }
   }
 }
+
+/**
+ * 영문자와 숫자만 입력 허용하는 필터 함수
+ */
+export function onlyEnglishAndNumbers(value: string): string {
+  return value.replace(/[^a-zA-Z0-9]/g, '');
+}

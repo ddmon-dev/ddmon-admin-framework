@@ -53,6 +53,7 @@ export default {
           return {
             id: admin.id,
             name: admin.name,
+            email: admin.email,
             superAdmin: admin.superAdmin ?? false,
           } satisfies AdminUser;
         } catch (error) {
@@ -70,6 +71,7 @@ export default {
       if (user) {
         token.id = user.id;
         token.name = user.name;
+        token.email = user.email;
         token.superAdmin = user.superAdmin;
       }
       return token;
@@ -77,6 +79,7 @@ export default {
     async session({ session, token }) {
       session.user.id = token.id!;
       session.user.name = token.name!;
+      session.user.email = token.email!;
       session.user.superAdmin = token.superAdmin!;
       return session;
     },

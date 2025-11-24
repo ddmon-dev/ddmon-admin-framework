@@ -3,22 +3,63 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
+import { schemaPresets } from '@/shared/schemas';
+import { hashPassword } from '@/features/auth/utils';
+import { auth } from '@/features/auth';
+import { AUTH_POLICIES } from '@/features/auth/constants';
 
 import { type UpdateResult } from '../../_base/types';
 
 import { CONFIG } from '../config';
-import { type ItemDTO, type UpdateItemValues } from '../types';
+import { type ItemDTO } from '../types';
 
 interface Params {
   id: string;
-  values: UpdateItemValues;
+  values: Partial<ItemDTO>;
   pathname?: string;
 }
 
 export async function updateItem({ id, values, pathname }: Params): Promise<UpdateResult<ItemDTO>> {
   try {
+    // 최고관리자만 관리 메뉴를 통한 관리자 계정 수정 가능
+    const session = await auth();
+    const isSuperAdmin = session?.user.superAdmin;
+
+    if (!isSuperAdmin) {
+      throw new Error('최고관리자만 수정할 수 있습니다.');
+    }
+
     if (!id) {
       throw new Error('ID값이 없습니다.');
+    }
+
+    // 아이디는 수정 불가
+    // 비밀번호 확인은 제거
+    // 삭제는 업데이트 액션에서 처리하지 않음
+    'id' in values && delete values.id;
+    'confirmPassword' in values && delete values.confirmPassword;
+    'deleted' in values && delete values.deleted;
+
+    // 비밀번호가 있으면 검증 후 해시, 빈 값이면 제거
+    if (values.password) {
+      const validatePassword = schemaPresets
+        .password({
+          strength: AUTH_POLICIES.PASSWORD_STRENGTH,
+        })
+        .safeParse(values.password);
+
+      if (!validatePassword.success) {
+        throw new Error(validatePassword.error.message);
+      }
+
+      values.password = await hashPassword(validatePassword.data);
+    } else {
+      delete values.password;
+    }
+
+    // 최고관리자 설정은 할 수 없음
+    if ('superAdmin' in values) {
+      throw new Error('최고관리자 설정은 할 수 없습니다.');
     }
 
     const supabase = createServerClient();

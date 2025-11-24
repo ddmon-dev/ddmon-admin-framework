@@ -6,12 +6,12 @@ import { AppSidebarIdentity } from '@/widgets/app-sidebar/identity';
 import { NavMenu } from '@/widgets/app-sidebar/nav-menu';
 import { NavUser } from '@/widgets/app-sidebar/nav-user';
 import { ThemeToggle } from '@/shared/ui/theme-switcher';
-import type { AdminUser } from '@/features/auth/types';
+import type { User } from 'next-auth';
 
 import { navigationConfig } from '@/widgets/app-sidebar/config';
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  user: AdminUser;
+  user: User;
 };
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {

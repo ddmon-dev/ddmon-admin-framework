@@ -28,12 +28,12 @@ export async function getList({
     // 기본 쿼리
     let query = supabase
       .from(CONFIG.tableName)
-      .select('*', { count: 'exact' })
+      .select('id, name, email, super_admin, created_at, updated_at, deleted', { count: 'exact' })
       .eq('deleted', false);
 
     // 검색 필터 (이름, 이메일)
     if (search) {
-      query = query.or(`question.ilike.%${search}%,answer.ilike.%${search}%`);
+      query = query.or(`name.ilike.%${search}%,id.ilike.%${search}%`);
     }
 
     // 정렬
