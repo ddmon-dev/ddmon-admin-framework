@@ -18,11 +18,15 @@ import { signOut } from '@/features/auth';
 import type { User } from 'next-auth';
 
 type NavUserProps = {
-  user: User;
+  user: User | undefined;
 };
 
 export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();
+
+  if (!user) {
+    return null;
+  }
 
   const handleSignOut = async () => {
     await signOut();

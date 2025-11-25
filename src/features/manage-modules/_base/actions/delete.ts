@@ -5,6 +5,7 @@ import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { deleteFolderFromStorage } from '@/shared/lib/file-system';
 import { type TableName } from '@/shared/lib/supabase/db-helpers';
+import { requireAuth } from '@/features/auth';
 import { type DeleteResult } from '../config';
 
 interface Params {
@@ -17,6 +18,9 @@ interface Params {
  * Soft delete: deleted 컬럼을 true로 설정
  */
 export async function softDelete<T>({ tableName, id, pathname }: Params): Promise<DeleteResult<T>> {
+  // 인증 확인
+  await requireAuth();
+
   try {
     if (!id) {
       throw new Error('ID값이 없습니다.');
@@ -53,6 +57,9 @@ export async function softDelete<T>({ tableName, id, pathname }: Params): Promis
  * Hard delete: 실제로 데이터를 삭제
  */
 export async function hardDelete<T>({ tableName, id, pathname }: Params): Promise<DeleteResult<T>> {
+  // 인증 확인
+  await requireAuth({ requireSuper: true });
+
   try {
     if (!id) {
       throw new Error('ID값이 없습니다.');

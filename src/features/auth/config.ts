@@ -2,7 +2,7 @@ import type { NextAuthConfig, User } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { verifyPassword } from './utils';
+import { verifyPassword } from './utils/password';
 import { ADMIN_TABLE_NAME, AUTH_PATHS } from './constants';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 

@@ -4,9 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { schemaPresets } from '@/shared/schemas';
-import { auth } from '@/features/auth';
-import { hashPassword } from '@/features/auth/utils';
-import { AUTH_POLICIES } from '@/features/auth/constants';
+import { auth, hashPassword, AUTH_POLICIES } from '@/features/auth';
 
 import { type CreateResult } from '../../_base/config';
 

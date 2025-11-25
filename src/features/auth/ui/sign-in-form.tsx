@@ -57,7 +57,6 @@ export function SignInForm() {
             label='아이디'
             control={form.control}
             placeholder='아이디를 입력하세요'
-            autoComplete='username'
             autoFocus
           />
           <FormPasswordInput
@@ -65,7 +64,6 @@ export function SignInForm() {
             label='비밀번호'
             control={form.control}
             placeholder='비밀번호를 입력하세요'
-            autoComplete='current-password'
           />
         </FieldGroup>
 
