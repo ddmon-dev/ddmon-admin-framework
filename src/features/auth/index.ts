@@ -14,6 +14,7 @@ export * from './actions';
 
 // 타입
 export * from './types';
+export type { User } from 'next-auth';
 
 // 유틸리티
 export * from './utils/password';
