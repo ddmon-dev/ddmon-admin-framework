@@ -1,6 +1,6 @@
 import { ActionResult } from '@/shared/types/server-actions';
 import { WithFiles } from '@/shared/lib/file-system';
-import { CamelCaseKeys } from '@/shared/lib/utils/objects';
+import { CamelCaseKeys } from '@/shared/utils/objects';
 import { RowData, TableName } from '@/shared/lib/supabase/db-helpers';
 
 export const BASE_CONFIG = {

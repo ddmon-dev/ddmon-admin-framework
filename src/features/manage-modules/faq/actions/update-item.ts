@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/lib/utils/objects';
+import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 
 import { type UpdateResult } from '../../_base/config';
 

@@ -1,4 +1,4 @@
-import { cn } from '@/shared/lib/utils/classnames';
+import { cn } from '@/shared/utils/classnames';
 import { Separator } from '@/shared/ui/separator';
 
 interface DividerWithTextProps {

@@ -1,9 +1,10 @@
-# 파일명 & 폴더 구조 컨벤션
+# 프로젝트 구조 & 컨벤션
 
-프로젝트 전체의 일관성을 위한 파일명 및 폴더 구조 규칙입니다.
+프로젝트의 아키텍처와 코딩 컨벤션을 정의합니다.
 
 ## 목차
 
+- [프로젝트 아키텍처](#프로젝트-아키텍처)
 - [핵심 원칙](#핵심-원칙)
 - [파일명 규칙](#파일명-규칙)
 - [엔티티 프리픽스 규칙](#엔티티-프리픽스-규칙)
@@ -11,6 +12,81 @@
 - [레이어별 가이드](#레이어별-가이드)
 - [실제 예시](#실제-예시)
 - [새로운 기능 추가 시](#새로운-기능-추가-시)
+
+---
+
+## 프로젝트 아키텍처
+
+Admin Template은 **FSD (Feature-Sliced Design)** 아키텍처를 따릅니다.
+
+### FSD 레이어
+
+**app/** - 라우팅 레이어
+Next.js App Router로 페이지 구성과 라우팅만 담당합니다.
+
+```
+app/
+├── (auth)/              # 인증 페이지 (레이아웃 없음)
+├── (protected)/         # 보호된 페이지 (Sidebar + Header)
+└── unauthorized/
+```
+
+**features/** - 기능 레이어
+비즈니스 로직과 기능 단위 모듈입니다.
+
+```
+features/
+├── auth/                # 인증 시스템
+└── manage-modules/      # CRUD 모듈 시스템
+```
+
+**widgets/** - 위젯 레이어
+복합 UI 위젯, 독립적으로 동작하는 모듈입니다.
+
+```
+widgets/
+├── app-sidebar/
+├── app-breadcrumb/
+└── app-header/
+```
+
+**shared/** - 공유 레이어
+프로젝트 전역에서 재사용되는 리소스입니다.
+
+```
+shared/
+├── ui/                  # UI 컴포넌트 (Shadcn UI)
+├── lib/                 # 도메인 라이브러리
+├── utils/               # 범용 유틸리티
+├── hooks/
+├── types/
+└── schemas/
+```
+
+### 레이어 선택 가이드
+
+| 특징             | 레이어    |
+| ---------------- | --------- |
+| 라우팅만         | app/      |
+| 비즈니스 로직    | features/ |
+| 복합 UI 위젯     | widgets/  |
+| 재사용 가능      | shared/   |
+
+**원칙:**
+- 비즈니스 로직은 features/
+- 페이지는 app/에서 features/ 조합
+- widgets/는 독립적으로 동작
+- shared/는 레이어 무관하게 사용
+
+### Path Alias
+
+`@/*` = `./src/*`
+
+```typescript
+import { Button } from '@/shared/ui/button';
+import { auth } from '@/features/auth';
+import { AppSidebar } from '@/widgets/app-sidebar/sidebar';
+```
 
 ---
 
@@ -215,10 +291,13 @@ shared/
 │   ├── button.tsx
 │   ├── form-fields/
 │   └── editor/
-├── lib/               ← 라이브러리 유틸리티
+├── lib/               ← 도메인 라이브러리
 │   ├── excel/
 │   ├── supabase/
-│   └── utils/
+│   └── file-system/
+├── utils/             ← 범용 유틸리티
+│   ├── objects/
+│   └── date/
 ├── hooks/             ← 커스텀 훅들
 ├── types/             ← 공통 타입들
 └── schemas/           ← Zod 스키마들
@@ -229,6 +308,87 @@ shared/
 - 재사용 가능한 공통 모듈
 - 파일이 많아 레이어 분리 필요
 - 명확한 관심사 분리
+
+### 4. lib vs utils 구분
+
+**원칙**: 도메인 로직과 범용 유틸리티를 명확히 분리
+
+#### lib/ - 도메인 로직
+
+특정 도메인이나 라이브러리에 의존적인 코드입니다.
+
+**특징**:
+- 외부 서비스 클라이언트 (Supabase, Stripe 등)
+- 도메인 비즈니스 로직 (인증, 세션 관리)
+- 프로젝트 내부 의존성 있음
+- 테스트 시 모킹 필요할 수 있음
+
+**예시**:
+```typescript
+// features/auth/lib/session.ts
+import { auth } from '../handler';
+import { redirect } from 'next/navigation';
+
+export async function requireAuth() {
+  const session = await auth(); // auth()에 의존
+  if (!session) redirect('/auth/sign-in'); // Next.js 의존
+  return session.user;
+}
+```
+
+#### utils/ - 범용 유틸리티
+
+도메인 독립적인 순수 헬퍼 함수입니다.
+
+**특징**:
+- 데이터 변환 (객체, 날짜, 문자열)
+- 암호화/검증 (password hash)
+- 외부 의존성 최소
+- 순수 함수 (같은 입력 → 같은 출력)
+- 테스트 쉬움
+- 어디서든 재사용 가능
+
+**예시**:
+```typescript
+// features/auth/utils/password.ts
+import bcrypt from 'bcryptjs';
+
+export async function hashPassword(password: string) {
+  return bcrypt.hash(password, 10); // 순수 함수, bcrypt만 의존
+}
+```
+
+#### 구조 예시
+
+**shared 레벨**:
+```
+shared/
+├── lib/               # 도메인 라이브러리
+│   ├── supabase/      # DB 클라이언트 (도메인)
+│   └── file-system/   # 파일 시스템 (도메인)
+└── utils/             # 범용 유틸리티
+    ├── objects/       # 객체 변환 (범용)
+    └── date/          # 날짜 포맷 (범용)
+```
+
+**features 레벨**:
+```
+features/auth/
+├── lib/               # 인증 도메인 로직
+│   ├── session.ts     # auth()에 의존, redirect 사용
+│   └── assert.ts      # 권한 체크, throw
+└── utils/             # 인증 범용 헬퍼
+    └── password.ts    # bcrypt만 의존, 순수 함수
+```
+
+#### 판단 기준
+
+| 질문                          | lib/ | utils/ |
+| ----------------------------- | ---- | ------ |
+| 다른 도메인에서 재사용 가능?  | ❌   | ✅     |
+| 순수 함수인가?                | 보통 아님 | 주로 그럼 |
+| 외부 의존성이 많은가?         | 많음 | 적음   |
+| 모킹 없이 테스트 가능?        | 어려움 | 쉬움   |
 
 ---
 
@@ -284,7 +444,7 @@ widgets/app-sidebar/
 ```
 shared/lib/excel/
 ├── types.ts           ✅
-├── utils.ts           ✅
+├── client.ts          ✅
 
 shared/lib/excel/
 ├── excel.types.ts     ❌ (중복)
@@ -444,8 +604,11 @@ widgets/app-footer/
 ```
 shared/lib/analytics/
 ├── types.ts           ✅
-├── client.ts          ✅
-└── utils.ts           ✅
+└── client.ts          ✅
+
+shared/utils/formatting/
+├── currency.ts        ✅
+└── number.ts          ✅
 ```
 
 #### shared/ui 추가

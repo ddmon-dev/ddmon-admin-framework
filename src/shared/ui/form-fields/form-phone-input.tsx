@@ -2,7 +2,7 @@
 
 import { ReactElement } from 'react';
 import { type FieldPath, type FieldValues } from 'react-hook-form';
-import { telFilter } from '@/shared/lib/utils/input-filters';
+import { telFilter } from '@/shared/utils/input-filters';
 import { FormTextInput } from './form-text-input';
 import type { FormTextInputProps } from './form-text-input';
 

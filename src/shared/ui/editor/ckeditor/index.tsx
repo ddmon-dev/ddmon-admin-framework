@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/shared/lib/utils/classnames';
+import { cn } from '@/shared/utils/classnames';
 import { CKEditor as _CKEditor } from '@ckeditor/ckeditor5-react';
 import translations from 'ckeditor5/translations/ko.js';
 import {
@@ -96,7 +96,11 @@ export function CKEditor({
   const finalUploadFolder = generateUploadPath(uploadFolder, entity);
 
   return (
-    <div ref={ref} className={cn('w-full', className)} tabIndex={-1}>
+    <div
+      ref={ref}
+      className={cn('w-full', className)}
+      tabIndex={-1}
+    >
       <_CKEditor
         editor={ClassicEditor}
         data={content}

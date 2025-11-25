@@ -3,7 +3,7 @@ import type { FileLoader } from '@ckeditor/ckeditor5-upload';
 
 import { createPresignedUploadUrl } from '@/shared/lib/supabase/storage';
 import { generateUniqueFileName } from '@/shared/lib/file-system/utils';
-import { mbToBytes } from '@/shared/lib/utils/format';
+import { mbToBytes } from '@/shared/utils/format';
 import { DEFAULT_IMAGE_CONFIG } from './config';
 
 /**
@@ -78,8 +78,7 @@ class CustomUploadAdapter {
    */
   private validateFile(file: File): void {
     const maxSizeMB = this.config.maxSizeMB ?? DEFAULT_IMAGE_CONFIG.maxSizeMB;
-    const acceptedFormats =
-      this.config.acceptedFormats ?? DEFAULT_IMAGE_CONFIG.acceptedFormats;
+    const acceptedFormats = this.config.acceptedFormats ?? DEFAULT_IMAGE_CONFIG.acceptedFormats;
 
     // 파일 크기 검증
     const maxSizeBytes = mbToBytes(maxSizeMB);
