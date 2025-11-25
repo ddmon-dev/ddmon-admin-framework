@@ -2,6 +2,7 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
+import { requireAuth } from '@/features/auth';
 
 import { type GetItemResult } from '../../_base/config';
 
@@ -13,6 +14,9 @@ interface Params {
 }
 
 export async function getItem({ id }: Params): Promise<GetItemResult<ItemDTO>> {
+  // 인증 확인
+  await requireAuth();
+
   try {
     const supabase = createServerClient();
 
