@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
+import { requireAuth } from '@/features/auth';
 
 import { type CreateResult } from '../../_base/config';
 
@@ -15,6 +16,9 @@ interface Params {
 }
 
 export async function createItem({ values, pathname }: Params): Promise<CreateResult<ItemDTO>> {
+  // 인증 확인
+  await requireAuth();
+
   try {
     const supabase = createServerClient();
 

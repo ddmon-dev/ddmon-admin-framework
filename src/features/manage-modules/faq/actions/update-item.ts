@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
+import { requireAuth } from '@/features/auth';
 
 import { type UpdateResult } from '../../_base/config';
 
@@ -16,6 +17,9 @@ interface Params {
 }
 
 export async function updateItem({ id, values, pathname }: Params): Promise<UpdateResult<ItemDTO>> {
+  // 인증 확인
+  await requireAuth();
+
   try {
     if (!id) {
       throw new Error('ID값이 없습니다.');

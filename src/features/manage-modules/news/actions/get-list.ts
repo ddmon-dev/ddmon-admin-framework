@@ -2,6 +2,7 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
+import { requireAuth } from '@/features/auth';
 
 import { BASE_CONFIG } from '../../_base/config';
 import { type GetListResult } from '../../_base/config';
@@ -23,6 +24,9 @@ export async function getList({
   category = '',
   pageSize = BASE_CONFIG.defaultListPageSize,
 }: Params): Promise<GetListResult<ItemDTO>> {
+  // 인증 확인
+  await requireAuth();
+
   try {
     const page = parseInt(rawPage) || 1;
 
