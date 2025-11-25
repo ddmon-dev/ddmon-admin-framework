@@ -15,12 +15,14 @@ export type AuthState =
       status: 'authenticated';
       isLoading: false;
       isSuperAdmin: boolean;
+      update: (data?: any) => Promise<any>;
     }
   | {
       user: undefined;
       status: 'loading' | 'unauthenticated';
       isLoading: boolean;
       isSuperAdmin: false;
+      update: (data?: any) => Promise<any>;
     };
 
 /**
@@ -53,7 +55,7 @@ export type AuthState =
  * }
  */
 export function useAuth(): AuthState {
-  const { data: session, status } = useNextAuthSession();
+  const { data: session, status, update } = useNextAuthSession();
 
   if (status === 'authenticated') {
     return {
@@ -61,6 +63,7 @@ export function useAuth(): AuthState {
       status: 'authenticated',
       isLoading: false,
       isSuperAdmin: session.user.superAdmin ?? false,
+      update,
     };
   }
 
@@ -69,6 +72,7 @@ export function useAuth(): AuthState {
     status,
     isLoading: status === 'loading',
     isSuperAdmin: false,
+    update,
   };
 }
 

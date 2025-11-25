@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -20,10 +19,6 @@ import { ProfileEditDialog } from '@/features/auth/ui/profile-edit-dialog';
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { user } = useAuth();
-
-  if (!user) {
-    return null;
-  }
 
   const handleSignOut = async () => {
     await signOut();
@@ -68,24 +63,26 @@ export function NavUser() {
   );
 }
 
-function UserInfo({ user }: { user: User }) {
+function UserInfo({ user }: { user: User | undefined }) {
+  const initials = user?.name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+
+  const role = user?.superAdmin ? '최고관리자' : '일반관리자';
+
   return (
     <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
       <Avatar className='h-8 w-8 rounded-lg'>
-        <AvatarFallback className='rounded-lg'>
-          {user.name
-            .split(' ')
-            .map(n => n[0])
-            .join('')
-            .toUpperCase()
-            .slice(0, 2)}
-        </AvatarFallback>
+        <AvatarFallback className='rounded-lg'>{initials}</AvatarFallback>
       </Avatar>
       <div className='grid flex-1 text-left text-sm leading-tight'>
-        <span className='truncate font-medium'>{user.name}</span>
+        <span className='truncate font-medium'>{user?.name}</span>
         <span className='flex items-center gap-1 truncate text-xs text-muted-foreground'>
           <Shield className='h-3 w-3' />
-          {user.superAdmin ? '최고관리자' : '일반관리자'}
+          {role}
         </span>
       </div>
     </div>
