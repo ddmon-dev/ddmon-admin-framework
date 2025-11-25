@@ -5,7 +5,7 @@ export { auth, nextAuthHandlers } from './handler';
 export * from './ui/auth-layout';
 export * from './ui/sign-in-form';
 export * from './ui/require-auth';
-export * from './ui/idle-timer-provider';
+export * from './idle-logout-provider';
 
 // 상수
 export * from './constants';
@@ -22,4 +22,4 @@ export * from './utils/password';
 export * from './utils/server';
 
 // Client 훅
-export * from './hooks/use-auth';
+export * from './use-auth';

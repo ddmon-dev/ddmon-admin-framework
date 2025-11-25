@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '../hooks/use-auth';
+import { useAuth } from '../use-auth';
 import { Spinner } from '@/shared/ui/spinner';
 
 interface RequireAuthProps {
