@@ -58,13 +58,14 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     accessorKey: 'etc',
     header: () => <div className='text-right'>기타</div>,
     cell: ({ row }) => {
-      const { id } = row.original;
+      const { id, name } = row.original;
       return (
         <nav className='flex gap-2'>
           <ModifyButton id={id} />
           <SoftDeleteButton
             tableName={CONFIG.tableName}
             id={id}
+            dataLabel={name}
           />
           <HardDeleteButton
             tableName={CONFIG.tableName}

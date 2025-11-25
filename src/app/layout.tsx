@@ -5,6 +5,7 @@ import './globals.css';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from 'next-themes';
 import { SessionProvider } from 'next-auth/react';
+import { DialogProvider } from '@/shared/providers';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
@@ -28,11 +29,13 @@ export default function RootLayout({
           enableSystem={true}
         >
           <SessionProvider>
-            {children}
-            <Toaster
-              richColors
-              position='bottom-center'
-            />
+            <DialogProvider>
+              {children}
+              <Toaster
+                richColors
+                position='bottom-center'
+              />
+            </DialogProvider>
           </SessionProvider>
         </ThemeProvider>
       </body>
