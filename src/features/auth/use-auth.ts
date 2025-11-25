@@ -3,7 +3,7 @@
 import { useSession as useNextAuthSession, UpdateSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import type { User } from 'next-auth';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { AUTH_PATHS } from './constants';
 
 /**
@@ -56,8 +56,11 @@ export type AuthState =
  */
 export function useAuth(): AuthState {
   const { data: session, status, update: updateSession } = useNextAuthSession();
+  const prevUserRef = useRef<User | undefined>(undefined);
 
+  // authenticated일 때 user 저장
   if (status === 'authenticated') {
+    prevUserRef.current = session.user;
     return {
       user: session.user,
       status: 'authenticated',
@@ -67,6 +70,18 @@ export function useAuth(): AuthState {
     };
   }
 
+  // loading이지만 이전 user가 있으면 유지 (refetch 중)
+  if (status === 'loading' && prevUserRef.current) {
+    return {
+      user: prevUserRef.current,
+      status: 'authenticated',
+      isLoading: false,
+      isSuperAdmin: prevUserRef.current.superAdmin ?? false,
+      updateSession,
+    };
+  }
+
+  // 진짜 초기 로딩 또는 unauthenticated
   return {
     user: undefined,
     status,

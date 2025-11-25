@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/shared/ui/sidebar';
+import { Skeleton } from '@/shared/ui/skeleton';
 
 import { signOut, useAuth, type User } from '@/features/auth';
 import { ProfileEditDialog } from '@/features/auth/ui/profile-edit-dialog';
@@ -64,25 +65,33 @@ export function NavUser() {
 }
 
 function UserInfo({ user }: { user: User | undefined }) {
-  const initials = user?.name
+  const initials = user?.id
     .split(' ')
     .map(n => n[0])
     .join('')
     .toUpperCase()
     .slice(0, 2);
 
-  const role = user?.superAdmin ? '최고관리자' : '일반관리자';
+  const role = user?.superAdmin === true ? '최고관리자' : '일반관리자';
 
   return (
     <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
       <Avatar className='h-8 w-8 rounded-lg'>
         <AvatarFallback className='rounded-lg'>{initials}</AvatarFallback>
       </Avatar>
-      <div className='grid flex-1 text-left text-sm leading-tight'>
-        <span className='truncate font-medium'>{user?.name}</span>
+      <div className='grid gap-1 flex-1 text-left text-sm leading-tight'>
+        <span className='truncate font-medium'>
+          {!user ? <Skeleton className='h-4 w-32' /> : `${user?.name} (${user?.id})`}
+        </span>
         <span className='flex items-center gap-1 truncate text-xs text-muted-foreground'>
-          <Shield className='h-3 w-3' />
-          {role}
+          {!user ? (
+            <Skeleton className='h-2.5 w-42' />
+          ) : (
+            <>
+              <Shield className='size-3' />
+              <span className='text-xs truncate leading-[1em]'>{role}</span>
+            </>
+          )}
         </span>
       </div>
     </div>
