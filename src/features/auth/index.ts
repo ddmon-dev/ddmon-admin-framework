@@ -5,6 +5,7 @@ export { auth, nextAuthHandlers } from './handler';
 export * from './ui/auth-layout';
 export * from './ui/sign-in-form';
 export * from './ui/require-auth';
+export * from './ui/idle-timer-provider';
 
 // 상수
 export * from './constants';
