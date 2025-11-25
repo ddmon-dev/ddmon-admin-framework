@@ -4,12 +4,9 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { schemaPresets } from '@/shared/schemas';
-import { hashPassword } from '@/features/auth/utils/password';
-import { auth } from '@/features/auth';
-import { AUTH_POLICIES } from '@/features/auth/constants';
+import { auth, requireAuth, hashPassword, AUTH_POLICIES } from '@/features/auth';
 
 import { type UpdateResult } from '../../_base/config';
-
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
@@ -20,15 +17,10 @@ interface Params {
 }
 
 export async function updateItem({ id, values, pathname }: Params): Promise<UpdateResult<ItemDTO>> {
+  // 최고관리자만 접근 가능
+  await requireAuth({ requireSuper: true });
+
   try {
-    // 최고관리자만 관리 메뉴를 통한 관리자 계정 수정 가능
-    const session = await auth();
-    const isSuperAdmin = session?.user.superAdmin;
-
-    if (!isSuperAdmin) {
-      throw new Error('최고관리자만 수정할 수 있습니다.');
-    }
-
     if (!id) {
       throw new Error('ID값이 없습니다.');
     }

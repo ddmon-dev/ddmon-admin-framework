@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { schemaPresets } from '@/shared/schemas';
-import { auth, hashPassword, AUTH_POLICIES } from '@/features/auth';
+import { auth, hashPassword, AUTH_POLICIES, requireAuth } from '@/features/auth';
 
 import { type CreateResult } from '../../_base/config';
 
@@ -17,15 +17,10 @@ interface Params {
 }
 
 export async function createItem({ values, pathname }: Params): Promise<CreateResult<ItemDTO>> {
+  // 최고관리자만 접근 가능
+  await requireAuth({ requireSuper: true });
+
   try {
-    // 최고관리자만 관리 메뉴를 통한 관리자 계정 생성 가능
-    const session = await auth();
-    const isSuperAdmin = session?.user.superAdmin;
-
-    if (!isSuperAdmin) {
-      throw new Error('최고관리자만 생성할 수 있습니다.');
-    }
-
     // confirmPassword 제거
     // superAdmin은 항상 false (최고관리자는 1명만 / 어플리케이션 단에서 생성 불가)
     'confirmPassword' in values && delete values.confirmPassword;

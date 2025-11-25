@@ -2,9 +2,9 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
+import { requireAuth } from '@/features/auth';
 
 import { type GetItemResult } from '../../_base/config';
-
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
@@ -13,6 +13,9 @@ interface Params {
 }
 
 export async function getItem({ id }: Params): Promise<GetItemResult<ItemDTO>> {
+  // 최고관리자만 접근 가능
+  await requireAuth({ requireSuper: true });
+
   try {
     const supabase = createServerClient();
 
