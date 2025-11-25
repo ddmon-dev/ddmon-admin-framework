@@ -6,6 +6,9 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { toast } from 'sonner';
+import { useManageSheet } from '../_base/ui';
+
 import { FieldGroup } from '@/shared/ui/field';
 import {
   FormTextInput,
@@ -37,35 +40,29 @@ import { createItem, updateItem } from './actions';
 
 const formSchema = z.object({
   name: z.string().min(1, '이름을 입력해주세요.'),
-  email: schemaPresets.email({ optional: false }),
-  phone: schemaPresets.phone(),
-  zipCode: z.string().min(1),
-  address: z.string().min(1),
-  addressDetail: z.string().min(1),
+  email: schemaPresets.email({ optional: true }),
+  phone: schemaPresets.phone({ optional: true }),
+  zipCode: z.string(),
+  address: z.string(),
+  addressDetail: z.string(),
   description: z.string().nullish(),
   age: z.number().min(0).max(150, '나이는 0~150 사이의 숫자를 입력해주세요.').int().nullish(),
   price: z.number().min(0).int().nullish(),
-  gender: z.string().min(1, '성별을 선택해주세요.'),
-  interests: z.array(z.string()).min(1, '최소 1개의 관심사를 선택해주세요.'),
-  country: z.string().min(1, '국가를 선택해주세요.'),
-  city: z.string().min(1, '도시를 선택해주세요.'),
-  languages: z.array(z.string()).min(1, '최소 1개의 언어를 선택해주세요.'),
-  newsletterSubscribed: z
-    .boolean()
-    .refine(value => value, { message: '뉴스레터 구독을 동의해주세요.' }),
-  termsAccepted: z.boolean().refine(value => value, { message: '이용약관에 동의해주세요.' }),
+  gender: z.string().min(0),
+  interests: z.array(z.string()).min(0),
+  country: z.string().min(0),
+  city: z.string().min(0),
+  languages: z.array(z.string()).min(0),
+  newsletterSubscribed: z.boolean(),
+  termsAccepted: z.boolean(),
   birthDate: z.date().nullish(),
-  bio: z.string().min(1, '상세 자기소개를 입력해주세요.'),
+  bio: z.string().nullish(),
   files: schemaPresets.files({ avatar: 0, attachments: 0 }),
-  socialLinks: z
-    .array(
-      z.object({
-        value: schemaPresets.url({ optional: true }),
-      })
-    )
-    .refine(links => links.some(link => link.value && link.value.trim() !== ''), {
-      message: '최소 1개의 소셜 미디어 링크를 입력해주세요.',
-    }),
+  socialLinks: z.array(
+    z.object({
+      value: schemaPresets.url({ optional: true }),
+    })
+  ),
 });
 
 const formDefaultValues = {
@@ -97,6 +94,7 @@ interface ItemFormProps {
 }
 
 export function ItemForm({ id, prevValues }: ItemFormProps) {
+  const sheet = useManageSheet();
   const pathname = usePathname();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -130,10 +128,11 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         updateItemAction: updateItem,
       });
 
-      alert('저장되었습니다.');
+      toast.success('저장되었습니다.');
+      sheet.closeManageSheet();
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : '저장에 실패했습니다.');
+      toast.error(error instanceof Error ? error.message : '저장에 실패했습니다.');
     }
   }
 
@@ -172,6 +171,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         <FormAddressInput
           control={form.control}
           label='주소'
+          optional
         />
 
         <FormTextarea

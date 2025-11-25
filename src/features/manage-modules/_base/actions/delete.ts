@@ -49,7 +49,11 @@ export async function softDelete<T>({ tableName, id, pathname }: Params): Promis
     return { success: true, data: deletedItem as T };
   } catch (error) {
     console.error(error);
-    return { success: false, error: '데이터를 삭제하는 중 오류가 발생했습니다.' };
+
+    const message =
+      error instanceof Error ? error.message : '데이터를 삭제하는 중 오류가 발생했습니다.';
+
+    return { success: false, error: message };
   }
 }
 
