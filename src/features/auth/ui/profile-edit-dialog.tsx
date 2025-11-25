@@ -20,6 +20,7 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 
 import { useAuth } from '../hooks/use-auth';
+import { signOut } from '../actions/sign-out';
 import { updateProfile } from '../actions/update-profile';
 import { type UpdateProfileValues } from '../types';
 
@@ -106,7 +107,15 @@ export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
         return;
       }
 
-      // 세션 업데이트 (name, email 변경 반영)
+      // 비밀번호 변경 여부에 따라 처리
+      if (values.newPassword) {
+        // 비밀번호 변경 시 로그아웃
+        alert('비밀번호가 변경되었습니다. 다시 로그인해주세요.');
+        await signOut();
+        return;
+      }
+
+      // 이름/이메일만 변경 시 세션 업데이트
       await updateSession({
         name: values.name,
         email: values.email,
