@@ -133,6 +133,8 @@ export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
       });
     } catch (error) {
       console.error(error);
+      // try catch 내부의 signout은 redirect 에러를 반환하므로 무조건 catch 블록이 실행되게 되어있음.
+      // 그래서 비밀번호 변경시 아래 얼럿이 뜨는 것임.
       alert('프로필 수정 중 오류가 발생했습니다.');
     }
   };
