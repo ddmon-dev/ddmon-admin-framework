@@ -4,7 +4,7 @@ import { useSession as useNextAuthSession, UpdateSession } from 'next-auth/react
 import { useRouter } from 'next/navigation';
 import type { User } from 'next-auth';
 import { useEffect } from 'react';
-import { AUTH_PATHS } from '../constants';
+import { AUTH_PATHS } from './constants';
 
 /**
  * 인증 상태 타입

@@ -19,7 +19,7 @@ import { FormTextInput, FormPasswordInput, FormEmailInput } from '@/shared/ui/fo
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 
-import { useAuth } from '../hooks/use-auth';
+import { useAuth } from '../use-auth';
 import { signOut } from '../actions/sign-out';
 import { updateProfile } from '../actions/update-profile';
 import { type UpdateProfileValues } from '../types';
