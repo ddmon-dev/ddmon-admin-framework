@@ -5,7 +5,11 @@
  */
 
 import { Database } from './types';
-import { transformSnakeToCamel, transformCamelToSnake, type CamelCaseKeys } from '../utils/objects';
+import {
+  transformSnakeToCamel,
+  transformCamelToSnake,
+  type CamelCaseKeys,
+} from '../../utils/objects';
 
 // Re-export 변환 함수
 export { transformSnakeToCamel, transformCamelToSnake, type CamelCaseKeys };

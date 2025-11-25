@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
-import { cn } from '@/shared/lib/utils/classnames';
+import { cn } from '@/shared/utils/classnames';
 import { fontPrimary, fontSecondary } from '@/fonts';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from 'next-themes';
+import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
@@ -26,11 +27,13 @@ export default function RootLayout({
           attribute='class'
           enableSystem={true}
         >
-          {children}
-          <Toaster
-            richColors
-            position='bottom-center'
-          />
+          <SessionProvider>
+            {children}
+            <Toaster
+              richColors
+              position='bottom-center'
+            />
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

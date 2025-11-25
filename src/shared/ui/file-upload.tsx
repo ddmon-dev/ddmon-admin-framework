@@ -2,8 +2,8 @@
 
 import { useRef, useState } from 'react';
 import { Trash2, File as FileIcon, Plus, RefreshCw } from 'lucide-react';
-import { cn } from '@/shared/lib/utils/classnames';
-import { mbToBytes, formatFileSize, truncateFileName } from '@/shared/lib/utils/format';
+import { cn } from '@/shared/utils/classnames';
+import { mbToBytes, formatFileSize, truncateFileName } from '@/shared/utils/format';
 import { downloadFileFromStorage } from '@/shared/lib/supabase/storage-helpers';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from './input-group';
 

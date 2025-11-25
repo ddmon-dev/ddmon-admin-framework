@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
+import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { deleteFolderFromStorage } from '@/shared/lib/file-system';
 import { type TableName } from '@/shared/lib/supabase/db-helpers';

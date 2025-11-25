@@ -1,7 +1,7 @@
 'use server';
 
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
+import { transformSnakeToCamel } from '@/shared/utils/objects';
 
 import { type GetItemResult } from '../../_base/config';
 

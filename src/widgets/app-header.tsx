@@ -1,4 +1,4 @@
-import { cn } from '@/shared/lib/utils/classnames';
+import { cn } from '@/shared/utils/classnames';
 import { ContentContainer } from '@/shared/ui/container';
 import { Separator } from '@/shared/ui/separator';
 import { SidebarTrigger } from '@/shared/ui/sidebar';

@@ -33,15 +33,14 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 
 ### 아키텍처 & 시스템
 
-- **[프로젝트 아키텍처](docs/architecture.md)** - FSD 레이어, 폴더 구조, 새 기능 추가
+- **[프로젝트 구조 & 컨벤션](docs/conventions.md)** - FSD 아키텍처, 파일명 규칙, lib vs utils 구분
 - **[manage-modules (CRUD 시스템)](docs/manage-modules.md)** - 템플릿 기반 CRUD 모듈, 핵심 패턴
 - **[파일 시스템](docs/file-system.md)** - FormFileUpload + 에디터(Tiptap) 이미지 업로드
 - **[인증 시스템](docs/auth.md)** - NextAuth 설정, 라우팅, 세션 관리
 
-### 개발 & 컨벤션
+### 개발
 
 - **[개발 가이드](docs/development.md)** - 명령어, 환경변수, 설정 파일
-- **[파일명 & 폴더 구조 컨벤션](docs/conventions.md)** - kebab-case, 엔티티 프리픽스 규칙
 
 ---
 
@@ -104,7 +103,7 @@ export default function ProductsPage() {
 }
 ```
 
-📄 자세한 내용: [architecture.md](docs/architecture.md#새로운-기능-추가)
+📄 자세한 내용: [conventions.md](docs/conventions.md#새로운-기능-추가-시)
 
 ---
 
@@ -141,12 +140,13 @@ src/
 │   └── app-header/
 └── shared/                  # 공유 레이어
     ├── ui/                  # 59개 컴포넌트 (Shadcn UI)
-    ├── lib/                 # 라이브러리 유틸리티
+    ├── lib/                 # 도메인 라이브러리
+    ├── utils/               # 범용 유틸리티
     ├── hooks/
     └── schemas/
 ```
 
-📄 자세한 내용: [architecture.md](docs/architecture.md)
+📄 자세한 내용: [conventions.md](docs/conventions.md#프로젝트-아키텍처)
 
 ---
 
@@ -175,7 +175,7 @@ src/
 
 **타입**: `feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore`
 
-📄 자세한 내용: [conventions.md](docs/conventions.md)
+📄 자세한 내용: [conventions.md](docs/conventions.md#파일명-규칙)
 
 ---
 

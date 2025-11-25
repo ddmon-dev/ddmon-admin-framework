@@ -1,4 +1,4 @@
-import { cn } from '@/shared/lib/utils/classnames';
+import { cn } from '@/shared/utils/classnames';
 import { Container } from '@/shared/ui/container';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
 import { ProjectSymbol } from '@/shared/ui/logo';

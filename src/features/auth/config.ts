@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { verifyPassword } from './utils';
 import { ADMIN_TABLE_NAME, AUTH_PATHS } from './constants';
-import { transformSnakeToCamel } from '@/shared/lib/utils/objects';
+import { transformSnakeToCamel } from '@/shared/utils/objects';
 
 const signInSchema = z.object({
   id: z.string().min(1, '아이디를 입력하세요'),
