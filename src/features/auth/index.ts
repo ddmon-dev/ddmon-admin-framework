@@ -1,6 +1,11 @@
 // NextAuth 핵심 함수
 export { auth, nextAuthHandlers } from './handler';
 
+// Auth UI
+export * from './ui/auth-layout';
+export * from './ui/sign-in-form';
+export * from './ui/require-auth';
+
 // 상수
 export * from './constants';
 
@@ -10,10 +15,9 @@ export * from './actions';
 // 타입
 export * from './types';
 
-// Server 유틸리티
-export * from './lib/get-user';
-export * from './lib/assert';
-export * from './lib/errors';
+// 유틸리티
+export * from './utils/password';
+export * from './utils/server';
 
 // Client 훅
-export * from './hooks/use-session';
+export * from './hooks/use-auth';

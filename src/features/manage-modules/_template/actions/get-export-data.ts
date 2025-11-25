@@ -2,6 +2,7 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
+import { requireAuth } from '@/features/auth';
 
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
@@ -18,6 +19,9 @@ interface GetListForExportResult {
  * - 필터링 조건은 getList와 동일
  */
 export async function getExportData(): Promise<GetListForExportResult> {
+  // 인증 확인
+  await requireAuth();
+
   try {
     const supabase = createServerClient();
 

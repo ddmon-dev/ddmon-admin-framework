@@ -1,12 +1,8 @@
-import { auth } from '@/features/auth';
-import { redirect } from 'next/navigation';
+import { requireAuth } from '@/features/auth';
 
 export default async function SuperAdminOnlyLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
-
-  if (!session?.user.superAdmin) {
-    redirect('/');
-  }
+  // 슈퍼 관리자 인증 확인
+  await requireAuth({ requireSuper: true });
 
   return <>{children}</>;
 }

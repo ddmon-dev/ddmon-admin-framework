@@ -15,6 +15,7 @@ export const AUTH_ERROR_MESSAGES = {
 export const AUTH_PATHS = {
   SIGN_IN: '/auth/sign-in',
   SIGN_OUT: '/auth/sign-out',
+  FORBIDDEN: '/',
 };
 
 export const AUTH_POLICIES = {

@@ -11,7 +11,7 @@ import type { User } from 'next-auth';
 import { navigationConfig } from '@/widgets/app-sidebar/config';
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  user: User;
+  user: User | undefined;
 };
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
