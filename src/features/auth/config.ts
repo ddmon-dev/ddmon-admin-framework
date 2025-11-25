@@ -66,13 +66,21 @@ export default {
     signIn: AUTH_PATHS.SIGN_IN,
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      // 로그인 시
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
         token.superAdmin = user.superAdmin;
       }
+
+      // updateSession() 호출 시
+      if (trigger === 'update' && session) {
+        token.name = session.name ?? token.name;
+        token.email = session.email ?? token.email;
+      }
+
       return token;
     },
     async session({ session, token }) {
