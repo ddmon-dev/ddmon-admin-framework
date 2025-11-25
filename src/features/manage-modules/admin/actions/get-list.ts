@@ -2,10 +2,10 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
+import { requireAuth } from '@/features/auth';
 
 import { BASE_CONFIG } from '../../_base/config';
 import { type GetListResult } from '../../_base/config';
-
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
@@ -20,6 +20,9 @@ export async function getList({
   search = '',
   pageSize = BASE_CONFIG.defaultListPageSize,
 }: Params): Promise<GetListResult<ItemDTO>> {
+  // 최고관리자만 접근 가능
+  await requireAuth({ requireSuper: true });
+
   try {
     const page = parseInt(rawPage) || 1;
 
