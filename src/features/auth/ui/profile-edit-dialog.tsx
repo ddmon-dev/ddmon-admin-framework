@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSession } from 'next-auth/react';
 import { z } from 'zod';
 
 import {
@@ -20,6 +19,7 @@ import { FormTextInput, FormPasswordInput, FormEmailInput } from '@/shared/ui/fo
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 
+import { useAuth } from '../hooks/use-auth';
 import { updateProfile } from '../actions/update-profile';
 import { type UpdateProfileValues } from '../types';
 
@@ -75,13 +75,13 @@ interface ProfileEditDialogProps {
 
 export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
   const [open, setOpen] = useState(false);
-  const { data: session, update: updateSession } = useSession();
+  const { user, update } = useAuth();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: session?.user?.name || '',
-      email: session?.user?.email || '',
+      name: user?.name || '',
+      email: user?.email || '',
       currentPassword: '',
       newPassword: '',
       confirmPassword: '',
@@ -107,13 +107,9 @@ export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
       }
 
       // 세션 업데이트 (name, email 변경 반영)
-      await updateSession({
-        ...session,
-        user: {
-          ...session?.user,
-          name: values.name,
-          email: values.email,
-        },
+      await update({
+        name: values.name,
+        email: values.email,
       });
 
       alert('프로필이 성공적으로 수정되었습니다.');
