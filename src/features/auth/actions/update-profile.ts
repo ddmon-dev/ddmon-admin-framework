@@ -55,6 +55,8 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Update
       .update(updateData)
       .eq('id', user.id);
 
+    console.log(updateData);
+
     if (updateError) {
       if (updateError.code === '23505') {
         // UNIQUE 제약 위반

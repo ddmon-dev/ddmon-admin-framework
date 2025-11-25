@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession as useNextAuthSession } from 'next-auth/react';
+import { useSession as useNextAuthSession, UpdateSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import type { User } from 'next-auth';
 import { useEffect } from 'react';
@@ -15,14 +15,14 @@ export type AuthState =
       status: 'authenticated';
       isLoading: false;
       isSuperAdmin: boolean;
-      update: (data?: any) => Promise<any>;
+      updateSession: UpdateSession;
     }
   | {
       user: undefined;
       status: 'loading' | 'unauthenticated';
       isLoading: boolean;
       isSuperAdmin: false;
-      update: (data?: any) => Promise<any>;
+      updateSession: UpdateSession;
     };
 
 /**
@@ -55,7 +55,7 @@ export type AuthState =
  * }
  */
 export function useAuth(): AuthState {
-  const { data: session, status, update } = useNextAuthSession();
+  const { data: session, status, update: updateSession } = useNextAuthSession();
 
   if (status === 'authenticated') {
     return {
@@ -63,7 +63,7 @@ export function useAuth(): AuthState {
       status: 'authenticated',
       isLoading: false,
       isSuperAdmin: session.user.superAdmin ?? false,
-      update,
+      updateSession,
     };
   }
 
@@ -72,7 +72,7 @@ export function useAuth(): AuthState {
     status,
     isLoading: status === 'loading',
     isSuperAdmin: false,
-    update,
+    updateSession,
   };
 }
 

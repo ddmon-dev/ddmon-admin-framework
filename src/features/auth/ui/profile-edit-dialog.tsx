@@ -75,7 +75,7 @@ interface ProfileEditDialogProps {
 
 export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
   const [open, setOpen] = useState(false);
-  const { user, update } = useAuth();
+  const { user, updateSession } = useAuth();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -107,7 +107,7 @@ export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
       }
 
       // 세션 업데이트 (name, email 변경 반영)
-      await update({
+      await updateSession({
         name: values.name,
         email: values.email,
       });
@@ -129,7 +129,10 @@ export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className='sm:max-w-[500px]'>
         <DialogHeader>
@@ -137,7 +140,10 @@ export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
           <DialogDescription>본인의 정보를 수정할 수 있습니다.</DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className='space-y-6'
+        >
           <FieldGroup>
             <FormTextInput
               control={form.control}
@@ -190,10 +196,17 @@ export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
           </div>
 
           <div className='flex justify-end gap-2 pt-4'>
-            <Button type='button' variant='outline' onClick={() => setOpen(false)}>
+            <Button
+              type='button'
+              variant='outline'
+              onClick={() => setOpen(false)}
+            >
               취소
             </Button>
-            <LoadingButton type='submit' isLoading={form.formState.isSubmitting}>
+            <LoadingButton
+              type='submit'
+              isLoading={form.formState.isSubmitting}
+            >
               수정
             </LoadingButton>
           </div>
