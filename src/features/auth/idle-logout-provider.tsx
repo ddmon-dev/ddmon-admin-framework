@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { signOut } from './actions/sign-out';
 import { toast } from 'sonner';
-import { useDialog } from '@/shared/providers';
+import { useDialog } from '@/shared/ui/app-dialog';
 
 interface IdleLogoutProviderProps {
   children: React.ReactNode;

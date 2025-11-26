@@ -585,21 +585,21 @@ export function useDialog() {
 향후 Custom Dialog 기능이 필요한 경우:
 
 ```typescript
-// 1. dialog-provider.tsx에 타입 추가
+// 1. types.ts에 타입 추가
 interface CustomDialogData {
   title: string;
   content: React.ReactNode;
   footer?: React.ReactNode;
 }
 
-// 2. DialogState에 타입 추가
+// 2. types.ts의 DialogState에 타입 추가
 type DialogState =
   | { type: 'confirm'; data: ConfirmDialogData }
   | { type: 'alert'; data: AlertDialogData }
   | { type: 'custom'; data: CustomDialogData }  // 추가
   | null;
 
-// 3. custom 함수 구현
+// 3. provider.tsx에 custom 함수 구현
 const custom = (data: CustomDialogData): Promise<any> => {
   return new Promise((resolve) => {
     resolveRef.current = resolve;
@@ -607,13 +607,16 @@ const custom = (data: CustomDialogData): Promise<any> => {
   });
 };
 
-// 4. CustomDialogComponent 구현 및 렌더링
+// 4. components.tsx에 CustomDialogComponent 구현 및 provider.tsx에서 렌더링
 ```
 
 ## 관련 파일
 
-- `src/shared/providers/dialog-provider.tsx` - Provider 구현
-- `src/shared/providers/index.ts` - Export
+- `src/shared/ui/app-dialog/types.ts` - 타입 정의
+- `src/shared/ui/app-dialog/provider.tsx` - Provider 구현 (Context, Hook)
+- `src/shared/ui/app-dialog/components.tsx` - UI 컴포넌트
+- `src/shared/ui/app-dialog/index.ts` - Export
+- `src/shared/providers/index.ts` - Re-export (하위 호환)
 - `src/shared/ui/alert-dialog.tsx` - Shadcn AlertDialog (Confirm용)
 - `src/shared/ui/dialog.tsx` - Shadcn Dialog (Alert용)
 - `src/app/layout.tsx` - Provider 등록

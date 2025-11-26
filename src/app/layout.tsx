@@ -5,7 +5,7 @@ import './globals.css';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from 'next-themes';
 import { SessionProvider } from 'next-auth/react';
-import { DialogProvider } from '@/shared/providers';
+import { DialogProvider } from '@/shared/ui/app-dialog';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
