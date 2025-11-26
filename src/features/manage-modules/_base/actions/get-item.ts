@@ -18,8 +18,6 @@ export const getItem = createServerAction<GetItemParams & { tableName: TableName
     return null;
   },
   handler: async ({ tableName, id }) => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    throw new Error('test');
     const supabase = createServerClient();
 
     const { data: rawData, error } = await supabase

@@ -4,13 +4,30 @@ import { cn } from '@/shared/utils/classnames';
 import { Button } from '@/shared/ui/button';
 import { Spinner } from '@/shared/ui/spinner';
 
+interface LoadingButtonProps extends React.ComponentProps<typeof Button> {
+  icon?: React.ReactNode;
+  isLoading?: boolean;
+}
+
 export function LoadingButton({
+  icon,
   children,
   isLoading,
   variant,
   className,
   ...props
-}: React.ComponentProps<typeof Button> & { isLoading?: boolean }) {
+}: LoadingButtonProps) {
+  const child = icon ? (
+    <>
+      {isLoading ? <Spinner /> : icon}
+      {children}
+    </>
+  ) : isLoading ? (
+    <Spinner />
+  ) : (
+    children
+  );
+
   return (
     <Button
       {...props}
@@ -18,7 +35,7 @@ export function LoadingButton({
       variant={variant}
       disabled={isLoading}
     >
-      {isLoading ? <Spinner /> : children}
+      {child}
     </Button>
   );
 }

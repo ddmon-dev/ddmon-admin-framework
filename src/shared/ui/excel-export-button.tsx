@@ -1,13 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/shared/ui/button';
-import { Spinner } from '@/shared/ui/spinner';
 import { Download } from 'lucide-react';
-import { exportToExcel, type ExcelColumn } from '@/shared/lib/excel';
-import { type ActionResult } from '@/shared/types/results';
-import { delay } from '@/shared/utils/delay';
 import { toast } from 'sonner';
+import { LoadingButton } from '@/shared/ui/loading-button';
+import { exportToExcel, type ExcelColumn } from '@/shared/lib/excel';
+import { delay } from '@/shared/utils/delay';
+import { type ActionResult } from '@/shared/types/results';
 
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
@@ -46,8 +45,6 @@ export function ExcelExportButton<TData = any>({
   const handleExport = async () => {
     setIsLoading(true);
     try {
-      await delay(500);
-
       const { success, data, error } = await fetchData();
 
       if (!success) {
@@ -56,6 +53,8 @@ export function ExcelExportButton<TData = any>({
         });
         return;
       }
+
+      await delay(200);
 
       exportToExcel({
         data,
@@ -76,15 +75,15 @@ export function ExcelExportButton<TData = any>({
   };
 
   return (
-    <Button
+    <LoadingButton
+      icon={<Download />}
       variant={variant}
       size={size}
       onClick={handleExport}
-      disabled={isLoading}
+      isLoading={isLoading}
       className={className}
     >
-      {isLoading ? <Spinner /> : <Download />}
       {children}
-    </Button>
+    </LoadingButton>
   );
 }
