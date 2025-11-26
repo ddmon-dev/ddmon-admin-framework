@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * 클라이언트 파일 업로드 헬퍼
  * Presigned URL을 사용하여 브라우저에서 직접 Storage에 업로드

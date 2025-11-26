@@ -27,13 +27,11 @@ export const getItem = createServerAction<GetItemParams, ItemDTO>({
       .eq('id', id)
       .single();
 
-    // 예상 가능한 Supabase 에러
     if (error) {
       console.error('Supabase error:', error);
       return ActionResult.error(error.message);
     }
 
-    // snake_case → camelCase 변환
     const item = transformSnakeToCamel(rawData);
     return ActionResult.success(item as ItemDTO);
   },

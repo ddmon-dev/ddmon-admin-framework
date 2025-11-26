@@ -20,13 +20,11 @@ interface DataListProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
 
-  // 페이지네이션
   pageCount: number;
   currentPage?: number;
   maxVisible?: number;
   onPageChange?: (page: number) => void;
 
-  // 정렬
   sortingKey?: string;
   onSortingChange?: (key: string) => void;
 

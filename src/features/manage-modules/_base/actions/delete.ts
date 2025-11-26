@@ -36,7 +36,6 @@ export const softDelete = createServerAction<Params, any>({
       .select()
       .single();
 
-    // 예상 가능한 Supabase 에러
     if (error) {
       console.error('Supabase error:', error);
       return ActionResult.error(error.message);
@@ -70,7 +69,6 @@ export const hardDelete = createServerAction<Params, any>({
     // DB에서 완전 삭제
     const { data, error } = await supabase.from(tableName).delete().eq('id', id).select().single();
 
-    // 예상 가능한 Supabase 에러
     if (error) {
       console.error('Supabase error:', error);
       return ActionResult.error(error.message);

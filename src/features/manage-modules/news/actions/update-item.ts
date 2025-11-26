@@ -3,10 +3,10 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
-import { extractAllFileUrls, deleteFilesFromStorage } from '@/shared/lib/file-system';
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
 import { VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 import { UpdateItemParams } from '../../_base/config';
+import { getOldFiles, cleanupDeletedFiles } from '../../_base/utils';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
@@ -22,21 +22,17 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
   handler: async ({ id, values, pathname }) => {
     const supabase = createServerClient();
 
-    // 파일이 있을 때만 기존 파일 조회
-    let oldFiles: any;
-    if ('files' in values && values.files) {
-      const { data: oldData } = await supabase
-        .from(CONFIG.tableName)
-        .select('files')
-        .eq('id', id)
-        .single();
-      oldFiles = oldData?.files;
-    }
+    // 기존 파일 조회
+    const oldFiles = await getOldFiles({
+      supabase,
+      tableName: CONFIG.tableName,
+      id,
+      values,
+    });
 
-    // DB 저장용 값 준비
     const snakedValues = transformCamelToSnake(values);
 
-    // 테이블 업데이트
+    // DB 업데이트
     const { data, error } = await supabase
       .from(CONFIG.tableName)
       .update(snakedValues as any)
@@ -49,23 +45,17 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
       return ActionResult.error(error.message);
     }
 
-    // 삭제된 파일 Storage에서 제거
-    if (oldFiles && values.files) {
-      const oldUrls = extractAllFileUrls(oldFiles);
-      const newUrls = extractAllFileUrls(values.files);
-      const deletedUrls = oldUrls.filter(url => !newUrls.includes(url));
-
-      if (deletedUrls.length > 0) {
-        await deleteFilesFromStorage(deletedUrls);
-      }
-    }
+    // 스토리지 정리
+    await cleanupDeletedFiles({
+      oldFiles,
+      newFiles: values.files,
+    });
 
     if (pathname) {
       revalidatePath(pathname);
     }
 
     const updatedItem = transformSnakeToCamel(data);
-
     return ActionResult.success(updatedItem as ItemDTO);
   },
 });

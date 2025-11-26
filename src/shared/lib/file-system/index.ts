@@ -12,10 +12,10 @@ export type {
   WithFiles,
 } from './types';
 
-// Upload (Server Actions)
+// Upload (Presigned URL 방식)
 export { processFileUploads } from './upload';
 
-// Storage (Server Actions)
+// Storage (Server Actions 전용)
 export { deleteFilesFromStorage, deleteFolderFromStorage } from '../supabase/storage';
 
 // Utils

@@ -18,7 +18,7 @@ import {
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField } from '@/shared/lib/file-system';
-import { handleFileUploads } from '../_base/utils';
+import { uploadFormFiles } from '../_base/utils';
 
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
@@ -73,7 +73,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       }
 
       // 파일 업로드
-      await handleFileUploads({
+      await uploadFormFiles({
         formFiles: formFiles as FormFilesField,
         id: data.id,
         tableName: CONFIG.tableName,
