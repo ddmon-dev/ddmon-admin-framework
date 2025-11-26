@@ -1,23 +1,14 @@
 'use client';
 
-import { ManageSheet, useManageSheet } from '../_base/ui';
-import { useManageItemData } from '../_base/hooks';
+import { ManageSheet } from '../_base/ui';
 import { ItemForm } from './item-form';
 import { getItem } from './actions/get-item';
 
 export function ItemSheet() {
-  const manageSheet = useManageSheet();
-  const { id, mode } = manageSheet.data ?? {};
-  const { prevValues } = useManageItemData(getItem);
-
   return (
-    <ManageSheet>
-      {mode === 'view' ? null : (
-        <ItemForm
-          id={id}
-          prevValues={prevValues}
-        />
-      )}
-    </ManageSheet>
+    <ManageSheet
+      fetchFn={getItem}
+      formComponent={ItemForm}
+    />
   );
 }

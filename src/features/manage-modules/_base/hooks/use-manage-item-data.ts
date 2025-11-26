@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { useManageSheet } from '../ui/manage-sheet';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 
-type GetItemAction<T> = (params: { id: string }) => Promise<ActionResult<T>>;
+export type GetItemAction<T> = (params: { id: string }) => Promise<ActionResult<T>>;
 
 /**
  * 공통 날짜 필드 목록 (자동으로 Date 객체로 변환됨)
@@ -62,9 +62,6 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
 
         if (!success) {
           setError(fetchError || CRUD_ERRORS.READ_FAILED());
-          toast.error(CRUD_ERRORS.READ_FAILED(), {
-            description: fetchError,
-          });
           return;
         }
 
@@ -89,9 +86,6 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
       } catch (error) {
         setError(error instanceof Error ? error.message : GENERAL_ERRORS.UNEXPECTED);
         console.error(error);
-        toast.error(GENERAL_ERRORS.UNEXPECTED, {
-          description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
-        });
       } finally {
         setIsLoading(false);
       }
