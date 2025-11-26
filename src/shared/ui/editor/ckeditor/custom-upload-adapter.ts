@@ -5,6 +5,7 @@ import { createPresignedUploadUrl } from '@/shared/lib/supabase/storage';
 import { generateUniqueFileName } from '@/shared/lib/file-system/utils';
 import { mbToBytes } from '@/shared/utils/format';
 import { DEFAULT_IMAGE_CONFIG } from './config';
+import { GENERAL_ERRORS, FILE_ERRORS } from '@/shared/constants/error-messages';
 
 /**
  * CKEditor 커스텀 업로드 어댑터 설정
@@ -52,7 +53,7 @@ class CustomUploadAdapter {
     const result = await createPresignedUploadUrl(filePath);
 
     if (!result.success) {
-      throw new Error(result.error || 'Presigned URL 발급에 실패했습니다.');
+      throw new Error(result.error || FILE_ERRORS.PRESIGNED_URL_FAILED);
     }
 
     // 4. Storage에 업로드
@@ -113,12 +114,12 @@ class CustomUploadAdapter {
 
       // 에러 처리
       xhr.addEventListener('error', () => {
-        reject(new Error('네트워크 오류가 발생했습니다.'));
+        reject(new Error(GENERAL_ERRORS.NETWORK));
       });
 
       // 타임아웃 처리
       xhr.addEventListener('timeout', () => {
-        reject(new Error('업로드 시간이 초과되었습니다.'));
+        reject(new Error(FILE_ERRORS.UPLOAD_TIMEOUT));
       });
 
       // 업로드 시작

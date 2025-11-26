@@ -2,6 +2,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { extractAllFileUrls, deleteFilesFromStorage } from './';
+import { FILE_ERRORS } from '@/shared/constants/error-messages';
 
 /**
  * DB에서 기존 파일 데이터를 조회
@@ -85,10 +86,10 @@ export async function cleanupDeletedFiles(params: {
 
     return { success: true };
   } catch (error) {
-    console.error('Failed to cleanup deleted files:', error);
+    console.error('[cleanupDeletedFiles] Unexpected error:', error);
     return {
       success: false,
-      error: '파일 삭제 중 오류가 발생했습니다.',
+      error: FILE_ERRORS.DELETE_FAILED,
     };
   }
 }

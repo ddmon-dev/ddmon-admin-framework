@@ -9,6 +9,9 @@ import { type ActionResult } from '@/shared/types/action-results';
 import { delay } from '@/shared/utils/delay';
 import { toast } from 'sonner';
 
+import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
+import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+
 interface ExcelExportButtonProps<TData = any> {
   /** 서버에서 데이터를 가져오는 함수 (필수) */
   fetchData: () => Promise<ActionResult<TData[]>>;
@@ -48,7 +51,7 @@ export function ExcelExportButton<TData = any>({
       const { success, data, error } = await fetchData();
 
       if (!success) {
-        toast.error('Error: 데이터 조회 실패', {
+        toast.error(CRUD_ERRORS.READ_FAILED(), {
           description: error,
         });
         return;
@@ -61,11 +64,11 @@ export function ExcelExportButton<TData = any>({
         sheetName,
       });
 
-      toast.success('데이터가 성공적으로 다운로드되었습니다.');
+      toast.success(SUCCESS_MESSAGES.DOWNLOAD_SUCCESS());
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);
-      toast.error('Error: 예상치 못한 오류가 발생했습니다.', {
-        description: '잠시 후 다시 시도해주세요.',
+      toast.error(GENERAL_ERRORS.UNEXPECTED, {
+        description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
       });
     } finally {
       setIsLoading(false);

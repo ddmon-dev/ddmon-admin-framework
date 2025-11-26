@@ -15,7 +15,7 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/s
 import { Skeleton } from '@/shared/ui/skeleton';
 
 import { signOut, useAuth, type User } from '@/features/auth';
-import { ProfileEditDialog } from '@/features/auth/ui/profile-edit-dialog';
+import { UpdateProfileDialog } from '@/features/auth/ui/update-profile-dialog';
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -48,11 +48,11 @@ export function NavUser() {
               <UserInfo user={user} />
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <ProfileEditDialog>
+            <UpdateProfileDialog>
               <DropdownMenuItem onSelect={e => e.preventDefault()}>
                 <Pencil />내 정보수정
               </DropdownMenuItem>
-            </ProfileEditDialog>
+            </UpdateProfileDialog>
             <DropdownMenuItem onClick={handleSignOut}>
               <LogOut />
               로그아웃

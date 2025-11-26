@@ -1,4 +1,7 @@
 import { createBrowserClient } from './client';
+import { toast } from 'sonner';
+import { FILE_ERRORS } from '@/shared/constants/error-messages';
+import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 
 export const BUCKET_NAME = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_NAME ?? '';
 
@@ -42,7 +45,8 @@ export async function downloadFileFromStorage(
 
     if (error || !data) {
       console.error('다운로드 실패:', error);
-      return { success: false, error: error?.message || '다운로드 실패' };
+      toast.error(FILE_ERRORS.DOWNLOAD_FAILED);
+      return { success: false, error: FILE_ERRORS.DOWNLOAD_FAILED };
     }
 
     // Blob URL 생성 및 다운로드
@@ -55,12 +59,14 @@ export async function downloadFileFromStorage(
     document.body.removeChild(a);
     URL.revokeObjectURL(blobUrl);
 
+    toast.success(SUCCESS_MESSAGES.DOWNLOAD_SUCCESS('파일'));
     return { success: true };
   } catch (error) {
     console.error('다운로드 에러:', error);
+    toast.error(FILE_ERRORS.DOWNLOAD_FAILED);
     return {
       success: false,
-      error: error instanceof Error ? error.message : '다운로드 실패',
+      error: FILE_ERRORS.DOWNLOAD_FAILED,
     };
   }
 }

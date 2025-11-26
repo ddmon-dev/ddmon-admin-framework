@@ -6,6 +6,7 @@ import { cn } from '@/shared/utils/classnames';
 import { mbToBytes, formatFileSize, truncateFileName } from '@/shared/utils/format';
 import { downloadFileFromStorage } from '@/shared/lib/supabase/storage-helpers';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from './input-group';
+import { FILE_ERRORS } from '@/shared/constants/error-messages';
 
 /**
  * 기존 파일 (서버에 저장된 파일)
@@ -119,13 +120,13 @@ export function MultiFileUpload({
       });
 
       if (!isValid) {
-        onError?.(`허용되지 않는 파일 형식입니다. (${accept})`);
+        onError?.(FILE_ERRORS.INVALID_FILE(accept));
         return false;
       }
     }
 
     if (maxSize && file.size > maxSize) {
-      onError?.(`파일 크기는 ${formatFileSize(maxSize)} 이하여야 합니다.`);
+      onError?.(FILE_ERRORS.SIZE_EXCEEDED(formatFileSize(maxSize)));
       return false;
     }
 
@@ -139,7 +140,7 @@ export function MultiFileUpload({
 
     for (let i = 0; i < files.length; i++) {
       if (max && validFiles.length + addedCount >= max) {
-        onError?.(`최대 ${max}개까지 업로드 가능합니다.`);
+        onError?.(FILE_ERRORS.MAX_FILES_EXCEEDED(max));
         hasError = true;
         break;
       }

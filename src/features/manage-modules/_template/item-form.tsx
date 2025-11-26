@@ -35,6 +35,9 @@ import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
+import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
+import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+
 const formSchema = z.object({
   name: z.string().min(1, '이름을 입력해주세요.'),
   email: schemaPresets.email({ optional: true }),
@@ -113,7 +116,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         : await createItem({ values: submitValues as Partial<ItemDTO>, pathname });
 
       if (!success || !data) {
-        toast.error('Error: 데이터 저장 실패', {
+        toast.error(id ? CRUD_ERRORS.UPDATE_FAILED() : CRUD_ERRORS.CREATE_FAILED(), {
           description: error,
         });
         return;
@@ -128,12 +131,12 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         updateAction: updateItem,
       });
 
-      toast.success('데이터가 성공적으로 저장되었습니다.');
+      toast.success(id ? SUCCESS_MESSAGES.UPDATE_SUCCESS() : SUCCESS_MESSAGES.CREATE_SUCCESS());
       sheet.closeManageSheet();
     } catch (error) {
       console.error(error);
-      toast.error('Error: 예상치 못한 오류가 발생했습니다.', {
-        description: '잠시 후 다시 시도해주세요.',
+      toast.error(GENERAL_ERRORS.UNEXPECTED, {
+        description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
       });
     }
   }

@@ -3,6 +3,7 @@
 import { type ActionResult } from '@/shared/types/action-results';
 import { createServerClient } from './server';
 import { BUCKET_NAME, extractFilePathFromUrl } from './storage-helpers';
+import { FILE_ERRORS } from '@/shared/constants/error-messages';
 
 type ResultData = {
   uploadUrl: string;
@@ -135,7 +136,7 @@ export async function deleteFilesFromStorage(urls: string[]): Promise<FileDelete
     console.error('파일 일괄 삭제 실패:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : '파일 삭제에 실패했습니다.',
+      error: error instanceof Error ? error.message : FILE_ERRORS.FILE_DELETE_FAILED,
     };
   }
 }
@@ -182,7 +183,7 @@ export async function deleteFolderFromStorage(folderPath: string): Promise<FileD
     console.error('폴더 삭제 실패:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : '폴더 삭제에 실패했습니다.',
+      error: error instanceof Error ? error.message : FILE_ERRORS.FOLDER_DELETE_FAILED,
     };
   }
 }

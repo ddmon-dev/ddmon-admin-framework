@@ -39,13 +39,7 @@ export function List({ data, totalCount }: ListProps) {
       <div className='flex justify-end'>
         <ExcelExportButton
           fetchData={async () => {
-            // Server Action 호출
-            const result = await getExportData();
-            if (!result.success) {
-              throw new Error(result.error || '데이터 조회 실패');
-            }
-
-            return result.data || [];
+            return await getExportData();
           }}
           columns={excelColumns}
           fileName={`데이터내보내기_${new Date().toLocaleDateString()}.xlsx`}
