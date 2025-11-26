@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { transformFilesToUploadValues } from '@/shared/lib/file-system';
 import type { ActionResult } from '@/shared/types/action-results';
 import type { DbFilesJSONB } from '@/shared/lib/file-system';
+import { toast } from 'sonner';
 import { useManageSheet } from '../ui/manage-sheet';
 
 type GetItemAction<T> = (params: { id: string }) => Promise<ActionResult<T>>;
@@ -60,7 +61,9 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
 
         if (!success) {
           setError(fetchError || '데이터 조회 실패');
-          console.error(`데이터 조회 실패: ${fetchError}`);
+          toast.error('Error: 데이터 조회 실패', {
+            description: fetchError,
+          });
           return;
         }
 
@@ -82,10 +85,12 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
         } as T;
 
         setPrevValues(transformedData);
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : '예상치 못한 오류';
-        setError(errorMessage);
-        console.error(errorMessage, err);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : '예상치 못한 오류');
+        console.error(error);
+        toast.error('Error: 예상치 못한 오류가 발생했습니다.', {
+          description: '잠시 후 다시 시도해주세요.',
+        });
       } finally {
         setIsLoading(false);
       }

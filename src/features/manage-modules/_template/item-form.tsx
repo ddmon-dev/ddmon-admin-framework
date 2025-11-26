@@ -5,10 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import { toast } from 'sonner';
-import { useManageSheet } from '../_base/ui';
-
 import { FieldGroup } from '@/shared/ui/field';
 import {
   FormTextInput,
@@ -33,6 +30,7 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
 
+import { useManageSheet } from '../_base/ui';
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
@@ -115,7 +113,10 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         : await createItem({ values: submitValues as Partial<ItemDTO>, pathname });
 
       if (!success || !data) {
-        throw new Error(error || '저장에 실패했습니다.');
+        toast.error('Error: 데이터 저장 실패', {
+          description: error,
+        });
+        return;
       }
 
       // 파일 업로드
@@ -127,11 +128,13 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         updateAction: updateItem,
       });
 
-      toast.success('저장되었습니다.');
+      toast.success('데이터가 성공적으로 저장되었습니다.');
       sheet.closeManageSheet();
     } catch (error) {
       console.error(error);
-      toast.error(error instanceof Error ? error.message : '저장에 실패했습니다.');
+      toast.error('Error: 예상치 못한 오류가 발생했습니다.', {
+        description: '잠시 후 다시 시도해주세요.',
+      });
     }
   }
 
