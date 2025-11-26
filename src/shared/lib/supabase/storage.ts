@@ -2,8 +2,10 @@
 
 import { type ActionResult } from '@/shared/types/action-results';
 import { createServerClient } from './server';
-import { BUCKET_NAME, extractFilePathFromUrl } from './storage-helpers';
+import { extractFilePathFromUrl } from '@/shared/lib/file-system/utils';
 import { FILE_ERRORS } from '@/shared/constants/error-messages';
+
+export const BUCKET_NAME = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_NAME ?? '';
 
 type ResultData = {
   uploadUrl: string;
