@@ -4,7 +4,8 @@ import { revalidatePath } from 'next/cache';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { deleteFolderFromStorage } from '@/shared/lib/file-system';
-import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/shared/utils/server-actions';
+import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { DeleteItemParams } from '../config';
 
@@ -16,7 +17,7 @@ export const softDelete = createServerAction<DeleteItemParams, any>({
   auth: true,
   validate: params => {
     if (!params.id) {
-      return ActionResult.error(VALIDATION_ERRORS.NO_ID);
+      return Result.error(VALIDATION_ERRORS.NO_ID);
     }
     return null;
   },
@@ -32,7 +33,7 @@ export const softDelete = createServerAction<DeleteItemParams, any>({
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(CRUD_ERRORS.DELETE_FAILED());
+      return Result.error(CRUD_ERRORS.DELETE_FAILED());
     }
 
     // 성공 처리
@@ -41,7 +42,7 @@ export const softDelete = createServerAction<DeleteItemParams, any>({
     }
 
     const deletedItem = transformSnakeToCamel(data);
-    return ActionResult.success(deletedItem);
+    return Result.success(deletedItem);
   },
 });
 
@@ -53,7 +54,7 @@ export const hardDelete = createServerAction<DeleteItemParams, any>({
   auth: { requireSuper: true },
   validate: params => {
     if (!params.id) {
-      return ActionResult.error(VALIDATION_ERRORS.NO_ID);
+      return Result.error(VALIDATION_ERRORS.NO_ID);
     }
     return null;
   },
@@ -65,7 +66,7 @@ export const hardDelete = createServerAction<DeleteItemParams, any>({
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(CRUD_ERRORS.DELETE_FAILED());
+      return Result.error(CRUD_ERRORS.DELETE_FAILED());
     }
 
     // Storage 폴더 전체 삭제
@@ -78,6 +79,6 @@ export const hardDelete = createServerAction<DeleteItemParams, any>({
     }
 
     const deletedItem = transformSnakeToCamel(data);
-    return ActionResult.success(deletedItem);
+    return Result.success(deletedItem);
   },
 });

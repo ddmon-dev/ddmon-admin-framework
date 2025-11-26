@@ -1,5 +1,5 @@
 import { ExcelExportButton } from '@/shared/ui/excel-export-button';
-import { type ActionResult } from '@/shared/types/action-results';
+import { type ActionResult } from '@/shared/types/results';
 import { type ExcelColumn } from '@/shared/lib/excel';
 export { type ExcelColumn } from '@/shared/lib/excel/types';
 

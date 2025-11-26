@@ -1,6 +1,4 @@
-'use server';
-
-import { type ActionResult } from '@/shared/types/action-results';
+import { type ActionResult } from '@/shared/types/results';
 import { createServerClient } from './server';
 import { extractFilePathFromUrl } from '@/shared/lib/file-system/utils';
 import { FILE_ERRORS } from '@/shared/constants/error-messages';

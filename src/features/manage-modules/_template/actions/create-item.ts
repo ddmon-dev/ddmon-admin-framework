@@ -1,7 +1,7 @@
 import { createItem as baseCreateItem } from '../../_base/actions/create-item';
 import { CONFIG } from '../config';
 import { type CreateItemParams } from '../../_base/config';
-import { type ActionResult } from '@/shared/types/action-results';
+import { type ActionResult } from '@/shared/types/results';
 import { type ItemDTO } from '../config';
 
 export async function createItem(

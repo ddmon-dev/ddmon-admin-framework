@@ -1,7 +1,8 @@
 'use server';
 
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/shared/utils/server-actions';
+import { Result } from '@/shared/utils/results';
 import { CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 
 import { requireAuth } from '../utils/server';
@@ -14,7 +15,7 @@ export const updateProfile = createServerAction<UpdateProfileValues, void>({
   validate: values => {
     // 새 비밀번호가 있으면 현재 비밀번호도 필수
     if (values.newPassword && !values.currentPassword) {
-      return ActionResult.error(VALIDATION_ERRORS.REQUIRED_FIELD('현재 비밀번호'));
+      return Result.error(VALIDATION_ERRORS.REQUIRED_FIELD('현재 비밀번호'));
     }
     return null;
   },
@@ -32,14 +33,14 @@ export const updateProfile = createServerAction<UpdateProfileValues, void>({
         .single();
 
       if (fetchError || !adminData) {
-        return ActionResult.error(CRUD_ERRORS.NOT_FOUND('사용자 정보'));
+        return Result.error(CRUD_ERRORS.NOT_FOUND('사용자 정보'));
       }
 
       // 현재 비밀번호 검증
       const isValid = await verifyPassword(values.currentPassword!, adminData.password);
 
       if (!isValid) {
-        return ActionResult.error('현재 비밀번호가 일치하지 않습니다.');
+        return Result.error('현재 비밀번호가 일치하지 않습니다.');
       }
     }
 
@@ -64,11 +65,11 @@ export const updateProfile = createServerAction<UpdateProfileValues, void>({
       console.error('Supabase error:', updateError);
       if (updateError.code === '23505') {
         // UNIQUE 제약 위반
-        return ActionResult.error(CRUD_ERRORS.DUPLICATE('이메일'));
+        return Result.error(CRUD_ERRORS.DUPLICATE('이메일'));
       }
-      return ActionResult.error(CRUD_ERRORS.UPDATE_FAILED('프로필'));
+      return Result.error(CRUD_ERRORS.UPDATE_FAILED('프로필'));
     }
 
-    return ActionResult.success(undefined);
+    return Result.ok();
   },
 });

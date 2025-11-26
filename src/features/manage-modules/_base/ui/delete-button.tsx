@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Button } from '@/shared/ui/button';
 import { Spinner } from '@/shared/ui/spinner';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
-import type { ActionResult } from '@/shared/types/action-results';
+import type { ActionResult } from '@/shared/types/results';
 import { softDelete, hardDelete } from '../actions';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 

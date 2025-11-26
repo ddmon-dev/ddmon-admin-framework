@@ -5,7 +5,7 @@ import { Button } from '@/shared/ui/button';
 import { Spinner } from '@/shared/ui/spinner';
 import { Download } from 'lucide-react';
 import { exportToExcel, type ExcelColumn } from '@/shared/lib/excel';
-import { type ActionResult } from '@/shared/types/action-results';
+import { type ActionResult } from '@/shared/types/results';
 import { delay } from '@/shared/utils/delay';
 import { toast } from 'sonner';
 
