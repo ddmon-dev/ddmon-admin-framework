@@ -39,8 +39,8 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
     additionalDateFields?: string[];
   }
 ) {
-  const { manageSheetData } = useManageSheet();
-  const { id } = manageSheetData ?? {};
+  const manageSheet = useManageSheet();
+  const { id } = manageSheet.data ?? {};
 
   const [prevValues, setPrevValues] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);

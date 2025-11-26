@@ -132,7 +132,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       });
 
       toast.success(id ? SUCCESS_MESSAGES.UPDATE_SUCCESS() : SUCCESS_MESSAGES.CREATE_SUCCESS());
-      sheet.closeManageSheet();
+      sheet.close();
     } catch (error) {
       console.error(error);
       toast.error(GENERAL_ERRORS.UNEXPECTED, {

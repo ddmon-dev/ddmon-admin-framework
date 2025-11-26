@@ -20,7 +20,7 @@ export function ManageList<TData extends { id?: string }>({
   onRowClick,
 }: ManageListProps<TData>) {
   const queryParams = useQueryParams();
-  const { openManageSheet } = useManageSheet();
+  const manageSheet = useManageSheet();
   const pageSize = Number(queryParams.get('pageSize')) || BASE_CONFIG.defaultListPageSize;
 
   const { page, setPage, pageCount } = useDataList({
@@ -32,7 +32,7 @@ export function ManageList<TData extends { id?: string }>({
     if (onRowClick) {
       onRowClick(row);
     } else {
-      openManageSheet({ id: row.id, mode: 'modify' });
+      manageSheet.open({ id: row.id, mode: 'modify' });
     }
   };
 

@@ -9,13 +9,13 @@ interface ModifyButtonProps {
 }
 
 export function ModifyButton({ id, children }: ModifyButtonProps) {
-  const { openManageSheet } = useManageSheet();
+  const manageSheet = useManageSheet();
 
   return (
     <Button
       size='sm'
       variant='secondary'
-      onClick={() => openManageSheet({ id: id, mode: 'modify' })}
+      onClick={() => manageSheet.open({ id: id, mode: 'modify' })}
     >
       {children ?? '수정'}
     </Button>

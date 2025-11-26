@@ -45,17 +45,22 @@ export function ManageSheetProvider({ children }: { children: React.ReactNode })
 }
 
 export function useManageSheet() {
-  return use(ManageSheetContext);
+  const context = use(ManageSheetContext);
+  return {
+    data: context.manageSheetData,
+    open: context.openManageSheet,
+    close: context.closeManageSheet,
+  };
 }
 
 export function ManageSheet({ children }: { children: React.ReactNode }) {
-  const { manageSheetData, closeManageSheet } = useManageSheet();
-  const isOpen = manageSheetData !== null;
+  const manageSheet = useManageSheet();
+  const isOpen = manageSheet.data !== null;
 
   return (
     <Sheet
       open={isOpen}
-      onOpenChange={open => !open && closeManageSheet()}
+      onOpenChange={open => !open && manageSheet.close()}
     >
       <SheetContent className='max-w-4xl!'>
         <SheetHeader>
