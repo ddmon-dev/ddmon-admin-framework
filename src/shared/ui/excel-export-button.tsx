@@ -2,12 +2,16 @@
 
 import { useState } from 'react';
 import { Button } from '@/shared/ui/button';
-import { Download, Loader2 } from 'lucide-react';
+import { Spinner } from '@/shared/ui/spinner';
+import { Download } from 'lucide-react';
 import { exportToExcel, type ExcelColumn } from '@/shared/lib/excel';
+import { type ActionResult } from '@/shared/types/action-results';
+import { delay } from '@/shared/utils/delay';
+import { toast } from 'sonner';
 
 interface ExcelExportButtonProps<TData = any> {
   /** 서버에서 데이터를 가져오는 함수 (필수) */
-  fetchData: () => Promise<TData[]>;
+  fetchData: () => Promise<ActionResult<TData[]>>;
   /** 엑셀 컬럼 설정 */
   columns: ExcelColumn<TData>[];
   /** 파일명 (기본: 'export.xlsx') */
@@ -27,7 +31,7 @@ interface ExcelExportButtonProps<TData = any> {
 export function ExcelExportButton<TData = any>({
   fetchData,
   columns,
-  fileName = 'export.xlsx',
+  fileName,
   sheetName = 'Sheet1',
   children = '엑셀 다운로드',
   variant = 'outline',
@@ -39,19 +43,30 @@ export function ExcelExportButton<TData = any>({
   const handleExport = async () => {
     setIsLoading(true);
     try {
-      // 서버에서 데이터 페칭
-      const data = await fetchData();
+      await delay(500);
 
-      // 엑셀 다운로드
+      const { success, data, error } = await fetchData();
+
+      if (!success) {
+        toast.error('Error: 데이터 조회 실패', {
+          description: error,
+        });
+        return;
+      }
+
       exportToExcel({
         data,
         columns,
         fileName,
         sheetName,
       });
+
+      toast.success('데이터가 성공적으로 다운로드되었습니다.');
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);
-      alert('엑셀 다운로드에 실패했습니다.');
+      toast.error('Error: 예상치 못한 오류가 발생했습니다.', {
+        description: '잠시 후 다시 시도해주세요.',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -65,12 +80,8 @@ export function ExcelExportButton<TData = any>({
       disabled={isLoading}
       className={className}
     >
-      {isLoading ? (
-        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-      ) : (
-        <Download className='mr-2 h-4 w-4' />
-      )}
-      {isLoading ? '다운로드 중...' : children}
+      {isLoading ? <Spinner /> : <Download />}
+      {children}
     </Button>
   );
 }
