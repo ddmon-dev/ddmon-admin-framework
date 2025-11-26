@@ -3,7 +3,8 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
-import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/shared/utils/server-actions';
+import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { UpdateItemParams } from '../config';
 import { getOldFiles, cleanupDeletedFiles } from '@/shared/lib/file-system';
@@ -15,7 +16,7 @@ export const updateItem = createServerAction<UpdateItemParams<any> & { tableName
     auth: true,
     validate: params => {
       if (!params.id) {
-        return ActionResult.error(VALIDATION_ERRORS.NO_ID);
+        return Result.error(VALIDATION_ERRORS.NO_ID);
       }
       return null;
     },
@@ -40,7 +41,7 @@ export const updateItem = createServerAction<UpdateItemParams<any> & { tableName
 
       if (error) {
         console.error('Supabase error:', error);
-        return ActionResult.error(CRUD_ERRORS.UPDATE_FAILED());
+        return Result.error(CRUD_ERRORS.UPDATE_FAILED());
       }
 
       await cleanupDeletedFiles({
@@ -53,7 +54,7 @@ export const updateItem = createServerAction<UpdateItemParams<any> & { tableName
       }
 
       const updatedItem = transformSnakeToCamel(data);
-      return ActionResult.success(updatedItem);
+      return Result.success(updatedItem);
     },
   }
 );

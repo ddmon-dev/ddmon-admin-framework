@@ -5,7 +5,8 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { schemaPresets } from '@/shared/schemas';
 import { hashPassword, AUTH_POLICIES } from '@/features/auth';
-import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/shared/utils/server-actions';
+import { Result } from '@/shared/utils/results';
 import { CreateItemParams } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
@@ -22,7 +23,7 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
 
     // 비밀번호 검증 및 해시
     if (!values.password) {
-      return ActionResult.error(VALIDATION_ERRORS.REQUIRED_FIELD('비밀번호'));
+      return Result.error(VALIDATION_ERRORS.REQUIRED_FIELD('비밀번호'));
     }
 
     const validatePassword = schemaPresets
@@ -32,7 +33,7 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
       .safeParse(values.password);
 
     if (!validatePassword.success) {
-      return ActionResult.error(validatePassword.error.message);
+      return Result.error(validatePassword.error.message);
     }
 
     values.password = await hashPassword(validatePassword.data);
@@ -49,7 +50,7 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(CRUD_ERRORS.CREATE_FAILED('관리자'));
+      return Result.error(CRUD_ERRORS.CREATE_FAILED('관리자'));
     }
 
     if (pathname) {
@@ -58,6 +59,6 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
 
     const createdItem = transformSnakeToCamel(data);
 
-    return ActionResult.success(createdItem as ItemDTO);
+    return Result.success(createdItem as ItemDTO);
   },
 });

@@ -2,7 +2,8 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
-import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/shared/utils/server-actions';
+import { Result } from '@/shared/utils/results';
 import { BASE_CONFIG, GetListParams, ListProps } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
@@ -39,11 +40,11 @@ export const getList = createServerAction<GetListParams, ListProps<ItemDTO>>({
     // 에러 처리
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(CRUD_ERRORS.READ_FAILED('관리자'));
+      return Result.error(CRUD_ERRORS.READ_FAILED('관리자'));
     }
 
     const data = rawData.map(row => transformSnakeToCamel(row)) as ItemDTO[];
 
-    return ActionResult.success({ data, totalCount: count || 0 });
+    return Result.success({ data, totalCount: count || 0 });
   },
 });

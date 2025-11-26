@@ -3,7 +3,8 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
-import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/shared/utils/server-actions';
+import { Result } from '@/shared/utils/results';
 import { CreateItemParams } from '../config';
 import { TableName } from '@/shared/lib/supabase/db-helpers';
 import { CRUD_ERRORS } from '@/shared/constants/error-messages';
@@ -25,7 +26,7 @@ export const createItem = createServerAction<CreateItemParams<any> & { tableName
 
       if (error) {
         console.error('Supabase error:', error);
-        return ActionResult.error(CRUD_ERRORS.CREATE_FAILED());
+        return Result.error(CRUD_ERRORS.CREATE_FAILED());
       }
 
       if (pathname) {
@@ -33,7 +34,7 @@ export const createItem = createServerAction<CreateItemParams<any> & { tableName
       }
 
       const createdItem = transformSnakeToCamel(data);
-      return ActionResult.success(createdItem);
+      return Result.success(createdItem);
     },
   }
 );

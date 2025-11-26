@@ -6,6 +6,8 @@ import { FILE_ERRORS } from '@/shared/constants/error-messages';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { BUCKET_NAME } from '@/shared/lib/supabase/storage';
 import { extractFilePathFromUrl } from './utils';
+import { Result } from '@/shared/utils/results';
+import { type ActionResult } from '@/shared/types/results';
 
 /**
  * Supabase Storage에서 파일을 다운로드합니다.
@@ -16,7 +18,7 @@ import { extractFilePathFromUrl } from './utils';
 export async function downloadFileFromStorage(
   url: string,
   fileName: string
-): Promise<{ success: boolean; error?: string }> {
+): Promise<ActionResult<void>> {
   try {
     const supabase = createBrowserClient();
     const filePath = extractFilePathFromUrl(url);
@@ -26,7 +28,7 @@ export async function downloadFileFromStorage(
     if (error || !data) {
       console.error('다운로드 실패:', error);
       toast.error(FILE_ERRORS.DOWNLOAD_FAILED);
-      return { success: false, error: FILE_ERRORS.DOWNLOAD_FAILED };
+      return Result.error(FILE_ERRORS.DOWNLOAD_FAILED);
     }
 
     // Blob URL 생성 및 다운로드
@@ -40,13 +42,10 @@ export async function downloadFileFromStorage(
     URL.revokeObjectURL(blobUrl);
 
     toast.success(SUCCESS_MESSAGES.DOWNLOAD_SUCCESS('파일'));
-    return { success: true };
+    return Result.ok();
   } catch (error) {
     console.error('다운로드 에러:', error);
     toast.error(FILE_ERRORS.DOWNLOAD_FAILED);
-    return {
-      success: false,
-      error: FILE_ERRORS.DOWNLOAD_FAILED,
-    };
+    return Result.error(FILE_ERRORS.DOWNLOAD_FAILED);
   }
 }

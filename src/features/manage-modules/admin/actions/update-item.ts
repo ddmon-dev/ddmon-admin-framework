@@ -5,7 +5,8 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { schemaPresets } from '@/shared/schemas';
 import { hashPassword, AUTH_POLICIES } from '@/features/auth';
-import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/shared/utils/server-actions';
+import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { UpdateItemParams } from '../../_base/config';
 import { CONFIG } from '../config';
@@ -16,7 +17,7 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
   auth: { requireSuper: true },
   validate: params => {
     if (!params.id) {
-      return ActionResult.error(VALIDATION_ERRORS.NO_ID);
+      return Result.error(VALIDATION_ERRORS.NO_ID);
     }
     return null;
   },
@@ -37,7 +38,7 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
         .safeParse(values.password);
 
       if (!validatePassword.success) {
-        return ActionResult.error(validatePassword.error.message);
+        return Result.error(validatePassword.error.message);
       }
 
       values.password = await hashPassword(validatePassword.data);
@@ -47,7 +48,7 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
 
     // 최고관리자 설정은 할 수 없음
     if ('superAdmin' in values) {
-      return ActionResult.error('최고관리자 설정은 할 수 없습니다.');
+      return Result.error('최고관리자 설정은 할 수 없습니다.');
     }
 
     const supabase = createServerClient();
@@ -63,7 +64,7 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(CRUD_ERRORS.UPDATE_FAILED('관리자'));
+      return Result.error(CRUD_ERRORS.UPDATE_FAILED('관리자'));
     }
 
     if (pathname) {
@@ -72,6 +73,6 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
 
     const updatedItem = transformSnakeToCamel(data);
 
-    return ActionResult.success(updatedItem as ItemDTO);
+    return Result.success(updatedItem as ItemDTO);
   },
 });

@@ -3,6 +3,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { extractAllFileUrls, deleteFilesFromStorage } from './';
 import { FILE_ERRORS } from '@/shared/constants/error-messages';
+import { Result } from '@/shared/utils/results';
+import { type ActionResult } from '@/shared/types/results';
 
 /**
  * DB에서 기존 파일 데이터를 조회
@@ -65,12 +67,12 @@ export async function getOldFiles(params: {
 export async function cleanupDeletedFiles(params: {
   oldFiles?: any;
   newFiles?: any;
-}): Promise<{ success: boolean; error?: string }> {
+}): Promise<ActionResult<void>> {
   const { oldFiles, newFiles } = params;
 
   // 파일이 없으면 조기 반환
   if (!oldFiles || !newFiles) {
-    return { success: true };
+    return Result.ok();
   }
 
   try {
@@ -84,12 +86,9 @@ export async function cleanupDeletedFiles(params: {
       await deleteFilesFromStorage(deletedUrls);
     }
 
-    return { success: true };
+    return Result.ok();
   } catch (error) {
     console.error('[cleanupDeletedFiles] Unexpected error:', error);
-    return {
-      success: false,
-      error: FILE_ERRORS.DELETE_FAILED,
-    };
+    return Result.error(FILE_ERRORS.DELETE_FAILED);
   }
 }

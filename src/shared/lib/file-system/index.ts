@@ -22,11 +22,14 @@ export { downloadFileFromStorage } from './download';
 export { getOldFiles, cleanupDeletedFiles } from './cleanup';
 
 // Storage (Server Actions 전용)
-export { deleteFilesFromStorage, deleteFolderFromStorage } from '../supabase/storage';
+export {
+  BUCKET_NAME,
+  deleteFilesFromStorage,
+  deleteFolderFromStorage,
+} from '../supabase/storage';
 
 // Utils
 export {
-  BUCKET_NAME,
   extractFilePathFromUrl,
   generateUniqueFileName,
   createDbFileMetadata,

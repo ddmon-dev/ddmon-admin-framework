@@ -1,25 +1,8 @@
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
-import { type ActionResult as TActionResult } from '@/shared/types/action-results';
+import { type ActionResult as TActionResult } from '@/shared/types/results';
 import { requireAuth } from '@/features/auth';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
-
-/**
- * ActionResult 헬퍼 객체
- * ActionResult 생성을 간소화함
- *
- * @example
- * ```typescript
- * // 성공
- * return ActionResult.success(userData);
- *
- * // 실패
- * return ActionResult.error('사용자를 찾을 수 없습니다.');
- * ```
- */
-export const ActionResult = {
-  success: <T>(data: T): TActionResult<T> => ({ success: true, data }),
-  error: <T>(error: string): TActionResult<T> => ({ success: false, error }),
-};
+import { Result } from '@/shared/utils/results';
 
 /**
  * Server Action 생성 옵션
@@ -36,9 +19,8 @@ interface ServerActionOptions<T, R> {
    * null 반환 시 검증 통과, TActionResult 반환 시 즉시 반환
    */
   validate?: (params: T) => TActionResult<R> | null;
-
   /**
-   * 실제 비즈니스 로직 핸들러
+   * 비즈니스 로직 핸들러
    * 예상 가능한 에러는 ActionResult.error()로 직접 반환
    * 예상치 못한 에러는 throw (자동으로 catch됨)
    */
@@ -110,7 +92,7 @@ export function createServerAction<T, R>(options: ServerActionOptions<T, R>) {
       // 예상치 못한 에러만 여기서 처리 (네트워크, JSON 파싱 등)
       console.error(`[${name}] Unexpected error:`, error);
 
-      return ActionResult.error(GENERAL_ERRORS.UNEXPECTED);
+      return Result.error(GENERAL_ERRORS.UNEXPECTED);
     }
   };
 }

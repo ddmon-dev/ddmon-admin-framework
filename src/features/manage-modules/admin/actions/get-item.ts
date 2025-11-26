@@ -2,7 +2,8 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
-import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/shared/utils/server-actions';
+import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { GetItemParams } from '../../_base/config';
 import { CONFIG } from '../config';
@@ -13,7 +14,7 @@ export const getItem = createServerAction<GetItemParams, ItemDTO>({
   auth: { requireSuper: true },
   validate: params => {
     if (!params.id) {
-      return ActionResult.error(VALIDATION_ERRORS.NO_ID);
+      return Result.error(VALIDATION_ERRORS.NO_ID);
     }
     return null;
   },
@@ -28,11 +29,11 @@ export const getItem = createServerAction<GetItemParams, ItemDTO>({
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(CRUD_ERRORS.READ_FAILED('관리자'));
+      return Result.error(CRUD_ERRORS.READ_FAILED('관리자'));
     }
 
     const item = transformSnakeToCamel(rawData);
 
-    return ActionResult.success(item as ItemDTO);
+    return Result.success(item as ItemDTO);
   },
 });
