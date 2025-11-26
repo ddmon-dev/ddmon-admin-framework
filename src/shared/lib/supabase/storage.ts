@@ -1,7 +1,8 @@
 import { type ActionResult } from '@/shared/types/results';
-import { createServerClient } from './server';
+import { Result } from '@/shared/utils/results';
 import { extractFilePathFromUrl } from '@/shared/lib/file-system/utils';
 import { FILE_ERRORS } from '@/shared/constants/error-messages';
+import { createServerClient } from './server';
 
 export const BUCKET_NAME = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_NAME ?? '';
 
@@ -44,20 +45,14 @@ export async function createPresignedUploadUrl(
       data: { publicUrl },
     } = supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path);
 
-    return {
-      success: true,
-      data: {
-        uploadUrl: data.signedUrl,
-        publicUrl,
-        filePath: data.path,
-      },
-    };
+    return Result.success({
+      uploadUrl: data.signedUrl,
+      publicUrl,
+      filePath: data.path,
+    });
   } catch (error) {
     console.error('Presigned URL 발급 실패:', error);
-    return {
-      success: false,
-      error: 'Presigned URL 발급에 실패했습니다.',
-    };
+    return Result.error('Presigned URL 발급에 실패했습니다.');
   }
 }
 
@@ -86,16 +81,10 @@ export async function createMultiplePresignedUploadUrls(
       })
     );
 
-    return {
-      success: true,
-      data: results,
-    };
+    return Result.success(results);
   } catch (error) {
     console.error('다중 Presigned URL 발급 실패:', error);
-    return {
-      success: false,
-      error: 'Presigned URL 발급에 실패했습니다.',
-    };
+    return Result.error('Presigned URL 발급에 실패했습니다.');
   }
 }
 
@@ -109,7 +98,7 @@ type FileDeleteResult = ActionResult<void>;
  */
 export async function deleteFilesFromStorage(urls: string[]): Promise<FileDeleteResult> {
   if (urls.length === 0) {
-    return { success: true, data: undefined };
+    return Result.ok();
   }
 
   try {
@@ -119,7 +108,7 @@ export async function deleteFilesFromStorage(urls: string[]): Promise<FileDelete
     const filePaths = urls.map(url => extractFilePathFromUrl(url)).filter(Boolean);
 
     if (filePaths.length === 0) {
-      return { success: true, data: undefined };
+      return Result.ok();
     }
 
     const { error } = await supabase.storage.from(BUCKET_NAME).remove(filePaths);
@@ -128,16 +117,10 @@ export async function deleteFilesFromStorage(urls: string[]): Promise<FileDelete
       throw new Error(error.message);
     }
 
-    return {
-      success: true,
-      data: undefined,
-    };
+    return Result.ok();
   } catch (error) {
     console.error('파일 일괄 삭제 실패:', error);
-    return {
-      success: false,
-      error: FILE_ERRORS.FILE_DELETE_FAILED,
-    };
+    return Result.error(FILE_ERRORS.FILE_DELETE_FAILED);
   }
 }
 
@@ -162,7 +145,7 @@ export async function deleteFolderFromStorage(folderPath: string): Promise<FileD
 
     // 파일이 없으면 종료
     if (!fileList || fileList.length === 0) {
-      return { success: true, data: undefined };
+      return Result.ok();
     }
 
     // 모든 파일 경로 생성
@@ -175,15 +158,9 @@ export async function deleteFolderFromStorage(folderPath: string): Promise<FileD
       throw new Error(removeError.message);
     }
 
-    return {
-      success: true,
-      data: undefined,
-    };
+    return Result.ok();
   } catch (error) {
     console.error('폴더 삭제 실패:', error);
-    return {
-      success: false,
-      error: FILE_ERRORS.FOLDER_DELETE_FAILED,
-    };
+    return Result.error(FILE_ERRORS.FOLDER_DELETE_FAILED);
   }
 }
