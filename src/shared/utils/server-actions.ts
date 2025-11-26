@@ -1,3 +1,4 @@
+import { isRedirectError } from 'next/dist/client/components/redirect';
 import { type ActionResult as TActionResult } from '@/shared/types/action-results';
 import { requireAuth } from '@/features/auth';
 
@@ -100,6 +101,11 @@ export function createServerAction<T, R>(options: ServerActionOptions<T, R>) {
       // 3. 핸들러 실행
       return await handler(params);
     } catch (error) {
+      // Next.js redirect는 재throw (리디렉션이 정상 동작하도록)
+      if (isRedirectError(error)) {
+        throw error;
+      }
+
       // 예상치 못한 에러만 여기서 처리 (네트워크, JSON 파싱 등)
       console.error(`[${name}] Unexpected error:`, error);
 
