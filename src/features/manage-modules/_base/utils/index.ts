@@ -1,1 +1,2 @@
-export { handleFileUploads } from './handle-file-uploads';
+export * from './cleanup-deleted-files';
+export * from './upload-form-files';

@@ -24,7 +24,6 @@ export const getList = createServerAction<Params, ListProps<ItemDTO>>({
 
     const supabase = createServerClient();
 
-    // 기본 쿼리
     let query = supabase
       .from(CONFIG.tableName)
       .select('*', { count: 'exact' })
@@ -40,14 +39,11 @@ export const getList = createServerAction<Params, ListProps<ItemDTO>>({
       query = query.eq('category', category);
     }
 
-    // 정렬
     query = query.order('created_at', { ascending: false }).order('id', { ascending: false });
 
-    // 페이지네이션
     const startIndex = (page - 1) * pageSize;
     query = query.range(startIndex, startIndex + pageSize - 1);
 
-    // 쿼리 실행
     const { data: rawData, count, error } = await query;
 
     // 에러 처리
@@ -56,7 +52,6 @@ export const getList = createServerAction<Params, ListProps<ItemDTO>>({
       return ActionResult.error(error.message);
     }
 
-    // snake_case → camelCase 변환
     const data = rawData.map(row => transformSnakeToCamel(row)) as ItemDTO[];
 
     return ActionResult.success({ data, totalCount: count || 0 });

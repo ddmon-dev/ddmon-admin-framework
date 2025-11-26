@@ -17,13 +17,11 @@ export const getExportData = createServerAction<void, ItemDTO[]>({
   handler: async () => {
     const supabase = createServerClient();
 
-    // 기본 쿼리
     let query = supabase.from(CONFIG.tableName).select('*').eq('deleted', false);
 
-    // 정렬
     query = query.order('created_at', { ascending: false }).order('id', { ascending: false });
 
-    // 페이지네이션 없이 전체 조회
+     없이 전체 조회
     const { data: rawData, error } = await query;
 
     // 에러 처리
@@ -32,7 +30,7 @@ export const getExportData = createServerAction<void, ItemDTO[]>({
       return ActionResult.error(error.message);
     }
 
-    // snake_case → camelCase 변환
+    
     const data = rawData.map(row => transformSnakeToCamel(row)) as ItemDTO[];
 
     return ActionResult.success(data);

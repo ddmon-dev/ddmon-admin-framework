@@ -1,9 +1,12 @@
+'use client';
+
 import { processFileUploads, type FormFilesField } from '@/shared/lib/file-system';
 
 /**
- * 파일 업로드 처리 헬퍼 함수
+ * 폼 파일 업로드 처리 헬퍼 함수 (클라이언트 전용)
  *
- * 폼에서 제출된 파일을 Storage에 업로드하고 DB에 메타데이터를 저장합니다.
+ * 폼에서 제출된 파일을 Storage에 업로드하고 DB에 메타데이터를 저장
+ * 업로드는 Presigned URL 방식을 사용
  *
  * @param formFiles - 폼에서 제출된 파일 데이터
  * @param id - 아이템 ID (Storage 폴더명으로 사용)
@@ -13,7 +16,7 @@ import { processFileUploads, type FormFilesField } from '@/shared/lib/file-syste
  *
  * @example
  * ```typescript
- * await handleFileUploads({
+ * await uploadFormFiles({
  *   formFiles,
  *   id: data.id,
  *   tableName: CONFIG.tableName,
@@ -22,7 +25,7 @@ import { processFileUploads, type FormFilesField } from '@/shared/lib/file-syste
  * });
  * ```
  */
-export async function handleFileUploads({
+export async function uploadFormFiles({
   formFiles,
   id,
   tableName,

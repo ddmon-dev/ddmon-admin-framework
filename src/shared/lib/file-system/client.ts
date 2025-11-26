@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * 클라이언트에서 Presigned URL을 사용한 파일 업로드 유틸리티
  */

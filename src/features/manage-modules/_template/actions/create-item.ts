@@ -22,7 +22,6 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
       .select()
       .single();
 
-    // 예상 가능한 Supabase 에러
     if (error) {
       console.error('Supabase error:', error);
       return ActionResult.error(error.message);
