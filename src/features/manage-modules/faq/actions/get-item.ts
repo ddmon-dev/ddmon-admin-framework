@@ -2,22 +2,22 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
-import { requireAuth } from '@/features/auth';
-
-import { type GetItemResult } from '../../_base/config';
-
+import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { GetItemParams } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
-interface Params {
-  id: string;
-}
-
-export async function getItem({ id }: Params): Promise<GetItemResult<ItemDTO>> {
-  // 인증 확인
-  await requireAuth();
-
-  try {
+export const getItem = createServerAction<GetItemParams, ItemDTO>({
+  name: 'getItem',
+  auth: true,
+  validate: params => {
+    if (!params.id) {
+      return ActionResult.error(VALIDATION_ERRORS.NO_ID);
+    }
+    return null;
+  },
+  handler: async ({ id }) => {
     const supabase = createServerClient();
 
     const { data: rawData, error } = await supabase
@@ -27,14 +27,12 @@ export async function getItem({ id }: Params): Promise<GetItemResult<ItemDTO>> {
       .single();
 
     if (error) {
-      return { success: false, error: error.message };
+      console.error('Supabase error:', error);
+      return ActionResult.error(error.message);
     }
 
     const item = transformSnakeToCamel(rawData);
 
-    return { success: true, data: item as ItemDTO };
-  } catch (error) {
-    console.error(error);
-    return { success: false, error: '데이터를 불러오는 중 오류가 발생했습니다.' };
-  }
-}
+    return ActionResult.success(item as ItemDTO);
+  },
+});

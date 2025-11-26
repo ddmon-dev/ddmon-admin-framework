@@ -4,23 +4,16 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { schemaPresets } from '@/shared/schemas';
-import { auth, hashPassword, AUTH_POLICIES, requireAuth } from '@/features/auth';
-
-import { type CreateResult } from '../../_base/config';
-
+import { hashPassword, AUTH_POLICIES } from '@/features/auth';
+import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { CreateItemParams } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
-interface Params {
-  values: Partial<ItemDTO>;
-  pathname?: string;
-}
-
-export async function createItem({ values, pathname }: Params): Promise<CreateResult<ItemDTO>> {
-  // 최고관리자만 접근 가능
-  await requireAuth({ requireSuper: true });
-
-  try {
+export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>({
+  name: 'createItem',
+  auth: { requireSuper: true },
+  handler: async ({ values, pathname }) => {
     // confirmPassword 제거
     // superAdmin은 항상 false (최고관리자는 1명만 / 어플리케이션 단에서 생성 불가)
     'confirmPassword' in values && delete values.confirmPassword;
@@ -28,7 +21,7 @@ export async function createItem({ values, pathname }: Params): Promise<CreateRe
 
     // 비밀번호 검증 및 해시
     if (!values.password) {
-      throw new Error('비밀번호는 필수입니다.');
+      return ActionResult.error('비밀번호는 필수입니다.');
     }
 
     const validatePassword = schemaPresets
@@ -38,7 +31,7 @@ export async function createItem({ values, pathname }: Params): Promise<CreateRe
       .safeParse(values.password);
 
     if (!validatePassword.success) {
-      throw new Error(validatePassword.error.message);
+      return ActionResult.error(validatePassword.error.message);
     }
 
     values.password = await hashPassword(validatePassword.data);
@@ -54,7 +47,8 @@ export async function createItem({ values, pathname }: Params): Promise<CreateRe
       .single();
 
     if (error) {
-      throw new Error(error.message);
+      console.error('Supabase error:', error);
+      return ActionResult.error(error.message);
     }
 
     if (pathname) {
@@ -63,9 +57,6 @@ export async function createItem({ values, pathname }: Params): Promise<CreateRe
 
     const createdItem = transformSnakeToCamel(data);
 
-    return { success: true, data: createdItem as ItemDTO };
-  } catch (error) {
-    console.error(error);
-    return { success: false, error: '데이터를 생성하는 중 오류가 발생했습니다.' };
-  }
-}
+    return ActionResult.success(createdItem as ItemDTO);
+  },
+});

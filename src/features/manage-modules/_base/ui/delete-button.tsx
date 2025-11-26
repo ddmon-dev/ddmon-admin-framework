@@ -7,13 +7,13 @@ import { toast } from 'sonner';
 import { Button } from '@/shared/ui/button';
 import { Spinner } from '@/shared/ui/spinner';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
+import type { ActionResult } from '@/shared/types/action-results';
 import { softDelete, hardDelete } from '../actions';
-import type { DeleteResult } from '../config';
 
 interface DeleteButtonProps {
   tableName: TableName;
   id: string;
-  deleteFn?: () => Promise<DeleteResult<any>>;
+  deleteFn?: () => Promise<ActionResult<any>>;
   children?: React.ReactNode;
   dataLabel?: string;
 }

@@ -2,7 +2,7 @@
 
 import { AuthError } from 'next-auth';
 import { nextAuthSignIn } from '../handler';
-import { AUTH_ERROR_MESSAGES } from '../constants';
+import { AUTH_ERRORS } from '@/shared/constants/error-messages';
 import type { SignInValues, SignInResult } from '../types';
 
 export async function signIn(values: SignInValues): Promise<SignInResult> {
@@ -18,12 +18,12 @@ export async function signIn(values: SignInValues): Promise<SignInResult> {
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
-          return { success: false, error: AUTH_ERROR_MESSAGES.CREDENTIALS_SIGNIN };
+          return { success: false, error: AUTH_ERRORS.CREDENTIALS_SIGNIN };
         default:
-          return { success: false, error: AUTH_ERROR_MESSAGES.LOGIN_ERROR };
+          return { success: false, error: AUTH_ERRORS.LOGIN_ERROR };
       }
     }
 
-    return { success: false, error: AUTH_ERROR_MESSAGES.UNKNOWN_ERROR };
+    return { success: false, error: AUTH_ERRORS.UNKNOWN_ERROR };
   }
 }

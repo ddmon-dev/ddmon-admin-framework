@@ -23,6 +23,7 @@ interface DataListProps<TData> {
   // 페이지네이션
   pageCount: number;
   currentPage?: number;
+  maxVisible?: number;
   onPageChange?: (page: number) => void;
 
   // 정렬
@@ -45,6 +46,7 @@ export function DataList<TData>({
   columns,
   pageCount,
   currentPage = 1,
+  maxVisible = 5,
   onPageChange,
   sortingKey,
   onSortingChange,
@@ -184,6 +186,7 @@ export function DataList<TData>({
           <DataListPagination
             pageCount={pageCount}
             currentPage={currentPage}
+            maxVisible={maxVisible}
             onPageChange={onPageChange}
           />
         </div>
@@ -195,17 +198,22 @@ export function DataList<TData>({
 interface DataListPaginationProps {
   pageCount: number;
   currentPage: number;
+  maxVisible?: number;
   onPageChange?: (page: number) => void;
 }
 
-function DataListPagination({ pageCount, currentPage, onPageChange }: DataListPaginationProps) {
+function DataListPagination({
+  pageCount,
+  maxVisible = 5,
+  currentPage,
+  onPageChange,
+}: DataListPaginationProps) {
   const canPreviousPage = currentPage > 1;
   const canNextPage = currentPage < pageCount;
 
   // 표시할 페이지 번호 계산
   const getPageNumbers = () => {
     const pages: (number | 'ellipsis')[] = [];
-    const maxVisible = 5;
 
     if (pageCount <= maxVisible) {
       // 전체 페이지가 5개 이하면 모두 표시

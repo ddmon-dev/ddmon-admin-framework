@@ -2,28 +2,15 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
-import { requireAuth } from '@/features/auth';
-
-import { BASE_CONFIG } from '../../_base/config';
-import { type GetListResult } from '../../_base/config';
+import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { BASE_CONFIG, GetListParams, ListProps } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
-interface Params {
-  page?: string;
-  search?: string;
-  pageSize?: number;
-}
-
-export async function getList({
-  page: rawPage = '1',
-  search = '',
-  pageSize = BASE_CONFIG.defaultListPageSize,
-}: Params): Promise<GetListResult<ItemDTO>> {
-  // 인증 확인
-  await requireAuth();
-
-  try {
+export const getList = createServerAction<GetListParams, ListProps<ItemDTO>>({
+  name: 'getList',
+  auth: true,
+  handler: async ({ page: rawPage = '1', search = '', pageSize = BASE_CONFIG.defaultListPageSize }) => {
     const page = parseInt(rawPage) || 1;
 
     const supabase = createServerClient();
@@ -49,17 +36,15 @@ export async function getList({
     // 쿼리 실행
     const { data: rawData, count, error } = await query;
 
-    // 에러 처리
+    // 예상 가능한 Supabase 에러
     if (error) {
-      return { success: false, error: error.message };
+      console.error('Supabase error:', error);
+      return ActionResult.error(error.message);
     }
 
     // snake_case → camelCase 변환
     const data = rawData.map(row => transformSnakeToCamel(row)) as ItemDTO[];
 
-    return { success: true, data: { data, totalCount: count || 0 } };
-  } catch (error) {
-    console.error(error);
-    return { success: false, error: '데이터를 불러오는 중 오류가 발생했습니다.' };
-  }
-}
+    return ActionResult.success({ data, totalCount: count || 0 });
+  },
+});

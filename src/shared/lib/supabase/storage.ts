@@ -1,6 +1,6 @@
 'use server';
 
-import { type ActionResult } from '@/shared/types/server-actions';
+import { type ActionResult } from '@/shared/types/action-results';
 import { createServerClient } from './server';
 import { BUCKET_NAME, extractFilePathFromUrl } from './storage-helpers';
 
