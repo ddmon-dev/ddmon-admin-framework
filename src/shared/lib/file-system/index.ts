@@ -12,28 +12,27 @@ export type {
   WithFiles,
 } from './types';
 
-// Upload (Presigned URL 방식)
-export { processFileUploads } from './upload';
+// Upload (클라이언트 전용)
+export { uploadFormFiles } from './upload';
+
+// Download (클라이언트 전용)
+export { downloadFileFromStorage } from './download';
+
+// Cleanup (Server Actions 전용)
+export { getOldFiles, cleanupDeletedFiles } from './cleanup';
 
 // Storage (Server Actions 전용)
 export { deleteFilesFromStorage, deleteFolderFromStorage } from '../supabase/storage';
 
 // Utils
 export {
+  BUCKET_NAME,
+  extractFilePathFromUrl,
   generateUniqueFileName,
   createDbFileMetadata,
   extractAllFileUrls,
   transformFilesToUploadValues,
 } from './utils';
 
-// Client (브라우저 전용)
-export { uploadFilesWithPresignedUrl } from './client';
-
 // Schemas (Zod 검증)
 export { createFilesSchema } from './schemas';
-
-// Cleanup (Server Actions 전용)
-export { getOldFiles, cleanupDeletedFiles } from './cleanup';
-
-// Helpers (클라이언트 전용)
-export { uploadFormFiles } from './helpers';

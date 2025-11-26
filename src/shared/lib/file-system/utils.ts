@@ -1,4 +1,27 @@
 import { type DbFileMetadata, type FormFileValue } from './types';
+import { BUCKET_NAME } from '@/shared/lib/supabase/storage';
+
+/**
+ * 공개 URL에서 파일 경로를 추출합니다.
+ *
+ * @param url - Supabase Storage 공개 URL
+ * @returns 파일 경로
+ */
+export function extractFilePathFromUrl(url: string): string {
+  try {
+    const urlObj = new URL(url);
+    const pathSegments = urlObj.pathname.split('/');
+    const bucketIndex = pathSegments.findIndex(segment => segment === BUCKET_NAME);
+
+    if (bucketIndex === -1) {
+      throw new Error('유효하지 않은 Storage URL입니다.');
+    }
+
+    return pathSegments.slice(bucketIndex + 1).join('/');
+  } catch (error) {
+    throw new Error('URL 파싱에 실패했습니다: ' + url);
+  }
+}
 
 /**
  * 파일명 생성: UUID + 확장자만 (한글 완벽 지원)
