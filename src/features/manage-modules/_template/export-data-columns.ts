@@ -1,8 +1,7 @@
-import { ExportDataButton, type ExcelColumn } from '../_base/ui/export-data-button';
+import { type ExcelColumn } from '../_base/ui/export-data-button';
 import { type ItemDTO } from './config';
-import { getExportData } from './actions/get-export-data';
 
-const excelColumns: ExcelColumn<ItemDTO>[] = [
+export const exportDataColumns: ExcelColumn<ItemDTO>[] = [
   {
     header: '이름',
     accessorKey: 'name',
@@ -39,15 +38,3 @@ const excelColumns: ExcelColumn<ItemDTO>[] = [
     width: 15,
   },
 ];
-
-export function DataExportButton() {
-  return (
-    <ExportDataButton
-      fetchDataFn={getExportData}
-      columns={excelColumns}
-      fileName='템플릿데이터'
-    >
-      엑셀 다운로드
-    </ExportDataButton>
-  );
-}

@@ -8,6 +8,7 @@ import { List } from './list';
 import { ItemSheet } from './item-sheet';
 
 import { getList } from './actions/get-list';
+import { ExportDataButton } from './export-data-button';
 
 interface Props {
   searchParams: SearchParams;
@@ -31,6 +32,7 @@ export default async function ManageModule({ searchParams }: Props) {
           <CreateButton>{CONFIG.moduleName} 생성</CreateButton>
         </div>
         <Filters />
+        <ExportDataButton />
         <List
           data={data}
           totalCount={totalCount}

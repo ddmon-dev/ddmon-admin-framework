@@ -42,3 +42,7 @@ export interface DeleteItemParams {
   id: string;
   pathname?: string;
 }
+
+export interface GetExportDataParams {
+  tableName: TableName;
+}

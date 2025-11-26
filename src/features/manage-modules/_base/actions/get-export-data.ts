@@ -3,21 +3,20 @@
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
-import { CONFIG } from '../config';
-import { type ItemDTO } from '../config';
+import { GetExportDataParams } from '../config';
 
 /**
  * 엑셀 다운로드용 전체 데이터 조회
  * - 페이지네이션 없음
- * - 필터링 조건은 getList와 동일
+ * - deleted = false 조건만 적용
  */
-export const getExportData = createServerAction<void, ItemDTO[]>({
+export const getExportData = createServerAction<GetExportDataParams, any[]>({
   name: 'getExportData',
   auth: true,
-  handler: async () => {
+  handler: async ({ tableName }) => {
     const supabase = createServerClient();
 
-    let query = supabase.from(CONFIG.tableName).select('*').eq('deleted', false);
+    let query = supabase.from(tableName).select('*').eq('deleted', false);
 
     query = query.order('created_at', { ascending: false }).order('id', { ascending: false });
 
@@ -28,7 +27,7 @@ export const getExportData = createServerAction<void, ItemDTO[]>({
       return ActionResult.error(error.message);
     }
 
-    const data = rawData.map(row => transformSnakeToCamel(row)) as ItemDTO[];
+    const data = rawData.map(row => transformSnakeToCamel(row));
     return ActionResult.success(data);
   },
 });

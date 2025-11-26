@@ -4,7 +4,7 @@ import { type ExcelColumn } from '@/shared/lib/excel';
 export { type ExcelColumn } from '@/shared/lib/excel/types';
 
 type ExportDataButtonProps<T> = {
-  fetchDataFn: () => Promise<ActionResult<T>>;
+  fetchDataFn: () => Promise<ActionResult<T[]>>;
   columns: ExcelColumn<T>[];
   fileName?: string;
   sheetName?: string;
