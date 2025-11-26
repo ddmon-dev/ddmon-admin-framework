@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/ui/dialog';
+import { LoadingButton } from '@/shared/ui/loading-button';
 import { Spinner } from '@/shared/ui/spinner';
 import { Button } from '@/shared/ui/button';
 import { type ConfirmDialogData, type AlertDialogData } from './types';
@@ -64,19 +65,19 @@ export function ConfirmDialogComponent({ data, onConfirm, onCancel }: ConfirmDia
           <Button
             variant='outline'
             onClick={handleCancel}
-            disabled={isLoading}
             className='min-w-18'
+            disabled={isLoading}
           >
             {cancelText}
           </Button>
-          <Button
+          <LoadingButton
             variant={variant === 'destructive' ? 'destructive' : 'default'}
             onClick={handleConfirm}
-            disabled={isLoading}
+            isLoading={isLoading}
             className='min-w-18'
           >
-            {isLoading ? <Spinner /> : confirmText}
-          </Button>
+            {confirmText}
+          </LoadingButton>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -134,12 +135,12 @@ export function AlertDialogComponent({ data, onClose }: AlertDialogComponentProp
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         <div className='flex justify-end'>
-          <Button
+          <LoadingButton
             onClick={handleClose}
-            disabled={isLoading}
+            isLoading={isLoading}
           >
             {isLoading ? <Spinner /> : confirmText}
-          </Button>
+          </LoadingButton>
         </div>
       </DialogContent>
     </Dialog>

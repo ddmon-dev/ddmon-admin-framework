@@ -4,12 +4,11 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useDialog } from '@/shared/ui/app-dialog';
 import { toast } from 'sonner';
-import { Button } from '@/shared/ui/button';
-import { Spinner } from '@/shared/ui/spinner';
+import { LoadingButton } from '@/shared/ui/loading-button';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 import type { ActionResult } from '@/shared/types/results';
-import { softDelete, hardDelete } from '../actions';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { softDelete, hardDelete } from '../actions';
 
 interface DeleteButtonProps {
   tableName: TableName;
@@ -75,14 +74,14 @@ export function SoftDeleteButton({
   };
 
   return (
-    <Button
+    <LoadingButton
       size='sm'
       variant='destructive'
       onClick={handleClick}
-      disabled={isLoading}
+      isLoading={isLoading}
     >
-      {isLoading ? <Spinner /> : children ?? '삭제'}
-    </Button>
+      {children ?? '삭제'}
+    </LoadingButton>
   );
 }
 
@@ -144,13 +143,13 @@ export function HardDeleteButton({
   };
 
   return (
-    <Button
+    <LoadingButton
       size='sm'
       variant='destructive'
       onClick={handleClick}
-      disabled={isLoading}
+      isLoading={isLoading}
     >
       {children ?? '영구 삭제'}
-    </Button>
+    </LoadingButton>
   );
 }

@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { transformFilesToUploadValues } from '@/shared/lib/file-system';
 import type { ActionResult } from '@/shared/types/results';
 import type { DbFilesJSONB } from '@/shared/lib/file-system';
-import { toast } from 'sonner';
 import { useManageSheet } from '../ui/manage-sheet';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { useMinimumDuration } from '@/shared/hooks';
 
 export type GetItemAction<T> = (params: { id: string }) => Promise<ActionResult<T>>;
 
@@ -45,6 +45,9 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
   const [prevValues, setPrevValues] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // 최소 지속 시간 적용
+  const showLoading = useMinimumDuration(isLoading);
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -94,5 +97,5 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
     fetchItem();
   }, [id, getItemAction]);
 
-  return { prevValues, isLoading, error };
+  return { prevValues, isLoading: showLoading, error };
 }
