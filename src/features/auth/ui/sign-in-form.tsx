@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { FieldGroup } from '@/shared/ui/field';
 import { FormTextInput, FormPasswordInput } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
+import { AUTH_ERRORS } from '@/shared/constants/error-messages';
 import { signIn } from '../actions';
 
 const signInSchema = z.object({
@@ -36,7 +37,7 @@ export function SignInForm() {
       const result = await signIn(values);
 
       if (!result.success) {
-        setError(result.error || '로그인에 실패했습니다.');
+        setError(AUTH_ERRORS.CREDENTIALS_SIGNIN);
         return;
       }
 
@@ -44,7 +45,7 @@ export function SignInForm() {
       router.refresh();
     } catch (error) {
       console.error('로그인 에러:', error);
-      setError('로그인 중 오류가 발생했습니다.');
+      setError(AUTH_ERRORS.UNKNOWN_ERROR);
     }
   }
 
@@ -68,7 +69,9 @@ export function SignInForm() {
         </FieldGroup>
 
         {error && (
-          <div className='rounded-md bg-destructive/15 p-3 text-sm text-destructive'>{error}</div>
+          <div className='rounded-md bg-destructive/15 p-3 text-sm text-destructive text-center'>
+            {error}
+          </div>
         )}
 
         <LoadingButton

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { FILE_ERRORS } from '@/shared/constants/error-messages';
 
 /* *
  * 기존에 DB에 저장된 파일 메타 데이터 스키마 +
@@ -63,7 +64,7 @@ export function createFilesSchema(config: string[] | Record<string, number | { m
     const optional = min === 0;
 
     // 파일 배열 검증 (markedForDeletion 제외한 유효 파일 체크)
-    const schema = z.array(fileUploadValueSchema, { message: '파일을 업로드해주세요.' }).refine(
+    const schema = z.array(fileUploadValueSchema, { message: FILE_ERRORS.REQUIRED_FILES }).refine(
       files => {
         const validFiles = files.filter(f => {
           if (!f) return false;
@@ -75,9 +76,9 @@ export function createFilesSchema(config: string[] | Record<string, number | { m
       {
         message:
           min === 1
-            ? '파일을 업로드해주세요'
+            ? FILE_ERRORS.REQUIRED_FILES
             : min > 1
-            ? `최소 ${min}개 이상의 파일을 업로드해주세요`
+            ? FILE_ERRORS.MIN_FILES_REQUIRED(min)
             : undefined,
       }
     );

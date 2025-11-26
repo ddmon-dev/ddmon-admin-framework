@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { toast } from 'sonner';
 
 import {
   Dialog,
@@ -24,9 +25,12 @@ import { signOut } from '../actions/sign-out';
 import { updateProfile } from '../actions/update-profile';
 import { type UpdateProfileValues } from '../types';
 
+import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
+import { GENERAL_ERRORS, CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+
 const formSchema = z
   .object({
-    name: z.string().min(3, '이름은 3자 이상 입력해야 합니다.'),
+    name: z.string().min(3, VALIDATION_ERRORS.TOO_SHORT('이름', 3)),
     email: schemaPresets.email(),
     currentPassword: schemaPresets.password({
       optional: true,
@@ -70,11 +74,11 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface ProfileEditDialogProps {
+interface UpdateProfileDialogProps {
   children: React.ReactNode;
 }
 
-export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
+export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
   const [open, setOpen] = useState(false);
   const { user, updateSession } = useAuth();
 
@@ -103,14 +107,16 @@ export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
       const result = await updateProfile(submitValues);
 
       if (!result.success) {
-        alert(result.error || '프로필 수정에 실패했습니다.');
+        toast.error(CRUD_ERRORS.UPDATE_FAILED('프로필'), {
+          description: result.error,
+        });
         return;
       }
 
       // 비밀번호 변경 여부에 따라 처리
       if (values.newPassword) {
         // 비밀번호 변경 시 로그아웃
-        alert('비밀번호가 변경되었습니다. 다시 로그인해주세요.');
+        toast.success('비밀번호가 변경되었습니다. 다시 로그인해주세요.');
         await signOut();
         return;
       }
@@ -121,7 +127,7 @@ export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
         email: values.email,
       });
 
-      alert('프로필이 성공적으로 수정되었습니다.');
+      toast.success(SUCCESS_MESSAGES.UPDATE_SUCCESS('프로필'));
 
       setOpen(false);
       form.reset({
@@ -135,7 +141,10 @@ export function ProfileEditDialog({ children }: ProfileEditDialogProps) {
       console.error(error);
       // try catch 내부의 signout은 redirect 에러를 반환하므로 무조건 catch 블록이 실행되게 되어있음.
       // 그래서 비밀번호 변경시 아래 얼럿이 뜨는 것임.
-      alert('프로필 수정 중 오류가 발생했습니다.');
+      console.error(error);
+      toast.error(GENERAL_ERRORS.UNEXPECTED, {
+        description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
+      });
     }
   };
 

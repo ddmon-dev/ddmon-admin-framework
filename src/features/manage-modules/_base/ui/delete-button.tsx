@@ -9,6 +9,7 @@ import { Spinner } from '@/shared/ui/spinner';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 import type { ActionResult } from '@/shared/types/action-results';
 import { softDelete, hardDelete } from '../actions';
+import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 interface DeleteButtonProps {
   tableName: TableName;
@@ -52,7 +53,7 @@ export function SoftDeleteButton({
             : await softDelete({ tableName, id, pathname });
 
           if (!result.success) {
-            toast.error('Error: 데이터 삭제 중 오류가 발생했습니다.', {
+            toast.error(CRUD_ERRORS.DELETE_FAILED(), {
               description: result.error,
             });
             return false;
@@ -62,8 +63,8 @@ export function SoftDeleteButton({
           return true;
         } catch (error) {
           console.error(error);
-          toast.error('Error: 예상치 못한 오류가 발생했습니다.', {
-            description: '잠시 후 다시 시도해주세요.',
+          toast.error(GENERAL_ERRORS.UNEXPECTED, {
+            description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
           });
           return false;
         }
@@ -131,7 +132,9 @@ export function HardDeleteButton({
         } catch (error) {
           // 예상치 못한 에러 (네트워크 등)
           console.error(error);
-          toast.error('예상치 못한 오류가 발생했습니다.');
+          toast.error(GENERAL_ERRORS.UNEXPECTED, {
+            description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
+          });
           return false;
         }
       },

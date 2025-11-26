@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 import { signOut } from './actions/sign-out';
+import { toast } from 'sonner';
+import { useDialog } from '@/shared/providers';
 
 interface IdleLogoutProviderProps {
   children: React.ReactNode;
@@ -18,6 +20,7 @@ export function IdleLogoutProvider({
   onWarning,
   onIdle,
 }: IdleLogoutProviderProps) {
+  const dialog = useDialog();
   const warningTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const logoutTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
@@ -36,7 +39,7 @@ export function IdleLogoutProvider({
         if (onWarning) {
           onWarning();
         } else {
-          alert('잠시 후 자동 로그아웃됩니다. 활동을 계속하려면 클릭하세요.');
+          toast.warning('일정 시간 활동이 없어 잠시 후 자동 로그아웃됩니다.');
         }
       }, timeout - warningTime);
 
@@ -45,21 +48,19 @@ export function IdleLogoutProvider({
         if (onIdle) {
           onIdle();
         } else {
-          alert('일정 시간 동안 활동이 없어 로그아웃됩니다.');
-          signOut();
+          dialog.alert({
+            title: '일정 시간 활동이 없어 로그아웃됩니다.',
+            variant: 'warning',
+            onConfirm: () => {
+              signOut();
+            },
+          });
         }
       }, timeout);
     };
 
     // 감지할 이벤트들
-    const events = [
-      'mousedown',
-      'mousemove',
-      'keypress',
-      'scroll',
-      'touchstart',
-      'click',
-    ] as const;
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'] as const;
 
     // 이벤트 핸들러
     const handleActivity = () => {

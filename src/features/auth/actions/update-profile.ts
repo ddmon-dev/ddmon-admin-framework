@@ -1,6 +1,7 @@
 'use server';
 
 import { createServerClient } from '@/shared/lib/supabase/server';
+import { CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 import { requireAuth } from '../utils/server';
 import { hashPassword, verifyPassword } from '../utils/password';
@@ -27,7 +28,7 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Update
         .single();
 
       if (fetchError || !adminData) {
-        return { success: false, error: '사용자 정보를 찾을 수 없습니다.' };
+        return { success: false, error: CRUD_ERRORS.NOT_FOUND('사용자 정보') };
       }
 
       // 현재 비밀번호 검증
@@ -58,7 +59,7 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Update
     if (updateError) {
       if (updateError.code === '23505') {
         // UNIQUE 제약 위반
-        return { success: false, error: '이미 사용 중인 이메일입니다.' };
+        return { success: false, error: CRUD_ERRORS.DUPLICATE('이메일') };
       }
       throw new Error(updateError.message);
     }
@@ -66,6 +67,6 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Update
     return { success: true };
   } catch (error) {
     console.error(error);
-    return { success: false, error: '프로필을 업데이트하는 중 오류가 발생했습니다.' };
+    return { success: false, error: CRUD_ERRORS.UPDATE_FAILED('프로필') };
   }
 }
