@@ -4,28 +4,22 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { extractAllFileUrls, deleteFilesFromStorage } from '@/shared/lib/file-system';
-import { requireAuth } from '@/features/auth';
-
-import { type UpdateResult } from '../../_base/config';
-
+import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { UpdateItemParams } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
-interface Params {
-  id: string;
-  values: Partial<ItemDTO>;
-  pathname?: string;
-}
-
-export async function updateItem({ id, values, pathname }: Params): Promise<UpdateResult<ItemDTO>> {
-  // 인증 확인
-  await requireAuth();
-
-  try {
-    if (!id) {
-      throw new Error('ID값이 없습니다.');
+export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>({
+  name: 'updateItem',
+  auth: true,
+  validate: params => {
+    if (!params.id) {
+      return ActionResult.error(VALIDATION_ERRORS.NO_ID);
     }
-
+    return null;
+  },
+  handler: async ({ id, values, pathname }) => {
     const supabase = createServerClient();
 
     // 파일이 있을 때만 기존 파일 조회
@@ -50,8 +44,10 @@ export async function updateItem({ id, values, pathname }: Params): Promise<Upda
       .select()
       .single();
 
+    // 예상 가능한 Supabase 에러
     if (error) {
-      throw new Error(error.message);
+      console.error('Supabase error:', error);
+      return ActionResult.error(error.message);
     }
 
     // 삭제된 파일 Storage에서 제거
@@ -65,17 +61,12 @@ export async function updateItem({ id, values, pathname }: Params): Promise<Upda
       }
     }
 
-    // 패스 재검증
+    // 성공 처리
     if (pathname) {
       revalidatePath(pathname);
     }
 
-    // snake_case → camelCase 변환
     const updatedItem = transformSnakeToCamel(data);
-
-    return { success: true, data: updatedItem as ItemDTO };
-  } catch (error) {
-    console.error(error);
-    return { success: false, error: '데이터를 업데이트하는 중 오류가 발생했습니다.' };
-  }
-}
+    return ActionResult.success(updatedItem as ItemDTO);
+  },
+});

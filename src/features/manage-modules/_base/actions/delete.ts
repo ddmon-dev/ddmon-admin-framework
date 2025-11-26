@@ -5,8 +5,8 @@ import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { deleteFolderFromStorage } from '@/shared/lib/file-system';
 import { type TableName } from '@/shared/lib/supabase/db-helpers';
-import { requireAuth } from '@/features/auth';
-import { type DeleteResult } from '../config';
+import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 
 interface Params {
   tableName: TableName;
@@ -17,15 +17,16 @@ interface Params {
 /**
  * Soft delete: deleted 컬럼을 true로 설정
  */
-export async function softDelete<T>({ tableName, id, pathname }: Params): Promise<DeleteResult<T>> {
-  // 인증 확인
-  await requireAuth();
-
-  try {
-    if (!id) {
-      throw new Error('ID값이 없습니다.');
+export const softDelete = createServerAction<Params, any>({
+  name: 'softDelete',
+  auth: true,
+  validate: params => {
+    if (!params.id) {
+      return ActionResult.error(VALIDATION_ERRORS.NO_ID);
     }
-
+    return null;
+  },
+  handler: async ({ tableName, id, pathname }) => {
     const supabase = createServerClient();
 
     const { data, error } = await supabase
@@ -35,63 +36,56 @@ export async function softDelete<T>({ tableName, id, pathname }: Params): Promis
       .select()
       .single();
 
+    // 예상 가능한 Supabase 에러
     if (error) {
-      throw new Error(error.message);
+      console.error('Supabase error:', error);
+      return ActionResult.error(error.message);
     }
 
-    // 패스 재검증
+    // 성공 처리
     if (pathname) {
       revalidatePath(pathname);
     }
 
     const deletedItem = transformSnakeToCamel(data);
-
-    return { success: true, data: deletedItem as T };
-  } catch (error) {
-    console.error(error);
-
-    const message =
-      error instanceof Error ? error.message : '데이터를 삭제하는 중 오류가 발생했습니다.';
-
-    return { success: false, error: message };
-  }
-}
+    return ActionResult.success(deletedItem);
+  },
+});
 
 /**
  * Hard delete: 실제로 데이터를 삭제
  */
-export async function hardDelete<T>({ tableName, id, pathname }: Params): Promise<DeleteResult<T>> {
-  // 인증 확인
-  await requireAuth({ requireSuper: true });
-
-  try {
-    if (!id) {
-      throw new Error('ID값이 없습니다.');
+export const hardDelete = createServerAction<Params, any>({
+  name: 'hardDelete',
+  auth: { requireSuper: true },
+  validate: params => {
+    if (!params.id) {
+      return ActionResult.error(VALIDATION_ERRORS.NO_ID);
     }
-
+    return null;
+  },
+  handler: async ({ tableName, id, pathname }) => {
     const supabase = createServerClient();
 
     // DB에서 완전 삭제
     const { data, error } = await supabase.from(tableName).delete().eq('id', id).select().single();
 
+    // 예상 가능한 Supabase 에러
     if (error) {
-      throw new Error(error.message);
+      console.error('Supabase error:', error);
+      return ActionResult.error(error.message);
     }
 
     // Storage 폴더 전체 삭제
     const folderPath = `${tableName}/${id}`;
     await deleteFolderFromStorage(folderPath);
 
-    // 패스 재검증
+    // 성공 처리
     if (pathname) {
       revalidatePath(pathname);
     }
 
     const deletedItem = transformSnakeToCamel(data);
-
-    return { success: true, data: deletedItem as T };
-  } catch (error) {
-    console.error(error);
-    return { success: false, error: '데이터를 삭제하는 중 오류가 발생했습니다.' };
-  }
-}
+    return ActionResult.success(deletedItem);
+  },
+});

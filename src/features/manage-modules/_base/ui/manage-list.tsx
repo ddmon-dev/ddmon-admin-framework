@@ -42,6 +42,7 @@ export function ManageList<TData extends { id?: string }>({
       columns={listColumns}
       pageCount={pageCount}
       currentPage={page}
+      maxVisible={BASE_CONFIG.defaultListPaginationMaxVisible}
       onPageChange={setPage}
       onRowClick={handleRowClick}
     />

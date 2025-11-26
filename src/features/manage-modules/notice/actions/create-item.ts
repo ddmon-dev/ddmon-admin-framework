@@ -3,23 +3,15 @@
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
-import { requireAuth } from '@/features/auth';
-
-import { type CreateResult } from '../../_base/config';
-
+import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { CreateItemParams } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
-interface Params {
-  values: Partial<ItemDTO>;
-  pathname?: string;
-}
-
-export async function createItem({ values, pathname }: Params): Promise<CreateResult<ItemDTO>> {
-  // 인증 확인
-  await requireAuth();
-
-  try {
+export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>({
+  name: 'createItem',
+  auth: true,
+  handler: async ({ values, pathname }) => {
     const supabase = createServerClient();
 
     // DB 저장용 값 준비 (파일은 클라이언트에서 이미 업로드 완료)
@@ -36,22 +28,18 @@ export async function createItem({ values, pathname }: Params): Promise<CreateRe
       .select()
       .single();
 
+    // 예상 가능한 Supabase 에러
     if (error) {
       console.error('Supabase error:', error);
-      throw new Error(error.message);
+      return ActionResult.error(error.message);
     }
 
-    // 패스 재검증
+    // 성공 처리
     if (pathname) {
       revalidatePath(pathname);
     }
 
-    // snake_case → camelCase 변환
     const createdItem = transformSnakeToCamel(data);
-
-    return { success: true, data: createdItem as ItemDTO };
-  } catch (error) {
-    console.error(error);
-    return { success: false, error: '데이터를 생성하는 중 오류가 발생했습니다.' };
-  }
-}
+    return ActionResult.success(createdItem as ItemDTO);
+  },
+});
