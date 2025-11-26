@@ -17,8 +17,7 @@ import {
 } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
-import { type FormFilesField } from '@/shared/lib/file-system';
-import { uploadFormFiles } from '../_base/utils';
+import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
 
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
@@ -78,7 +77,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         id: data.id,
         tableName: CONFIG.tableName,
         pathname,
-        updateItemAction: updateItem,
+        updateAction: updateItem,
       });
     } catch (error) {
       console.error(error);

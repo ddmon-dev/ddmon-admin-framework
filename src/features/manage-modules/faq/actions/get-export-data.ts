@@ -21,7 +21,7 @@ export const getExportData = createServerAction<void, ItemDTO[]>({
 
     query = query.order('created_at', { ascending: false }).order('id', { ascending: false });
 
-     없이 전체 조회
+    // 페이지네이션 없이 전체 조회
     const { data: rawData, error } = await query;
 
     // 에러 처리

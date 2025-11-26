@@ -4,20 +4,14 @@ import { revalidatePath } from 'next/cache';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { deleteFolderFromStorage } from '@/shared/lib/file-system';
-import { type TableName } from '@/shared/lib/supabase/db-helpers';
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
 import { VALIDATION_ERRORS } from '@/shared/constants/error-messages';
-
-interface Params {
-  tableName: TableName;
-  id: string;
-  pathname?: string;
-}
+import { DeleteItemParams } from '../config';
 
 /**
  * Soft delete: deleted 컬럼을 true로 설정
  */
-export const softDelete = createServerAction<Params, any>({
+export const softDelete = createServerAction<DeleteItemParams, any>({
   name: 'softDelete',
   auth: true,
   validate: params => {
@@ -54,7 +48,7 @@ export const softDelete = createServerAction<Params, any>({
 /**
  * Hard delete: 실제로 데이터를 삭제
  */
-export const hardDelete = createServerAction<Params, any>({
+export const hardDelete = createServerAction<DeleteItemParams, any>({
   name: 'hardDelete',
   auth: { requireSuper: true },
   validate: params => {

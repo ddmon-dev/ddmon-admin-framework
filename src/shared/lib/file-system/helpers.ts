@@ -1,6 +1,6 @@
 'use client';
 
-import { processFileUploads, type FormFilesField } from '@/shared/lib/file-system';
+import { processFileUploads, type FormFilesField } from './';
 
 /**
  * 폼 파일 업로드 처리 헬퍼 함수 (클라이언트 전용)
@@ -12,7 +12,7 @@ import { processFileUploads, type FormFilesField } from '@/shared/lib/file-syste
  * @param id - 아이템 ID (Storage 폴더명으로 사용)
  * @param tableName - 테이블명 (Storage 폴더명으로 사용)
  * @param pathname - 현재 경로 (revalidatePath용)
- * @param updateItemAction - 아이템 업데이트 Server Action
+ * @param updateAction - 아이템 업데이트 Server Action
  *
  * @example
  * ```typescript
@@ -21,7 +21,7 @@ import { processFileUploads, type FormFilesField } from '@/shared/lib/file-syste
  *   id: data.id,
  *   tableName: CONFIG.tableName,
  *   pathname,
- *   updateItemAction: updateItem,
+ *   updateAction: updateItem,
  * });
  * ```
  */
@@ -30,13 +30,13 @@ export async function uploadFormFiles({
   id,
   tableName,
   pathname,
-  updateItemAction,
+  updateAction,
 }: {
   formFiles?: FormFilesField;
   id: string;
   tableName: string;
   pathname: string;
-  updateItemAction: (params: { id: string; values: any; pathname: string }) => Promise<any>;
+  updateAction: (params: { id: string; values: any; pathname: string }) => Promise<any>;
 }): Promise<void> {
   // 파일 유무 체크
   const hasFormFiles =
@@ -53,7 +53,7 @@ export async function uploadFormFiles({
 
   // files JSONB 컬럼 업데이트
   if (Object.keys(uploadedFilesMetadata).length > 0) {
-    await updateItemAction({
+    await updateAction({
       id,
       values: { files: uploadedFilesMetadata },
       pathname,
