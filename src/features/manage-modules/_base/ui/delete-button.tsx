@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { useDialog } from '@/shared/providers';
+import { useDialog } from '@/shared/ui/app-dialog';
 import { toast } from 'sonner';
 import { Button } from '@/shared/ui/button';
 import { Spinner } from '@/shared/ui/spinner';
