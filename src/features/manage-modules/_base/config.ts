@@ -36,3 +36,9 @@ export interface UpdateItemParams<T> {
   values: Partial<T>;
   pathname?: string;
 }
+
+export interface DeleteItemParams {
+  tableName: TableName;
+  id: string;
+  pathname?: string;
+}

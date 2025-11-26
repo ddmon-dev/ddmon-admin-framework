@@ -31,3 +31,9 @@ export { uploadFilesWithPresignedUrl } from './client';
 
 // Schemas (Zod 검증)
 export { createFilesSchema } from './schemas';
+
+// Cleanup (Server Actions 전용)
+export { getOldFiles, cleanupDeletedFiles } from './cleanup';
+
+// Helpers (클라이언트 전용)
+export { uploadFormFiles } from './helpers';

@@ -1,7 +1,7 @@
 'use server';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { extractAllFileUrls, deleteFilesFromStorage } from '@/shared/lib/file-system';
+import { extractAllFileUrls, deleteFilesFromStorage } from './';
 
 /**
  * DB에서 기존 파일 데이터를 조회

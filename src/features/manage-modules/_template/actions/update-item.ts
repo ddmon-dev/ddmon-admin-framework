@@ -6,7 +6,7 @@ import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/obj
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
 import { VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 import { UpdateItemParams } from '../../_base/config';
-import { getOldFiles, cleanupDeletedFiles } from '../../_base/utils';
+import { getOldFiles, cleanupDeletedFiles } from '@/shared/lib/file-system';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
