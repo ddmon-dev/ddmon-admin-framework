@@ -5,13 +5,17 @@ import { usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 
 import { FieldGroup } from '@/shared/ui/field';
 import { FormTextInput, FormPasswordInput, FormEmailInput } from '@/shared/ui/form-fields';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
+import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
+import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 import { AUTH_POLICIES } from '@/features/auth/constants';
+import { useManageSheet } from '../_base/ui';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
@@ -58,6 +62,7 @@ interface ItemFormProps {
 }
 
 export function ItemForm({ id, prevValues }: ItemFormProps) {
+  const sheet = useManageSheet();
   const pathname = usePathname();
   const formSchema = createFormSchema(!!id);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -80,13 +85,19 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         : await createItem({ values: submitValues, pathname });
 
       if (!success || !data) {
-        throw new Error(error || '저장에 실패했습니다.');
+        toast.error(id ? CRUD_ERRORS.UPDATE_FAILED() : CRUD_ERRORS.CREATE_FAILED(), {
+          description: error,
+        });
+        return;
       }
 
-      alert('저장되었습니다.');
+      toast.success(id ? SUCCESS_MESSAGES.UPDATE_SUCCESS() : SUCCESS_MESSAGES.CREATE_SUCCESS());
+      sheet.close();
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : '저장에 실패했습니다.');
+      toast.error(GENERAL_ERRORS.UNEXPECTED, {
+        description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
+      });
     }
   }
 

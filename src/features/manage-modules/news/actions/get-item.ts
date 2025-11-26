@@ -1,39 +1,11 @@
-'use server';
-
-import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformSnakeToCamel } from '@/shared/utils/objects';
-import { createServerAction } from '@/shared/utils/server-actions';
-import { Result } from '@/shared/utils/results';
-import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { GetItemParams } from '../../_base/config';
+import { getItem as baseGetItem } from '../../_base/actions/get-item';
 import { CONFIG } from '../config';
+import { type GetItemParams } from '../../_base/config';
+import { type ActionResult } from '@/shared/types/results';
 import { type ItemDTO } from '../config';
 
-export const getItem = createServerAction<GetItemParams, ItemDTO>({
-  name: 'getItem',
-  auth: true,
-  validate: params => {
-    if (!params.id) {
-      return Result.error(VALIDATION_ERRORS.NO_ID);
-    }
-    return null;
-  },
-  handler: async ({ id }) => {
-    const supabase = createServerClient();
-
-    const { data: rawData, error } = await supabase
-      .from(CONFIG.tableName)
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (error) {
-      console.error('Supabase error:', error);
-      return Result.error(CRUD_ERRORS.READ_FAILED());
-    }
-
-    const item = transformSnakeToCamel(rawData);
-
-    return Result.success(item as ItemDTO);
-  },
-});
+export async function getItem(
+  params: GetItemParams
+): Promise<ActionResult<ItemDTO>> {
+  return await baseGetItem({ tableName: CONFIG.tableName, ...params });
+}
