@@ -6,8 +6,8 @@ import { ItemForm } from './item-form';
 import { getItem } from './actions/get-item';
 
 export function ItemSheet() {
-  const { manageSheetData } = useManageSheet();
-  const { id, mode } = manageSheetData ?? {};
+  const manageSheet = useManageSheet();
+  const { id, mode } = manageSheet.data ?? {};
   const { prevValues } = useManageItemData(getItem);
 
   return (
