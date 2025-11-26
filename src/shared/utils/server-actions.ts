@@ -1,4 +1,4 @@
-import { isRedirectError } from 'next/dist/client/components/redirect';
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { type ActionResult as TActionResult } from '@/shared/types/action-results';
 import { requireAuth } from '@/features/auth';
 
