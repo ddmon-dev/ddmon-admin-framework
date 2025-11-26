@@ -110,9 +110,7 @@ export function createServerAction<T, R>(options: ServerActionOptions<T, R>) {
       // 예상치 못한 에러만 여기서 처리 (네트워크, JSON 파싱 등)
       console.error(`[${name}] Unexpected error:`, error);
 
-      const message = error instanceof Error ? error.message : GENERAL_ERRORS.UNEXPECTED;
-
-      return ActionResult.error(message);
+      return ActionResult.error(GENERAL_ERRORS.UNEXPECTED);
     }
   };
 }

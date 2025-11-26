@@ -3,7 +3,7 @@
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
-import { VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { GetItemParams } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
@@ -29,7 +29,7 @@ export const getItem = createServerAction<GetItemParams, ItemDTO>({
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(error.message);
+      return ActionResult.error(CRUD_ERRORS.READ_FAILED());
     }
 
     const item = transformSnakeToCamel(rawData);

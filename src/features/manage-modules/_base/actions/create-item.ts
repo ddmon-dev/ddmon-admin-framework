@@ -6,6 +6,7 @@ import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/obj
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
 import { CreateItemParams } from '../config';
 import { TableName } from '@/shared/lib/supabase/db-helpers';
+import { CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 export const createItem = createServerAction<CreateItemParams<any> & { tableName: TableName }, any>(
   {
@@ -24,7 +25,7 @@ export const createItem = createServerAction<CreateItemParams<any> & { tableName
 
       if (error) {
         console.error('Supabase error:', error);
-        return ActionResult.error(error.message);
+        return ActionResult.error(CRUD_ERRORS.CREATE_FAILED());
       }
 
       if (pathname) {

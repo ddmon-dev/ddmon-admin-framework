@@ -7,6 +7,7 @@ import { createServerAction, ActionResult } from '@/shared/utils/server-actions'
 import { CreateItemParams } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
+import { CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>({
   name: 'createItem',
@@ -24,7 +25,7 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(error.message);
+      return ActionResult.error(CRUD_ERRORS.CREATE_FAILED());
     }
 
     if (pathname) {

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
-import { VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { UpdateItemParams } from '../../_base/config';
 import { getOldFiles, cleanupDeletedFiles } from '@/shared/lib/file-system';
 import { CONFIG } from '../config';
@@ -42,7 +42,7 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(error.message);
+      return ActionResult.error(CRUD_ERRORS.UPDATE_FAILED());
     }
 
     // 스토리지 정리
