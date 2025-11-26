@@ -5,6 +5,7 @@ import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
 import { BASE_CONFIG, GetListParams, ListProps } from '../config';
 import { TableName } from '@/shared/lib/supabase/db-helpers';
+import { CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 export const getList = createServerAction<
   GetListParams & { tableName: TableName },
@@ -40,7 +41,7 @@ export const getList = createServerAction<
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(error.message);
+      return ActionResult.error(CRUD_ERRORS.READ_FAILED());
     }
 
     const data = rawData.map(row => transformSnakeToCamel(row));

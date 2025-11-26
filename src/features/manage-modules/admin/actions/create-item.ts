@@ -9,6 +9,7 @@ import { createServerAction, ActionResult } from '@/shared/utils/server-actions'
 import { CreateItemParams } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
+import { CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 
 export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>({
   name: 'createItem',
@@ -21,7 +22,7 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
 
     // 비밀번호 검증 및 해시
     if (!values.password) {
-      return ActionResult.error('비밀번호는 필수입니다.');
+      return ActionResult.error(VALIDATION_ERRORS.REQUIRED_FIELD('비밀번호'));
     }
 
     const validatePassword = schemaPresets
@@ -48,7 +49,7 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(error.message);
+      return ActionResult.error(CRUD_ERRORS.CREATE_FAILED('관리자'));
     }
 
     if (pathname) {

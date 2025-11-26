@@ -6,6 +6,7 @@ import { createServerAction, ActionResult } from '@/shared/utils/server-actions'
 import { BASE_CONFIG, GetListParams, ListProps } from '../../_base/config';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
+import { CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 interface Params extends GetListParams {
   category?: string;
@@ -49,7 +50,7 @@ export const getList = createServerAction<Params, ListProps<ItemDTO>>({
     // 에러 처리
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(error.message);
+      return ActionResult.error(CRUD_ERRORS.READ_FAILED());
     }
 
     const data = rawData.map(row => transformSnakeToCamel(row)) as ItemDTO[];

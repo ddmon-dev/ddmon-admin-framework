@@ -1,25 +1,29 @@
 'use server';
 
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
+import { CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 
 import { requireAuth } from '../utils/server';
 import { hashPassword, verifyPassword } from '../utils/password';
-import { type UpdateProfileValues, type UpdateProfileResult } from '../types';
+import { type UpdateProfileValues } from '../types';
 
-export async function updateProfile(values: UpdateProfileValues): Promise<UpdateProfileResult> {
-  // 인증 확인 (로그인한 본인만)
-  const user = await requireAuth();
-
-  try {
+export const updateProfile = createServerAction<UpdateProfileValues, void>({
+  name: 'updateProfile',
+  auth: true,
+  validate: values => {
+    // 새 비밀번호가 있으면 현재 비밀번호도 필수
+    if (values.newPassword && !values.currentPassword) {
+      return ActionResult.error(VALIDATION_ERRORS.REQUIRED_FIELD('현재 비밀번호'));
+    }
+    return null;
+  },
+  handler: async values => {
+    const user = await requireAuth();
     const supabase = createServerClient();
 
     // 비밀번호 변경 시 현재 비밀번호 검증
     if (values.newPassword) {
-      if (!values.currentPassword) {
-        return { success: false, error: '현재 비밀번호를 입력하세요.' };
-      }
-
       // DB에서 현재 해시된 비밀번호 가져오기
       const { data: adminData, error: fetchError } = await supabase
         .from('admins')
@@ -28,14 +32,14 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Update
         .single();
 
       if (fetchError || !adminData) {
-        return { success: false, error: CRUD_ERRORS.NOT_FOUND('사용자 정보') };
+        return ActionResult.error(CRUD_ERRORS.NOT_FOUND('사용자 정보'));
       }
 
       // 현재 비밀번호 검증
-      const isValid = await verifyPassword(values.currentPassword, adminData.password);
+      const isValid = await verifyPassword(values.currentPassword!, adminData.password);
 
       if (!isValid) {
-        return { success: false, error: '현재 비밀번호가 일치하지 않습니다.' };
+        return ActionResult.error('현재 비밀번호가 일치하지 않습니다.');
       }
     }
 
@@ -57,16 +61,14 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Update
       .eq('id', user.id);
 
     if (updateError) {
+      console.error('Supabase error:', updateError);
       if (updateError.code === '23505') {
         // UNIQUE 제약 위반
-        return { success: false, error: CRUD_ERRORS.DUPLICATE('이메일') };
+        return ActionResult.error(CRUD_ERRORS.DUPLICATE('이메일'));
       }
-      throw new Error(updateError.message);
+      return ActionResult.error(CRUD_ERRORS.UPDATE_FAILED('프로필'));
     }
 
-    return { success: true };
-  } catch (error) {
-    console.error(error);
-    return { success: false, error: CRUD_ERRORS.UPDATE_FAILED('프로필') };
-  }
-}
+    return ActionResult.success(undefined);
+  },
+});

@@ -15,8 +15,3 @@ export type UpdateProfileValues = {
   newPassword?: string;
   confirmPassword?: string;
 };
-
-export type UpdateProfileResult = {
-  success: boolean;
-  error?: string;
-};

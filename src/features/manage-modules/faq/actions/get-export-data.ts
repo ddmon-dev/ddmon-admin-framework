@@ -5,6 +5,7 @@ import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
+import { CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 /**
  * 엑셀 다운로드용 전체 데이터 조회
@@ -27,7 +28,7 @@ export const getExportData = createServerAction<void, ItemDTO[]>({
     // 에러 처리
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(error.message);
+      return ActionResult.error(CRUD_ERRORS.READ_FAILED());
     }
 
     

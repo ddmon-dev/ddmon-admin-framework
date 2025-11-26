@@ -4,6 +4,7 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
 import { GetExportDataParams } from '../config';
+import { CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 /**
  * 엑셀 다운로드용 전체 데이터 조회
@@ -24,7 +25,7 @@ export const getExportData = createServerAction<GetExportDataParams, any[]>({
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(error.message);
+      return ActionResult.error(CRUD_ERRORS.READ_FAILED());
     }
 
     const data = rawData.map(row => transformSnakeToCamel(row));

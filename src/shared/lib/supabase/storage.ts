@@ -56,7 +56,7 @@ export async function createPresignedUploadUrl(
     console.error('Presigned URL 발급 실패:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Presigned URL 발급에 실패했습니다.',
+      error: 'Presigned URL 발급에 실패했습니다.',
     };
   }
 }
@@ -94,7 +94,7 @@ export async function createMultiplePresignedUploadUrls(
     console.error('다중 Presigned URL 발급 실패:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Presigned URL 발급에 실패했습니다.',
+      error: 'Presigned URL 발급에 실패했습니다.',
     };
   }
 }
@@ -136,7 +136,7 @@ export async function deleteFilesFromStorage(urls: string[]): Promise<FileDelete
     console.error('파일 일괄 삭제 실패:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : FILE_ERRORS.FILE_DELETE_FAILED,
+      error: FILE_ERRORS.FILE_DELETE_FAILED,
     };
   }
 }
@@ -183,7 +183,7 @@ export async function deleteFolderFromStorage(folderPath: string): Promise<FileD
     console.error('폴더 삭제 실패:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : FILE_ERRORS.FOLDER_DELETE_FAILED,
+      error: FILE_ERRORS.FOLDER_DELETE_FAILED,
     };
   }
 }

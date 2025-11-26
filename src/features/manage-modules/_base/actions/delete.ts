@@ -5,7 +5,7 @@ import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { deleteFolderFromStorage } from '@/shared/lib/file-system';
 import { createServerAction, ActionResult } from '@/shared/utils/server-actions';
-import { VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { DeleteItemParams } from '../config';
 
 /**
@@ -32,7 +32,7 @@ export const softDelete = createServerAction<DeleteItemParams, any>({
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(error.message);
+      return ActionResult.error(CRUD_ERRORS.DELETE_FAILED());
     }
 
     // 성공 처리
@@ -65,7 +65,7 @@ export const hardDelete = createServerAction<DeleteItemParams, any>({
 
     if (error) {
       console.error('Supabase error:', error);
-      return ActionResult.error(error.message);
+      return ActionResult.error(CRUD_ERRORS.DELETE_FAILED());
     }
 
     // Storage 폴더 전체 삭제
