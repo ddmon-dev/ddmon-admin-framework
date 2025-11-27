@@ -1,0 +1,1 @@
+export const BUCKET_NAME = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_NAME ?? '';

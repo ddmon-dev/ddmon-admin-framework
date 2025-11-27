@@ -4,7 +4,7 @@ import { createBrowserClient } from '../supabase/client';
 import { toast } from 'sonner';
 import { FILE_ERRORS } from '@/shared/constants/error-messages';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
-import { BUCKET_NAME } from '@/shared/lib/supabase/storage';
+import { BUCKET_NAME } from '@/shared/lib/supabase/constants';
 import { extractFilePathFromUrl } from './utils';
 import { Result } from '@/shared/utils/results';
 import { type ActionResult } from '@/shared/types/results';
