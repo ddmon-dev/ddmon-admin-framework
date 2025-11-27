@@ -5,6 +5,7 @@ import { useQueryParams } from '@/shared/hooks/use-query-params';
 interface UseDataListOptions {
   defaultSort?: string;
   pageKey?: string;
+  pageSizeKey?: string;
   sortKey?: string;
   searchKey?: string;
   categoryKey?: string;
@@ -12,19 +13,21 @@ interface UseDataListOptions {
 
 interface UseDataListParams {
   totalCount: number;
-  pageSize: number;
+  defaultPageSize?: number;
   options?: UseDataListOptions;
 }
 
-export function useDataList({ totalCount, pageSize, options }: UseDataListParams) {
+export function useDataList({ totalCount, defaultPageSize = 15, options }: UseDataListParams) {
   const queryParams = useQueryParams();
 
   const pageKey = options?.pageKey || 'page';
+  const pageSizeKey = options?.pageSizeKey || 'pageSize';
   const sortKey = options?.sortKey || 'sort';
   const searchKey = options?.searchKey || 'search';
   const categoryKey = options?.categoryKey || 'category';
 
   const rawPage = Number(queryParams.get(pageKey)) || 1;
+  const pageSize = Number(queryParams.get(pageSizeKey)) || defaultPageSize;
   const sort = queryParams.get(sortKey) || options?.defaultSort || '';
   const search = queryParams.get(searchKey) || '';
   const category = queryParams.get(categoryKey) || '';
@@ -37,5 +40,5 @@ export function useDataList({ totalCount, pageSize, options }: UseDataListParams
   const pageCount = Math.ceil(totalCount / pageSize);
   const page = Math.min(Math.max(1, rawPage), Math.max(1, pageCount));
 
-  return { page, sort, search, category, pageCount, setPage, setSort, setSearch, setCategory };
+  return { page, pageSize, sort, search, category, pageCount, setPage, setSort, setSearch, setCategory };
 }
