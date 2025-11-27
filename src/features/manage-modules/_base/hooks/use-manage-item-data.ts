@@ -6,7 +6,8 @@ import type { ActionResult } from '@/shared/types/results';
 import type { DbFilesJSONB } from '@/shared/lib/file-system';
 import { useManageSheet } from '../ui/manage-sheet';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { useMinimumDuration } from '@/shared/hooks';
+import { atLeast } from '@/shared/utils/delays';
+import { UX_CONFIG } from '@/app.config';
 
 export type GetItemAction<T> = (params: { id: string }) => Promise<ActionResult<T>>;
 
@@ -46,9 +47,6 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 최소 지속 시간 적용
-  const showLoading = useMinimumDuration(isLoading);
-
   useEffect(() => {
     const fetchItem = async () => {
       if (!id) {
@@ -60,42 +58,44 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
       setIsLoading(true);
       setError(null);
 
-      try {
-        const { success, data, error: fetchError } = await getItemAction({ id });
+      await atLeast(async () => {
+        try {
+          const { success, data, error: fetchError } = await getItemAction({ id });
 
-        if (!success) {
-          setError(fetchError || CRUD_ERRORS.READ_FAILED());
-          return;
+          if (!success) {
+            setError(fetchError || CRUD_ERRORS.READ_FAILED());
+            return;
+          }
+
+          // 변환할 날짜 필드 목록 (기본 + 추가)
+          const dateFields = [...DEFAULT_DATE_FIELDS, ...(options?.additionalDateFields || [])];
+
+          // 날짜 필드 변환 (string -> Date)
+          // supabase에서 조회한 timestamp field의 데이터는 string 타입으로 넘어오므로, Date 객체로 변환해줌
+          const convertedDateFields = Object.fromEntries(
+            dateFields
+              .filter(field => data[field as keyof typeof data] != null)
+              .map(field => [field, new Date(data[field as keyof typeof data] as string)])
+          );
+
+          const transformedData = {
+            ...data,
+            files: transformFilesToUploadValues(data.files),
+            ...convertedDateFields,
+          } as T;
+
+          setPrevValues(transformedData);
+        } catch (error) {
+          setError(error instanceof Error ? error.message : GENERAL_ERRORS.UNEXPECTED);
+          console.error(error);
         }
+      }, UX_CONFIG.MIN_LOADING_TIME);
 
-        // 변환할 날짜 필드 목록 (기본 + 추가)
-        const dateFields = [...DEFAULT_DATE_FIELDS, ...(options?.additionalDateFields || [])];
-
-        // 날짜 필드 변환 (string -> Date)
-        // supabase에서 조회한 timestamp field의 데이터는 string 타입으로 넘어오므로, Date 객체로 변환해줌
-        const convertedDateFields = Object.fromEntries(
-          dateFields
-            .filter(field => data[field as keyof typeof data] != null)
-            .map(field => [field, new Date(data[field as keyof typeof data] as string)])
-        );
-
-        const transformedData = {
-          ...data,
-          files: transformFilesToUploadValues(data.files),
-          ...convertedDateFields,
-        } as T;
-
-        setPrevValues(transformedData);
-      } catch (error) {
-        setError(error instanceof Error ? error.message : GENERAL_ERRORS.UNEXPECTED);
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
+      setIsLoading(false);
     };
 
     fetchItem();
   }, [id, getItemAction]);
 
-  return { prevValues, isLoading: showLoading, error };
+  return { prevValues, isLoading, error };
 }

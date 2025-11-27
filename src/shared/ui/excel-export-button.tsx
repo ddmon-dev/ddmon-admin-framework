@@ -5,7 +5,7 @@ import { Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { exportToExcel, type ExcelColumn } from '@/shared/lib/excel';
-import { delay } from '@/shared/utils/delay';
+import { delay } from '@/shared/utils/delays';
 import { type ActionResult } from '@/shared/types/results';
 
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';

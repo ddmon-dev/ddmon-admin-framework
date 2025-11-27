@@ -3,7 +3,7 @@ import type { FileLoader } from '@ckeditor/ckeditor5-upload';
 
 import { createPresignedUploadUrl } from '@/shared/lib/supabase/storage';
 import { generateUniqueFileName } from '@/shared/lib/file-system/utils';
-import { mbToBytes } from '@/shared/utils/format';
+import { mbToBytes } from '@/shared/utils/formats';
 import { DEFAULT_IMAGE_CONFIG } from './config';
 import { GENERAL_ERRORS, FILE_ERRORS } from '@/shared/constants/error-messages';
 
