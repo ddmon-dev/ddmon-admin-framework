@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { UX_CONFIG } from '@/app-config';
+import { UX_CONFIG } from '@/app.config';
 
 /**
  * 상태에 최소 지속 시간을 적용하는 Hook
