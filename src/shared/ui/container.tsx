@@ -35,5 +35,9 @@ export function ContentContainer({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={cn('px-4 w-full mx-auto', className)}>{children}</div>;
+  return (
+    <div className={cn('py-4 px-4 md:px-8 lg:px-10 md:py-8 lg:py-10 w-full mx-auto', className)}>
+      {children}
+    </div>
+  );
 }

@@ -14,7 +14,7 @@ export default async function AuthenticatedLayout({ children }: { children: Reac
         <AppSidebar />
         <SidebarInset>
           <AppHeader />
-          <ContentContainer className='py-10 px-10'>{children}</ContentContainer>
+          <ContentContainer>{children}</ContentContainer>
         </SidebarInset>
       </SidebarProvider>
     </IdleLogoutProvider>

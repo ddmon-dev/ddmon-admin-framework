@@ -7,7 +7,7 @@ import { AppBreadcrumb } from '@/widgets/app-breadcrumb/breadcrumb';
 export function AppHeader() {
   return (
     <header className={cn('border-b')}>
-      <ContentContainer className={cn('py-3 flex items-center gap-2')}>
+      <ContentContainer className={cn('py-3! px-4! flex items-center gap-2')}>
         <SidebarTrigger className={cn('-ml-1')} />
         <Separator
           orientation='vertical'
