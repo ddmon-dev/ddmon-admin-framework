@@ -129,10 +129,22 @@ import { AppSidebar } from '@/widgets/app-sidebar/sidebar';
 | **UI 컴포넌트**    | kebab-case     | \`sign-in-form.tsx\`<br>\`item-sheet.tsx\`   |
 | **Hooks**          | use-kebab-case | \`use-mobile.ts\`<br>\`use-query-params.ts\` |
 | **Server Actions** | kebab-case     | \`get-list.ts\`<br>\`sign-in.ts\`            |
-| **설정 파일**      | config.ts      | \`config.ts\`                                |
+| **설정 파일 (도메인)** | config.ts      | \`config.ts\`                                |
+| **설정 파일 (루트)**   | *.config.ts    | \`app.config.ts\`, \`next.config.ts\`        |
 | **타입 파일**      | types.ts       | \`types.ts\`                                 |
 | **상수 파일**      | constants.ts   | \`constants.ts\`                             |
 | **유틸리티**       | utils.ts       | \`utils.ts\`                                 |
+
+### 3. 설정 파일 패턴
+
+| 레벨 | 패턴 | 예시 |
+|------|------|------|
+| **루트 레벨** | \`*.config.ts\` | \`app.config.ts\`, \`next.config.ts\` |
+| **도메인 레벨** | \`config.ts\` | \`features/auth/config.ts\` |
+
+**원칙**:
+- 루트 레벨 설정 파일은 \`.config.ts\` 패턴으로 역할을 명확히 표현
+- 도메인 레벨은 폴더명이 컨텍스트를 제공하므로 \`config.ts\`로 충분
 
 ---
 
