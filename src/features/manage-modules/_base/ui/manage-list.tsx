@@ -1,7 +1,6 @@
 'use client';
 
 import { type ColumnDef } from '@tanstack/react-table';
-import { useQueryParams } from '@/shared/hooks/use-query-params';
 import { DataList, useDataList } from '@/shared/ui/data-list';
 import { useManageSheet } from './manage-sheet';
 import { BASE_CONFIG } from '../config';
@@ -19,13 +18,11 @@ export function ManageList<TData extends { id?: string }>({
   listColumns,
   onRowClick,
 }: ManageListProps<TData>) {
-  const queryParams = useQueryParams();
   const manageSheet = useManageSheet();
-  const pageSize = Number(queryParams.get('pageSize')) || BASE_CONFIG.defaultListPageSize;
 
   const { page, setPage, pageCount } = useDataList({
     totalCount,
-    pageSize,
+    defaultPageSize: BASE_CONFIG.defaultListPageSize,
   });
 
   const handleRowClick = (row: TData) => {
