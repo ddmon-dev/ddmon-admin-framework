@@ -1,5 +1,5 @@
 export * from './delete';
-export * from './create-get-list-action';
+export * from './get-list-factory';
 export * from './get-item';
 export * from './create-item';
 export * from './update-item';

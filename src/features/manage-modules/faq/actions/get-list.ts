@@ -1,4 +1,4 @@
-import { createGetListAction } from '../../_base/actions/create-get-list-action';
+import { createGetListAction } from '../../_base/actions/get-list-factory';
 import { CONFIG, type ItemDTO } from '../config';
 
 export const getList = createGetListAction<ItemDTO>({
