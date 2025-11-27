@@ -1,3 +1,5 @@
+import { josa } from 'es-hangul';
+
 // ============================================================
 // 인증 에러
 // ============================================================
@@ -16,12 +18,12 @@ export const AUTH_ERRORS = {
 // ============================================================
 export const VALIDATION_ERRORS = {
   NO_ID: 'ID값이 없습니다.',
-  REQUIRED_FIELD: (fieldName: string) => `${fieldName}은(는) 필수 입력값입니다.`,
+  REQUIRED_FIELD: (fieldName: string) => `${josa(fieldName, '은/는')} 필수 입력값입니다.`,
   INVALID_FORMAT: (fieldName: string) => `${fieldName}의 형식이 올바르지 않습니다.`,
   TOO_LONG: (fieldName: string, maxLength: number) =>
-    `${fieldName}은(는) ${maxLength}자 이하여야 합니다.`,
+    `${josa(fieldName, '은/는')} ${maxLength}자 이하여야 합니다.`,
   TOO_SHORT: (fieldName: string, minLength: number) =>
-    `${fieldName}은(는) ${minLength}자 이상이어야 합니다.`,
+    `${josa(fieldName, '은/는')} ${minLength}자 이상이어야 합니다.`,
 } as const;
 
 // ============================================================
@@ -29,14 +31,14 @@ export const VALIDATION_ERRORS = {
 // ============================================================
 export const CRUD_ERRORS = {
   CREATE_FAILED: (entityName: string = '데이터') =>
-    `${entityName}을(를) 생성하는 중 오류가 발생했습니다.`,
+    `${josa(entityName, '을/를')} 생성하는 중 오류가 발생했습니다.`,
   READ_FAILED: (entityName: string = '데이터') =>
-    `${entityName}을(를) 조회하는 중 오류가 발생했습니다.`,
+    `${josa(entityName, '을/를')} 조회하는 중 오류가 발생했습니다.`,
   UPDATE_FAILED: (entityName: string = '데이터') =>
-    `${entityName}을(를) 수정하는 중 오류가 발생했습니다.`,
+    `${josa(entityName, '을/를')} 수정하는 중 오류가 발생했습니다.`,
   DELETE_FAILED: (entityName: string = '데이터') =>
-    `${entityName}을(를) 삭제하는 중 오류가 발생했습니다.`,
-  NOT_FOUND: (entityName: string) => `${entityName}을(를) 찾을 수 없습니다.`,
+    `${josa(entityName, '을/를')} 삭제하는 중 오류가 발생했습니다.`,
+  NOT_FOUND: (entityName: string) => `${josa(entityName, '을/를')} 찾을 수 없습니다.`,
   DUPLICATE: (fieldName: string) => `이미 존재하는 ${fieldName}입니다.`,
 } as const;
 
