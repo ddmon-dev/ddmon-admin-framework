@@ -6,47 +6,65 @@ import { createServerAction } from '@/shared/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { BASE_CONFIG, GetListParams, ListProps } from '../config';
 import { TableName } from '@/shared/lib/supabase/db-helpers';
-import { CRUD_ERRORS } from '@/shared/constants/error-messages';
 
-export const getList = createServerAction<
-  GetListParams & { tableName: TableName },
-  ListProps<any>
->({
-  name: 'getList',
-  auth: true,
-  handler: async ({
-    tableName,
-    page: rawPage = '1',
-    search = '',
-    pageSize = BASE_CONFIG.defaultListPageSize,
-  }) => {
-    const page = Math.max(1, parseInt(rawPage) || 1);
+export const getList = createServerAction<GetListParams & { tableName: TableName }, ListProps<any>>(
+  {
+    name: 'getList',
+    auth: true,
+    handler: async ({
+      tableName,
+      page: rawPage = '1',
+      search = '',
+      pageSize = BASE_CONFIG.defaultListPageSize,
+    }) => {
+      const supabase = createServerClient();
 
-    const supabase = createServerClient();
+      // 1. count 먼저 쿼리
+      let countQuery = supabase
+        .from(tableName)
+        .select('*', { count: 'exact', head: true })
+        .eq('deleted', false);
 
-    let query = supabase
-      .from(tableName)
-      .select('*', { count: 'exact' })
-      .eq('deleted', false);
+      if (search) {
+        countQuery = countQuery.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
+      }
 
-    if (search) {
-      query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
-    }
+      const { count, error: countError } = await countQuery;
 
-    query = query.order('created_at', { ascending: false }).order('id', { ascending: false });
+      if (countError) {
+        console.error('Supabase count error:', countError);
+        return Result.success({ data: [], totalCount: 0 });
+      }
 
-    const startIndex = (page - 1) * pageSize;
-    query = query.range(startIndex, startIndex + pageSize - 1);
+      const totalCount = count || 0;
 
-    const { data: rawData, count, error } = await query;
+      // 2. page 보정 (음수 → 1, pageCount 초과 → 마지막 페이지)
+      const pageCount = Math.ceil(totalCount / pageSize);
+      const rawPageNum = parseInt(rawPage) || 1;
+      const page = Math.min(Math.max(1, rawPageNum), Math.max(1, pageCount));
 
-    if (error) {
-      console.error('Supabase error:', error);
-      return Result.error(CRUD_ERRORS.READ_FAILED());
-    }
+      // 3. 보정된 page로 data 쿼리
+      let dataQuery = supabase.from(tableName).select('*').eq('deleted', false);
 
-    const data = rawData.map(row => transformSnakeToCamel(row));
+      if (search) {
+        dataQuery = dataQuery.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
+      }
 
-    return Result.success({ data, totalCount: count || 0 });
-  },
-});
+      dataQuery = dataQuery.order('created_at', { ascending: false }).order('id', { ascending: false });
+
+      const startIndex = (page - 1) * pageSize;
+      dataQuery = dataQuery.range(startIndex, startIndex + pageSize - 1);
+
+      const { data: rawData, error: dataError } = await dataQuery;
+
+      if (dataError) {
+        console.error('Supabase data error:', dataError);
+        return Result.success({ data: [], totalCount });
+      }
+
+      const data = rawData.map(row => transformSnakeToCamel(row));
+
+      return Result.success({ data, totalCount });
+    },
+  }
+);
