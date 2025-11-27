@@ -148,18 +148,27 @@ export type UpdateItemValues = DbUpdate<'products'>;
 
 ### 3. Server Actions 수정
 
-- `tableName` 변경
-- 필터링 로직 조정
+팩토리 함수를 사용하여 간단하게 설정합니다.
 
 ```typescript
 // actions/get-list.ts
-const { data, error } = await supabase
-  .from('products')  // ← 변경
-  .select('*', { count: 'exact' })
-  .eq('deleted', false)
-  .range(start, end)
-  .order('created_at', { ascending: false });
+import { createGetListAction } from '../../_base/actions/get-list-factory';
+import { CONFIG, type ItemDTO } from '../config';
+
+export const getList = createGetListAction<ItemDTO>({
+  tableName: CONFIG.tableName,
+  searchFields: ['name', 'description'],  // 검색 대상 필드
+});
 ```
+
+**팩토리 옵션:**
+- `tableName`: 테이블명 (필수)
+- `searchFields`: 검색 필드 (기본: ['name', 'email'])
+- `auth`: 인증 설정 (기본: true, 예: { requireSuper: true })
+- `selectColumns`: SELECT 컬럼 (기본: '*')
+- `orderBy`: 정렬 설정 (기본: created_at desc)
+- `softDelete`: deleted 필터 (기본: true)
+- `categoryField`: 카테고리 필드명 (기본: 'category')
 
 ### 4. 컴포넌트 수정
 
@@ -169,22 +178,53 @@ const { data, error } = await supabase
 
 ### 5. 페이지 통합
 
+ManageContainer의 render props 패턴을 사용합니다.
+
 ```typescript
 // app/(protected)/products/page.tsx
-import { getList } from '@/features/manage-modules/products/actions';
-import { ProductList, ProductItemSheet } from '@/features/manage-modules/products';
+import { type SearchParams } from '@/shared/types/search-params';
+import ProductsModule from '@/features/manage-modules/products';
 
-export default async function ProductsPage() {
-  const { list, totalCount } = await getList({});
+interface Props {
+  searchParams: SearchParams;
+}
 
+export default function ProductsPage({ searchParams }: Props) {
+  return <ProductsModule searchParams={searchParams} />;
+}
+```
+
+```typescript
+// features/manage-modules/products/index.tsx
+import { ManageContainer } from '../_base/ui';
+import { CONFIG, type ItemDTO } from './config';
+import { getList } from './actions/get-list';
+import { Filters, List, ItemSheet } from './';
+
+export default function ManageModule({ searchParams }: Props) {
   return (
-    <ManageContainer>
-      <ProductList list={list} totalCount={totalCount} />
-      <ProductItemSheet />
+    <ManageContainer<ItemDTO>
+      moduleName={CONFIG.moduleName}
+      searchParams={searchParams}
+      getList={getList}
+    >
+      {({ data, totalCount }) => (
+        <>
+          <Filters />
+          <List data={data} totalCount={totalCount} />
+          <ItemSheet />
+        </>
+      )}
     </ManageContainer>
   );
 }
 ```
+
+**ManageContainer가 처리하는 것:**
+- searchParams 파싱
+- getList 호출 및 데이터 페칭
+- 공통 레이아웃 (제목, 생성 버튼)
+- ManageSheetProvider 래핑
 
 ## 베스트 프랙티스
 
