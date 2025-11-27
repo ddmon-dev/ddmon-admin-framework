@@ -93,19 +93,19 @@ export interface AlertDialogComponentProps {
 const VARIANT_CONFIG = {
   success: {
     icon: CheckCircle2,
-    iconClassName: 'h-5 w-5 text-green-600',
+    iconClassName: 'h-5 w-5 text-success',
   },
   error: {
     icon: XCircle,
-    iconClassName: 'h-5 w-5 text-red-600',
+    iconClassName: 'h-5 w-5 text-destructive',
   },
   warning: {
     icon: AlertTriangle,
-    iconClassName: 'h-5 w-5 text-yellow-600',
+    iconClassName: 'h-5 w-5 text-warning',
   },
   default: {
     icon: Info,
-    iconClassName: 'h-5 w-5 text-blue-600',
+    iconClassName: 'h-5 w-5 text-info',
   },
 } as const;
 
