@@ -5,6 +5,7 @@ import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { SortingButton } from './sorting-button';
+import { PageSizeSelect } from './page-size-select';
 
 import {
   Pagination,
@@ -21,6 +22,7 @@ interface DataListProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
 
+  totalCount: number;
   pageCount: number;
   currentPage?: number;
   maxVisible?: number;
@@ -44,6 +46,7 @@ interface DataListProps<TData> {
 export function DataList<TData>({
   data,
   columns,
+  totalCount,
   pageCount,
   currentPage = 1,
   maxVisible,
@@ -117,6 +120,9 @@ export function DataList<TData>({
 
   return (
     <div className='w-full'>
+      <div className='flex items-center justify-between mb-2'>
+        <span className='text-sm text-muted-foreground font-semibold'>Total ({totalCount})</span>
+      </div>
       <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
@@ -183,7 +189,7 @@ export function DataList<TData>({
       </div>
 
       {pageCount > 0 && (
-        <div className='sticky bottom-0 bg-background'>
+        <div className='sticky bottom-0 bg-background flex items-center justify-between'>
           <DataListPagination
             pageCount={pageCount}
             currentPage={currentPage}
@@ -191,6 +197,7 @@ export function DataList<TData>({
             mobileMaxVisible={mobileMaxVisible}
             onPageChange={onPageChange}
           />
+          <PageSizeSelect />
         </div>
       )}
     </div>

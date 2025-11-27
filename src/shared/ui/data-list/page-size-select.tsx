@@ -1,0 +1,43 @@
+'use client';
+
+import { PAGINATION_CONFIG } from '@/app.config';
+import { useQueryParams } from '@/shared/hooks/use-query-params';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
+
+interface PageSizeSelectProps {
+  paramKey?: string;
+  options?: number[];
+}
+
+export function PageSizeSelect({
+  paramKey = 'pageSize',
+  options = PAGINATION_CONFIG.PAGE_SIZE_OPTIONS,
+}: PageSizeSelectProps) {
+  const { get, set } = useQueryParams();
+  const pageSize = get(paramKey) || options[0].toString();
+
+  const handlePageSizeChange = (value: string) => {
+    set({ [paramKey]: value, page: '1' });
+  };
+
+  return (
+    <Select
+      value={pageSize}
+      onValueChange={handlePageSizeChange}
+    >
+      <SelectTrigger className='w-32'>
+        <SelectValue placeholder='페이지 크기' />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map(value => (
+          <SelectItem
+            key={value}
+            value={value.toString()}
+          >
+            {value} 개씩 보기
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}

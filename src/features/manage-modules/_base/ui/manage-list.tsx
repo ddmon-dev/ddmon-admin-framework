@@ -37,6 +37,7 @@ export function ManageList<TData extends { id?: string }>({
     <DataList
       data={data}
       columns={listColumns}
+      totalCount={totalCount}
       pageCount={pageCount}
       currentPage={page}
       maxVisible={BASE_CONFIG.defaultListPaginationMaxVisible}
