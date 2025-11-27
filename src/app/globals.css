@@ -314,7 +314,7 @@
   }
 }
 
-/* Sidebar Menu Active State */
-[data-slot='sidebar-menu-button'][data-active='true'] {
-  @apply bg-sidebar-accent text-primary font-medium shadow-sm;
+/* Sonner Toast */
+[data-sonner-toast] {
+  border-radius: var(--radius) !important;
 }
