@@ -139,7 +139,7 @@ src/
 │   ├── app-breadcrumb/
 │   └── app-header/
 └── shared/                  # 공유 레이어
-    ├── ui/                  # 59개 컴포넌트 (Shadcn UI)
+    ├── ui/                  # 67개 컴포넌트 (Shadcn UI)
     ├── lib/                 # 도메인 라이브러리
     ├── utils/               # 범용 유틸리티
     ├── hooks/
@@ -156,7 +156,8 @@ src/
 
 - **기본**: kebab-case (`user-profile.tsx`)
 - **Hooks**: use-kebab-case (`use-mobile.ts`)
-- **설정**: `config.ts`, `types.ts`
+- **설정 (도메인)**: `config.ts`, `types.ts`
+- **설정 (루트)**: `*.config.ts` (`app.config.ts`, `next.config.ts`)
 
 ### 코드 네이밍
 

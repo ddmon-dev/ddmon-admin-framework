@@ -201,4 +201,4 @@ V4는 PostCSS 플러그인 방식이므로 `globals.css`에서 설정을 관리�
 
 새로운 코드 추가 시 반드시 적절한 레이어(features, widgets, shared)에 배치합니다.
 
-자세한 내용: [architecture.md](architecture.md)
+자세한 내용: [conventions.md](conventions.md#프로젝트-아키텍처)

@@ -5,7 +5,7 @@
 | 구분 | FormFileUpload | CKEditor 이미지 업로드 |
 |------|---------------|----------------------|
 | **용도** | 폼 첨부파일 | 에디터 내 이미지 |
-| **Storage 경로** | `{모듈명}/{엔티티ID}/` | `editor/{엔티티}/{날짜}/` |
+| **Storage 경로** | `{테이블명}/{엔티티ID}/` | `editor/{엔티티}/{날짜}/` |
 | **DB 저장** | JSONB 메타데이터 | 없음 (HTML에 URL만) |
 | **관리** | 삭제 시 Storage도 삭제 | 자동 삭제 없음 |
 
@@ -19,7 +19,7 @@ Storage는 한글 파일명을 지원하지 않으므로 UUID로 저장하고 �
 
 ```typescript
 // Storage: 1234567890-abc123.pdf
-// DB: { url: "...", name: "한글파일명.pdf", size: 1024, ... }
+// DB: { url: "...", originalName: "한글파일명.pdf", size: 1024, ... }
 ```
 
 **2. 다중 파일 카테고리**
@@ -33,27 +33,40 @@ files: {
 }
 ```
 
-**3. 자동 롤백**
+**3. Presigned URL 업로드**
 
-파일 업로드 후 DB 저장 실패 시 업로드된 파일을 자동 삭제합니다.
+클라이언트에서 Storage에 직접 업로드합니다.
+
+```
+1. 클라이언트: 파일 선택
+2. Server Action: Presigned URL 발급
+3. 클라이언트: Storage에 직접 업로드
+4. Server Action: DB에 메타데이터 저장
+```
 
 ### 타입 계층
 
 ```typescript
-// DB 레이어
+// DB 레이어 - Storage에 저장된 파일 메타데이터
 type DbFileMetadata = {
   url: string;          // Storage 공개 URL
-  name: string;         // 원본 파일명
+  originalName: string; // 원본 파일명
   size: number;         // 파일 크기 (bytes)
   mimeType: string;     // MIME 타입
   uploadedAt: string;   // 업로드 시각 (ISO)
 };
 
-// Form 레이어
+// DB의 files 필드 타입
+type DbFilesJSONB = Record<string, DbFileMetadata[]>;
+
+// Form 레이어 - 폼에서 사용하는 파일 값
 type FormFileValue =
-  | { type: 'existing'; url: string; name: string; markedForDeletion?: boolean }
+  | (DbFileMetadata & { type: 'existing'; markedForDeletion?: boolean })
   | { type: 'new'; file: File }
   | null;
+
+// 폼의 files 필드 타입
+type FormFilesField = Record<string, FormFileValue[]>;
 ```
 
 ### 사용 방법
@@ -61,29 +74,22 @@ type FormFileValue =
 #### 1. 타입 정의
 
 ```typescript
-// notice/types.ts
-import { type DbFileMetadata } from '@/shared/lib/supabase/file-helpers';
+// notice/config.ts
+import type { WithFiles } from '@/shared/lib/file-system';
 
-export type ItemFiles = {
-  thumbnail?: DbFileMetadata[];
-  attachments?: DbFileMetadata[];
-};
-
-export type ItemDTO = CamelCaseKeys<RowData> & {
-  files?: ItemFiles;
-};
+export type ItemDTO = WithFiles<CamelCaseKeys<RowData>>;
+// WithFiles<T>는 T & { files?: DbFilesJSONB }로 확장
 ```
 
 #### 2. 폼 스키마
 
 ```typescript
 // notice/item-form.tsx
+import { schemaPresets } from '@/shared/schemas';
+
 const formSchema = z.object({
   title: z.string().min(1),
-  files: z.object({
-    thumbnail: z.array(fileUploadValueSchema).optional(),
-    attachments: z.array(fileUploadValueSchema).optional(),
-  }).optional(),
+  files: schemaPresets.files({ thumbnail: 0, attachments: 0 }),
 });
 ```
 
@@ -98,134 +104,99 @@ const formSchema = z.object({
   maxSize={5}
   max={1}
 />
+
+<FormFileUpload
+  control={form.control}
+  name='files.attachments'
+  label='첨부 파일'
+  acceptPreset='documents'
+  maxSize={10}
+  max={5}
+  optional
+/>
 ```
 
-#### 4. Server Action (Create)
+#### 4. 폼 제출 (item-form.tsx)
 
 ```typescript
-// actions/create-item.ts
-import { processFiles, rollbackFiles } from '@/shared/lib/supabase/file-processing';
+import { uploadFormFiles, type FormFilesField } from '@/shared/lib/file-system';
 
-export async function createItem({ values, path }: Params) {
-  const itemId = crypto.randomUUID();
-  let uploadedFiles = {};
+async function onSubmit(values: FormValues) {
+  const { files: formFiles, ...restValues } = values;
 
-  try {
-    // 파일 처리
-    uploadedFiles = await processFiles({
-      filesInput: values.files,
-      folder: `notices/${itemId}`,
-    });
+  // 1. 데이터 DB 저장 (파일 제외)
+  const { success, data, error } = id
+    ? await updateItem({ id, values: restValues, pathname })
+    : await createItem({ values: restValues, pathname });
 
-    // DB 저장
-    const { data, error } = await supabase
-      .from(tableName)
-      .insert({ ...values, id: itemId, files: uploadedFiles })
-      .select()
-      .single();
-
-    if (error) throw new Error(error.message);
-    if (path) revalidatePath(path);
-
-    return { success: true, data };
-  } catch (error) {
-    await rollbackFiles(uploadedFiles); // 롤백
-    return { success: false, error: '생성 실패' };
+  if (!success || !data) {
+    toast.error(error);
+    return;
   }
-}
-```
 
-#### 5. Server Action (Update)
+  // 2. 파일 업로드 (Presigned URL → Storage → DB 메타데이터)
+  await uploadFormFiles({
+    formFiles: formFiles as FormFilesField,
+    id: data.id,
+    tableName: CONFIG.tableName,
+    pathname,
+    updateAction: updateItem,
+  });
 
-```typescript
-// actions/update-item.ts
-export async function updateItem({ id, values, path }: Params) {
-  let uploadedFiles = {};
-  const deletedUrls: string[] = [];
-
-  try {
-    // 삭제 표시된 파일 URL 추출
-    if (values.files) {
-      for (const files of Object.values(values.files)) {
-        const markedFiles = files?.filter(f => f?.type === 'existing' && f.markedForDeletion);
-        deletedUrls.push(...markedFiles.map(f => f.url));
-      }
-    }
-
-    // 파일 처리
-    uploadedFiles = await processFiles({
-      filesInput: values.files,
-      folder: `notices/${id}`,
-    });
-
-    // DB 업데이트
-    await supabase
-      .from(tableName)
-      .update({ ...values, files: uploadedFiles })
-      .eq('id', id);
-
-    // 삭제 표시된 파일 Storage에서 삭제
-    if (deletedUrls.length > 0) {
-      await deleteFilesByUrls(deletedUrls);
-    }
-
-    if (path) revalidatePath(path);
-    return { success: true };
-  } catch (error) {
-    await rollbackFiles(uploadedFiles);
-    return { success: false, error: '업데이트 실패' };
-  }
-}
-```
-
-#### 6. Server Action (Delete)
-
-```typescript
-// actions/delete-item.ts
-import { deleteFilesByUrls } from '@/shared/lib/supabase/file-processing';
-
-export async function deleteItem({ id, path }: Params) {
-  try {
-    const { data: item } = await getItem({ id });
-
-    // 모든 카테고리의 파일 URL 추출
-    if (item?.files) {
-      const allFileUrls = Object.values(item.files).flat().map(f => f.url);
-      if (allFileUrls.length > 0) {
-        await deleteFilesByUrls(allFileUrls);
-      }
-    }
-
-    await softDelete(tableName, id);
-    if (path) revalidatePath(path);
-    return { success: true };
-  } catch (error) {
-    return { success: false, error: '삭제 실패' };
-  }
+  toast.success('저장되었습니다.');
 }
 ```
 
 ### 핵심 함수
 
-**processFiles()**: 파일 업로드 및 메타데이터 생성 (동적 처리)
+**uploadFormFiles()** (클라이언트 전용)
+
+폼 파일을 Storage에 업로드하고 DB에 메타데이터를 저장합니다.
 
 ```typescript
-processFiles({
-  filesInput: { thumbnail: [...], attachments: [...] },
-  folder: 'notices/uuid',
-}): Promise<ProcessedFiles>
+import { uploadFormFiles, type FormFilesField } from '@/shared/lib/file-system';
+
+await uploadFormFiles({
+  formFiles: formFiles as FormFilesField,
+  id: data.id,
+  tableName: CONFIG.tableName,
+  pathname,
+  updateAction: updateItem,
+});
 ```
 
-**rollbackFiles()**: 업로드된 파일 삭제 (롤백용)
+**getOldFiles() / cleanupDeletedFiles()** (Server Action 전용)
+
+수정 시 삭제된 파일을 Storage에서 정리합니다. `_base/actions/update-item.ts`에서 자동 처리됩니다.
 
 ```typescript
-rollbackFiles(processedFiles: ProcessedFiles): Promise<void>
+// update-item.ts 내부 (자동 처리됨)
+const oldFiles = await getOldFiles({ supabase, tableName, id, values });
+// ... DB 업데이트 ...
+await cleanupDeletedFiles({ oldFiles, newFiles: values.files });
 ```
 
-**deleteFilesByUrls()**: URL 배열로 파일 삭제
+**deleteFilesFromStorage() / deleteFolderFromStorage()** (Server Action 전용)
 
 ```typescript
-deleteFilesByUrls(urls: string[]): Promise<void>
+import { deleteFilesFromStorage, deleteFolderFromStorage } from '@/shared/lib/file-system';
+
+// URL 배열로 파일 삭제
+await deleteFilesFromStorage(['https://...', 'https://...']);
+
+// 폴더 전체 삭제 (Hard Delete 시)
+await deleteFolderFromStorage(`notices/${id}`);
+```
+
+**downloadFileFromStorage()** (클라이언트 전용)
+
+Storage에서 파일을 다운로드합니다. 첨부파일 목록에서 다운로드 버튼 구현 시 사용합니다.
+
+```typescript
+import { downloadFileFromStorage } from '@/shared/lib/file-system';
+
+// 파일 다운로드 (토스트 알림 포함)
+await downloadFileFromStorage(file.url, file.originalName);
 ```
 
 ---
@@ -360,7 +331,7 @@ NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
   "content": "<p>...<img src='storage.../editor/notices/20250124/image.jpg'></p>",
   "files": {
     "attachments": [
-      { "url": "storage.../notices/uuid/file.pdf", "name": "첨부파일.pdf", ... }
+      { "url": "storage.../notices/uuid/file.pdf", "originalName": "첨부파일.pdf", ... }
     ]
   }
 }
