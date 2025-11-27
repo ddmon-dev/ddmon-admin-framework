@@ -20,7 +20,7 @@ export const getList = createServerAction<
     search = '',
     pageSize = BASE_CONFIG.defaultListPageSize,
   }) => {
-    const page = parseInt(rawPage) || 1;
+    const page = Math.max(1, parseInt(rawPage) || 1);
 
     const supabase = createServerClient();
 

@@ -24,7 +24,7 @@ export function useDataList({ totalCount, pageSize, options }: UseDataListParams
   const searchKey = options?.searchKey || 'search';
   const categoryKey = options?.categoryKey || 'category';
 
-  const page = Number(queryParams.get(pageKey)) || 1;
+  const rawPage = Number(queryParams.get(pageKey)) || 1;
   const sort = queryParams.get(sortKey) || options?.defaultSort || '';
   const search = queryParams.get(searchKey) || '';
   const category = queryParams.get(categoryKey) || '';
@@ -35,6 +35,7 @@ export function useDataList({ totalCount, pageSize, options }: UseDataListParams
   const setCategory = (c: string) => queryParams.set(categoryKey, c);
 
   const pageCount = Math.ceil(totalCount / pageSize);
+  const page = Math.min(Math.max(1, rawPage), Math.max(1, pageCount));
 
   return { page, sort, search, category, pageCount, setPage, setSort, setSearch, setCategory };
 }
