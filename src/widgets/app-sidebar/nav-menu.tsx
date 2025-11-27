@@ -1,6 +1,8 @@
 'use client';
 
 import { ChevronRight, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import { cn } from '@/shared/utils/classnames';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible';
@@ -14,8 +16,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/shared/ui/sidebar';
-import Link from 'next/link';
-import { type MenuData, type MenuItem } from './types';
+import { type MenuData, type MenuItem as MenuItemType, type MenuSubItem } from './types';
 
 export function NavMenu({ data }: { data: MenuData[] }) {
   return (
@@ -37,14 +38,18 @@ export function NavMenu({ data }: { data: MenuData[] }) {
   );
 }
 
-function MenuItem({ item }: { item: MenuItem }) {
+function MenuItem({ item }: { item: MenuItemType }) {
+  const pathname = usePathname();
   const hasSubItems = item.items && item.items.length > 0;
+
+  const isActiveUrl = (url: string) => pathname.startsWith(url);
+  const hasActiveChild = (items?: MenuSubItem[]) => items?.some(subItem => isActiveUrl(subItem.url)) ?? false;
 
   if (hasSubItems) {
     return (
       <Collapsible
         asChild
-        defaultOpen={item.isActive}
+        defaultOpen={hasActiveChild(item.items)}
         className='group/collapsible'
       >
         <SidebarMenuItem>
@@ -59,7 +64,10 @@ function MenuItem({ item }: { item: MenuItem }) {
             <SidebarMenuSub>
               {item.items?.map(subItem => (
                 <SidebarMenuSubItem key={subItem.title}>
-                  <SidebarMenuSubButton asChild>
+                  <SidebarMenuSubButton
+                    asChild
+                    isActive={isActiveUrl(subItem.url)}
+                  >
                     <Link href={subItem.url}>
                       <span>{subItem.title}</span>
                     </Link>
@@ -75,7 +83,10 @@ function MenuItem({ item }: { item: MenuItem }) {
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild>
+      <SidebarMenuButton
+        asChild
+        isActive={isActiveUrl(item.url)}
+      >
         <Link href={item.url}>
           {item.icon && <item.icon />}
           <span>{item.title}</span>
