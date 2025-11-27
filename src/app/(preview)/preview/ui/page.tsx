@@ -82,6 +82,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 // Theme
 import { ThemeToggle } from '@/shared/ui/theme-switcher';
 
+// Toast
+import { toast } from 'sonner';
+
 // Section Component
 function Section({
   id,
@@ -126,6 +129,7 @@ const NAV_ITEMS = [
   { id: 'accordion', label: 'Accordion' },
   { id: 'dialogs', label: 'Dialogs' },
   { id: 'tooltips', label: 'Tooltips' },
+  { id: 'toast', label: 'Toast' },
 ];
 
 export default function UIPreviewPage() {
@@ -703,6 +707,114 @@ export default function UIPreviewPage() {
               </Tooltip>
             </Subsection>
           </TooltipProvider>
+        </Section>
+
+        {/* Toast Section */}
+        <Section
+          id='toast'
+          title='Toast (Sonner)'
+        >
+          <Subsection title='Basic Types'>
+            <Button
+              variant='outline'
+              onClick={() => toast('Default toast message')}
+            >
+              Default
+            </Button>
+            <Button
+              variant='success-light'
+              onClick={() => toast.success('Operation completed successfully!')}
+            >
+              Success
+            </Button>
+            <Button
+              variant='destructive-light'
+              onClick={() => toast.error('Something went wrong!')}
+            >
+              Error
+            </Button>
+            <Button
+              variant='warning-light'
+              onClick={() => toast.warning('Please check your input')}
+            >
+              Warning
+            </Button>
+            <Button
+              variant='info-light'
+              onClick={() => toast.info('Here is some information')}
+            >
+              Info
+            </Button>
+          </Subsection>
+
+          <Subsection title='With Description'>
+            <Button
+              variant='outline'
+              onClick={() =>
+                toast.success('Changes saved', {
+                  description: 'Your profile has been updated successfully.',
+                })
+              }
+            >
+              With Description
+            </Button>
+            <Button
+              variant='outline'
+              onClick={() =>
+                toast.error('Upload failed', {
+                  description: 'The file size exceeds the maximum limit of 10MB.',
+                })
+              }
+            >
+              Error with Description
+            </Button>
+          </Subsection>
+
+          <Subsection title='With Action'>
+            <Button
+              variant='outline'
+              onClick={() =>
+                toast('File deleted', {
+                  action: {
+                    label: 'Undo',
+                    onClick: () => toast.success('File restored!'),
+                  },
+                })
+              }
+            >
+              With Action
+            </Button>
+          </Subsection>
+
+          <Subsection title='Promise'>
+            <Button
+              variant='outline'
+              onClick={() => {
+                const promise = new Promise(resolve => setTimeout(resolve, 2000));
+                toast.promise(promise, {
+                  loading: 'Loading...',
+                  success: 'Data loaded successfully!',
+                  error: 'Failed to load data',
+                });
+              }}
+            >
+              Promise Toast
+            </Button>
+          </Subsection>
+
+          <Subsection title='Loading'>
+            <Button
+              variant='outline'
+              onClick={() => {
+                const toastId = toast.loading('Processing...');
+                setTimeout(() => {
+                  toast.success('Done!', { id: toastId });
+                }, 2000);
+              }}
+            >
+              Loading → Success
+            </Button>
+          </Subsection>
         </Section>
 
         {/* Separator */}
