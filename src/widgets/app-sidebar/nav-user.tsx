@@ -32,10 +32,10 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size='lg'
-              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+              className='group shadow-sm bg-sidebar-accent dark:bg-background data-[state=open]:text-sidebar-accent-foreground'
             >
               <UserInfo user={user} />
-              <ChevronsUpDown className='ml-auto size-4' />
+              <ChevronsUpDown className='ml-auto size-4 group-data-[state=open]:text-primary' />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -77,10 +77,12 @@ function UserInfo({ user }: { user: User | undefined }) {
   return (
     <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
       <Avatar className='h-8 w-8 rounded-lg'>
-        <AvatarFallback className='rounded-lg'>{initials}</AvatarFallback>
+        <AvatarFallback className='rounded-lg bg-foreground text-background font-bold text-lg'>
+          {initials}
+        </AvatarFallback>
       </Avatar>
       <div className='grid gap-1 flex-1 text-left text-sm leading-tight'>
-        <span className='truncate font-medium'>
+        <span className='truncate font-medium group-data-[state=open]:text-primary'>
           {!user ? <Skeleton className='h-4 w-32' /> : `${user?.name} (${user?.id})`}
         </span>
         <span className='flex items-center gap-1 truncate text-xs text-muted-foreground'>
