@@ -17,12 +17,7 @@ interface Props {
 export default async function ManageModule({ searchParams }: Props) {
   const params = await searchParams;
   const result = await getList(params);
-
-  if (!result.success) {
-    throw new Error(result.error);
-  }
-
-  const { data, totalCount } = result.data;
+  const { data, totalCount } = result.data || { data: [], totalCount: 0 };
 
   return (
     <ManageContainer>
