@@ -8,8 +8,9 @@ export const SEO_CONFIG = {
 };
 
 export const PAGINATION_CONFIG = {
+  PAGE_SIZE_OPTIONS: [15, 30, 50, 100],
   DEFAULT_PAGE_SIZE: 15,
-  MAX_VISIBLE_PAGES: 5,
+  MAX_VISIBLE_PAGES: 7,
 };
 
 export const AUTH_CONFIG = {
