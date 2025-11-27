@@ -15,6 +15,7 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
 } from '@/shared/ui/pagination';
+import { useIsMobile } from '@/shared/hooks';
 
 interface DataListProps<TData> {
   data: TData[];
@@ -23,6 +24,7 @@ interface DataListProps<TData> {
   pageCount: number;
   currentPage?: number;
   maxVisible?: number;
+  mobileMaxVisible?: number;
   onPageChange?: (page: number) => void;
 
   sortingKey?: string;
@@ -44,7 +46,8 @@ export function DataList<TData>({
   columns,
   pageCount,
   currentPage = 1,
-  maxVisible = 5,
+  maxVisible,
+  mobileMaxVisible,
   onPageChange,
   sortingKey,
   onSortingChange,
@@ -185,6 +188,7 @@ export function DataList<TData>({
             pageCount={pageCount}
             currentPage={currentPage}
             maxVisible={maxVisible}
+            mobileMaxVisible={mobileMaxVisible}
             onPageChange={onPageChange}
           />
         </div>
@@ -197,15 +201,20 @@ interface DataListPaginationProps {
   pageCount: number;
   currentPage: number;
   maxVisible?: number;
+  mobileMaxVisible?: number;
   onPageChange?: (page: number) => void;
 }
 
 function DataListPagination({
   pageCount,
-  maxVisible = 5,
+  maxVisible = 7,
+  mobileMaxVisible = 5,
   currentPage,
   onPageChange,
 }: DataListPaginationProps) {
+  const isMobile = useIsMobile();
+  const effectiveMaxVisible = isMobile ? mobileMaxVisible : maxVisible;
+
   const canPreviousPage = currentPage > 1;
   const canNextPage = currentPage < pageCount;
 
@@ -213,28 +222,32 @@ function DataListPagination({
   const getPageNumbers = () => {
     const pages: (number | 'ellipsis')[] = [];
 
-    if (pageCount <= maxVisible) {
-      // 전체 페이지가 5개 이하면 모두 표시
+    if (pageCount <= effectiveMaxVisible) {
+      // 전체 페이지가 maxVisible 이하면 모두 표시
       for (let i = 1; i <= pageCount; i++) {
         pages.push(i);
       }
     } else {
+      // effectiveMaxVisible에서 첫/마지막 페이지, ellipsis 2개 제외한 나머지를 주변 페이지로
+      // effectiveMaxVisible=5: sideCount=1, effectiveMaxVisible=7: sideCount=2
+      const sideCount = Math.floor((effectiveMaxVisible - 3) / 2);
+
       // 항상 첫 페이지 표시
       pages.push(1);
 
-      if (currentPage > 3) {
+      if (currentPage > sideCount + 2) {
         pages.push('ellipsis');
       }
 
       // 현재 페이지 주변
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(pageCount - 1, currentPage + 1);
+      const start = Math.max(2, currentPage - sideCount);
+      const end = Math.min(pageCount - 1, currentPage + sideCount);
 
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
 
-      if (currentPage < pageCount - 2) {
+      if (currentPage < pageCount - sideCount - 1) {
         pages.push('ellipsis');
       }
 
