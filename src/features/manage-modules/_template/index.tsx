@@ -16,8 +16,12 @@ interface Props {
 
 export default async function ManageModule({ searchParams }: Props) {
   const params = await searchParams;
-  const result = await getList(params);
-  const { data, totalCount } = result.data || { data: [], totalCount: 0 };
+  const { data: rawData, error } = await getList(params);
+  const { data, totalCount } = rawData || { data: [], totalCount: 0 };
+
+  if (error) {
+    // 에러는 어떻게 처리할까? 그냥 콘솔로그만?
+  }
 
   return (
     <ManageContainer>
