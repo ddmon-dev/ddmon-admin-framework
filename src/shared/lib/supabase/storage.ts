@@ -1,10 +1,11 @@
+'use server';
+
 import { type ActionResult } from '@/shared/types/results';
 import { Result } from '@/shared/utils/results';
 import { extractFilePathFromUrl } from '@/shared/lib/file-system/utils';
 import { FILE_ERRORS } from '@/shared/constants/error-messages';
 import { createServerClient } from './server';
-
-export const BUCKET_NAME = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_NAME ?? '';
+import { BUCKET_NAME } from './constants';
 
 type ResultData = {
   uploadUrl: string;

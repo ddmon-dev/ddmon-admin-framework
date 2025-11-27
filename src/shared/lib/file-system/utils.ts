@@ -1,5 +1,5 @@
 import { type DbFileMetadata, type FormFileValue } from './types';
-import { BUCKET_NAME } from '@/shared/lib/supabase/storage';
+import { BUCKET_NAME } from '@/shared/lib/supabase/constants';
 
 /**
  * 공개 URL에서 파일 경로를 추출합니다.
