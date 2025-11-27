@@ -8,7 +8,7 @@ import {
   fileAcceptPresets,
   MultiFileUpload,
 } from '@/shared/ui/file-upload';
-import { mbToBytes, formatFileSize } from '@/shared/utils/format';
+import { mbToBytes, formatFileSize } from '@/shared/utils/formats';
 import { FieldSet, FieldLegend, FieldContent, FieldDescription, FieldError } from '../field';
 import type { FormBaseProps } from './types';
 

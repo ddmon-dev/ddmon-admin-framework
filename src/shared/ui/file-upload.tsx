@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { Trash2, File as FileIcon, Plus, RefreshCw } from 'lucide-react';
 import { cn } from '@/shared/utils/classnames';
-import { mbToBytes, formatFileSize, truncateFileName } from '@/shared/utils/format';
+import { mbToBytes, formatFileSize, truncateFileName } from '@/shared/utils/formats';
 import { downloadFileFromStorage } from '@/shared/lib/file-system';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from './input-group';
 import { FILE_ERRORS } from '@/shared/constants/error-messages';
