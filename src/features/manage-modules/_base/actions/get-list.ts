@@ -15,6 +15,7 @@ export const getList = createServerAction<GetListParams & { tableName: TableName
       tableName,
       page: rawPage = '1',
       search = '',
+      category = '',
       pageSize = BASE_CONFIG.defaultListPageSize,
     }) => {
       const supabase = createServerClient();
@@ -29,11 +30,16 @@ export const getList = createServerAction<GetListParams & { tableName: TableName
         countQuery = countQuery.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
       }
 
+      // 카테고리 필터
+      if (category) {
+        countQuery = countQuery.eq('category', category);
+      }
+
       const { count, error: countError } = await countQuery;
 
       if (countError) {
         console.error('Supabase count error:', countError);
-        return Result.success({ data: [], totalCount: 0 });
+        return Result.success({ data: [], totalCount: 0, error: countError.message });
       }
 
       const totalCount = count || 0;
@@ -50,7 +56,14 @@ export const getList = createServerAction<GetListParams & { tableName: TableName
         dataQuery = dataQuery.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
       }
 
-      dataQuery = dataQuery.order('created_at', { ascending: false }).order('id', { ascending: false });
+      // 카테고리 필터
+      if (category) {
+        dataQuery = dataQuery.eq('category', category);
+      }
+
+      dataQuery = dataQuery
+        .order('created_at', { ascending: false })
+        .order('id', { ascending: false });
 
       const startIndex = (page - 1) * pageSize;
       dataQuery = dataQuery.range(startIndex, startIndex + pageSize - 1);
@@ -59,7 +72,7 @@ export const getList = createServerAction<GetListParams & { tableName: TableName
 
       if (dataError) {
         console.error('Supabase data error:', dataError);
-        return Result.success({ data: [], totalCount });
+        return Result.success({ data: [], totalCount, error: dataError.message });
       }
 
       const data = rawData.map(row => transformSnakeToCamel(row));
