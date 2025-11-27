@@ -9,7 +9,6 @@ export interface MenuItem {
   title: string;
   url: string;
   icon?: LucideIcon;
-  isActive?: boolean;
   items?: MenuSubItem[];
 }
 

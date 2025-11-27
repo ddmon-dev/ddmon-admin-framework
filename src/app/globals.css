@@ -313,3 +313,8 @@
     border-radius: 10px;
   }
 }
+
+/* Sidebar Menu Active State */
+[data-slot='sidebar-menu-button'][data-active='true'] {
+  @apply bg-sidebar-accent text-primary font-medium shadow-sm;
+}
