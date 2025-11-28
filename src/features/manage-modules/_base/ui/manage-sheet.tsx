@@ -84,7 +84,12 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   const renderContent = () => {
     // create 모드: 바로 폼 표시 (깜빡임 없음)
     if (mode === 'create') {
-      return <FormComponent id={id} prevValues={null} />;
+      return (
+        <FormComponent
+          id={id}
+          prevValues={null}
+        />
+      );
     }
 
     // 로딩 중
@@ -99,7 +104,12 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
 
     // modify 모드: 폼 표시
     if (mode === 'modify') {
-      return <FormComponent id={id} prevValues={prevValues ?? null} />;
+      return (
+        <FormComponent
+          id={id}
+          prevValues={prevValues ?? null}
+        />
+      );
     }
 
     // view 모드: 뷰 표시
@@ -115,7 +125,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
       open={isOpen}
       onOpenChange={open => !open && manageSheet.close()}
     >
-      <SheetContent className='max-w-4xl!'>
+      <SheetContent className='max-w-4xl! rounded-l-xl'>
         <SheetHeader>
           <SheetTitle>Title</SheetTitle>
           <SheetDescription>Description</SheetDescription>
