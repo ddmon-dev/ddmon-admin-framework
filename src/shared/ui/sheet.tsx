@@ -8,12 +8,25 @@ import { cn } from '@/shared/utils/classnames';
 
 const SheetContext = React.createContext<{ modal: boolean }>({ modal: false });
 
-function Sheet({ modal = false, ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
+function Sheet({ modal = false, open, ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
+  // modal={false}로 에디터 포커스 트랩 충돌 해결, 수동 스크롤 잠금
+  React.useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
   return (
     <SheetContext.Provider value={{ modal }}>
       <SheetPrimitive.Root
         data-slot='sheet'
         modal={modal}
+        open={open}
         {...props}
       />
     </SheetContext.Provider>
