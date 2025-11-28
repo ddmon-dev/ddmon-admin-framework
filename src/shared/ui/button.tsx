@@ -10,11 +10,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         // 기본
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary/80',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
-          'border bg-background hover:border-primary hover:text-primary dark:bg-input/30 dark:hover:bg-input/50 text-foreground',
+          'border bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
@@ -27,7 +27,7 @@ const buttonVariants = cva(
         info: 'bg-info text-info-foreground hover:bg-info/90 focus-visible:ring-info/20 dark:focus-visible:ring-info/40',
 
         // Soft (연한 배경)
-        'primary-light':
+        'default-light':
           'bg-primary-light text-primary-light-foreground hover:bg-primary-light/80 focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
         'destructive-light':
           'bg-destructive-light text-destructive-light-foreground hover:bg-destructive-light/80 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
