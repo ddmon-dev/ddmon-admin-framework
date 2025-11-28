@@ -283,12 +283,12 @@ export function MultiFileUpload({
         <InputGroupAddon align='inline-end'>
           <InputGroupButton
             size='icon-xs'
-            variant='default'
+            variant='black'
             onClick={handleBrowseClick}
             disabled={disabled || !canAddMore}
             className='rounded-full'
           >
-            <Plus className='h-4 w-4' />
+            <Plus className='size-4' />
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>
@@ -320,7 +320,7 @@ export function MultiFileUpload({
               <li
                 key={index}
                 className={cn(
-                  'flex items-center justify-between rounded-md bg-muted/50 px-3 py-1.5 text-sm',
+                  'flex items-center justify-between rounded-md bg-secondary/70 px-3 py-1.5 text-sm',
                   isDeleted && 'opacity-50'
                 )}
               >
@@ -344,9 +344,8 @@ export function MultiFileUpload({
                       variant='ghost'
                       onClick={() => handleRestoreFile(index)}
                       disabled={disabled}
-                      className='h-5 w-5'
                     >
-                      <RefreshCw className='h-3 w-3' />
+                      <RefreshCw />
                     </InputGroupButton>
                   ) : (
                     <InputGroupButton
@@ -354,9 +353,8 @@ export function MultiFileUpload({
                       variant='ghost'
                       onClick={() => handleRemoveFile(index)}
                       disabled={disabled}
-                      className='h-5 w-5'
                     >
-                      <Trash2 className='h-3 w-3' />
+                      <Trash2 />
                     </InputGroupButton>
                   )}
                 </div>
