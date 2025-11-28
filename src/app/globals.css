@@ -90,8 +90,7 @@
   /* Background & Foreground */
   /* ============================================================ */
   --background: oklch(0.995 0.002 30);
-  --background: #fff;
-  --background-secondary: oklch(0.98 0.003 60);
+  --background-secondary: oklch(0.975 0.0005 0);
   --foreground: oklch(0.18 0.04 260);
 
   /* ============================================================ */

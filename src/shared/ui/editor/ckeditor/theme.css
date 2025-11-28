@@ -28,6 +28,7 @@
 
   /* Text */
   --ck-color-text: var(--foreground);
+  --ck-content-font-color: var(--foreground);
 
   /* Buttons */
   --ck-color-button-default-background: transparent;

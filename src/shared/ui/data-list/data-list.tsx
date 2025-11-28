@@ -133,7 +133,7 @@ export function DataList<TData>({
   };
 
   return (
-    <>
+    <div className='flex flex-col flex-1 min-h-0'>
       <div className='flex items-center justify-between mb-2'>
         <span className='text-sm text-muted-foreground font-semibold'>Total ({totalCount})</span>
       </div>
@@ -208,7 +208,9 @@ export function DataList<TData>({
         </Table>
       </div>
 
-      <div className='sticky bottom-0 bg-background flex items-center justify-center border-t p-4 -mx-4 rounded-b-lg md:justify-between'>
+      <div className='my-2' />
+
+      <div className='sticky bottom-0 bg-background flex items-center justify-center border-t p-4 -mx-4 rounded-b-lg md:justify-between mt-auto'>
         <DataListPagination
           pageCount={pageCount}
           currentPage={currentPage}
@@ -220,7 +222,7 @@ export function DataList<TData>({
           <PageSizeSelect />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
