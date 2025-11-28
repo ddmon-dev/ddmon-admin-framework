@@ -1,4 +1,4 @@
-export { ManageContainer } from './manage-container';
+export { ManageContainer, ManageListFetcher } from './manage-container';
 export { ManageList } from './manage-list';
 export { ManageSheet, useManageSheet, ManageSheetFooter } from './manage-sheet';
 export { ManageSheetError } from './manage-sheet-error';
