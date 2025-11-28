@@ -1,0 +1,173 @@
+/**
+ * CKEditor 5 Dark Mode Theme
+ *
+ * .dark 클래스가 있을 때 CKEditor UI 요소들의 색상을 다크모드에 맞게 오버라이드합니다.
+ * CKEditor는 --ck-color-* CSS 변수를 사용하므로, .dark .ck 셀렉터로 오버라이드합니다.
+ */
+
+/* ============================================================ */
+/* CKEditor Dark Mode Variables */
+/* ============================================================ */
+.dark .ck.ck-editor {
+  /* Base */
+  --ck-color-base-foreground: hsl(0 0% 12%);
+  --ck-color-base-background: hsl(0 0% 12%);
+  --ck-color-base-border: hsl(0 0% 25%);
+  --ck-color-base-text: hsl(0 0% 93%);
+  --ck-color-base-active: hsl(217 91% 60%);
+  --ck-color-base-active-focus: hsl(217 91% 55%);
+
+  /* Focus */
+  --ck-color-focus-border: hsl(217 91% 60%);
+  --ck-color-focus-outer-shadow: hsla(217 91% 60% / 30%);
+  --ck-focus-outer-shadow: 0 0 0 3px hsla(217 91% 60% / 30%);
+
+  /* Text */
+  --ck-color-text: hsl(0 0% 93%);
+
+  /* Buttons */
+  --ck-color-button-default-background: transparent;
+  --ck-color-button-default-hover-background: hsl(0 0% 20%);
+  --ck-color-button-default-active-background: hsl(0 0% 25%);
+  --ck-color-button-default-disabled-background: transparent;
+  --ck-color-button-on-background: hsl(0 0% 20%);
+  --ck-color-button-on-hover-background: hsl(0 0% 25%);
+  --ck-color-button-on-active-background: hsl(0 0% 30%);
+  --ck-color-button-on-color: hsl(0 0% 93%);
+  --ck-color-button-on-disabled-background: hsl(0 0% 18%);
+
+  /* Dropdown */
+  --ck-color-dropdown-panel-background: hsl(0 0% 15%);
+  --ck-color-dropdown-panel-border: hsl(0 0% 25%);
+
+  /* Input */
+  --ck-color-input-background: hsl(0 0% 10%);
+  --ck-color-input-border: hsl(0 0% 25%);
+  --ck-color-input-text: hsl(0 0% 93%);
+  --ck-color-input-disabled-background: hsl(0 0% 15%);
+  --ck-color-input-disabled-border: hsl(0 0% 20%);
+  --ck-color-input-disabled-text: hsl(0 0% 50%);
+
+  /* Panel */
+  --ck-color-panel-background: hsl(0 0% 15%);
+  --ck-color-panel-border: hsl(0 0% 25%);
+
+  /* Toolbar */
+  --ck-color-toolbar-background: hsl(0 0% 12%);
+  --ck-color-toolbar-border: hsl(0 0% 25%);
+
+  /* List */
+  --ck-color-list-background: hsl(0 0% 15%);
+  --ck-color-list-button-hover-background: hsl(0 0% 20%);
+  --ck-color-list-button-on-background: hsl(217 91% 60%);
+  --ck-color-list-button-on-background-focus: hsl(217 91% 55%);
+  --ck-color-list-button-on-text: hsl(0 0% 100%);
+
+  /* Tooltip */
+  --ck-color-tooltip-background: hsl(0 0% 93%);
+  --ck-color-tooltip-text: hsl(0 0% 10%);
+
+  /* Labeled Field */
+  --ck-color-labeled-field-label-background: hsl(0 0% 15%);
+
+  /* Split Button */
+  --ck-color-split-button-hover-background: hsl(0 0% 20%);
+  --ck-color-split-button-hover-border: hsl(0 0% 30%);
+}
+
+/* ============================================================ */
+/* Editable Content Area */
+/* ============================================================ */
+.dark .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+  background-color: hsl(0 0% 12%) !important;
+  color: hsl(0 0% 93%);
+  border-color: hsl(0 0% 25%);
+}
+
+.dark .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused {
+  border-color: hsl(217 91% 60%) !important;
+  box-shadow: 0 0 0 3px hsla(217 91% 60% / 30%);
+}
+
+/* Placeholder */
+.dark .ck.ck-editor__editable .ck-placeholder::before {
+  color: hsl(0 0% 50%);
+}
+
+/* ============================================================ */
+/* Content Styles */
+/* ============================================================ */
+/* Links */
+.dark .ck-content a {
+  color: hsl(217 91% 65%);
+}
+
+/* Table */
+.dark .ck-content .table table {
+  border-color: hsl(0 0% 25%);
+}
+
+.dark .ck-content .table table td,
+.dark .ck-content .table table th {
+  border-color: hsl(0 0% 25%);
+}
+
+/* Image Caption */
+.dark .ck-content figure.image figcaption {
+  background-color: hsl(0 0% 18%);
+  color: hsl(0 0% 70%);
+}
+
+/* Todo List */
+.dark .ck-content .todo-list .todo-list__label > span[contenteditable='false'] > input[checked]::before {
+  background-color: hsl(217 91% 60%);
+  border-color: hsl(217 91% 60%);
+}
+
+/* ============================================================ */
+/* Dialog & Balloon */
+/* ============================================================ */
+/* body 하위에 렌더링되는 요소들 */
+.dark .ck-body-wrapper .ck.ck-balloon-panel {
+  --ck-color-panel-background: hsl(0 0% 15%);
+  --ck-color-panel-border: hsl(0 0% 25%);
+  background-color: hsl(0 0% 15%);
+  border-color: hsl(0 0% 25%);
+}
+
+.dark .ck-body-wrapper .ck.ck-input {
+  background-color: hsl(0 0% 10%);
+  border-color: hsl(0 0% 25%);
+  color: hsl(0 0% 93%);
+}
+
+.dark .ck-body-wrapper .ck.ck-labeled-field-view__status {
+  color: hsl(0 0% 70%);
+}
+
+.dark .ck-body-wrapper .ck.ck-button {
+  color: hsl(0 0% 93%);
+}
+
+.dark .ck-body-wrapper .ck.ck-button:hover {
+  background-color: hsl(0 0% 20%);
+}
+
+/* Color Picker */
+.dark .ck-body-wrapper .ck.ck-color-grid__tile {
+  border-color: hsl(0 0% 25%);
+}
+
+/* List in Dropdown */
+.dark .ck-body-wrapper .ck.ck-list {
+  background-color: hsl(0 0% 15%);
+}
+
+.dark .ck-body-wrapper .ck.ck-list__item .ck-button:hover {
+  background-color: hsl(0 0% 20%);
+}
+
+.dark .ck-body-wrapper .ck.ck-list__item .ck-button.ck-on {
+  background-color: hsl(217 91% 60%);
+  color: hsl(0 0% 100%);
+}

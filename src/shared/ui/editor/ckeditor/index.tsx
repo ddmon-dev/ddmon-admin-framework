@@ -60,6 +60,7 @@ import {
 } from 'ckeditor5';
 
 import 'ckeditor5/ckeditor5.css';
+import './theme.css';
 import { CustomUploadAdapterPlugin } from './custom-upload-adapter';
 import { DEFAULT_IMAGE_CONFIG } from './config';
 import { generateUploadPath } from './utils';
