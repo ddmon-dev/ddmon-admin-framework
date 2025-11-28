@@ -129,13 +129,17 @@ export function DataList<TData>({
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id}>
+              <TableRow
+                key={headerGroup.id}
+                className='bg-background-secondary!'
+              >
                 {headerGroup.headers.map(header => {
                   const size = header.column.columnDef.size;
                   return (
                     <TableHead
                       key={header.id}
                       style={size ? { width: size } : undefined}
+                      className='font-semibold'
                     >
                       {header.isPlaceholder
                         ? null
@@ -157,6 +161,7 @@ export function DataList<TData>({
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   onClick={event => handleRowClick(event, row.original)}
+                  className='hover:bg-background-secondary/70! hover:[&_td]:text-primary'
                 >
                   {row.getVisibleCells().map(cell => {
                     const size = cell.column.columnDef.size;
