@@ -12,6 +12,7 @@
   --ck-border-radius: calc(var(--radius) - 2px);
   --ck-color-focus-border: var(--primary);
   --ck-focus-ring: 1px solid var(--primary);
+  --ck-color-base-background: var(--background);
 }
 
 /* 툴바 기본 배경색 */
@@ -49,6 +50,7 @@
 
   /* Text */
   --ck-color-text: hsl(0 0% 93%);
+  
 
   /* Buttons */
   --ck-color-button-default-background: transparent;
