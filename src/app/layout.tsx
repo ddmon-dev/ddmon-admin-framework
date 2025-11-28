@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { cn } from '@/shared/utils/classnames';
-import { fontPrimary, fontSecondary } from '@/fonts';
+import { primary, secondary } from '@/fonts';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from 'next-themes';
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html
       lang='ko'
-      className={cn(fontPrimary.variable, fontSecondary.variable)}
+      className={cn(primary.variable, secondary.variable)}
       suppressHydrationWarning
     >
       <body className={cn('antialiased')}>
