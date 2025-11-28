@@ -16,13 +16,12 @@ import {
   FormFileUpload,
   FormDatePicker,
 } from '@/shared/ui/form-fields';
-import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 
-import { useManageSheet } from '../_base/ui';
+import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
@@ -149,14 +148,12 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           max={5}
           optional
         />
-
-        <LoadingButton
-          type='submit'
-          isLoading={form.formState.isSubmitting}
-        >
-          저장
-        </LoadingButton>
       </FieldGroup>
+
+      <ManageSheetFooter>
+        <ManageSheetClose />
+        <ManageFormSubmit isLoading={form.formState.isSubmitting} />
+      </ManageSheetFooter>
     </form>
   );
 }

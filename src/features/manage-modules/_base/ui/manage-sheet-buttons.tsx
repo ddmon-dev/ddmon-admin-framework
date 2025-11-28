@@ -20,19 +20,20 @@ export function ManageFormSubmit({ isLoading, className }: ManageFormSubmitProps
   );
 }
 
-interface ManageFormCancelProps {
+interface ManageSheetCloseProps {
+  children?: React.ReactNode;
   className?: string;
 }
 
-export function ManageFormCancel({ className }: ManageFormCancelProps) {
+export function ManageSheetClose({ children = '취소하기', className }: ManageSheetCloseProps) {
   const manageSheet = useManageSheet();
   return (
-    <LoadingButton
+    <Button
       variant='outline'
       onClick={() => manageSheet.close()}
       className={cn('font-bold', className)}
     >
-      취소하기
-    </LoadingButton>
+      {children}
+    </Button>
   );
 }

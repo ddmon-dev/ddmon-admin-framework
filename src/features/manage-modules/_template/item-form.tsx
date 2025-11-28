@@ -30,7 +30,7 @@ import { Button } from '@/shared/ui/button';
 import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
 
-import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageFormCancel } from '../_base/ui';
+import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
@@ -346,7 +346,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
       {/* 제출 버튼 */}
       <ManageSheetFooter>
-        <ManageFormCancel />
+        <ManageSheetClose />
         <ManageFormSubmit isLoading={form.formState.isSubmitting} />
       </ManageSheetFooter>
     </form>
