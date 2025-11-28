@@ -12,7 +12,7 @@ interface ManageModuleHeaderProps {
 
 export function ManageModuleHeader({ moduleName, headerAddons }: ManageModuleHeaderProps) {
   return (
-    <header className={cn('border-b sticky top-0 z-10 bg-background rounded-t-xl py-3')}>
+    <header className={cn('border-b sticky top-0 z-10 bg-background rounded-t-xl py-4')}>
       <Container className={cn('grid gap-2')}>
         <div className='flex items-center gap-2'>
           <SidebarTrigger />
