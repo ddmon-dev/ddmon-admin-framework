@@ -14,7 +14,7 @@ const buttonVariants = cva(
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
-          'border bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
+          'text-foreground border bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
@@ -37,6 +37,30 @@ const buttonVariants = cva(
           'bg-warning-light text-warning-light-foreground hover:bg-warning-light/80 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40',
         'info-light':
           'bg-info-light text-info-light-foreground hover:bg-info-light/80 focus-visible:ring-info/20 dark:focus-visible:ring-info/40',
+
+        // Outlines
+        'default-outline':
+          'border border-primary text-primary hover:opacity-70 focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
+        'destructive-outline':
+          'border border-destructive text-destructive hover:opacity-70 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
+        'success-outline':
+          'border border-success text-success hover:opacity-70 focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
+        'warning-outline':
+          'border border-warning text-warning hover:opacity-70 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40',
+        'info-outline':
+          'border border-info text-info hover:opacity-70 focus-visible:ring-info/20 dark:focus-visible:ring-info/40',
+
+        // Light Ghosts
+        'default-light-ghost':
+          'text-primary-light-foreground hover:bg-primary-light/80 focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
+        'destructive-light-ghost':
+          'text-destructive-light-foreground hover:bg-destructive-light/80 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
+        'success-light-ghost':
+          'text-success-light-foreground hover:bg-success-light/80 focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
+        'warning-light-ghost':
+          'text-warning-light-foreground hover:bg-warning-light/80 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40',
+        'info-light-ghost':
+          'text-info-light-foreground hover:bg-info-light/80 focus-visible:ring-info/20 dark:focus-visible:ring-info/40',
 
         // 무채색
         muted: 'bg-muted text-muted-foreground hover:bg-muted-dark',
