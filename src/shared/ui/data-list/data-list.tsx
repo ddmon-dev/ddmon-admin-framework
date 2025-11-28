@@ -183,16 +183,14 @@ export function DataList<TData>({
       </div>
 
       <div className='sticky bottom-0 bg-background flex items-center justify-between border-t p-4 -mx-4 rounded-b-lg'>
-        {pageCount > 0 && (
-          <DataListPagination
-            pageCount={pageCount}
-            currentPage={currentPage}
-            maxVisible={maxVisible}
-            mobileMaxVisible={mobileMaxVisible}
-            onPageChange={onPageChange}
-          />
-        )}
-        <div className='ml-auth hidden md:block'>
+        <DataListPagination
+          pageCount={pageCount}
+          currentPage={currentPage}
+          maxVisible={maxVisible}
+          mobileMaxVisible={mobileMaxVisible}
+          onPageChange={onPageChange}
+        />
+        <div className='ml-auto hidden md:block'>
           <PageSizeSelect />
         </div>
       </div>
@@ -209,12 +207,13 @@ interface DataListPaginationProps {
 }
 
 function DataListPagination({
-  pageCount,
+  pageCount: rawPageCount,
   maxVisible = 7,
   mobileMaxVisible = 5,
   currentPage,
   onPageChange,
 }: DataListPaginationProps) {
+  const pageCount = Math.max(1, rawPageCount);
   const isMobile = useIsMobile();
   const effectiveMaxVisible = isMobile ? mobileMaxVisible : maxVisible;
 

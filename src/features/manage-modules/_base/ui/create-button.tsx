@@ -15,7 +15,7 @@ export function CreateButton({ children, className }: CreateButtonProps) {
     <Button
       onClick={() => manageSheet.open({ mode: 'create' })}
       className={className}
-      variant='default'
+      variant='black'
     >
       {children ?? '생성'}
     </Button>
