@@ -52,9 +52,9 @@ function MenuItem({ item }: { item: MenuItemType }) {
         defaultOpen={hasActiveChild(item.items)}
         className='group/collapsible'
       >
-        <SidebarMenuItem>
+        <SidebarMenuItem className='rounded-md data-[state=closed]:hover:bg-sidebar-accent data-[state=closed]:hover:shadow-sm/5 data-[state=open]:bg-sidebar-accent data-[state=open]:shadow-sm data-[state=open]:pt-1 data-[state=open]:pb-2'>
           <CollapsibleTrigger asChild>
-            <SidebarMenuButton tooltip={item.title}>
+            <SidebarMenuButton tooltip={item.title} className='hover:bg-transparent hover:shadow-none'>
               {item.icon && <item.icon />}
               <span>{item.title}</span>
               <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
