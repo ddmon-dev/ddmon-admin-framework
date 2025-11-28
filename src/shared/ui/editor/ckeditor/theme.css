@@ -1,49 +1,134 @@
 /**
  * CKEditor 5 Custom Theme
  *
+ * - 글로벌 CSS 변수와 연결하여 라이트/다크 모드 자동 적용
  * - Rounded corners (다른 필드들과 일관된 스타일)
- * - Dark mode support
  */
 
 /* ============================================================ */
-/* Rounded Corners (Light & Dark) */
+/* CKEditor CSS Variables (글로벌 변수와 연결) */
 /* ============================================================ */
 :root {
+  /* Border Radius */
   --ck-border-radius: calc(var(--radius) - 10px);
-  --ck-color-focus-border: var(--primary);
-  --ck-focus-ring: 1px solid var(--ck-color-base-border);
+
+  /* Base Colors */
   --ck-color-base-background: var(--background);
+  --ck-color-base-foreground: var(--background-secondary);
+  --ck-color-base-border: var(--border);
+  --ck-color-base-text: var(--foreground);
+  --ck-color-base-active: var(--primary);
+  --ck-color-base-active-focus: var(--primary-dark);
+
+  /* Focus */
+  --ck-color-focus-border: var(--primary);
+  --ck-color-focus-outer-shadow: var(--primary);
+  --ck-focus-ring: 1px solid var(--ck-color-base-border);
+  --ck-focus-outer-shadow: 0 0 0 1px var(--ck-color-focus-outer-shadow);
+
+  /* Text */
+  --ck-color-text: var(--foreground);
+
+  /* Buttons */
+  --ck-color-button-default-background: transparent;
+  --ck-color-button-default-hover-background: var(--muted);
+  --ck-color-button-default-active-background: var(--muted-dark);
+  --ck-color-button-default-disabled-background: transparent;
+  --ck-color-button-on-background: var(--muted);
+  --ck-color-button-on-hover-background: var(--muted-dark);
+  --ck-color-button-on-active-background: var(--muted-dark);
+  --ck-color-button-on-color: var(--foreground);
+  --ck-color-button-on-disabled-background: var(--muted);
+
+  /* Action Buttons (Save, Submit 등 - 기존 초록색 → primary) */
+  --ck-color-button-save: var(--primary);
+  --ck-color-button-cancel: var(--destructive);
+  --ck-color-button-action-background: var(--primary);
+  --ck-color-button-action-hover-background: var(--primary-dark);
+  --ck-color-button-action-active-background: var(--primary-dark);
+  --ck-color-button-action-text: var(--primary-foreground);
+  --ck-color-button-action-disabled-background: var(--primary-light);
+
+  /* Dropdown */
+  --ck-color-dropdown-panel-background: var(--popover);
+  --ck-color-dropdown-panel-border: var(--border);
+
+  /* Input */
+  --ck-color-input-background: var(--background);
+  --ck-color-input-border: var(--input);
+  --ck-color-input-text: var(--foreground);
+  --ck-color-input-disabled-background: var(--muted);
+  --ck-color-input-disabled-border: var(--border);
+  --ck-color-input-disabled-text: var(--muted-foreground);
+
+  /* Panel */
+  --ck-color-panel-background: var(--popover);
+  --ck-color-panel-border: var(--border);
+
+  /* Toolbar */
+  --ck-color-toolbar-background: var(--background);
+  --ck-color-toolbar-border: var(--border);
+
+  /* List */
+  --ck-color-list-background: var(--popover);
+  --ck-color-list-button-hover-background: var(--muted);
+  --ck-color-list-button-on-background: var(--primary);
+  --ck-color-list-button-on-background-focus: var(--primary-dark);
+  --ck-color-list-button-on-text: var(--primary-foreground);
+
+  /* Tooltip */
+  --ck-color-tooltip-background: var(--foreground);
+  --ck-color-tooltip-text: var(--background);
+
+  /* Labeled Field */
+  --ck-color-labeled-field-label-background: var(--popover);
+
+  /* Split Button */
+  --ck-color-split-button-hover-background: var(--muted);
+  --ck-color-split-button-hover-border: var(--border-dark);
+
+  /* Switch Button (토글) */
+  --ck-color-switch-button-off-background: var(--muted);
+  --ck-color-switch-button-off-hover-background: var(--muted-dark);
+  --ck-color-switch-button-on-background: var(--primary);
+  --ck-color-switch-button-on-hover-background: var(--primary-dark);
+  --ck-color-switch-button-inner-background: var(--background);
+
+  /* Z-index */
   --ck-z-default: 100 !important;
 }
 
+/* ============================================================ */
+/* Balloon Panel (Powered by) */
+/* ============================================================ */
 .ck.ck-balloon-panel.ck-powered-by-balloon {
   z-index: 100;
   border-radius: 100px;
-  border-color: var(--input)!important;
+  border-color: var(--input) !important;
 }
 
+/* ============================================================ */
+/* Body Wrapper (Portal) */
+/* ============================================================ */
 .ck-body-wrapper {
   pointer-events: initial !important;
 }
 
-/* 툴바 기본 배경색 */
-.ck.ck-sticky-panel .ck-sticky-panel__content {
-  background-color: var(--background) !important;
-}
-
-.dark .ck.ck-sticky-panel .ck-sticky-panel__content {
-  background-color: hsl(0 0% 12%) !important;
-}
-
-/* Sticky 상태일 때 툴바 상단 라디우스 & 쉐도우 제거 */
+/* ============================================================ */
+/* Sticky Panel (Toolbar) */
+/* ============================================================ */
 .ck.ck-sticky-panel .ck-sticky-panel__content_sticky {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
   box-shadow: none !important;
 }
 
-.ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
-  box-shadow: none!important;
+/* ============================================================ */
+/* Editor Content Area */
+/* ============================================================ */
+.ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable,
+.ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
+  box-shadow: none !important;
 }
 
 .ck-content {
@@ -56,170 +141,9 @@
 }
 
 /* ============================================================ */
-/* CKEditor Dark Mode Variables */
+/* Table Insert Grid */
 /* ============================================================ */
-.dark {
-  /* Base */
-  --ck-color-base-foreground: hsl(0 0% 12%);
-  --ck-color-base-background: hsl(0 0% 12%);
-  --ck-color-base-border: hsl(0 0% 25%);
-  --ck-color-base-text: hsl(0 0% 93%);
-  --ck-color-base-active: hsl(217 91% 60%);
-  --ck-color-base-active-focus: hsl(217 91% 55%);
-
-  /* Focus */
-  --ck-color-focus-border: hsl(217 91% 60%);
-  --ck-color-focus-outer-shadow: hsla(217 91% 60% / 30%);
-  --ck-focus-outer-shadow: 0 0 0 3px hsla(217 91% 60% / 30%);
-
-  /* Text */
-  --ck-color-text: hsl(0 0% 93%);
-  
-
-  /* Buttons */
-  --ck-color-button-default-background: transparent;
-  --ck-color-button-default-hover-background: hsl(0 0% 20%);
-  --ck-color-button-default-active-background: hsl(0 0% 25%);
-  --ck-color-button-default-disabled-background: transparent;
-  --ck-color-button-on-background: hsl(0 0% 20%);
-  --ck-color-button-on-hover-background: hsl(0 0% 25%);
-  --ck-color-button-on-active-background: hsl(0 0% 30%);
-  --ck-color-button-on-color: hsl(0 0% 93%);
-  --ck-color-button-on-disabled-background: hsl(0 0% 18%);
-
-  /* Dropdown */
-  --ck-color-dropdown-panel-background: hsl(0 0% 15%);
-  --ck-color-dropdown-panel-border: hsl(0 0% 25%);
-
-  /* Input */
-  --ck-color-input-background: hsl(0 0% 10%);
-  --ck-color-input-border: hsl(0 0% 25%);
-  --ck-color-input-text: hsl(0 0% 93%);
-  --ck-color-input-disabled-background: hsl(0 0% 15%);
-  --ck-color-input-disabled-border: hsl(0 0% 20%);
-  --ck-color-input-disabled-text: hsl(0 0% 50%);
-
-  /* Panel */
-  --ck-color-panel-background: hsl(0 0% 15%);
-  --ck-color-panel-border: hsl(0 0% 25%);
-
-  /* Toolbar */
-  --ck-color-toolbar-background: hsl(0 0% 12%);
-  --ck-color-toolbar-border: hsl(0 0% 25%);
-
-  /* List */
-  --ck-color-list-background: hsl(0 0% 15%);
-  --ck-color-list-button-hover-background: hsl(0 0% 20%);
-  --ck-color-list-button-on-background: hsl(217 91% 60%);
-  --ck-color-list-button-on-background-focus: hsl(217 91% 55%);
-  --ck-color-list-button-on-text: hsl(0 0% 100%);
-
-  /* Tooltip */
-  --ck-color-tooltip-background: hsl(0 0% 93%);
-  --ck-color-tooltip-text: hsl(0 0% 10%);
-
-  /* Labeled Field */
-  --ck-color-labeled-field-label-background: hsl(0 0% 15%);
-
-  /* Split Button */
-  --ck-color-split-button-hover-background: hsl(0 0% 20%);
-  --ck-color-split-button-hover-border: hsl(0 0% 30%);
+.ck .ck-insert-table-dropdown-grid-box.ck-on {
+  background-color: color-mix(in srgb, var(--primary) 30%, transparent);
+  border-color: var(--primary);
 }
-
-/* ============================================================ */
-/* Editable Content Area */
-/* ============================================================ */
-.dark .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
-  background-color: hsl(0 0% 12%) !important;
-  color: hsl(0 0% 93%);
-  border-color: hsl(0 0% 25%);
-}
-
-.dark .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused {
-  border-color: hsl(217 91% 60%) !important;
-  box-shadow: 0 0 0 3px hsla(217 91% 60% / 30%);
-}
-
-/* Placeholder */
-.dark .ck.ck-editor__editable .ck-placeholder::before {
-  color: hsl(0 0% 50%);
-}
-
-/* ============================================================ */
-/* Content Styles */
-/* ============================================================ */
-/* Links */
-.dark .ck-content a {
-  color: hsl(217 91% 65%);
-}
-
-/* Table */
-.dark .ck-content .table table {
-  border-color: hsl(0 0% 25%);
-}
-
-.dark .ck-content .table table td,
-.dark .ck-content .table table th {
-  border-color: hsl(0 0% 25%);
-}
-
-/* Image Caption */
-.dark .ck-content figure.image figcaption {
-  background-color: hsl(0 0% 18%);
-  color: hsl(0 0% 70%);
-}
-
-/* Todo List */
-.dark .ck-content .todo-list .todo-list__label > span[contenteditable='false'] > input[checked]::before {
-  background-color: hsl(217 91% 60%);
-  border-color: hsl(217 91% 60%);
-}
-
-/* ============================================================ */
-/* Dialog & Balloon */
-/* ============================================================ */
-/* body 하위에 렌더링되는 요소들 */
-.dark .ck-body-wrapper .ck.ck-balloon-panel {
-  --ck-color-panel-background: hsl(0 0% 15%);
-  --ck-color-panel-border: hsl(0 0% 25%);
-  background-color: hsl(0 0% 15%);
-  border-color: hsl(0 0% 25%);
-}
-
-.dark .ck-body-wrapper .ck.ck-input {
-  background-color: hsl(0 0% 10%);
-  border-color: hsl(0 0% 25%);
-  color: hsl(0 0% 93%);
-}
-
-.dark .ck-body-wrapper .ck.ck-labeled-field-view__status {
-  color: hsl(0 0% 70%);
-}
-
-.dark .ck-body-wrapper .ck.ck-button {
-  color: hsl(0 0% 93%);
-}
-
-.dark .ck-body-wrapper .ck.ck-button:hover {
-  background-color: hsl(0 0% 20%);
-}
-
-/* Color Picker */
-.dark .ck-body-wrapper .ck.ck-color-grid__tile {
-  border-color: hsl(0 0% 25%);
-}
-
-/* List in Dropdown */
-.dark .ck-body-wrapper .ck.ck-list {
-  background-color: hsl(0 0% 15%);
-}
-
-.dark .ck-body-wrapper .ck.ck-list__item .ck-button:hover {
-  background-color: hsl(0 0% 20%);
-}
-
-.dark .ck-body-wrapper .ck.ck-list__item .ck-button.ck-on {
-  background-color: hsl(217 91% 60%);
-  color: hsl(0 0% 100%);
-}
-
