@@ -150,7 +150,7 @@ export const FormFieldArray = ({
                 {/* 제거 버튼 */}
                 <Button
                   type='button'
-                  variant='ghost'
+                  variant='secondary'
                   size='icon'
                   onClick={() => handleRemove(index)}
                   disabled={!canRemove}
@@ -167,7 +167,7 @@ export const FormFieldArray = ({
           {/* Add Button */}
           <Button
             type='button'
-            variant='default'
+            variant='black'
             onClick={handleAdd}
             disabled={!canAdd}
             className='w-full'
