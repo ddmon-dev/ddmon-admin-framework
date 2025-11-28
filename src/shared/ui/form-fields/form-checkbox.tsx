@@ -28,6 +28,7 @@ export const FormCheckbox = <
           <Field
             orientation='horizontal'
             data-invalid={fieldState.invalid}
+            className='gap-0'
           >
             <Checkbox
               ref={field.ref}
@@ -36,7 +37,12 @@ export const FormCheckbox = <
               onCheckedChange={field.onChange}
               aria-invalid={fieldState.invalid}
             />
-            <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+            <FieldLabel
+              htmlFor={field.name}
+              className='pl-2 cursor-pointer'
+            >
+              {label}
+            </FieldLabel>
           </Field>
           {fieldState.error && <FieldError errors={[fieldState.error]} />}
         </Field>

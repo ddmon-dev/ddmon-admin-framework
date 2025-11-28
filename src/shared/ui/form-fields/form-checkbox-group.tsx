@@ -3,7 +3,16 @@
 import { ReactElement } from 'react';
 import { Controller, type FieldPath, type FieldValues } from 'react-hook-form';
 import { Checkbox } from '@/shared/ui/checkbox';
-import { FieldSet, FieldLegend, FieldGroup, Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '../field';
+import {
+  FieldSet,
+  FieldLegend,
+  FieldGroup,
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from '../field';
 import type { FormBaseProps } from './types';
 
 export type FormCheckboxGroupProps<
@@ -58,6 +67,7 @@ export const FormCheckboxGroup = <
                 key={index}
                 orientation='horizontal'
                 data-invalid={fieldState.invalid}
+                className='gap-0'
               >
                 <Checkbox
                   ref={index === 0 ? field.ref : undefined}
@@ -72,7 +82,12 @@ export const FormCheckboxGroup = <
                     field.onChange(newValue);
                   }}
                 />
-                <FieldLabel htmlFor={`${field.name}-${index}`}>{option.label}</FieldLabel>
+                <FieldLabel
+                  htmlFor={`${field.name}-${index}`}
+                  className='pl-2 cursor-pointer'
+                >
+                  {option.label}
+                </FieldLabel>
               </Field>
             ))}
           </FieldGroup>
