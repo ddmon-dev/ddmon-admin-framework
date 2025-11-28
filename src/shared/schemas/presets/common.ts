@@ -53,7 +53,8 @@ export const phone = <
 >(
   options?: T
 ): PresetSchema<T> => {
-  const pattern = options?.pattern || /^0[0-9]{9,10}$/;
+  // 02: 9~10자리, 010/070: 11자리, 기타(0XX): 10자리
+  const pattern = options?.pattern || /^(02[0-9]{7,8}|0[17]0[0-9]{8}|0[0-9]{9})$/;
   const message = options?.message || '올바른 전화번호를 입력해주세요.';
   const schema = z.string().regex(pattern, message);
   return (options?.optional ? schema.nullish().or(z.literal('')) : schema) as PresetSchema<T>;

@@ -1,8 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  RowData,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 
+import { cn } from '@/shared/utils/classnames';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { SortingButton } from './sorting-button';
 import { PageSizeSelect } from './page-size-select';
@@ -18,6 +25,14 @@ import {
   PaginationEllipsis,
 } from '@/shared/ui/pagination';
 import { useIsMobile } from '@/shared/hooks';
+
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    className?: string;
+    headerClassName?: string;
+    cellClassName?: string;
+  }
+}
 
 interface DataListProps<TData> {
   data: TData[];
@@ -38,7 +53,6 @@ interface DataListProps<TData> {
 
   // 상태
   isLoading?: boolean;
-  emptyMessage?: string;
 
   // 행 클릭
   onRowClick?: (row: TData) => void;
@@ -58,7 +72,6 @@ export function DataList<TData>({
   onSelectionChange,
   onRowClick,
   isLoading,
-  emptyMessage = '데이터가 없습니다.',
 }: DataListProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState({});
 
@@ -135,11 +148,17 @@ export function DataList<TData>({
               >
                 {headerGroup.headers.map(header => {
                   const size = header.column.columnDef.size;
+                  const meta = header.column.columnDef.meta;
+
                   return (
                     <TableHead
                       key={header.id}
                       style={size ? { width: size } : undefined}
-                      className='font-semibold'
+                      className={cn(
+                        'font-semibold text-center',
+                        meta?.className,
+                        meta?.headerClassName
+                      )}
                     >
                       {header.isPlaceholder
                         ? null
@@ -165,10 +184,12 @@ export function DataList<TData>({
                 >
                   {row.getVisibleCells().map(cell => {
                     const size = cell.column.columnDef.size;
+                    const meta = cell.column.columnDef.meta;
                     return (
                       <TableCell
                         key={cell.id}
                         style={size ? { width: size } : undefined}
+                        className={cn('text-center', meta?.className, meta?.cellClassName)}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
