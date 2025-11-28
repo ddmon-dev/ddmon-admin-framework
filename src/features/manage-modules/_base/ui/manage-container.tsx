@@ -31,14 +31,16 @@ export async function ManageContainer<TData>({
 
   return (
     <ManageSheetProvider>
-      <ManageModuleHeader
-        moduleName={moduleName}
-        headerAddons={headerAddons}
-      />
-      <Container className='space-y-4'>
-        <h1 className='text-2xl font-bold block md:hidden'>{moduleName} 관리</h1>
-        {children({ data, totalCount })}
-      </Container>
+      <div className='space-y-4'>
+        <ManageModuleHeader
+          moduleName={moduleName}
+          headerAddons={headerAddons}
+        />
+        <Container className='space-y-4'>
+          <h1 className='text-2xl font-bold block md:hidden'>{moduleName} 관리</h1>
+          {children({ data, totalCount })}
+        </Container>
+      </div>
     </ManageSheetProvider>
   );
 }

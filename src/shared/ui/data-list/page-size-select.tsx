@@ -1,17 +1,20 @@
 'use client';
 
 import { PAGINATION_CONFIG } from '@/app.config';
+import { cn } from '@/shared/utils/classnames';
 import { useQueryParams } from '@/shared/hooks/use-query-params';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 
 interface PageSizeSelectProps {
   paramKey?: string;
   options?: number[];
+  className?: string;
 }
 
 export function PageSizeSelect({
   paramKey = 'pageSize',
   options = PAGINATION_CONFIG.PAGE_SIZE_OPTIONS,
+  className,
 }: PageSizeSelectProps) {
   const { get, set } = useQueryParams();
   const pageSize = get(paramKey) || options[0].toString();
@@ -25,7 +28,7 @@ export function PageSizeSelect({
       value={pageSize}
       onValueChange={handlePageSizeChange}
     >
-      <SelectTrigger className='w-32'>
+      <SelectTrigger className={cn('w-32', className)}>
         <SelectValue placeholder='페이지 크기' />
       </SelectTrigger>
       <SelectContent>
