@@ -2,10 +2,12 @@ import { Skeleton } from '@/shared/ui/skeleton';
 
 interface ListSkeletonProps {
   rows?: number;
-  columns?: number;
 }
 
-export function ListSkeleton({ rows = 10, columns = 5 }: ListSkeletonProps) {
+// 컬럼 너비 패턴 (실제 테이블과 유사하게)
+const columnWidths = ['w-4', 'w-full max-w-48', 'w-20', 'w-24', 'w-16', 'w-12'];
+
+export function ListSkeleton({ rows = 10 }: ListSkeletonProps) {
   return (
     <>
       {/* Total count skeleton */}
@@ -17,23 +19,37 @@ export function ListSkeleton({ rows = 10, columns = 5 }: ListSkeletonProps) {
       <div className='overflow-hidden rounded-md border'>
         <div className='bg-background-secondary'>
           {/* Header */}
-          <div className='flex border-b p-3'>
-            {Array.from({ length: columns }).map((_, i) => (
-              <div key={i} className='flex-1 px-2'>
-                <Skeleton className='h-4 w-full max-w-20 mx-auto' />
-              </div>
-            ))}
+          <div className='flex items-center gap-4 border-b p-3'>
+            {/* Checkbox */}
+            <Skeleton className='size-4 rounded-sm shrink-0' />
+            {/* Title (wide) */}
+            <Skeleton className='h-4 w-16 shrink-0' />
+            {/* Other columns */}
+            <div className='flex-1' />
+            <Skeleton className='h-4 w-12 shrink-0' />
+            <Skeleton className='h-4 w-16 shrink-0' />
+            <Skeleton className='h-4 w-12 shrink-0' />
           </div>
         </div>
 
         {/* Rows */}
         {Array.from({ length: rows }).map((_, rowIndex) => (
-          <div key={rowIndex} className='flex border-b last:border-b-0 p-3'>
-            {Array.from({ length: columns }).map((_, colIndex) => (
-              <div key={colIndex} className='flex-1 px-2'>
-                <Skeleton className='h-4 w-full max-w-24 mx-auto' />
-              </div>
-            ))}
+          <div key={rowIndex} className='flex items-center gap-4 border-b last:border-b-0 p-3'>
+            {/* Checkbox */}
+            <Skeleton className='size-4 rounded-sm shrink-0' />
+            {/* Title (varies) */}
+            <Skeleton
+              className='h-4 shrink-0'
+              style={{ width: `${200 + (rowIndex % 4) * 50}px` }}
+            />
+            {/* Spacer */}
+            <div className='flex-1' />
+            {/* Status badge */}
+            <Skeleton className='h-6 w-14 rounded-full shrink-0' />
+            {/* Date */}
+            <Skeleton className='h-4 w-20 shrink-0' />
+            {/* Action */}
+            <Skeleton className='size-8 rounded-md shrink-0' />
           </div>
         ))}
       </div>
