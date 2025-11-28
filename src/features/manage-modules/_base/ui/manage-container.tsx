@@ -17,10 +17,7 @@ export function ManageContainer({ moduleName, headerAddons, children }: ManageCo
   return (
     <ManageSheetProvider>
       <div className='space-y-4'>
-        <ManageModuleHeader
-          moduleName={moduleName}
-          headerAddons={headerAddons}
-        />
+        <ManageModuleHeader moduleName={moduleName} headerAddons={headerAddons} />
         <Container className='space-y-4'>
           <h1 className='text-2xl font-bold block md:hidden'>{moduleName} 관리</h1>
           <Suspense fallback={<ListSkeleton />}>{children}</Suspense>

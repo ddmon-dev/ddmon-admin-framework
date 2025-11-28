@@ -10,12 +10,12 @@ import {
   SheetFooter,
   SheetBody,
 } from '@/shared/ui/sheet';
+import { FormSkeleton } from '@/shared/ui/skeletons';
+import { cn } from '@/shared/utils/classnames';
 import type { DbFilesJSONB } from '@/shared/lib/file-system';
 import type { GetItemAction } from '../hooks/use-manage-item-data';
 import { useManageItemData } from '../hooks/use-manage-item-data';
-import { ManageSheetLoading } from './manage-sheet-loading';
 import { ManageSheetError } from './manage-sheet-error';
-import { cn } from '@/shared/utils/classnames';
 
 interface ManageSheetData {
   id?: string;
@@ -126,7 +126,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
 
     // 로딩 중
     if (isLoading) {
-      return <ManageSheetLoading />;
+      return <FormSkeleton />;
     }
 
     // 에러
