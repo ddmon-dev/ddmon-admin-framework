@@ -1,3 +1,9 @@
+/** 다이얼로그 레이아웃 타입 */
+export type DialogLayout = 'default' | 'vertical';
+
+/** 다이얼로그 크기 타입 */
+export type DialogSize = 'sm' | 'md' | 'lg';
+
 /**
  * 확인/취소 다이얼로그 데이터 (Toast API와 유사한 콜백 기반 패턴)
  * @example
@@ -31,6 +37,19 @@ export interface ConfirmDialogData {
    * - `destructive`: 위험한 작업 (빨간색 버튼)
    */
   variant?: 'default' | 'destructive';
+  /**
+   * 레이아웃 타입 (기본값: "default")
+   * - `default`: 가로형 레이아웃
+   * - `vertical`: 세로형 레이아웃 (중앙 정렬)
+   */
+  layout?: DialogLayout;
+  /**
+   * 다이얼로그 너비 (기본값: "md")
+   * - `sm`: 작은 너비 (384px)
+   * - `md`: 중간 너비 (448px)
+   * - `lg`: 큰 너비 (512px)
+   */
+  size?: DialogSize;
   /**
    * 확인 버튼 클릭 시 실행할 콜백 (선택사항)
    * @returns `false`를 반환하면 다이얼로그를 닫지 않고 유지 (기본값: true - 닫기)
@@ -99,6 +118,19 @@ export interface AlertDialogData {
    * - `default`: 파란색 정보 아이콘
    */
   variant?: 'default' | 'success' | 'warning' | 'error';
+  /**
+   * 레이아웃 타입 (기본값: "default")
+   * - `default`: 가로형 레이아웃 (아이콘 + 제목 나란히)
+   * - `vertical`: 세로형 레이아웃 (아이콘 위, 제목 아래, 중앙 정렬)
+   */
+  layout?: DialogLayout;
+  /**
+   * 다이얼로그 너비 (기본값: "md")
+   * - `sm`: 작은 너비 (384px)
+   * - `md`: 중간 너비 (448px)
+   * - `lg`: 큰 너비 (512px)
+   */
+  size?: DialogSize;
   /**
    * 확인 버튼 클릭 시 실행할 콜백 (선택사항)
    * 리다이렉트, 새로고침 등 Alert 후 필수 액션에 유용함

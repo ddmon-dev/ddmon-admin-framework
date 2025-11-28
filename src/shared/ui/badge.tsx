@@ -25,7 +25,7 @@ const badgeVariants = cva(
         info: 'border-transparent bg-info text-info-foreground [a&]:hover:bg-info/90 focus-visible:ring-info/20 dark:focus-visible:ring-info/40',
 
         // Soft (연한 배경)
-        'primary-light':
+        'default-light':
           'border-transparent bg-primary-light text-primary-light-foreground [a&]:hover:bg-primary-light/80 focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
         'destructive-light':
           'border-transparent bg-destructive-light text-destructive-light-foreground [a&]:hover:bg-destructive-light/80 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',

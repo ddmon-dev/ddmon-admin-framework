@@ -85,6 +85,9 @@ import { ThemeToggle } from '@/shared/ui/theme-switcher';
 // Toast
 import { toast } from 'sonner';
 
+// App Dialog
+import { useDialog } from '@/shared/ui/app-dialog';
+
 // Section Component
 function Section({
   id,
@@ -128,12 +131,14 @@ const NAV_ITEMS = [
   { id: 'tabs', label: 'Tabs' },
   { id: 'accordion', label: 'Accordion' },
   { id: 'dialogs', label: 'Dialogs' },
+  { id: 'app-dialogs', label: 'App Dialogs' },
   { id: 'tooltips', label: 'Tooltips' },
   { id: 'toast', label: 'Toast' },
 ];
 
 export default function UIPreviewPage() {
   const [progress, setProgress] = useState(60);
+  const dialog = useDialog();
 
   return (
     <div className='flex min-h-screen'>
@@ -178,7 +183,7 @@ export default function UIPreviewPage() {
           </Subsection>
 
           <Subsection title='Light Variants (Soft)'>
-            <Button variant='primary-light'>Primary Light</Button>
+            <Button variant='default-light'>Primary Light</Button>
             <Button variant='destructive-light'>Destructive Light</Button>
             <Button variant='success-light'>Success Light</Button>
             <Button variant='warning-light'>Warning Light</Button>
@@ -254,7 +259,7 @@ export default function UIPreviewPage() {
           </Subsection>
 
           <Subsection title='Soft Variants'>
-            <Badge variant='primary-light'>Primary Light</Badge>
+            <Badge variant='default-light'>Primary Light</Badge>
             <Badge variant='destructive-light'>Destructive Light</Badge>
             <Badge variant='success-light'>Success Light</Badge>
             <Badge variant='warning-light'>Warning Light</Badge>
@@ -660,6 +665,233 @@ export default function UIPreviewPage() {
                 </div>
               </PopoverContent>
             </Popover>
+          </Subsection>
+        </Section>
+
+        {/* App Dialogs Section */}
+        <Section
+          id='app-dialogs'
+          title='App Dialogs (useDialog)'
+        >
+          <Subsection title='Alert - Variants'>
+            <Button
+              variant='outline'
+              onClick={() =>
+                dialog.alert({ title: 'Default', description: 'This is a default alert.' })
+              }
+            >
+              Default
+            </Button>
+            <Button
+              variant='success-light'
+              onClick={() =>
+                dialog.alert({
+                  title: 'Success',
+                  description: 'Operation completed!',
+                  variant: 'success',
+                })
+              }
+            >
+              Success
+            </Button>
+            <Button
+              variant='destructive-light'
+              onClick={() =>
+                dialog.alert({
+                  title: 'Error',
+                  description: 'Something went wrong.',
+                  variant: 'error',
+                })
+              }
+            >
+              Error
+            </Button>
+            <Button
+              variant='warning-light'
+              onClick={() =>
+                dialog.alert({
+                  title: 'Warning',
+                  description: 'Please check your input.',
+                  variant: 'warning',
+                })
+              }
+            >
+              Warning
+            </Button>
+          </Subsection>
+
+          <Subsection title='Alert - Layouts'>
+            <Button
+              variant='outline'
+              onClick={() =>
+                dialog.alert({
+                  title: 'Default Layout',
+                  description: 'Icon and title are side by side.',
+                  variant: 'success',
+                  layout: 'default',
+                })
+              }
+            >
+              Default Layout
+            </Button>
+            <Button
+              variant='outline'
+              onClick={() =>
+                dialog.alert({
+                  title: 'Vertical Layout',
+                  description: 'Icon on top, title below, centered.',
+                  variant: 'success',
+                  layout: 'vertical',
+                })
+              }
+            >
+              Vertical Layout
+            </Button>
+          </Subsection>
+
+          <Subsection title='Alert - Sizes'>
+            <Button
+              variant='outline'
+              onClick={() =>
+                dialog.alert({
+                  title: 'Small (sm)',
+                  description: 'max-w-sm (384px)',
+                  variant: 'info',
+                  size: 'sm',
+                })
+              }
+            >
+              Small
+            </Button>
+            <Button
+              variant='outline'
+              onClick={() =>
+                dialog.alert({
+                  title: 'Medium (md)',
+                  description: 'max-w-md (448px) - default',
+                  variant: 'info',
+                  size: 'md',
+                })
+              }
+            >
+              Medium
+            </Button>
+            <Button
+              variant='outline'
+              onClick={() =>
+                dialog.alert({
+                  title: 'Large (lg)',
+                  description: 'max-w-lg (512px)',
+                  variant: 'info',
+                  size: 'lg',
+                })
+              }
+            >
+              Large
+            </Button>
+          </Subsection>
+
+          <Subsection title='Alert - Combined'>
+            <Button
+              variant='success'
+              onClick={() =>
+                dialog.alert({
+                  title: 'Success!',
+                  description: 'Your changes have been saved successfully.',
+                  variant: 'success',
+                  layout: 'vertical',
+                  size: 'sm',
+                })
+              }
+            >
+              Vertical + Small
+            </Button>
+            <Button
+              variant='destructive'
+              onClick={() =>
+                dialog.alert({
+                  title: 'Error Occurred',
+                  description: 'Failed to save your changes. Please try again later.',
+                  variant: 'error',
+                  layout: 'vertical',
+                  size: 'lg',
+                })
+              }
+            >
+              Vertical + Large
+            </Button>
+          </Subsection>
+
+          <Subsection title='Confirm - Basic'>
+            <Button
+              variant='outline'
+              onClick={() =>
+                dialog.confirm({
+                  title: 'Confirm Action',
+                  description: 'Are you sure you want to proceed?',
+                  onConfirm: () => toast.success('Confirmed!'),
+                })
+              }
+            >
+              Default Confirm
+            </Button>
+            <Button
+              variant='destructive'
+              onClick={() =>
+                dialog.confirm({
+                  title: 'Delete Item',
+                  description: 'This action cannot be undone.',
+                  variant: 'destructive',
+                  confirmText: 'Delete',
+                  onConfirm: () => toast.success('Deleted!'),
+                })
+              }
+            >
+              Destructive Confirm
+            </Button>
+          </Subsection>
+
+          <Subsection title='Confirm - Layouts & Sizes'>
+            <Button
+              variant='outline'
+              onClick={() =>
+                dialog.confirm({
+                  title: 'Vertical Confirm',
+                  description: 'This is a vertical layout confirm dialog.',
+                  layout: 'vertical',
+                  onConfirm: () => toast.success('Confirmed!'),
+                })
+              }
+            >
+              Vertical Layout
+            </Button>
+            <Button
+              variant='outline'
+              onClick={() =>
+                dialog.confirm({
+                  title: 'Small Confirm',
+                  description: 'Compact confirm dialog.',
+                  size: 'sm',
+                  onConfirm: () => toast.success('Confirmed!'),
+                })
+              }
+            >
+              Small Size
+            </Button>
+            <Button
+              variant='outline'
+              onClick={() =>
+                dialog.confirm({
+                  title: 'Large Confirm',
+                  description: 'This is a larger confirm dialog with more space.',
+                  size: 'lg',
+                  layout: 'vertical',
+                  onConfirm: () => toast.success('Confirmed!'),
+                })
+              }
+            >
+              Large + Vertical
+            </Button>
           </Subsection>
         </Section>
 
