@@ -350,14 +350,12 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         <Button
           variant='outline'
           onClick={() => sheet.close()}
-          className='min-w-40 w-full flex-1'
         >
           취소하기
         </Button>
         <LoadingButton
           type='submit'
           isLoading={form.formState.isSubmitting}
-          className='min-w-40 w-full flex-1'
         >
           {id ? '수정하기' : '저장하기'}
         </LoadingButton>
