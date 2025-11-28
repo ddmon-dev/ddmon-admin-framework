@@ -131,7 +131,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
 
     // 에러
     if (error) {
-      return <ManageSheetError error={error} />;
+      return <ManageSheetError />;
     }
 
     // modify 모드: 폼 표시
@@ -158,15 +158,17 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
       onOpenChange={open => !open && manageSheet.close()}
     >
       <SheetContent className={cn(SIZES[size], 'w-[440px] max-w-full md:w-full md:rounded-l-xl')}>
-        <SheetHeader className='border-b'>
-          {mode && (
-            <>
-              <SheetTitle>{VARIANTS[mode].title}</SheetTitle>
-              <SheetDescription>{VARIANTS[mode].description}</SheetDescription>
-            </>
-          )}
-        </SheetHeader>
-        <SheetBody className='md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col'>
+        {!error && (
+          <SheetHeader className='border-b'>
+            {mode && (
+              <>
+                <SheetTitle>{VARIANTS[mode].title}</SheetTitle>
+                <SheetDescription>{VARIANTS[mode].description}</SheetDescription>
+              </>
+            )}
+          </SheetHeader>
+        )}
+        <SheetBody className={cn('md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col', error && 'pt-0 md:pt-0')}>
           {renderContent()}
         </SheetBody>
       </SheetContent>
