@@ -9,13 +9,12 @@ import { toast } from 'sonner';
 
 import { FieldGroup } from '@/shared/ui/field';
 import { FormTextInput, FormPasswordInput, FormEmailInput } from '@/shared/ui/form-fields';
-import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 import { AUTH_POLICIES } from '@/features/auth/constants';
-import { useManageSheet } from '../_base/ui';
+import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
@@ -151,15 +150,10 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         />
       </FieldGroup>
 
-      {/* 제출 버튼 */}
-      <div className='flex justify-end gap-2 pt-4'>
-        <LoadingButton
-          type='submit'
-          isLoading={form.formState.isSubmitting}
-        >
-          {id ? '수정' : '생성'}
-        </LoadingButton>
-      </div>
+      <ManageSheetFooter>
+        <ManageSheetClose />
+        <ManageFormSubmit isLoading={form.formState.isSubmitting} />
+      </ManageSheetFooter>
     </form>
   );
 }
