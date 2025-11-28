@@ -33,11 +33,8 @@ export function AuthCard({ children, title, description, size = 'sm' }: AuthCard
       )}
     >
       <CardHeader className={cn('space-y-1 px-0 sm:px-6 text-center items-center')}>
-        <div className={cn('flex justify-center mb-6')}>
-          <ProjectSymbol
-            linkToHome
-            className={cn('bg-tertiary text-tertiary-foreground')}
-          />
+        <div className={cn('flex justify-center mb-2')}>
+          <ProjectSymbol linkToHome />
         </div>
         <CardTitle className={cn('text-2xl font-bold')}>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>

@@ -1,10 +1,19 @@
 'use client';
 
 import * as React from 'react';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  RowData,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 
+import { cn } from '@/shared/utils/classnames';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { SortingButton } from './sorting-button';
+import { PageSizeSelect } from './page-size-select';
+import { ListEmpty } from './list-empty';
 
 import {
   Pagination,
@@ -17,10 +26,19 @@ import {
 } from '@/shared/ui/pagination';
 import { useIsMobile } from '@/shared/hooks';
 
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    className?: string;
+    headerClassName?: string;
+    cellClassName?: string;
+  }
+}
+
 interface DataListProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
 
+  totalCount: number;
   pageCount: number;
   currentPage?: number;
   maxVisible?: number;
@@ -35,7 +53,6 @@ interface DataListProps<TData> {
 
   // 상태
   isLoading?: boolean;
-  emptyMessage?: string;
 
   // 행 클릭
   onRowClick?: (row: TData) => void;
@@ -44,6 +61,7 @@ interface DataListProps<TData> {
 export function DataList<TData>({
   data,
   columns,
+  totalCount,
   pageCount,
   currentPage = 1,
   maxVisible,
@@ -54,7 +72,6 @@ export function DataList<TData>({
   onSelectionChange,
   onRowClick,
   isLoading,
-  emptyMessage = '데이터가 없습니다.',
 }: DataListProps<TData>) {
   const [rowSelection, setRowSelection] = React.useState({});
 
@@ -116,18 +133,32 @@ export function DataList<TData>({
   };
 
   return (
-    <div className='w-full'>
+    <>
+      <div className='flex items-center justify-between mb-2'>
+        <span className='text-sm text-muted-foreground font-semibold'>Total ({totalCount})</span>
+      </div>
+
       <div className='overflow-hidden rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id}>
+              <TableRow
+                key={headerGroup.id}
+                className='bg-background-secondary!'
+              >
                 {headerGroup.headers.map(header => {
                   const size = header.column.columnDef.size;
+                  const meta = header.column.columnDef.meta;
+
                   return (
                     <TableHead
                       key={header.id}
                       style={size ? { width: size } : undefined}
+                      className={cn(
+                        'font-semibold text-center',
+                        meta?.className,
+                        meta?.headerClassName
+                      )}
                     >
                       {header.isPlaceholder
                         ? null
@@ -141,12 +172,7 @@ export function DataList<TData>({
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
-                  로딩 중...
-                </TableCell>
+                <TableCell colSpan={columns.length}>로딩 중...</TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
@@ -154,13 +180,16 @@ export function DataList<TData>({
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   onClick={event => handleRowClick(event, row.original)}
+                  className='hover:bg-background-secondary/70! hover:[&_td]:text-primary'
                 >
                   {row.getVisibleCells().map(cell => {
                     const size = cell.column.columnDef.size;
+                    const meta = cell.column.columnDef.meta;
                     return (
                       <TableCell
                         key={cell.id}
                         style={size ? { width: size } : undefined}
+                        className={cn('text-center', meta?.className, meta?.cellClassName)}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -169,12 +198,9 @@ export function DataList<TData>({
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
-                  {emptyMessage}
+              <TableRow className='bg-background!'>
+                <TableCell colSpan={columns.length}>
+                  <ListEmpty />
                 </TableCell>
               </TableRow>
             )}
@@ -182,18 +208,19 @@ export function DataList<TData>({
         </Table>
       </div>
 
-      {pageCount > 0 && (
-        <div className='sticky bottom-0 bg-background'>
-          <DataListPagination
-            pageCount={pageCount}
-            currentPage={currentPage}
-            maxVisible={maxVisible}
-            mobileMaxVisible={mobileMaxVisible}
-            onPageChange={onPageChange}
-          />
+      <div className='sticky bottom-0 bg-background flex items-center justify-between border-t p-4 -mx-4 rounded-b-lg'>
+        <DataListPagination
+          pageCount={pageCount}
+          currentPage={currentPage}
+          maxVisible={maxVisible}
+          mobileMaxVisible={mobileMaxVisible}
+          onPageChange={onPageChange}
+        />
+        <div className='ml-auto hidden md:block'>
+          <PageSizeSelect />
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -206,12 +233,13 @@ interface DataListPaginationProps {
 }
 
 function DataListPagination({
-  pageCount,
+  pageCount: rawPageCount,
   maxVisible = 7,
   mobileMaxVisible = 5,
   currentPage,
   onPageChange,
 }: DataListPaginationProps) {
+  const pageCount = Math.max(1, rawPageCount);
   const isMobile = useIsMobile();
   const effectiveMaxVisible = isMobile ? mobileMaxVisible : maxVisible;
 
@@ -261,42 +289,40 @@ function DataListPagination({
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className='py-4'>
-      <Pagination className='justify-start'>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => canPreviousPage && onPageChange?.(currentPage - 1)}
-              className={!canPreviousPage ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-            />
-          </PaginationItem>
+    <Pagination className='justify-start'>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            onClick={() => canPreviousPage && onPageChange?.(currentPage - 1)}
+            className={!canPreviousPage ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+          />
+        </PaginationItem>
 
-          {pageNumbers.map((page, index) =>
-            page === 'ellipsis' ? (
-              <PaginationItem key={`ellipsis-${index}`}>
-                <PaginationEllipsis />
-              </PaginationItem>
-            ) : (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  onClick={() => onPageChange?.(page)}
-                  isActive={page === currentPage}
-                  className='cursor-pointer'
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            )
-          )}
+        {pageNumbers.map((page, index) =>
+          page === 'ellipsis' ? (
+            <PaginationItem key={`ellipsis-${index}`}>
+              <PaginationEllipsis />
+            </PaginationItem>
+          ) : (
+            <PaginationItem key={page}>
+              <PaginationLink
+                onClick={() => onPageChange?.(page)}
+                isActive={page === currentPage}
+                className='cursor-pointer'
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          )
+        )}
 
-          <PaginationItem>
-            <PaginationNext
-              onClick={() => canNextPage && onPageChange?.(currentPage + 1)}
-              className={!canNextPage ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
-    </div>
+        <PaginationItem>
+          <PaginationNext
+            onClick={() => canNextPage && onPageChange?.(currentPage + 1)}
+            className={!canNextPage ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
   );
 }

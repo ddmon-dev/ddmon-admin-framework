@@ -1,14 +1,16 @@
 import { type SearchParams } from '@/shared/types/search-params';
 import { type ActionResult } from '@/shared/types/results';
+import { Container } from '@/shared/ui/container';
 import { type ListProps } from '../config';
+import { ManageModuleHeader } from './manage-header';
 import { ManageSheetProvider } from './manage-sheet';
-import { CreateButton } from './create-button';
 
 interface ManageContainerProps<TData> {
   moduleName: string;
   searchParams: SearchParams;
   getList: (params: Record<string, unknown>) => Promise<ActionResult<ListProps<TData>>>;
   children: (props: { data: TData[]; totalCount: number }) => React.ReactNode;
+  headerAddons?: React.ReactNode;
 }
 
 export async function ManageContainer<TData>({
@@ -16,6 +18,7 @@ export async function ManageContainer<TData>({
   searchParams,
   getList,
   children,
+  headerAddons,
 }: ManageContainerProps<TData>) {
   const params = await searchParams;
   const result = await getList(params);
@@ -29,11 +32,14 @@ export async function ManageContainer<TData>({
   return (
     <ManageSheetProvider>
       <div className='space-y-4'>
-        <div className='flex justify-between items-center'>
-          <h1 className='text-2xl font-bold'>{moduleName} 관리</h1>
-          <CreateButton>{moduleName} 생성</CreateButton>
-        </div>
-        {children({ data, totalCount })}
+        <ManageModuleHeader
+          moduleName={moduleName}
+          headerAddons={headerAddons}
+        />
+        <Container className='space-y-4'>
+          <h1 className='text-2xl font-bold block md:hidden'>{moduleName} 관리</h1>
+          {children({ data, totalCount })}
+        </Container>
       </div>
     </ManageSheetProvider>
   );

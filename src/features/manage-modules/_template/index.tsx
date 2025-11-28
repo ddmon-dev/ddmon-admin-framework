@@ -3,12 +3,11 @@ import { type SearchParams } from '@/shared/types/search-params';
 import { ManageContainer } from '../_base/ui';
 
 import { CONFIG, type ItemDTO } from './config';
-import { Filters } from './filters';
+import { HeaderAddons } from './addons';
 import { List } from './list';
 import { ItemSheet } from './item-sheet';
 
 import { getList } from './actions/get-list';
-import { ExportDataButton } from './export-data-button';
 
 interface Props {
   searchParams: SearchParams;
@@ -20,12 +19,14 @@ export default function ManageModule({ searchParams }: Props) {
       moduleName={CONFIG.moduleName}
       searchParams={searchParams}
       getList={getList}
+      headerAddons={<HeaderAddons />}
     >
       {({ data, totalCount }) => (
         <>
-          <Filters />
-          <ExportDataButton />
-          <List data={data} totalCount={totalCount} />
+          <List
+            data={data}
+            totalCount={totalCount}
+          />
           <ItemSheet />
         </>
       )}

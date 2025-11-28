@@ -23,10 +23,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMenu data={navigationConfig.navMain} />
       </SidebarContent>
       <SidebarFooter className='gap-2 pt-6'>
-        <div className={cn('px-0')}>
-          <ThemeToggle />
-        </div>
         <NavUser />
+        <ThemeToggle />
       </SidebarFooter>
     </Sidebar>
   );

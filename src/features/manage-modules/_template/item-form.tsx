@@ -26,11 +26,12 @@ import {
   FormFileUpload,
   FormFieldArray,
 } from '@/shared/ui/form-fields';
+import { Button } from '@/shared/ui/button';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
 
-import { useManageSheet } from '../_base/ui';
+import { useManageSheet, ManageSheetFooter } from '../_base/ui';
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
@@ -345,14 +346,20 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
       </FieldGroup>
 
       {/* 제출 버튼 */}
-      <div className='flex justify-end gap-2 pt-4'>
+      <ManageSheetFooter>
+        <Button
+          variant='outline'
+          onClick={() => sheet.close()}
+        >
+          취소하기
+        </Button>
         <LoadingButton
           type='submit'
           isLoading={form.formState.isSubmitting}
         >
-          {id ? '수정' : '생성'}
+          {id ? '수정하기' : '저장하기'}
         </LoadingButton>
-      </div>
+      </ManageSheetFooter>
     </form>
   );
 }

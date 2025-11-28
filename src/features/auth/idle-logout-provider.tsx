@@ -48,12 +48,13 @@ export function IdleLogoutProvider({
         if (onIdle) {
           onIdle();
         } else {
+          signOut();
+
           dialog.alert({
-            title: '일정 시간 활동이 없어 로그아웃됩니다.',
-            variant: 'warning',
-            onConfirm: () => {
-              signOut();
-            },
+            title: '일정 시간 활동이 없어 로그아웃 되었습니다.',
+            variant: 'default',
+            size: 'sm',
+            layout: 'vertical',
           });
         }
       }, timeout);

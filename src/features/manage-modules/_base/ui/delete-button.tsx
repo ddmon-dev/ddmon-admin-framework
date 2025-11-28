@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { Trash2 } from 'lucide-react';
 import { useDialog } from '@/shared/ui/app-dialog';
 import { toast } from 'sonner';
 import { LoadingButton } from '@/shared/ui/loading-button';
@@ -75,12 +76,12 @@ export function SoftDeleteButton({
 
   return (
     <LoadingButton
-      size='sm'
-      variant='destructive'
+      size='icon-sm'
+      variant='destructive-light'
       onClick={handleClick}
       isLoading={isLoading}
     >
-      {children ?? '삭제'}
+      {children ?? <Trash2 />}
     </LoadingButton>
   );
 }
@@ -144,12 +145,12 @@ export function HardDeleteButton({
 
   return (
     <LoadingButton
-      size='sm'
+      size='icon-sm'
       variant='destructive'
       onClick={handleClick}
       isLoading={isLoading}
     >
-      {children ?? '영구 삭제'}
+      {children ?? <Trash2 />}
     </LoadingButton>
   );
 }

@@ -61,9 +61,10 @@ function PaginationLink({
         data-active={isActive}
         className={cn(
           buttonVariants({
-            variant: isActive ? 'outline' : 'ghost',
+            variant: isActive ? 'black' : 'outline',
             size,
           }),
+          isActive && 'pointer-events-none',
           className
         )}
         {...props}
@@ -75,12 +76,12 @@ function PaginationLink({
 
   return (
     <Button
-      variant={isActive ? 'outline' : 'ghost'}
+      variant={isActive ? 'black' : 'outline'}
       size={size}
       aria-current={isActive ? 'page' : undefined}
       data-slot='pagination-link'
       data-active={isActive}
-      className={className}
+      className={cn(className, isActive && 'pointer-events-none')}
       onClick={onClick}
       {...props}
     >
