@@ -10,9 +10,10 @@ const buttonVariants = cva(
     variants: {
       variant: {
         // 기본
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary/80',
+        default:
+          'bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary-light dark:text-primary-light-foreground',
         destructive:
-          'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
+          'bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive-light dark:text-destructive-light-foreground',
         outline:
           'text-foreground border bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
@@ -21,10 +22,10 @@ const buttonVariants = cva(
 
         // 시맨틱 Solid
         success:
-          'bg-success text-success-foreground hover:bg-success/90 focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
+          'bg-success text-success-foreground hover:bg-success/90 focus-visible:ring-success/20 dark:focus-visible:ring-success/40 dark:bg-success-light dark:text-success-light-foreground',
         warning:
-          'bg-warning text-warning-foreground hover:bg-warning/90 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40',
-        info: 'bg-info text-info-foreground hover:bg-info/90 focus-visible:ring-info/20 dark:focus-visible:ring-info/40',
+          'bg-warning text-warning-foreground hover:bg-warning/90 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40 dark:bg-warning-light dark:text-warning-light-foreground',
+        info: 'bg-info text-info-foreground hover:bg-info/90 focus-visible:ring-info/20 dark:focus-visible:ring-info/40 dark:bg-info-light dark:text-info-light-foreground',
 
         // Soft (연한 배경)
         'default-light':

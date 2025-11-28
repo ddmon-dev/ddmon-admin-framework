@@ -16,9 +16,12 @@ interface ManageContainerProps {
 export function ManageContainer({ moduleName, headerAddons, children }: ManageContainerProps) {
   return (
     <ManageSheetProvider>
-      <div className='space-y-4'>
-        <ManageModuleHeader moduleName={moduleName} headerAddons={headerAddons} />
-        <Container className='space-y-4'>
+      <div className='flex flex-col gap-4 flex-1'>
+        <ManageModuleHeader
+          moduleName={moduleName}
+          headerAddons={headerAddons}
+        />
+        <Container className='flex flex-col gap-4 flex-1'>
           <h1 className='text-2xl font-bold block md:hidden'>{moduleName} 관리</h1>
           <Suspense fallback={<ListSkeleton />}>{children}</Suspense>
         </Container>

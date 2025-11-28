@@ -9,10 +9,10 @@ const columnWidths = ['w-4', 'w-full max-w-48', 'w-20', 'w-24', 'w-16', 'w-12'];
 
 export function ListSkeleton({ rows = 10 }: ListSkeletonProps) {
   return (
-    <>
+    <div className='flex flex-col flex-1 min-h-0'>
       {/* Total count skeleton */}
-      <div className='flex items-center justify-between mb-2'>
-        <Skeleton className='h-5 w-20' />
+      <div className='flex items-center justify-between mb-3'>
+        <Skeleton className='h-4 w-20' />
       </div>
 
       {/* Table skeleton */}
@@ -34,7 +34,10 @@ export function ListSkeleton({ rows = 10 }: ListSkeletonProps) {
 
         {/* Rows */}
         {Array.from({ length: rows }).map((_, rowIndex) => (
-          <div key={rowIndex} className='flex items-center gap-4 border-b last:border-b-0 p-3'>
+          <div
+            key={rowIndex}
+            className='flex items-center gap-4 border-b last:border-b-0 p-3'
+          >
             {/* Checkbox */}
             <Skeleton className='size-4 rounded-sm shrink-0' />
             {/* Title (varies) */}
@@ -55,7 +58,7 @@ export function ListSkeleton({ rows = 10 }: ListSkeletonProps) {
       </div>
 
       {/* Pagination skeleton */}
-      <div className='sticky bottom-0 bg-background flex items-center justify-center border-t p-4 -mx-4 rounded-b-lg md:justify-between'>
+      <div className='sticky bottom-0 bg-background flex items-center justify-center border-t p-4 -mx-4 rounded-b-lg md:justify-between mt-auto'>
         <div className='flex items-center gap-1'>
           <Skeleton className='size-9 rounded-md' />
           <Skeleton className='size-9 rounded-md' />
@@ -65,6 +68,6 @@ export function ListSkeleton({ rows = 10 }: ListSkeletonProps) {
         </div>
         <Skeleton className='h-9 w-20 hidden md:block' />
       </div>
-    </>
+    </div>
   );
 }

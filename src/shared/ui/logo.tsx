@@ -30,7 +30,7 @@ export function ProjectSymbol({
   return (
     <Wrapper
       className={cn(
-        'inline-flex items-center justify-center text-primary-foreground bg-primary size-[2.5em] rounded-[0.8em] shrink-0',
+        'inline-flex items-center justify-center text-primary-foreground bg-primary size-[2.5em] rounded-[0.8em] shrink-0 dark:bg-primary-light dark:text-primary-light-foreground',
         className
       )}
       linkToHome={linkToHome}

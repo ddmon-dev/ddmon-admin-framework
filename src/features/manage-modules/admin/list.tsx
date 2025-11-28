@@ -11,12 +11,10 @@ interface ListProps {
 
 export function List({ data, totalCount }: ListProps) {
   return (
-    <div className='space-y-4'>
-      <ManageList
-        data={data}
-        totalCount={totalCount}
-        listColumns={listColumns}
-      />
-    </div>
+    <ManageList
+      data={data}
+      totalCount={totalCount}
+      listColumns={listColumns}
+    />
   );
 }
