@@ -16,22 +16,22 @@ interface SearchBarProps {
   paramKey?: string;
   placeholder?: string;
   className?: string;
+  autoFocus?: boolean;
 }
 
 export function SearchBar({
   paramKey = 'search',
   placeholder = '검색어를 입력하세요.',
   className,
+  autoFocus = false,
 }: SearchBarProps) {
   const { get, set, remove } = useQueryParams();
   const [value, setValue] = React.useState('');
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const searchValue = get(paramKey);
 
   React.useEffect(() => {
-    const searchValue = get(paramKey);
-    if (searchValue) {
-      setValue(searchValue);
-    }
+    setValue(searchValue || '');
   }, [get, paramKey]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -57,6 +57,7 @@ export function SearchBar({
         onChange={e => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
+        autoFocus={autoFocus}
       />
       {value && (
         <InputGroupAddon align='inline-end'>
