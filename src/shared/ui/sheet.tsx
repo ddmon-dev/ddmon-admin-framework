@@ -6,12 +6,17 @@ import { XIcon } from 'lucide-react';
 
 import { cn } from '@/shared/utils/classnames';
 
-function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
+const SheetContext = React.createContext<{ modal: boolean }>({ modal: false });
+
+function Sheet({ modal = false, ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return (
-    <SheetPrimitive.Root
-      data-slot='sheet'
-      {...props}
-    />
+    <SheetContext.Provider value={{ modal }}>
+      <SheetPrimitive.Root
+        data-slot='sheet'
+        modal={modal}
+        {...props}
+      />
+    </SheetContext.Provider>
   );
 }
 
@@ -67,12 +72,39 @@ function SheetContent({
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: 'top' | 'right' | 'bottom' | 'left';
   showCloseButton?: boolean;
+  modal?: boolean;
 }) {
+  const { modal } = React.use(SheetContext);
+
   return (
     <SheetPortal>
-      <SheetOverlay />
+      {modal ? (
+        <SheetOverlay />
+      ) : (
+        <SheetPrimitive.Close asChild>
+          <div
+            data-slot='sheet-overlay'
+            className='data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50'
+          />
+        </SheetPrimitive.Close>
+      )}
       <SheetPrimitive.Content
         data-slot='sheet-content'
+        onPointerDownOutside={e => {
+          // 특정 요소인 경우 닫힘 방지
+          const target = e.target as HTMLElement;
+          const isEditorUI = target.closest('.tippy-box');
+          if (isEditorUI) {
+            e.preventDefault();
+          }
+        }}
+        onFocusOutside={e => {
+          const target = e.target as HTMLElement;
+          const isEditorUI = target.closest('.tippy-box');
+          if (isEditorUI) {
+            e.preventDefault();
+          }
+        }}
         className={cn(
           'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500',
           'overflow-y-auto gap-0',
