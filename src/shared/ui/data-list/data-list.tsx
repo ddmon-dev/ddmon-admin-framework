@@ -172,7 +172,7 @@ export function DataList<TData>({
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow className='bg-background!'>
                 <TableCell colSpan={columns.length}>
                   <ListEmpty />
                 </TableCell>
