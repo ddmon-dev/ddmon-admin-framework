@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { ModifyButton, SoftDeleteButton, HardDeleteButton } from '../_base/ui';
+import { ModifyButton, SoftDeleteButton } from '../_base/ui';
 
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
@@ -8,7 +8,9 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
   {
     accessorKey: 'title',
     header: '제목',
-    size: 400,
+    meta: {
+      className: 'text-left',
+    },
   },
   {
     accessorKey: 'author',
@@ -21,32 +23,36 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     size: 100,
     cell: ({ row }) => {
       const { createdAt } = row.original;
+      if (!createdAt) return '-';
       const date = new Date(createdAt);
-      return <div className='text-right'>{date.toLocaleDateString()}</div>;
+      return date.toLocaleDateString();
     },
   },
   {
     accessorKey: 'viewCount',
-    header: () => <div className='text-right'>조회수</div>,
-    size: 100,
+    header: '조회수',
+    meta: {
+      className: 'text-center',
+    },
+    size: 120,
     cell: ({ row }) => {
-      const count = row.getValue('viewCount') as number;
-      return <div className='text-right'>{count.toLocaleString()}</div>;
+      const { viewCount } = row.original;
+      return viewCount?.toLocaleString() ?? '-';
     },
   },
   {
     accessorKey: 'etc',
-    header: () => <div className='text-right'>기타</div>,
+    header: '기타',
+    size: 120,
+    meta: {
+      className: 'text-right',
+    },
     cell: ({ row }) => {
       const { id } = row.original;
       return (
-        <nav className='flex gap-2'>
+        <nav className='flex items-center justify-end gap-2'>
           <ModifyButton id={id} />
           <SoftDeleteButton
-            tableName={CONFIG.tableName}
-            id={id}
-          />
-          <HardDeleteButton
             tableName={CONFIG.tableName}
             id={id}
           />
