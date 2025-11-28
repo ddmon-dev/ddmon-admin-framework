@@ -182,7 +182,7 @@ export function DataList<TData>({
         </Table>
       </div>
 
-      <div className='sticky bottom-0 bg-background flex items-center justify-between border-t px-3 py-3 -mx-3 rounded-b-lg'>
+      <div className='sticky bottom-0 bg-background flex items-center justify-between border-t p-4 -mx-4 rounded-b-lg'>
         {pageCount > 0 && (
           <DataListPagination
             pageCount={pageCount}
