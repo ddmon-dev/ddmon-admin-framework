@@ -1,9 +1,34 @@
 /**
- * CKEditor 5 Dark Mode Theme
+ * CKEditor 5 Custom Theme
  *
- * .dark 클래스가 있을 때 CKEditor UI 요소들의 색상을 다크모드에 맞게 오버라이드합니다.
- * CKEditor는 --ck-color-* CSS 변수를 사용하므로, .dark .ck 셀렉터로 오버라이드합니다.
+ * - Rounded corners (다른 필드들과 일관된 스타일)
+ * - Dark mode support
  */
+
+/* ============================================================ */
+/* Rounded Corners (Light & Dark) */
+/* ============================================================ */
+.ck.ck-editor {
+  --ck-border-radius: calc(var(--radius) - 2px);
+  --ck-color-focus-border: var(--primary);
+  --ck-focus-ring: 1px solid var(--primary);
+}
+
+/* 툴바 기본 배경색 */
+.ck.ck-sticky-panel .ck-sticky-panel__content {
+  background-color: var(--background) !important;
+}
+
+.dark .ck.ck-sticky-panel .ck-sticky-panel__content {
+  background-color: hsl(0 0% 12%) !important;
+}
+
+/* Sticky 상태일 때 툴바 상단 라디우스 & 쉐도우 제거 */
+.ck.ck-sticky-panel .ck-sticky-panel__content_sticky {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  box-shadow: none !important;
+}
 
 /* ============================================================ */
 /* CKEditor Dark Mode Variables */
