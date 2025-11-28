@@ -1,12 +1,21 @@
 'use client';
 
 import { use, createContext, useState } from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/shared/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+  SheetBody,
+} from '@/shared/ui/sheet';
 import type { DbFilesJSONB } from '@/shared/lib/file-system';
 import type { GetItemAction } from '../hooks/use-manage-item-data';
 import { useManageItemData } from '../hooks/use-manage-item-data';
 import { ManageSheetLoading } from './manage-sheet-loading';
 import { ManageSheetError } from './manage-sheet-error';
+import { cn } from '@/shared/utils/classnames';
 
 interface ManageSheetData {
   id?: string;
@@ -63,13 +72,36 @@ interface ManageSheetProps<T extends { files?: DbFilesJSONB }> {
   additionalDateFields?: string[];
   formComponent: React.ComponentType<{ id?: string; prevValues: T | null }>;
   viewComponent?: React.ComponentType<{ data: T }>;
+  size?: 'sm' | 'md' | 'lg';
 }
+
+const VARIANTS = {
+  create: {
+    title: '데이터 생성하기',
+    description: '새로운 데이터를 생성합니다. 입력 후 저장 버튼을 클릭하세요.',
+  },
+  modify: {
+    title: '데이터 수정하기',
+    description: '기존 데이터를 수정합니다. 입력 후 저장 버튼을 클릭하세요.',
+  },
+  view: {
+    title: '데이터 상세 보기',
+    description: '기존 데이터를 상세 보여줍니다.',
+  },
+};
+
+const SIZES = {
+  sm: 'md:max-w-lg',
+  md: 'md:max-w-xl',
+  lg: 'md:max-w-2xl',
+};
 
 export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   fetchFn,
   additionalDateFields,
   formComponent: FormComponent,
   viewComponent: ViewComponent,
+  size = 'md',
 }: ManageSheetProps<T>) {
   const manageSheet = useManageSheet();
   const { id, mode } = manageSheet.data ?? {};
@@ -125,13 +157,40 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
       open={isOpen}
       onOpenChange={open => !open && manageSheet.close()}
     >
-      <SheetContent className='max-w-4xl! rounded-l-xl'>
-        <SheetHeader>
-          <SheetTitle>Title</SheetTitle>
-          <SheetDescription>Description</SheetDescription>
+      <SheetContent className={cn(SIZES[size], 'w-[440px] max-w-full md:w-full md:rounded-l-xl')}>
+        <SheetHeader className='border-b'>
+          {mode && (
+            <>
+              <SheetTitle>{VARIANTS[mode].title}</SheetTitle>
+              <SheetDescription>{VARIANTS[mode].description}</SheetDescription>
+            </>
+          )}
         </SheetHeader>
-        <div className='overflow-y-auto px-4'>{renderContent()}</div>
+        <SheetBody className='md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4'>
+          {renderContent()}
+        </SheetBody>
       </SheetContent>
     </Sheet>
+  );
+}
+
+export function ManageSheetFooter({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <SheetFooter
+      className={cn(
+        'manage-sheet-footer border-t py-4 sticky bottom-0 bg-background md:rounded-b-xl z-50',
+        'flex-row justify-end md:gap-1',
+        '[&_button]:w-full [&_button]:flex-1',
+        className
+      )}
+    >
+      {children}
+    </SheetFooter>
   );
 }

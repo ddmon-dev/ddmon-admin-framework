@@ -756,7 +756,7 @@ export default function UIPreviewPage() {
                 dialog.alert({
                   title: 'Small (sm)',
                   description: 'max-w-sm (384px)',
-                  variant: 'info',
+                  variant: 'default',
                   size: 'sm',
                 })
               }
@@ -769,7 +769,7 @@ export default function UIPreviewPage() {
                 dialog.alert({
                   title: 'Medium (md)',
                   description: 'max-w-md (448px) - default',
-                  variant: 'info',
+                  variant: 'default',
                   size: 'md',
                 })
               }
@@ -782,7 +782,7 @@ export default function UIPreviewPage() {
                 dialog.alert({
                   title: 'Large (lg)',
                   description: 'max-w-lg (512px)',
-                  variant: 'info',
+                  variant: 'default',
                   size: 'lg',
                 })
               }
@@ -829,7 +829,9 @@ export default function UIPreviewPage() {
                 dialog.confirm({
                   title: 'Confirm Action',
                   description: 'Are you sure you want to proceed?',
-                  onConfirm: () => toast.success('Confirmed!'),
+                  onConfirm: () => {
+                    toast.success('Confirmed!');
+                  },
                 })
               }
             >
@@ -843,7 +845,9 @@ export default function UIPreviewPage() {
                   description: 'This action cannot be undone.',
                   variant: 'destructive',
                   confirmText: 'Delete',
-                  onConfirm: () => toast.success('Deleted!'),
+                  onConfirm: () => {
+                    toast.success('Deleted!');
+                  },
                 })
               }
             >
@@ -859,7 +863,9 @@ export default function UIPreviewPage() {
                   title: 'Vertical Confirm',
                   description: 'This is a vertical layout confirm dialog.',
                   layout: 'vertical',
-                  onConfirm: () => toast.success('Confirmed!'),
+                  onConfirm: () => {
+                    toast.success('Confirmed!');
+                  },
                 })
               }
             >
@@ -872,7 +878,9 @@ export default function UIPreviewPage() {
                   title: 'Small Confirm',
                   description: 'Compact confirm dialog.',
                   size: 'sm',
-                  onConfirm: () => toast.success('Confirmed!'),
+                  onConfirm: () => {
+                    toast.success('Confirmed!');
+                  },
                 })
               }
             >
@@ -886,7 +894,9 @@ export default function UIPreviewPage() {
                   description: 'This is a larger confirm dialog with more space.',
                   size: 'lg',
                   layout: 'vertical',
-                  onConfirm: () => toast.success('Confirmed!'),
+                  onConfirm: () => {
+                    toast.success('Confirmed!');
+                  },
                 })
               }
             >
