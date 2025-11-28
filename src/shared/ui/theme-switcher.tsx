@@ -77,7 +77,7 @@ export function ThemeToggle() {
     <ToggleGroup
       type='single'
       value={currentTheme}
-      className='flex items-center gap-0 w-full divide-x bg-background shadow-md'
+      className='flex items-center gap-0 w-full divide-x bg-background shadow-md dark:bg-sidebar-accent'
     >
       {THEMES.map(({ name, value, icon: Icon }) => (
         <ToggleGroupItem
