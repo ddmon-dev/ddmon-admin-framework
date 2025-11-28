@@ -9,20 +9,44 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        // 기본
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary/80',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
-          'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
+          'border bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        tertiary: 'bg-tertiary text-tertiary-foreground hover:bg-tertiary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
+
+        // 시맨틱 Solid
+        success:
+          'bg-success text-success-foreground hover:bg-success/90 focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
+        warning:
+          'bg-warning text-warning-foreground hover:bg-warning/90 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40',
+        info: 'bg-info text-info-foreground hover:bg-info/90 focus-visible:ring-info/20 dark:focus-visible:ring-info/40',
+
+        // Soft (연한 배경)
+        'default-light':
+          'bg-primary-light text-primary-light-foreground hover:bg-primary-light/80 focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
+        'destructive-light':
+          'bg-destructive-light text-destructive-light-foreground hover:bg-destructive-light/80 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
+        'success-light':
+          'bg-success-light text-success-light-foreground hover:bg-success-light/80 focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
+        'warning-light':
+          'bg-warning-light text-warning-light-foreground hover:bg-warning-light/80 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40',
+        'info-light':
+          'bg-info-light text-info-light-foreground hover:bg-info-light/80 focus-visible:ring-info/20 dark:focus-visible:ring-info/40',
+
+        // 무채색
+        muted: 'bg-muted text-muted-foreground hover:bg-muted-dark',
+        black: 'bg-foreground text-background hover:bg-foreground/90',
       },
       size: {
+        xs: 'h-7 rounded-md gap-1.5 px-2.5 has-[>svg]:px-2.5 text-xs',
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',
         sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
-        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
+        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4 text-md',
         icon: 'size-9',
         'icon-sm': 'size-8',
         'icon-lg': 'size-10',

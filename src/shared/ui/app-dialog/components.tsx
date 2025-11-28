@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertTriangle, CheckCircle2, Info, XCircle } from 'lucide-react';
+import { CircleAlert, Check, Info, X } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -20,7 +20,14 @@ import {
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { Spinner } from '@/shared/ui/spinner';
 import { Button } from '@/shared/ui/button';
-import { type ConfirmDialogData, type AlertDialogData } from './types';
+import { cn } from '@/shared/utils/classnames';
+import { type ConfirmDialogData, type AlertDialogData, type DialogSize } from './types';
+
+const SIZE_CLASSES: Record<DialogSize, string> = {
+  sm: 'sm:max-w-sm',
+  md: 'sm:max-w-md',
+  lg: 'sm:max-w-lg',
+};
 
 // Confirm Dialog Component
 export interface ConfirmDialogComponentProps {
@@ -36,6 +43,8 @@ export function ConfirmDialogComponent({ data, onConfirm, onCancel }: ConfirmDia
     confirmText = '확인',
     cancelText = '취소',
     variant = 'default',
+    layout = 'default',
+    size = 'md',
   } = data;
   const [isLoading, setIsLoading] = useState(false);
 
@@ -56,12 +65,23 @@ export function ConfirmDialogComponent({ data, onConfirm, onCancel }: ConfirmDia
       open
       onOpenChange={open => !open && !isLoading && handleCancel()}
     >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
-        </AlertDialogHeader>
-        <AlertDialogFooter>
+      <AlertDialogContent
+        className={cn(SIZE_CLASSES[size], 'gap-6', layout === 'vertical' ? 'py-10' : '')}
+      >
+        {layout === 'vertical' ? (
+          <AlertDialogHeader className='gap-2 text-center'>
+            <AlertDialogTitle className='text-center'>{title}</AlertDialogTitle>
+            {description && (
+              <AlertDialogDescription className='text-center'>{description}</AlertDialogDescription>
+            )}
+          </AlertDialogHeader>
+        ) : (
+          <AlertDialogHeader className='gap-1'>
+            <AlertDialogTitle>{title}</AlertDialogTitle>
+            {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
+          </AlertDialogHeader>
+        )}
+        <AlertDialogFooter className={layout === 'vertical' ? 'sm:justify-center' : ''}>
           <Button
             variant='outline'
             onClick={handleCancel}
@@ -92,27 +112,37 @@ export interface AlertDialogComponentProps {
 
 const VARIANT_CONFIG = {
   success: {
-    icon: CheckCircle2,
-    iconClassName: 'h-5 w-5 text-green-600',
+    icon: Check,
+    iconClassName: 'bg-success-light text-success-light-foreground',
+    buttonVariant: 'default',
   },
   error: {
-    icon: XCircle,
-    iconClassName: 'h-5 w-5 text-red-600',
+    icon: X,
+    iconClassName: 'bg-destructive-light text-destructive-light-foreground',
+    buttonVariant: 'default',
   },
   warning: {
-    icon: AlertTriangle,
-    iconClassName: 'h-5 w-5 text-yellow-600',
+    icon: CircleAlert,
+    iconClassName: 'bg-warning-light text-warning',
+    buttonVariant: 'default',
   },
   default: {
     icon: Info,
-    iconClassName: 'h-5 w-5 text-blue-600',
+    iconClassName: 'bg-info-light text-info-light-foreground',
+    buttonVariant: 'default',
   },
 } as const;
 
 export function AlertDialogComponent({ data, onClose }: AlertDialogComponentProps) {
-  const { title, description, confirmText = '확인', variant = 'default' } = data;
+  const {
+    title,
+    description,
+    confirmText = '확인',
+    variant = 'default',
+    layout = 'default',
+    size = 'md',
+  } = data;
   const variantConfig = VARIANT_CONFIG[variant];
-  const Icon = variantConfig.icon;
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClose = async () => {
@@ -121,23 +151,51 @@ export function AlertDialogComponent({ data, onClose }: AlertDialogComponentProp
     setIsLoading(false);
   };
 
+  const Icon = () => (
+    <span
+      className={cn(
+        'flex items-center justify-center bg-secondary rounded-full',
+        layout === 'vertical' ? 'size-16' : 'size-7',
+        variantConfig.iconClassName
+      )}
+    >
+      <variantConfig.icon
+        className={layout === 'vertical' ? 'size-[65%]' : 'size-[70%]'}
+        strokeWidth={layout === 'vertical' ? 1 : 2}
+      />
+    </span>
+  );
+
   return (
     <Dialog
       open
       onOpenChange={open => !open && !isLoading && handleClose()}
     >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className='flex items-center gap-2'>
-            <Icon className={variantConfig.iconClassName} />
-            <span>{title}</span>
-          </DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
-        </DialogHeader>
-        <div className='flex justify-end'>
+      <DialogContent className={cn(SIZE_CLASSES[size], layout === 'vertical' ? 'py-10 gap-8' : '')}>
+        {layout === 'vertical' ? (
+          <DialogHeader className='flex flex-col items-center gap-5 text-center'>
+            <Icon />
+            <div className='space-y-2'>
+              <DialogTitle className='text-center'>{title}</DialogTitle>
+              {description && (
+                <DialogDescription className='text-center'>{description}</DialogDescription>
+              )}
+            </div>
+          </DialogHeader>
+        ) : (
+          <DialogHeader>
+            <DialogTitle className='flex items-center gap-2'>
+              <Icon />
+              <span>{title}</span>
+            </DialogTitle>
+            {description && <DialogDescription>{description}</DialogDescription>}
+          </DialogHeader>
+        )}
+        <div className={cn('flex', layout === 'vertical' ? 'justify-center' : 'justify-end')}>
           <LoadingButton
             onClick={handleClose}
             isLoading={isLoading}
+            variant={variantConfig.buttonVariant}
           >
             {isLoading ? <Spinner /> : confirmText}
           </LoadingButton>

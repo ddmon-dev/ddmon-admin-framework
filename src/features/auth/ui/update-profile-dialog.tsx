@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { toast } from 'sonner';
 
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -27,6 +29,7 @@ import { type UpdateProfileValues } from '../types';
 
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS, CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { useDialog } from '@/shared/ui/app-dialog';
 
 const formSchema = z
   .object({
@@ -81,6 +84,7 @@ interface UpdateProfileDialogProps {
 export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
   const [open, setOpen] = useState(false);
   const { user, updateSession } = useAuth();
+  const dialog = useDialog();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -107,8 +111,8 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
       const result = await updateProfile(submitValues);
 
       if (!result.success) {
-        toast.error(CRUD_ERRORS.UPDATE_FAILED('프로필'), {
-          description: result.error,
+        form.setError('root', {
+          message: result.error,
         });
         return;
       }
@@ -116,8 +120,22 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
       // 비밀번호 변경 여부에 따라 처리
       if (values.newPassword) {
         // 비밀번호 변경 시 로그아웃
-        toast.success('비밀번호가 변경되었습니다. 다시 로그인해주세요.');
-        await signOut();
+        dialog.alert({
+          title: (
+            <>
+              비밀번호가 변경되었습니다.
+              <br />
+              다시 로그인해주세요.
+            </>
+          ),
+          variant: 'success',
+          layout: 'vertical',
+          size: 'sm',
+          onConfirm: async () => {
+            signOut();
+          },
+        });
+
         return;
       }
 
@@ -142,8 +160,13 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
       // try catch 내부의 signout은 redirect 에러를 반환하므로 무조건 catch 블록이 실행되게 되어있음.
       // 그래서 비밀번호 변경시 아래 얼럿이 뜨는 것임.
       console.error(error);
-      toast.error(GENERAL_ERRORS.UNEXPECTED, {
-        description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
+
+      if (isRedirectError(error)) {
+        throw error;
+      }
+
+      form.setError('root', {
+        message: GENERAL_ERRORS.UNEXPECTED,
       });
     }
   };
@@ -215,7 +238,13 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
             </FieldGroup>
           </div>
 
-          <div className='flex justify-end gap-2 pt-4'>
+          {form.formState.errors.root && (
+            <p className='text-sm text-destructive p-4 bg-destructive-light rounded-md text-center'>
+              {form.formState.errors.root.message}
+            </p>
+          )}
+
+          <DialogFooter>
             <Button
               type='button'
               variant='outline'
@@ -229,7 +258,7 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
             >
               수정
             </LoadingButton>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

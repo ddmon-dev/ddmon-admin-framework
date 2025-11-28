@@ -2,7 +2,7 @@
 
 import { ReactElement } from 'react';
 import { type FieldPath, type FieldValues } from 'react-hook-form';
-import { telFilter } from '@/shared/utils/input-filters';
+import { formatPhoneNumber } from '@/shared/utils/formats';
 import { FormTextInput } from './form-text-input';
 import type { FormTextInputProps } from './form-text-input';
 
@@ -42,7 +42,7 @@ export const FormPhoneInput = <
   return (
     <FormTextInput
       {...props}
-      customFilter={telFilter}
+      customFilter={formatPhoneNumber}
       valueTransform={value => value.replace(/\D/g, '')}
       inputMode='tel'
     />

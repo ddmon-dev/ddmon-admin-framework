@@ -1,5 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { ModifyButton, SoftDeleteButton, HardDeleteButton } from '../_base/ui';
+import { formatPhoneNumber } from '@/shared/utils/formats';
+import { Separator } from '@/shared/ui/separator';
+import { ModifyButton, SoftDeleteButton } from '../_base/ui';
 
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
@@ -8,40 +10,37 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
   {
     accessorKey: 'name',
     header: '이름',
-    size: 150,
+    meta: {
+      className: 'text-left',
+    },
   },
   {
     accessorKey: 'email',
     header: '이메일',
     size: 200,
+    cell: ({ row }) => {
+      const { email = '-' } = row.original;
+      return email;
+    },
   },
   {
     accessorKey: 'phone',
     header: '전화번호',
     size: 120,
     cell: ({ row }) => {
-      const phone = row.getValue('phone') as string | null;
-      if (!phone) return '-';
-
-      // 전화번호 포맷팅: 01012345678 → 010-1234-5678
-      if (phone.length === 11) {
-        return phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
-      } else if (phone.length === 10) {
-        if (phone.startsWith('02')) {
-          return phone.replace(/(\d{2})(\d{4})(\d{4})/, '$1-$2-$3');
-        }
-        return phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
-      }
-      return phone;
+      const { phone = '-' } = row.original;
+      const formattedPhone = formatPhoneNumber(phone as string);
+      if (!formattedPhone) return '-';
+      return formattedPhone;
     },
   },
   {
     accessorKey: 'age',
-    header: () => <div className='text-right'>나이</div>,
+    header: '나이',
     size: 80,
     cell: ({ row }) => {
-      const age = row.getValue('age') as number | null;
-      return <div className='text-right'>{age ?? '-'}</div>;
+      const { age = '-' } = row.original;
+      return age;
     },
   },
   {
@@ -50,26 +49,31 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     size: 120,
     cell: ({ row }) => {
       const { createdAt } = row.original;
+      if (!createdAt) return '-';
       const date = new Date(createdAt);
-      return <div className='text-right'>{date.toLocaleDateString()}</div>;
+      return date.toLocaleDateString();
     },
   },
   {
-    accessorKey: 'etc',
-    header: () => <div className='text-right'>기타</div>,
+    accessorKey: 'addons',
+    header: '메뉴',
+    meta: {
+      className: 'text-right',
+    },
+    size: 200,
     cell: ({ row }) => {
       const { id, name } = row.original;
       return (
-        <nav className='flex gap-2'>
+        <nav className='flex items-center justify-end gap-2'>
           <ModifyButton id={id} />
+          <Separator
+            orientation='vertical'
+            className='data-[orientation=vertical]:h-6'
+          />
           <SoftDeleteButton
             tableName={CONFIG.tableName}
             id={id}
             dataLabel={name}
-          />
-          <HardDeleteButton
-            tableName={CONFIG.tableName}
-            id={id}
           />
         </nav>
       );

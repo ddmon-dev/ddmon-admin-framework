@@ -1,7 +1,5 @@
 import { SidebarProvider, SidebarInset } from '@/shared/ui/sidebar';
 import { AppSidebar } from '@/widgets/app-sidebar/sidebar';
-import { AppHeader } from '@/widgets/app-header';
-import { ContentContainer } from '@/shared/ui/container';
 import { requireAuth, IdleLogoutProvider } from '@/features/auth';
 
 export default async function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
@@ -12,10 +10,7 @@ export default async function AuthenticatedLayout({ children }: { children: Reac
     <IdleLogoutProvider>
       <SidebarProvider>
         <AppSidebar />
-        <SidebarInset>
-          <AppHeader />
-          <ContentContainer className='py-10 px-10'>{children}</ContentContainer>
-        </SidebarInset>
+        <SidebarInset>{children}</SidebarInset>
       </SidebarProvider>
     </IdleLogoutProvider>
   );
