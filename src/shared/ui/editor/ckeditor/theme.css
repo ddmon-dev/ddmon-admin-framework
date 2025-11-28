@@ -8,11 +8,22 @@
 /* ============================================================ */
 /* Rounded Corners (Light & Dark) */
 /* ============================================================ */
-.ck.ck-editor {
-  --ck-border-radius: calc(var(--radius) - 2px);
+:root {
+  --ck-border-radius: calc(var(--radius) - 10px);
   --ck-color-focus-border: var(--primary);
-  --ck-focus-ring: 1px solid var(--primary);
+  --ck-focus-ring: 1px solid var(--ck-color-base-border);
   --ck-color-base-background: var(--background);
+  --ck-z-default: 100 !important;
+}
+
+.ck.ck-balloon-panel.ck-powered-by-balloon {
+  z-index: 100;
+  border-radius: 100px;
+  border-color: var(--input)!important;
+}
+
+.ck-body-wrapper {
+  pointer-events: initial !important;
 }
 
 /* 툴바 기본 배경색 */
@@ -31,10 +42,23 @@
   box-shadow: none !important;
 }
 
+.ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
+  box-shadow: none!important;
+}
+
+.ck-content {
+  min-height: 200px !important;
+}
+
+/* 리스트 스타일 */
+.ck-content :where(ul, ol) {
+  padding-left: 2.5em;
+}
+
 /* ============================================================ */
 /* CKEditor Dark Mode Variables */
 /* ============================================================ */
-.dark .ck.ck-editor {
+.dark {
   /* Base */
   --ck-color-base-foreground: hsl(0 0% 12%);
   --ck-color-base-background: hsl(0 0% 12%);
@@ -198,3 +222,4 @@
   background-color: hsl(217 91% 60%);
   color: hsl(0 0% 100%);
 }
+
