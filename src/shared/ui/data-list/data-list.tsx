@@ -208,7 +208,7 @@ export function DataList<TData>({
         </Table>
       </div>
 
-      <div className='sticky bottom-0 bg-background flex items-center justify-between border-t p-4 -mx-4 rounded-b-lg'>
+      <div className='sticky bottom-0 bg-background flex items-center justify-center border-t p-4 -mx-4 rounded-b-lg md:justify-between'>
         <DataListPagination
           pageCount={pageCount}
           currentPage={currentPage}
@@ -289,7 +289,7 @@ function DataListPagination({
   const pageNumbers = getPageNumbers();
 
   return (
-    <Pagination className='justify-start'>
+    <Pagination className='justify-center md:justify-start'>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
