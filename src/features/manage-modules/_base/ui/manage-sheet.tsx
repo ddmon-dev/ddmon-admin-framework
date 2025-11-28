@@ -166,7 +166,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
             </>
           )}
         </SheetHeader>
-        <SheetBody className='md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4'>
+        <SheetBody className='md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col'>
           {renderContent()}
         </SheetBody>
       </SheetContent>
@@ -184,7 +184,7 @@ export function ManageSheetFooter({
   return (
     <SheetFooter
       className={cn(
-        'manage-sheet-footer border-t py-4 sticky bottom-0 bg-background md:rounded-b-xl z-50',
+        'manage-sheet-footer border-t py-4 sticky bottom-0 bg-background md:rounded-b-xl z-50 mt-auto',
         'flex-row justify-end md:gap-1',
         '[&_button]:w-full [&_button]:flex-1',
         '[&_button]:md:max-w-40',
