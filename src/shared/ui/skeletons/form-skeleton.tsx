@@ -4,7 +4,7 @@ export function FormSkeleton() {
   return (
     <div className='space-y-6 py-4 flex-1 flex flex-col'>
       {/* 라디오 그룹 */}
-      <div className='space-y-3'>
+      <div className='space-y-3 flex-0'>
         <Skeleton className='h-4 w-16' />
         <div className='flex gap-4'>
           {Array.from({ length: 3 }).map((_, i) => (
