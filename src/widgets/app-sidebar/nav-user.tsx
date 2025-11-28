@@ -32,7 +32,7 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size='lg'
-              className='group shadow-sm bg-sidebar-accent dark:bg-background data-[state=open]:text-sidebar-accent-foreground'
+              className='group shadow-sm bg-sidebar-accent dark:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
               <UserInfo user={user} />
               <ChevronsUpDown className='ml-auto size-4 group-data-[state=open]:text-primary' />
