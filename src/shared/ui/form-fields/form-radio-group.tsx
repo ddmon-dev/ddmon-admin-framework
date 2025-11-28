@@ -3,7 +3,15 @@
 import { ReactElement } from 'react';
 import { Controller, type FieldPath, type FieldValues } from 'react-hook-form';
 import { RadioGroup, RadioGroupItem } from '@/shared/ui/radio-group';
-import { FieldSet, FieldLegend, Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '../field';
+import {
+  FieldSet,
+  FieldLegend,
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from '../field';
 import type { FormBaseProps } from './types';
 
 export type FormRadioGroupProps<
@@ -59,6 +67,7 @@ export const FormRadioGroup = <
                 key={index}
                 orientation='horizontal'
                 data-invalid={fieldState.invalid}
+                className='gap-0'
               >
                 <RadioGroupItem
                   ref={index === 0 ? field.ref : undefined}
@@ -66,7 +75,12 @@ export const FormRadioGroup = <
                   value={option.value}
                   aria-invalid={fieldState.invalid}
                 />
-                <FieldLabel htmlFor={`${field.name}-${index}`}>{option.label}</FieldLabel>
+                <FieldLabel
+                  htmlFor={`${field.name}-${index}`}
+                  className='pl-2 cursor-pointer'
+                >
+                  {option.label}
+                </FieldLabel>
               </Field>
             ))}
           </RadioGroup>

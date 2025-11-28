@@ -179,7 +179,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
       {/* Input Fields */}
       <FieldGroup className='gap-y-2'>
         {/* 주소찾기 버튼 + 우편번호 + 주소 */}
-        <div className='flex gap-2 flex-col sm:flex-row'>
+        <div className='flex gap-1.5 flex-col sm:flex-row'>
           <InputGroup className='w-auto shrink-0'>
             <InputGroupAddon
               align='inline-start'
@@ -189,10 +189,11 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
                 ref={setZipCodeRef}
                 size='xs'
                 onClick={handleSearch}
+                variant='secondary'
                 type='button'
               >
                 <MapPin className='h-4 w-4' />
-                주소찾기
+                <span className='text-xs'>주소찾기</span>
               </InputGroupButton>
             </InputGroupAddon>
             <InputGroupInput
