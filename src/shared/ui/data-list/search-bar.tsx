@@ -11,38 +11,52 @@ import {
   InputGroupInput,
 } from '@/shared/ui/input-group';
 import { useQueryParams } from '@/shared/hooks/use-query-params';
+import { useIsMobile } from '@/shared/hooks';
 
 interface SearchBarProps {
   paramKey?: string;
   placeholder?: string;
   className?: string;
+  autoFocus?: boolean;
 }
 
 export function SearchBar({
   paramKey = 'search',
   placeholder = '검색어를 입력하세요.',
   className,
+  autoFocus = false,
 }: SearchBarProps) {
-  const { get, set, remove } = useQueryParams();
-  const [value, setValue] = React.useState('');
+  const isMobile = useIsMobile();
+  const { get, set } = useQueryParams();
   const inputRef = React.useRef<HTMLInputElement>(null);
 
+  // URL을 source of truth로 사용
+  const searchValue = get(paramKey) || '';
+  const [value, setValue] = React.useState(searchValue);
+
+  // URL 변경 시 로컬 상태 동기화 (외부에서 URL이 변경된 경우)
   React.useEffect(() => {
-    const searchValue = get(paramKey);
-    if (searchValue) {
-      setValue(searchValue);
+    setValue(searchValue);
+  }, [searchValue]);
+
+  const handleSubmit = (newValue: string) => {
+    const trimmed = newValue.trim();
+    if (trimmed) {
+      set({ [paramKey]: trimmed, page: '1' });
+    } else {
+      set({ [paramKey]: '', page: '1' });
     }
-  }, [get, paramKey]);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      set({ [paramKey]: value.trim(), page: '1' });
+      handleSubmit(value);
+      isMobile && inputRef.current?.blur();
     }
   };
 
   const handleClear = () => {
-    setValue('');
-    remove(paramKey);
+    handleSubmit('');
     inputRef.current?.focus();
   };
 
@@ -57,6 +71,7 @@ export function SearchBar({
         onChange={e => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
+        autoFocus={autoFocus}
       />
       {value && (
         <InputGroupAddon align='inline-end'>
