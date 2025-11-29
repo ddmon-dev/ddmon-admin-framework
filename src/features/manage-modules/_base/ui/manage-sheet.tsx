@@ -1,6 +1,7 @@
 'use client';
 
 import { use, createContext, useState } from 'react';
+import { josa } from 'es-hangul';
 import {
   Sheet,
   SheetContent,
@@ -73,20 +74,23 @@ interface ManageSheetProps<T extends { files?: DbFilesJSONB }> {
   formComponent: React.ComponentType<{ id?: string; prevValues: T | null }>;
   viewComponent?: React.ComponentType<{ data: T }>;
   size?: 'sm' | 'md' | 'lg';
+  moduleName?: string;
 }
 
 const VARIANTS = {
   create: {
-    title: '데이터 생성하기',
-    description: '새로운 데이터를 생성합니다. 입력 후 저장 버튼을 클릭하세요.',
+    title: (moduleName?: string) => `${moduleName ?? '데이터'} 생성하기`,
+    description: (moduleName?: string) =>
+      `${josa(moduleName ?? '데이터', '을/를')} 생성합니다. 입력 후 저장 버튼을 클릭하세요.`,
   },
   modify: {
-    title: '데이터 수정하기',
-    description: '기존 데이터를 수정합니다. 입력 후 저장 버튼을 클릭하세요.',
+    title: (moduleName?: string) => `${moduleName ?? '데이터'} 수정하기`,
+    description: (moduleName?: string) =>
+      `${josa(moduleName ?? '데이터', '을/를')} 수정합니다. 입력 후 저장 버튼을 클릭하세요.`,
   },
   view: {
-    title: '데이터 상세 보기',
-    description: '기존 데이터를 상세 보여줍니다.',
+    title: (moduleName?: string) => `${moduleName ?? '데이터'} 상세 보기`,
+    description: (moduleName?: string) => `${moduleName ?? '데이터'}의 상세 내용입니다.`,
   },
 };
 
@@ -101,6 +105,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   additionalDateFields,
   formComponent: FormComponent,
   viewComponent: ViewComponent,
+  moduleName,
   size = 'md',
 }: ManageSheetProps<T>) {
   const manageSheet = useManageSheet();
@@ -162,13 +167,18 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
           <SheetHeader className='border-b'>
             {mode && (
               <>
-                <SheetTitle>{VARIANTS[mode].title}</SheetTitle>
-                <SheetDescription>{VARIANTS[mode].description}</SheetDescription>
+                <SheetTitle>{VARIANTS[mode].title(moduleName)}</SheetTitle>
+                <SheetDescription>{VARIANTS[mode].description(moduleName)}</SheetDescription>
               </>
             )}
           </SheetHeader>
         )}
-        <SheetBody className={cn('md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col', error && 'pt-0 md:pt-0')}>
+        <SheetBody
+          className={cn(
+            'md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col',
+            error && 'pt-0 md:pt-0'
+          )}
+        >
           {renderContent()}
         </SheetBody>
       </SheetContent>
