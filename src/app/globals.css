@@ -315,8 +315,11 @@
 
 @layer utilities {
   .animate-shimmer {
-    @apply bg-linear-to-r from-muted via-muted-foreground/10 to-muted bg-size-[200%_100%];
-    animation: shimmer 1s linear infinite;
+    @apply bg-size-[200%_100%];
+    animation-name: shimmer;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
   }
 
   @keyframes shimmer {
