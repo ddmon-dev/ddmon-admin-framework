@@ -36,5 +36,5 @@ export const PASSWORD_POLICY_CONFIG = {
 
 export const UX_CONFIG = {
   // 로딩 스켈레톤 최소 표시 시간 (ms)
-  MIN_LOADING_TIME: 600,
+  MIN_LOADING_TIME: 400,
 } as const;

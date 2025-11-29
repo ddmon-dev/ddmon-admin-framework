@@ -32,10 +32,10 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size='lg'
-              className='group shadow-sm bg-sidebar-accent dark:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+              className='data-[state=open]:bg-sidebar-accent/70 data-[state=open]:text-sidebar-accent-foreground data-[state=open]:shadow-sm'
             >
               <UserInfo user={user} />
-              <ChevronsUpDown className='ml-auto size-4 group-data-[state=open]:text-primary' />
+              <ChevronsUpDown className='ml-auto size-4 group-data-[state=open]:text-primary transition-colors' />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -75,14 +75,14 @@ function UserInfo({ user }: { user: User | undefined }) {
   const role = user?.superAdmin === true ? '최고관리자' : '일반관리자';
 
   return (
-    <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+    <div className='flex items-center gap-2 py-1.5 text-left text-sm'>
       <Avatar className='h-8 w-8 rounded-lg'>
-        <AvatarFallback className='rounded-lg bg-primary text-primary-foreground dark:bg-primary-light dark:text-primary-light-foreground font-semibold text-lg'>
+        <AvatarFallback className='rounded-lg bg-primary text-primary-foreground dark:bg-primary-light dark:text-primary-light-foreground font-semibold text-lg transition-colors'>
           {initials}
         </AvatarFallback>
       </Avatar>
       <div className='grid gap-1 flex-1 text-left text-sm leading-tight'>
-        <span className='truncate font-medium group-data-[state=open]:text-primary'>
+        <span className='truncate font-medium'>
           {!user ? <Skeleton className='h-4 w-32' /> : `${user?.name} (${user?.id})`}
         </span>
         <span className='flex items-center gap-1 truncate text-xs text-muted-foreground'>

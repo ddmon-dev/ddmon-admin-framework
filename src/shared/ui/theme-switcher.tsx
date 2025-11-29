@@ -77,14 +77,14 @@ export function ThemeToggle() {
     <ToggleGroup
       type='single'
       value={currentTheme}
-      className='flex items-center gap-0 w-full divide-x bg-background shadow-md dark:bg-sidebar-accent'
+      className='flex items-center gap-0 w-full divide-x bg-background shadow-md dark:bg-sidebar-accent transition-colors'
     >
       {THEMES.map(({ name, value, icon: Icon }) => (
         <ToggleGroupItem
           key={value}
           value={value}
           onClick={() => setTheme(value)}
-          className='w-full shrink hover:text-primary data-[state=on]:text-primary bg-transparent!'
+          className='w-full shrink hover:text-primary data-[state=on]:text-primary bg-transparent! transition-colors'
         >
           <span className='sr-only'>{name}</span>
           <Icon />

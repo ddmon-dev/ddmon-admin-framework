@@ -11,6 +11,7 @@ import {
 
 import { cn } from '@/shared/utils/classnames';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
+import { Spinner } from '@/shared/ui/spinner';
 import { SortingButton } from './sorting-button';
 import { PageSizeSelect } from './page-size-select';
 import { ListEmpty } from './list-empty';
@@ -172,7 +173,11 @@ export function DataList<TData>({
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={columns.length}>로딩 중...</TableCell>
+                <TableCell colSpan={columns.length}>
+                  <div className='flex items-center justify-center h-[200px]'>
+                    <Spinner />
+                  </div>
+                </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
@@ -185,13 +190,14 @@ export function DataList<TData>({
                   {row.getVisibleCells().map(cell => {
                     const size = cell.column.columnDef.size;
                     const meta = cell.column.columnDef.meta;
+                    const cellContent = flexRender(cell.column.columnDef.cell, cell.getContext());
                     return (
                       <TableCell
                         key={cell.id}
                         style={size ? { width: size } : undefined}
                         className={cn('text-center', meta?.className, meta?.cellClassName)}
                       >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {cellContent}
                       </TableCell>
                     );
                   })}
