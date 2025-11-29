@@ -4,32 +4,44 @@ import { cn } from '@/shared/utils/classnames';
 import { Container } from '@/shared/ui/container';
 import { Separator } from '@/shared/ui/separator';
 import { SidebarTrigger } from '@/shared/ui/sidebar';
+import { useAppHeaderConfig } from './context';
+import type { AppHeaderConfig } from './types';
 
-interface AppHeaderProps {
-  /** 헤더 타이틀 */
-  title?: string;
-  /** 타이틀 옆 영역 (모바일 필터 버튼 등) */
-  topLeft?: React.ReactNode;
-  /** 상단 우측 영역 (액션 버튼 등) */
-  topRight?: React.ReactNode;
-  /** 하단 전체 영역 (bottomLeft/bottomRight 대신 사용) */
-  bottom?: React.ReactNode;
-  /** 하단 좌측 영역 (필터 등) */
-  bottomLeft?: React.ReactNode;
-  /** 하단 우측 영역 (검색바 등) */
-  bottomRight?: React.ReactNode;
-  className?: string;
+interface AppHeaderProps extends AppHeaderConfig {
+  /** Context 대신 props를 우선 사용할지 여부 */
+  useProps?: boolean;
 }
 
+/**
+ * AppHeader 컴포넌트
+ *
+ * 두 가지 사용 방식 지원:
+ * 1. Context 기반 (layout에 배치, 페이지에서 useAppHeader로 설정)
+ * 2. Props 기반 (직접 페이지에 배치, props로 설정)
+ */
 export function AppHeader({
-  title,
-  topLeft,
-  topRight,
-  bottom,
-  bottomLeft,
-  bottomRight,
-  className,
+  title: propTitle,
+  topLeft: propTopLeft,
+  topRight: propTopRight,
+  bottom: propBottom,
+  bottomLeft: propBottomLeft,
+  bottomRight: propBottomRight,
+  className: propClassName,
+  useProps = false,
 }: AppHeaderProps) {
+  const config = useAppHeaderConfig();
+
+  // useProps가 true이거나 Context에 config가 없으면 props 사용
+  const shouldUseProps = useProps || !config;
+
+  const title = shouldUseProps ? propTitle : config?.title;
+  const topLeft = shouldUseProps ? propTopLeft : config?.topLeft;
+  const topRight = shouldUseProps ? propTopRight : config?.topRight;
+  const bottom = shouldUseProps ? propBottom : config?.bottom;
+  const bottomLeft = shouldUseProps ? propBottomLeft : config?.bottomLeft;
+  const bottomRight = shouldUseProps ? propBottomRight : config?.bottomRight;
+  const className = shouldUseProps ? propClassName : config?.className;
+
   const hasBottom = bottom || bottomLeft || bottomRight;
 
   return (
