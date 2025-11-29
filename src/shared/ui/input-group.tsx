@@ -15,7 +15,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<'div'>) {
       role='group'
       className={cn(
         'group/input-group border-input dark:bg-input/30 relative flex w-full items-center rounded-md border transition-[color,box-shadow] outline-none',
-        'h-9 min-w-0 has-[>textarea]:h-auto',
+        'h-11 md:h-10 min-w-0 has-[>textarea]:h-auto',
 
         // Variants based on alignment.
         'has-[>[data-align=inline-start]]:[&>input]:pl-2',
@@ -80,10 +80,10 @@ function InputGroupAddon({
 const inputGroupButtonVariants = cva('text-sm shadow-none flex gap-2 items-center', {
   variants: {
     size: {
-      xs: "h-6 gap-1 px-2 rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-3.5 has-[>svg]:px-2",
-      sm: 'h-8 px-2.5 gap-1.5 rounded-md has-[>svg]:px-2.5',
-      'icon-xs': 'size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>svg]:p-0',
-      'icon-sm': 'size-8 p-0 has-[>svg]:p-0',
+      xs: "h-8 md:h-6 gap-1 px-2 rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-3.5 has-[>svg]:px-2",
+      sm: 'h-9 md:h-8 px-2.5 gap-1.5 rounded-md has-[>svg]:px-2.5',
+      'icon-xs': 'size-8 md:size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>svg]:p-0',
+      'icon-sm': 'size-9 md:size-8 p-0 has-[>svg]:p-0',
     },
   },
   defaultVariants: {
