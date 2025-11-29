@@ -1,7 +1,6 @@
 'use client';
 
 import { use, createContext, useState } from 'react';
-import { josa } from 'es-hangul';
 import {
   Sheet,
   SheetContent,
@@ -80,17 +79,15 @@ interface ManageSheetProps<T extends { files?: DbFilesJSONB }> {
 const VARIANTS = {
   create: {
     title: (moduleName?: string) => `${moduleName ?? '데이터'} 생성하기`,
-    description: (moduleName?: string) =>
-      `${josa(moduleName ?? '데이터', '을/를')} 생성합니다. 입력 후 저장 버튼을 클릭하세요.`,
+    description: `내용 입력 후 저장 버튼을 클릭하세요.`,
   },
   modify: {
     title: (moduleName?: string) => `${moduleName ?? '데이터'} 수정하기`,
-    description: (moduleName?: string) =>
-      `${josa(moduleName ?? '데이터', '을/를')} 수정합니다. 입력 후 저장 버튼을 클릭하세요.`,
+    description: `수정 후 저장 버튼을 클릭하세요.`,
   },
   view: {
     title: (moduleName?: string) => `${moduleName ?? '데이터'} 상세 보기`,
-    description: (moduleName?: string) => `${moduleName ?? '데이터'}의 상세 내용입니다.`,
+    description: `해당 데이터의 상세 내용입니다.`,
   },
 };
 
@@ -164,13 +161,13 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
     >
       <SheetContent className={cn(SIZES[size], 'w-[440px] max-w-full md:w-full md:rounded-l-xl')}>
         {!error && (
-          <SheetHeader className='border-b md:p-8'>
+          <SheetHeader className='border-b md:p-8 md:pb-4 gap-0.5'>
             {mode && (
               <>
-                <SheetTitle className='text-xl font-bold'>
-                  {VARIANTS[mode].title(moduleName)}
-                </SheetTitle>
-                <SheetDescription>{VARIANTS[mode].description(moduleName)}</SheetDescription>
+                <SheetTitle className='text-lg'>{VARIANTS[mode].title(moduleName)}</SheetTitle>
+                <SheetDescription className='text-sm'>
+                  {VARIANTS[mode].description}
+                </SheetDescription>
               </>
             )}
           </SheetHeader>
