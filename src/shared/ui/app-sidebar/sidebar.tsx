@@ -1,12 +1,12 @@
 'use client';
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/shared/ui/sidebar';
-import { AppSidebarIdentity } from '@/widgets/app-sidebar/identity';
-import { NavMenu } from '@/widgets/app-sidebar/nav-menu';
-import { NavUser } from '@/widgets/app-sidebar/nav-user';
+import { AppSidebarIdentity } from '@/shared/ui/app-sidebar/identity';
+import { NavMenu } from '@/shared/ui/app-sidebar/nav-menu';
+import { NavUser } from '@/shared/ui/app-sidebar/nav-user';
 import { ThemeToggle } from '@/shared/ui/theme-switcher';
 
-import { navigationConfig } from '@/widgets/app-sidebar/config';
+import { navigationConfig } from '@/shared/ui/app-sidebar/config';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
