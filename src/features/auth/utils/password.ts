@@ -1,11 +1,11 @@
+import { APP_CONFIG } from '@/app.config';
 import bcrypt from 'bcryptjs';
-import { SALT_ROUNDS } from '../constants';
 
 /**
  * 비밀번호를 bcrypt로 해시
  */
 export async function hashPassword(password: string): Promise<string> {
-  return await bcrypt.hash(password, SALT_ROUNDS);
+  return await bcrypt.hash(password, APP_CONFIG.AUTH.SALT_ROUNDS);
 }
 
 /**

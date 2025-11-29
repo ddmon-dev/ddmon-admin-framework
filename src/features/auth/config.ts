@@ -1,9 +1,9 @@
+import { APP_CONFIG } from '@/app.config';
 import type { NextAuthConfig, User } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { verifyPassword } from './utils/password';
-import { ADMIN_TABLE_NAME, AUTH_PATHS } from './constants';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 
 const signInSchema = z.object({
@@ -29,7 +29,7 @@ export default {
           const supabase = createServerClient();
 
           const { data, error } = await supabase
-            .from(ADMIN_TABLE_NAME)
+            .from(APP_CONFIG.AUTH.ADMIN_TABLE_NAME)
             .select('*')
             .eq('id', id)
             .eq('deleted', false)
@@ -63,7 +63,7 @@ export default {
     }),
   ],
   pages: {
-    signIn: AUTH_PATHS.SIGN_IN,
+    signIn: APP_CONFIG.AUTH.PATHS.SIGN_IN,
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {

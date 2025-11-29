@@ -7,7 +7,7 @@ import type { DbFilesJSONB } from '@/shared/lib/file-system';
 import { useManageSheet } from '../ui/manage-sheet';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { atLeast } from '@/shared/utils/delays';
-import { UX_CONFIG } from '@/app.config';
+import { APP_CONFIG } from '@/app.config';
 
 export type GetItemAction<T> = (params: { id: string }) => Promise<ActionResult<T>>;
 
@@ -89,7 +89,7 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
           setError(error instanceof Error ? error.message : GENERAL_ERRORS.UNEXPECTED);
           console.error(error);
         }
-      }, UX_CONFIG.MIN_LOADING_TIME);
+      }, APP_CONFIG.UX.MIN_LOADING_TIME);
 
       setIsLoading(false);
     };

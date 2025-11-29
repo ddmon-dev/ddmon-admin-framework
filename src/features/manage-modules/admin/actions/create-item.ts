@@ -1,10 +1,11 @@
 'use server';
 
+import { APP_CONFIG } from '@/app.config';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { schemaPresets } from '@/shared/schemas';
-import { hashPassword, AUTH_POLICIES } from '@/features/auth';
+import { hashPassword } from '@/features/auth';
 import { createServerAction } from '@/shared/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { CreateItemParams } from '../../_base/config';
@@ -28,7 +29,7 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
 
     const validatePassword = schemaPresets
       .password({
-        strength: AUTH_POLICIES.PASSWORD_STRENGTH,
+        strength: APP_CONFIG.AUTH.PASSWORD_STRENGTH,
       })
       .safeParse(values.password);
 

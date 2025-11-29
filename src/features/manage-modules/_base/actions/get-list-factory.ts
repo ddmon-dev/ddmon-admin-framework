@@ -1,4 +1,4 @@
-import { PAGINATION_CONFIG } from '@/app.config';
+import { APP_CONFIG } from '@/app.config';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/shared/utils/server-actions';
@@ -116,7 +116,7 @@ export function createGetListAction<TData>(config: GetListFactoryConfig) {
       page: rawPage = '1',
       search = '',
       category = '',
-      pageSize = PAGINATION_CONFIG.DEFAULT_PAGE_SIZE,
+      pageSize = APP_CONFIG.PAGINATION.PAGE_SIZE_OPTIONS[0],
     }) => {
       const supabase = createServerClient();
 

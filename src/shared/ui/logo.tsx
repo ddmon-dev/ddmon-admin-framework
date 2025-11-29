@@ -1,24 +1,6 @@
+import { APP_CONFIG } from '@/app.config';
 import { cn } from '../utils/classnames';
-import { Radar } from 'lucide-react';
 import Link from 'next/link';
-
-export function ProjectLogo({
-  className,
-  linkToHome,
-}: {
-  className?: string;
-  linkToHome?: boolean;
-}) {
-  return (
-    <Wrapper
-      className={cn('inline-flex items-center gap-2 text-primary', className)}
-      linkToHome={linkToHome}
-    >
-      <Radar className={cn('size-[1.2em]')} />
-      <span className={cn('font-bold')}>LOGO</span>
-    </Wrapper>
-  );
-}
 
 export function ProjectSymbol({
   className,
@@ -35,7 +17,7 @@ export function ProjectSymbol({
       )}
       linkToHome={linkToHome}
     >
-      <Radar className={cn('size-[1.5em]')} />
+      <APP_CONFIG.LOGO.SYMBOL className={cn('size-[1.5em]')} />
     </Wrapper>
   );
 }

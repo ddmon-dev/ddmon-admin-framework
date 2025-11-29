@@ -1,13 +1,6 @@
-import { PAGINATION_CONFIG } from '@/app.config';
 import { WithFiles } from '@/shared/lib/file-system';
 import { CamelCaseKeys } from '@/shared/utils/objects';
 import { RowData, TableName } from '@/shared/lib/supabase/db-helpers';
-
-// 관리 모듈 기본 설정
-export const BASE_CONFIG = {
-  defaultListPageSize: PAGINATION_CONFIG.DEFAULT_PAGE_SIZE, // 페이지당 데이터 목록 행 수
-  defaultListPaginationMaxVisible: PAGINATION_CONFIG.MAX_VISIBLE_PAGES, // 페이지네이션 최대 표시 페이지 수
-} as const;
 
 // 관리 모듈 공통 타입
 export interface ListProps<T> {

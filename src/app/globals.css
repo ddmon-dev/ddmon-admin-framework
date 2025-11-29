@@ -4,8 +4,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Fonts - 동적 폰트 스위칭 지원 */
-  --font-primary: var(--font-pretendard), system-ui, sans-serif;
+  /* Fonts */
+  /* Primary: layout.tsx에서 import한 폰트의 CSS variable을 사용 */
+  /* Secondary: Pretendard 고정 */
+  --font-primary: var(--font-suit), system-ui, sans-serif;
   --font-secondary: var(--font-pretendard), system-ui, sans-serif;
 
   /* Colors - Background & Foreground */
