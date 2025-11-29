@@ -88,12 +88,12 @@ const formDefaultValues = {
   socialLinks: [{ value: '' }],
 };
 
-interface ItemFormProps {
+interface WriteFormProps {
   id?: string;
   prevValues: ItemDTO | null;
 }
 
-export function ItemForm({ id, prevValues }: ItemFormProps) {
+export function WriteForm({ id, prevValues }: WriteFormProps) {
   const sheet = useManageSheet();
   const pathname = usePathname();
   const form = useForm<z.infer<typeof formSchema>>({

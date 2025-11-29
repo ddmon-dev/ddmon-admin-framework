@@ -8,48 +8,32 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import { FieldGroup } from '@/shared/ui/field';
-import {
-  FormRadioGroup,
-  FormTextInput,
-  FormNumberInput,
-  FormEditor,
-  FormFileUpload,
-  FormDatePicker,
-} from '@/shared/ui/form-fields';
-import { schemaPresets } from '@/shared/schemas';
-import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
+import { FormTextInput, FormTextarea, FormDatePicker } from '@/shared/ui/form-fields';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
-import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
 const formSchema = z.object({
-  category: z.string().min(1, '카테고리를 선택해주세요.'),
   createdAt: z.date().nullish(),
-  viewCount: schemaPresets.numberRange(),
-  title: z.string().min(1, '제목을 입력해주세요.'),
-  content: z.string().min(1, '내용을 입력해주세요.'),
-  files: schemaPresets.files({ thumbnail: 0, attachments: 0 }),
+  question: z.string().min(1, '질문을 입력해주세요.'),
+  answer: z.string().min(1, '답변을 입력해주세요.'),
 });
 
 const formDefaultValues = {
-  category: CONFIG.categoryOptions[0].value,
   createdAt: new Date(),
-  viewCount: 0,
-  title: '',
-  content: '',
-  files: undefined,
+  question: '',
+  answer: '',
 };
 
-interface ItemFormProps {
+interface WriteFormProps {
   id?: string;
   prevValues: ItemDTO | null;
 }
 
-export function ItemForm({ id, prevValues }: ItemFormProps) {
+export function WriteForm({ id, prevValues }: WriteFormProps) {
   const sheet = useManageSheet();
   const pathname = usePathname();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,12 +48,12 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const { files: formFiles, ...restValues } = values;
+      const submitValues = values;
 
       // 데이터 DB 저장
       const { success, data, error } = id
-        ? await updateItem({ id, values: restValues as Partial<ItemDTO>, pathname })
-        : await createItem({ values: restValues as Partial<ItemDTO>, pathname });
+        ? await updateItem({ id, values: submitValues as Partial<ItemDTO>, pathname })
+        : await createItem({ values: submitValues as Partial<ItemDTO>, pathname });
 
       if (!success || !data) {
         toast.error(id ? CRUD_ERRORS.UPDATE_FAILED() : CRUD_ERRORS.CREATE_FAILED(), {
@@ -77,15 +61,6 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
         });
         return;
       }
-
-      // 파일 업로드
-      await uploadFormFiles({
-        formFiles: formFiles as FormFilesField,
-        id: data.id,
-        tableName: CONFIG.tableName,
-        pathname,
-        updateAction: updateItem,
-      });
 
       toast.success(id ? SUCCESS_MESSAGES.UPDATE_SUCCESS() : SUCCESS_MESSAGES.CREATE_SUCCESS());
       sheet.close();
@@ -98,14 +73,12 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className='space-y-6'
+    >
+      {/* 기본 정보 */}
       <FieldGroup>
-        <FormRadioGroup
-          control={form.control}
-          name='category'
-          label='카테고리'
-          options={[...CONFIG.categoryOptions]}
-        />
         <FormDatePicker
           control={form.control}
           name='createdAt'
@@ -114,39 +87,19 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
           presets
           optional
         />
-        <FormNumberInput
-          control={form.control}
-          name='viewCount'
-          label='조회수'
-          thousandSeparator
-        />
+
         <FormTextInput
           control={form.control}
-          name='title'
-          label='제목'
+          name='question'
+          label='질문'
+          placeholder='질문을 입력해주세요.'
         />
-        <FormEditor
+
+        <FormTextarea
           control={form.control}
-          name='content'
-          label='내용'
-          entity={CONFIG.tableName}
-        />
-        <FormFileUpload
-          control={form.control}
-          name='files.thumbnail'
-          label='썸네일'
-          acceptPreset='images'
-          maxSize={5}
-          max={1}
-        />
-        <FormFileUpload
-          control={form.control}
-          name='files.attachments'
-          label='첨부 파일'
-          acceptPreset='documents'
-          maxSize={10}
-          max={5}
-          optional
+          name='answer'
+          label='답변'
+          placeholder='답변을 입력해주세요.'
         />
       </FieldGroup>
 

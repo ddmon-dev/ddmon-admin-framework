@@ -2,7 +2,7 @@
 
 import { ManageSheet } from '../_base/ui';
 import { CONFIG } from './config';
-import { ItemForm } from './item-form';
+import { WriteForm } from './write-form';
 import { getItem } from './actions/get-item';
 
 export function ItemSheet() {
@@ -10,7 +10,7 @@ export function ItemSheet() {
     <ManageSheet
       fetchFn={getItem}
       additionalDateFields={['birthDate']}
-      formComponent={ItemForm}
+      formComponent={WriteForm}
       moduleName={CONFIG.moduleName}
     />
   );
