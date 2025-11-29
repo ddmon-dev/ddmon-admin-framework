@@ -164,10 +164,12 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
     >
       <SheetContent className={cn(SIZES[size], 'w-[440px] max-w-full md:w-full md:rounded-l-xl')}>
         {!error && (
-          <SheetHeader className='border-b'>
+          <SheetHeader className='border-b md:p-8'>
             {mode && (
               <>
-                <SheetTitle>{VARIANTS[mode].title(moduleName)}</SheetTitle>
+                <SheetTitle className='text-xl font-bold'>
+                  {VARIANTS[mode].title(moduleName)}
+                </SheetTitle>
                 <SheetDescription>{VARIANTS[mode].description(moduleName)}</SheetDescription>
               </>
             )}
@@ -196,7 +198,7 @@ export function ManageSheetFooter({
   return (
     <SheetFooter
       className={cn(
-        'manage-sheet-footer border-t py-4 sticky bottom-0 bg-background md:rounded-b-xl z-50 mt-auto',
+        'manage-sheet-footer border-t py-4 md:px-8 sticky bottom-0 bg-background md:rounded-b-xl z-50 mt-auto',
         'flex-row justify-end md:gap-1',
         '[&_button]:w-full [&_button]:flex-1',
         '[&_button]:md:max-w-40',

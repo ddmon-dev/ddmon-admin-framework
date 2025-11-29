@@ -36,10 +36,10 @@ export function ListSkeleton({ rows = 10 }: ListSkeletonProps) {
             className='flex items-center gap-4 border-b last:border-b-0 p-3'
           >
             {/* Checkbox */}
-            <Skeleton className='size-4 rounded-sm shrink-0' />
+            <Skeleton className='size-6 rounded-sm shrink-0' />
             {/* Title (varies) */}
             <Skeleton
-              className='h-4 shrink-0'
+              className='h-6 shrink-0'
               style={{ width: `${200 + (rowIndex % 4) * 50}px` }}
             />
             {/* Spacer */}
