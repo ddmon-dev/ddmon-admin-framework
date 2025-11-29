@@ -44,7 +44,7 @@ export function NavUser() {
             align='end'
             sideOffset={4}
           >
-            <DropdownMenuLabel className='p-0 font-normal'>
+            <DropdownMenuLabel className='p-0 pl-2 font-normal'>
               <UserInfo user={user} />
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
