@@ -19,8 +19,9 @@ export function CreateButton({ children, className }: CreateButtonProps) {
       onClick={() => manageSheet.open({ mode: 'create' })}
       className={className}
       size={isMobile ? 'icon-sm' : 'default'}
+      variant={isMobile ? 'ghost' : 'default'}
     >
-      {isMobile ? <Plus /> : children ?? '생성'}
+      {isMobile ? <Plus className='size-6' /> : children ?? '생성'}
     </Button>
   );
 }

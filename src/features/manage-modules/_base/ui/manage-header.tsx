@@ -27,8 +27,8 @@ export function ManageModuleHeader({ moduleName, headerAddons }: ManageModuleHea
   const hasFilters = !!headerAddons;
 
   return (
-    <header className={cn('border-b sticky top-0 z-10 bg-background rounded-t-xl py-2.5 md:py-4')}>
-      <Container className={cn('grid gap-3')}>
+    <header className={cn('border-b sticky top-0 z-10 bg-background rounded-t-xl py-1.5 md:py-4')}>
+      <Container className={cn('grid gap-3 px-1.5 md:px-4')}>
         <div className='flex items-center gap-2'>
           <SidebarTrigger />
 
@@ -47,7 +47,7 @@ export function ManageModuleHeader({ moduleName, headerAddons }: ManageModuleHea
               >
                 <DialogTrigger asChild>
                   <Button
-                    variant='black'
+                    variant='ghost'
                     size='icon-sm'
                     className='md:hidden'
                   >

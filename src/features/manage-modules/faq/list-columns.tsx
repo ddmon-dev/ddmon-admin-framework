@@ -11,6 +11,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     header: '질문',
     meta: {
       className: 'text-left',
+      truncate: true,
     },
   },
   {

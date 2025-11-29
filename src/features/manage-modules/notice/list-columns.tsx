@@ -27,6 +27,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     header: '제목',
     meta: {
       className: 'text-left',
+      truncate: true,
     },
   },
   {

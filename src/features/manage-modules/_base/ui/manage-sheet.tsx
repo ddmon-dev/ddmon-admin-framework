@@ -198,7 +198,7 @@ export function ManageSheetFooter({
         'manage-sheet-footer border-t py-4 md:px-8 sticky bottom-0 bg-background md:rounded-b-xl z-50 mt-auto',
         'flex-row justify-end md:gap-1',
         '[&_button]:w-full [&_button]:flex-1',
-        '[&_button]:md:max-w-40',
+        '[&_button]:md:max-w-28',
         className
       )}
     >
