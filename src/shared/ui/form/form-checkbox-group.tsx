@@ -84,7 +84,7 @@ export const FormCheckboxGroup = <
                 />
                 <FieldLabel
                   htmlFor={`${field.name}-${index}`}
-                  className='pl-2 cursor-pointer'
+                  className='pl-2 cursor-pointer pt-[0.05rem]'
                 >
                   {option.label}
                 </FieldLabel>

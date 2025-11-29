@@ -47,8 +47,8 @@ export function ManageModuleHeader({ moduleName, headerAddons }: ManageModuleHea
               >
                 <DialogTrigger asChild>
                   <Button
-                    variant='secondary'
-                    size='icon'
+                    variant='default-light'
+                    size='icon-sm'
                     className='md:hidden'
                   >
                     <Filter className='size-4' />
@@ -58,7 +58,7 @@ export function ManageModuleHeader({ moduleName, headerAddons }: ManageModuleHea
                   <DialogHeader>
                     <DialogTitle>필터 및 검색</DialogTitle>
                   </DialogHeader>
-                  <div className='flex flex-col gap-4 pt-4'>
+                  <div className='flex flex-col gap-3 pt-4 **:ml-0!'>
                     {headerAddons}
                     <SearchBar />
                   </div>

@@ -267,7 +267,7 @@ export function MultiFileUpload({
           align='inline-start'
           className='pl-1.5'
         >
-          <div className='flex h-6 w-6 items-center justify-center rounded-full bg-secondary'>
+          <div className='flex size-8 md:size-7 items-center justify-center rounded-full bg-secondary'>
             <FileIcon className='h-3.5 w-3.5' />
           </div>
         </InputGroupAddon>
@@ -301,18 +301,18 @@ export function MultiFileUpload({
             const isExisting = file.type === 'existing';
             const isDeleted = isExisting && file.markedForDeletion;
             const fileName = isExisting
-              ? truncateFileName(file.originalName)
-              : truncateFileName(file.file.name);
+              ? truncateFileName(file.originalName, 30)
+              : truncateFileName(file.file.name, 30);
             const fileSize = isExisting ? null : formatFileSize(file.file.size);
 
             const Comp = () => (
               <>
-                {isExisting && <span className='mr-1'>(기존 파일)</span>}
-                <span className={isDeleted ? 'line-through text-destructive/70' : ''}>
+                {isExisting && <span className='mr-1'>(기존)</span>}
+                <span className={isDeleted ? 'line-through text-destructive/70' : 'truncate'}>
                   {fileName}
                 </span>
                 {fileSize && <span className='ml-1 text-muted-foreground'>({fileSize})</span>}
-                {isDeleted && <span className='ml-1 text-destructive'>(삭제 예정)</span>}
+                {isDeleted && <span className='ml-1 text-destructive'>(삭제)</span>}
               </>
             );
 

@@ -154,7 +154,7 @@ export const FormFieldArray = ({
                   size='icon'
                   onClick={() => handleRemove(index)}
                   disabled={!canRemove}
-                  className='size-9 shrink-0'
+                  className='shrink-0'
                 >
                   <Trash2 />
                 </Button>

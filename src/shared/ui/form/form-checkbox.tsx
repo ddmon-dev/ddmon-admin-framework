@@ -39,7 +39,7 @@ export const FormCheckbox = <
             />
             <FieldLabel
               htmlFor={field.name}
-              className='pl-2 cursor-pointer'
+              className='pl-2 cursor-pointer pt-[0.08rem]'
             >
               {label}
             </FieldLabel>
