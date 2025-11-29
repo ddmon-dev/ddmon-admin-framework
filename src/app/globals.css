@@ -4,9 +4,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Fonts (with fallback chain) */
-  --font-primary: var(--font-primary-value), var(--font-secondary-value), system-ui, sans-serif;
-  --font-secondary: var(--font-secondary-value), system-ui, sans-serif;
+  /* Fonts - 동적 폰트 스위칭 지원 */
+  --font-primary: var(--font-pretendard), system-ui, sans-serif;
+  --font-secondary: var(--font-pretendard), system-ui, sans-serif;
 
   /* Colors - Background & Foreground */
   --color-background: var(--background);

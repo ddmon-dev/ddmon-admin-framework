@@ -1,12 +1,21 @@
 import type { Metadata } from 'next';
 import { cn } from '@/shared/utils/classnames';
-import { primary, secondary } from '@/fonts';
+import {
+  pretendard,
+  nanumSquareNeo,
+  suit,
+  gothicA1,
+  nanumGothic,
+  notoSansKR,
+  ibmPlexSansKR,
+} from '@/fonts';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from 'next-themes';
 import { SessionProvider } from 'next-auth/react';
 import { DialogProvider } from '@/shared/ui/app-dialog';
 import { auth } from '@/features/auth';
+import { FontSwitcher } from '@/shared/ui/font-switcher';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
@@ -23,7 +32,15 @@ export default async function RootLayout({
   return (
     <html
       lang='ko'
-      className={cn(primary.variable, secondary.variable)}
+      className={cn(
+        pretendard.variable,
+        nanumSquareNeo.variable,
+        suit.variable,
+        gothicA1.variable,
+        nanumGothic.variable,
+        notoSansKR.variable,
+        ibmPlexSansKR.variable
+      )}
       suppressHydrationWarning
     >
       <body className={cn('antialiased')}>
@@ -35,6 +52,7 @@ export default async function RootLayout({
           <SessionProvider session={session}>
             <DialogProvider>
               {children}
+              <FontSwitcher />
               <Toaster
                 richColors
                 position='bottom-center'
