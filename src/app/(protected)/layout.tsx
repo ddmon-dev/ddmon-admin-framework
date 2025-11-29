@@ -1,5 +1,5 @@
 import { SidebarProvider, SidebarInset } from '@/shared/ui/sidebar';
-import { AppSidebar } from '@/widgets/app-sidebar/sidebar';
+import { AppSidebar } from '@/shared/ui/app-sidebar/sidebar';
 import { requireAuth, IdleLogoutProvider } from '@/features/auth';
 
 export default async function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
