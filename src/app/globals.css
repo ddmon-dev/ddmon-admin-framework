@@ -313,6 +313,22 @@
   }
 }
 
+@layer utilities {
+  .animate-shimmer {
+    @apply bg-linear-to-r from-muted via-muted-foreground/10 to-muted bg-size-[200%_100%];
+    animation: shimmer 1s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+}
+
 /* Sonner Toast */
 [data-sonner-toast] {
   border-radius: var(--radius) !important;
