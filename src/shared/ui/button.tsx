@@ -65,7 +65,7 @@ const buttonVariants = cva(
 
         // 무채색
         muted: 'bg-muted text-muted-foreground hover:bg-muted-dark',
-        black: 'bg-foreground text-background hover:bg-foreground/90',
+        black: 'bg-foreground/80 text-background hover:bg-foreground/80',
       },
       size: {
         xs: 'h-7 gap-1.5 px-2.5 has-[>svg]:px-2.5 text-xs',
