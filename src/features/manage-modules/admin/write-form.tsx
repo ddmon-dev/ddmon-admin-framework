@@ -8,34 +8,62 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import { FieldGroup } from '@/shared/ui/field';
-import { FormTextInput, FormTextarea, FormDatePicker } from '@/shared/ui/form-fields';
+import { FormTextInput, FormPasswordInput, FormEmailInput } from '@/shared/ui/form-fields';
+import { schemaPresets } from '@/shared/schemas';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 
+import { AUTH_POLICIES } from '@/features/auth/constants';
 import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
-const formSchema = z.object({
-  createdAt: z.date().nullish(),
-  question: z.string().min(1, '질문을 입력해주세요.'),
-  answer: z.string().min(1, '답변을 입력해주세요.'),
-});
-
-const formDefaultValues = {
-  createdAt: new Date(),
-  question: '',
-  answer: '',
+const createFormSchema = (isEdit: boolean) => {
+  return z
+    .object({
+      id: schemaPresets.id(),
+      name: z.string().min(3, '이름은 3자 이상 입력해주세요.'),
+      password: schemaPresets.password({
+        optional: isEdit,
+        strength: AUTH_POLICIES.PASSWORD_STRENGTH,
+      }),
+      confirmPassword: schemaPresets.password({
+        optional: isEdit,
+        strength: AUTH_POLICIES.PASSWORD_STRENGTH,
+      }),
+      email: schemaPresets.email(),
+    })
+    .refine(
+      data => {
+        if (data.password && data.password !== data.confirmPassword) {
+          return false;
+        }
+        return true;
+      },
+      {
+        message: '비밀번호가 일치하지 않습니다.',
+        path: ['confirmPassword'],
+      }
+    );
 };
 
-interface ItemFormProps {
+const formDefaultValues = {
+  id: '',
+  name: '',
+  password: '',
+  confirmPassword: '',
+  email: '',
+};
+
+interface WriteFormProps {
   id?: string;
   prevValues: ItemDTO | null;
 }
 
-export function ItemForm({ id, prevValues }: ItemFormProps) {
+export function WriteForm({ id, prevValues }: WriteFormProps) {
   const sheet = useManageSheet();
   const pathname = usePathname();
+  const formSchema = createFormSchema(!!id);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof formSchema>,
@@ -52,8 +80,8 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
 
       // 데이터 DB 저장
       const { success, data, error } = id
-        ? await updateItem({ id, values: submitValues as Partial<ItemDTO>, pathname })
-        : await createItem({ values: submitValues as Partial<ItemDTO>, pathname });
+        ? await updateItem({ id, values: submitValues, pathname })
+        : await createItem({ values: submitValues, pathname });
 
       if (!success || !data) {
         toast.error(id ? CRUD_ERRORS.UPDATE_FAILED() : CRUD_ERRORS.CREATE_FAILED(), {
@@ -79,27 +107,46 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
     >
       {/* 기본 정보 */}
       <FieldGroup>
-        <FormDatePicker
+        <FormTextInput
           control={form.control}
-          name='createdAt'
-          label='작성일'
-          mode='single'
-          presets
-          optional
+          name='id'
+          label='아이디'
+          description={
+            id
+              ? '아이디는 수정할 수 없습니다.'
+              : `아이디는 최소 ${AUTH_POLICIES.ID_MIN_LENGTH}자 이상 입력해주세요.`
+          }
+          disabled={!!id}
         />
 
         <FormTextInput
           control={form.control}
-          name='question'
-          label='질문'
-          placeholder='질문을 입력해주세요.'
+          name='name'
+          label='이름'
+          placeholder='이름을 입력해주세요.'
         />
 
-        <FormTextarea
+        <FormEmailInput
           control={form.control}
-          name='answer'
-          label='답변'
-          placeholder='답변을 입력해주세요.'
+          name='email'
+          label='이메일'
+          placeholder='이메일을 입력해주세요.'
+        />
+
+        <FormPasswordInput
+          control={form.control}
+          name='password'
+          label='비밀번호'
+          placeholder='비밀번호를 입력해주세요.'
+          optional={!!id}
+        />
+
+        <FormPasswordInput
+          control={form.control}
+          name='confirmPassword'
+          label='비밀번호 확인'
+          placeholder='비밀번호를 다시 입력해주세요.'
+          optional={!!id}
         />
       </FieldGroup>
 

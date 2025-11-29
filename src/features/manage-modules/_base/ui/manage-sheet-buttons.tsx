@@ -13,7 +13,7 @@ export function ManageFormSubmit({ isLoading, className }: ManageFormSubmitProps
     <LoadingButton
       type='submit'
       isLoading={isLoading}
-      className={cn('font-bold', className)}
+      className={cn('font-semibold', className)}
     >
       저장하기
     </LoadingButton>
@@ -31,7 +31,7 @@ export function ManageSheetClose({ children = '취소하기', className }: Manag
     <Button
       variant='outline'
       onClick={() => manageSheet.close()}
-      className={cn('font-bold', className)}
+      className={cn('font-semibold', className)}
     >
       {children}
     </Button>
