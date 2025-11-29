@@ -18,8 +18,8 @@ export default function Error({ error, reset }: ErrorProps) {
     <Empty className='min-h-screen border-0'>
       <EmptyHeader>
         <EmptyMedia className='mb-4'>
-          <span className='text-8xl font-medium tracking-tighter text-muted-foreground/50'>
-            ERROR!
+          <span className='text-8xl font-secondary font-medium tracking-tighter text-muted-foreground/50'>
+            ERROR
           </span>
         </EmptyMedia>
         <EmptyTitle className='text-2xl'>문제가 발생했습니다</EmptyTitle>
