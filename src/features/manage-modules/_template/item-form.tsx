@@ -142,10 +142,7 @@ export function ItemForm({ id, prevValues }: ItemFormProps) {
   }
 
   return (
-    <form
-      onSubmit={form.handleSubmit(onSubmit)}
-      className='space-y-6'
-    >
+    <form onSubmit={form.handleSubmit(onSubmit)}>
       {/* 기본 정보 */}
       <FieldGroup>
         <h3 className='text-lg font-semibold'>기본 정보</h3>

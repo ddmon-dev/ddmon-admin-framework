@@ -177,7 +177,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
         )}
         <SheetBody
           className={cn(
-            'md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col',
+            'md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col [&_form]:space-y-6',
             error && 'pt-0 md:pt-0'
           )}
         >

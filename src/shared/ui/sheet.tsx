@@ -8,7 +8,11 @@ import { cn } from '@/shared/utils/classnames';
 
 const SheetContext = React.createContext<{ modal: boolean }>({ modal: false });
 
-function Sheet({ modal = false, open, ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
+function Sheet({
+  modal = false,
+  open,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Root>) {
   // modal={false}로 CKEditor 포커스 트랩 충돌 해결, 수동 스크롤 잠금
   React.useEffect(() => {
     if (open) {
@@ -119,7 +123,7 @@ function SheetContent({
           }
         }}
         className={cn(
-          'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500',
+          'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 ring-0 outline-none',
           'overflow-y-auto gap-0',
           side === 'right' &&
             'data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm',
