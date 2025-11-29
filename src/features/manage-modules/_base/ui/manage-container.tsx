@@ -21,8 +21,10 @@ export function ManageContainer({ moduleName, headerAddons, children }: ManageCo
           moduleName={moduleName}
           headerAddons={headerAddons}
         />
-        <Container className='flex flex-col gap-4 flex-1 mt-8 md:mt-4'>
-          <h1 className='text-2xl font-bold block md:hidden'>{moduleName} 관리</h1>
+        <Container className='flex flex-col gap-8 md:gap-4 flex-1 mt-8 md:mt-4'>
+          <h1 className='text-2xl font-bold block md:hidden text-center md:text-left'>
+            {moduleName} 관리
+          </h1>
           <Suspense fallback={<ListSkeleton />}>{children}</Suspense>
         </Container>
       </div>
