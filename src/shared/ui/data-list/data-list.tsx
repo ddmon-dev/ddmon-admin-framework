@@ -136,7 +136,7 @@ export function DataList<TData>({
 
   return (
     <div className='flex flex-col flex-1'>
-      <div className='flex items-center justify-between mb-2 pl-4'>
+      <div className='flex items-center justify-between mb-2 pl-2 md:pl-4'>
         <span className='text-sm text-muted-foreground font-semibold'>Total ({totalCount})</span>
       </div>
 

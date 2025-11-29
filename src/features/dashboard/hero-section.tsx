@@ -14,7 +14,7 @@ export function HeroSection() {
   const userName = session?.user?.name || '관리자';
 
   return (
-    <section className='pt-4 px-4 md:px-0 mb-8 md:pt-6 md:mb-12'>
+    <section className='pt-4 px-4 md:px-0 mb-8 md:pt-6 md:mb-12 text-center md:text-left'>
       <h1 className='text-[28px] md:text-[42px] font-thin tracking-tighter leading-[1.2] text-secondary-foreground/70'>
         안녕하세요
         <br />
