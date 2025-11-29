@@ -83,6 +83,7 @@ export function ThemeToggle() {
         <ToggleGroupItem
           key={value}
           value={value}
+          size='sm'
           onClick={() => setTheme(value)}
           className='w-full shrink hover:text-primary data-[state=on]:text-primary bg-transparent! transition-colors'
         >

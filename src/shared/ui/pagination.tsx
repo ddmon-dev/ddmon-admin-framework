@@ -38,7 +38,7 @@ function PaginationItem({ ...props }: React.ComponentProps<'li'>) {
 
 type PaginationLinkProps = {
   isActive?: boolean;
-  size?: 'default' | 'sm' | 'lg' | 'icon';
+  size?: 'default' | 'sm' | 'lg' | 'icon' | 'icon-xs' | 'icon';
   href?: string;
 } & Omit<React.ComponentProps<'a'>, 'href'> &
   Omit<React.ComponentProps<typeof Button>, 'size' | 'variant'>;
@@ -82,7 +82,7 @@ function PaginationLink({
       aria-current={isActive ? 'page' : undefined}
       data-slot='pagination-link'
       data-active={isActive}
-      className={cn(className, 'transition-none', isActive && 'pointer-events-none')}
+      className={cn('size-9', className, 'transition-none', isActive && 'pointer-events-none')}
       onClick={onClick}
       {...props}
     >
@@ -99,7 +99,7 @@ function PaginationPrevious({ className, ...props }: React.ComponentProps<typeof
       className={cn('', className)}
       {...props}
     >
-      <ChevronLeftIcon className='size-4' />
+      <ChevronLeftIcon className='size-5' />
     </PaginationLink>
   );
 }
@@ -112,7 +112,7 @@ function PaginationNext({ className, ...props }: React.ComponentProps<typeof Pag
       className={cn('', className)}
       {...props}
     >
-      <ChevronRightIcon className='size-4' />
+      <ChevronRightIcon className='size-5' />
     </PaginationLink>
   );
 }
