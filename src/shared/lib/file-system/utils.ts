@@ -18,7 +18,7 @@ export function extractFilePathFromUrl(url: string): string {
     }
 
     return pathSegments.slice(bucketIndex + 1).join('/');
-  } catch (error) {
+  } catch {
     throw new Error('URL 파싱에 실패했습니다: ' + url);
   }
 }

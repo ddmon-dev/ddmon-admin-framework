@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { exportToExcel, type ExcelColumn } from '@/shared/lib/excel';
