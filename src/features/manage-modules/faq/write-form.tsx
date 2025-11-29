@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import { FieldGroup } from '@/shared/ui/field';
-import { FormTextInput, FormTextarea, FormDatePicker } from '@/shared/ui/form-fields';
+import { FormTextInput, FormTextarea, FormDatePicker } from '@/shared/ui/form';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 

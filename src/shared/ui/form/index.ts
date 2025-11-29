@@ -80,3 +80,6 @@ export type { FormAddressInputProps } from './form-address-input';
 // FormFieldArray
 export { FormFieldArray } from './form-field-array';
 export type { FormFieldArrayProps } from './form-field-array';
+
+// FormRootError
+export { FormRootError } from './form-errors';

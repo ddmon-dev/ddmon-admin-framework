@@ -18,7 +18,7 @@ import {
 } from '@/shared/ui/dialog';
 import { Button } from '@/shared/ui/button';
 import { FieldGroup } from '@/shared/ui/field';
-import { FormTextInput, FormPasswordInput, FormEmailInput } from '@/shared/ui/form-fields';
+import { FormTextInput, FormPasswordInput, FormEmailInput, FormRootError } from '@/shared/ui/form';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 
@@ -28,7 +28,7 @@ import { updateProfile } from '../actions/update-profile';
 import { type UpdateProfileValues } from '../types';
 
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
-import { GENERAL_ERRORS, CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 import { useDialog } from '@/shared/ui/app-dialog';
 
 const formSchema = z
@@ -239,9 +239,7 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
           </div>
 
           {form.formState.errors.root && (
-            <p className='text-sm text-destructive p-4 bg-destructive-light rounded-md text-center'>
-              {form.formState.errors.root.message}
-            </p>
+            <FormRootError>{form.formState.errors.root.message}</FormRootError>
           )}
 
           <DialogFooter>
