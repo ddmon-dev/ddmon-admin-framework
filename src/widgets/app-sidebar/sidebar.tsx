@@ -1,6 +1,5 @@
 'use client';
 
-import { cn } from '@/shared/utils/classnames';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/shared/ui/sidebar';
 import { AppSidebarIdentity } from '@/widgets/app-sidebar/identity';
 import { NavMenu } from '@/widgets/app-sidebar/nav-menu';

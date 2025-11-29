@@ -2,7 +2,10 @@ import { ProjectSymbol } from '@/shared/ui/logo';
 
 export function AppSidebarIdentity() {
   return (
-    <div className='flex items-center gap-2.5 bg-sidebar-accent rounded-lg shadow-sm/10 p-2'>
+    <div
+      className='flex items-center gap-2.5 rounded-lg md:pt-4'
+      // className='flex items-center gap-2.5 bg-sidebar-accent rounded-lg shadow-sm/10 p-2'
+    >
       <ProjectSymbol
         linkToHome
         className='text-sm'

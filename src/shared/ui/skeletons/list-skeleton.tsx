@@ -4,9 +4,6 @@ interface ListSkeletonProps {
   rows?: number;
 }
 
-// 컬럼 너비 패턴 (실제 테이블과 유사하게)
-const columnWidths = ['w-4', 'w-full max-w-48', 'w-20', 'w-24', 'w-16', 'w-12'];
-
 export function ListSkeleton({ rows = 10 }: ListSkeletonProps) {
   return (
     <div className='flex flex-col flex-1 min-h-0'>

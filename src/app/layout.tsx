@@ -26,7 +26,7 @@ export default function RootLayout({
       <body className={cn('antialiased')}>
         <ThemeProvider
           attribute='class'
-          enableSystem={true}
+          enableSystem
         >
           <SessionProvider>
             <DialogProvider>

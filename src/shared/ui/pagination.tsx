@@ -64,6 +64,7 @@ function PaginationLink({
             variant: isActive ? 'black' : 'outline',
             size,
           }),
+          'transition-none',
           isActive && 'pointer-events-none',
           className
         )}
@@ -81,7 +82,7 @@ function PaginationLink({
       aria-current={isActive ? 'page' : undefined}
       data-slot='pagination-link'
       data-active={isActive}
-      className={cn(className, isActive && 'pointer-events-none')}
+      className={cn(className, 'transition-none', isActive && 'pointer-events-none')}
       onClick={onClick}
       {...props}
     >
