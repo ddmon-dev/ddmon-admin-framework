@@ -29,6 +29,7 @@ export function ManageSheetClose({ children = '취소하기', className }: Manag
   const manageSheet = useManageSheet();
   return (
     <Button
+      type='button'
       variant='outline'
       onClick={() => manageSheet.close()}
       className={cn('font-semibold', className)}
