@@ -11,7 +11,12 @@ interface AppHeaderProps {
 
 export function AppHeader({ title, children, className }: AppHeaderProps) {
   return (
-    <header className={cn('border-b sticky top-0 z-10 bg-background rounded-t-xl py-4', className)}>
+    <header
+      className={cn(
+        'border-b sticky top-0 z-10 bg-background rounded-t-xl py-2.5 md:py-4',
+        className
+      )}
+    >
       <Container>
         <div className='flex items-center gap-2'>
           <SidebarTrigger />
