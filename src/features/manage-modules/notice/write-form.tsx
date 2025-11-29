@@ -15,7 +15,7 @@ import {
   FormEditor,
   FormFileUpload,
   FormDatePicker,
-} from '@/shared/ui/form-fields';
+} from '@/shared/ui/form';
 import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';

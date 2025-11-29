@@ -25,7 +25,7 @@ import {
   FormEditor,
   FormFileUpload,
   FormFieldArray,
-} from '@/shared/ui/form-fields';
+} from '@/shared/ui/form';
 import { Button } from '@/shared/ui/button';
 import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';

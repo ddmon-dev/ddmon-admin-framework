@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FieldGroup } from '@/shared/ui/field';
-import { FormTextInput, FormPasswordInput } from '@/shared/ui/form-fields';
+import { FormTextInput, FormPasswordInput, FormRootError } from '@/shared/ui/form';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { AUTH_ERRORS } from '@/shared/constants/error-messages';
 import { signIn } from '../actions';
@@ -68,11 +68,7 @@ export function SignInForm() {
           />
         </FieldGroup>
 
-        {error && (
-          <div className='rounded-md bg-destructive/15 p-3 text-sm text-destructive text-center'>
-            {error}
-          </div>
-        )}
+        {error && <FormRootError>{error}</FormRootError>}
 
         <LoadingButton
           type='submit'
