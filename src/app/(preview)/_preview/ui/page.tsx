@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { ColorSetter } from './color-setter';
 
 import {
   AlertCircle,
@@ -142,7 +141,6 @@ export default function UIPreviewPage() {
 
   return (
     <div className='flex min-h-screen'>
-      <ColorSetter />
       {/* Sidebar Navigation */}
       <aside className='w-72 shrink-0 border-r bg-background sticky top-0 h-screen overflow-y-auto p-4 space-y-4'>
         <h1 className='text-lg font-bold shrink-0'>UI Preview</h1>
