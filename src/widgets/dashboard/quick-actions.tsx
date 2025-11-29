@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { FileText, Newspaper, HelpCircle, Users, ArrowRight, type LucideIcon } from 'lucide-react';
 import { cn } from '@/shared/utils/classnames';
+import { Card } from '@/shared/ui/card';
 
 interface QuickAction {
   title: string;
@@ -38,23 +39,21 @@ const actions: QuickAction[] = [
 
 export function QuickActions() {
   return (
-    <section className='space-y-4'>
-      <h2 className='text-sm uppercase tracking-[0.15em] text-muted-foreground'>
-        빠른 액세스
-      </h2>
-      <div className='-mx-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
+    <Card className='gap-2 px-6 lg:px-8 border-none bg-secondary/50 shadow-lg/6 lg:-mx-7'>
+      <h2 className='text-lg uppercase tracking-[0.15em] text-muted-foreground'>Quick Actions</h2>
+      <div className='-mx-4 grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-6 divide-y divide-secondary-foreground/10 lg:divide-none lg:gap-2'>
         {actions.map(action => (
           <Link
             key={action.href}
             href={action.href}
             className={cn(
-              'group flex items-center gap-4 p-4 rounded-lg',
-              'border border-transparent',
+              'group flex items-center gap-4 p-4',
               'transition-all duration-200',
-              'hover:bg-muted/50 hover:border-border'
+              'hover:bg-background hover:shadow-sm/6',
+              'rounded-none lg:rounded-lg'
             )}
           >
-            <div className='flex-shrink-0 size-10 flex items-center justify-center rounded-lg bg-muted/50 group-hover:bg-primary/10 transition-colors'>
+            <div className='shrink-0 size-10 flex items-center justify-center rounded-lg bg-muted/90 group-hover:bg-primary/10 transition-colors'>
               <action.icon className='size-5 text-muted-foreground group-hover:text-primary transition-colors' />
             </div>
             <div className='flex-1 min-w-0'>
@@ -63,7 +62,7 @@ export function QuickActions() {
             </div>
             <ArrowRight
               className={cn(
-                'size-4 text-muted-foreground flex-shrink-0',
+                'size-4 text-muted-foreground shrink-0',
                 'opacity-0 -translate-x-2',
                 'transition-all duration-200',
                 'group-hover:opacity-100 group-hover:translate-x-0'
@@ -72,6 +71,6 @@ export function QuickActions() {
           </Link>
         ))}
       </div>
-    </section>
+    </Card>
   );
 }
