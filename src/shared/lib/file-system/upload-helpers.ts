@@ -5,6 +5,7 @@
  * 직접 사용하지 말고 upload.ts의 uploadFormFiles를 사용하세요
  */
 
+import { APP_CONFIG } from '@/app.config';
 import { GENERAL_ERRORS, FILE_ERRORS } from '@/shared/constants/error-messages';
 import { createMultiplePresignedUploadUrls } from '../supabase/storage';
 import { generateUniqueFileName } from './utils';
@@ -190,7 +191,7 @@ async function uploadSingleFileWithPresignedUrl(
     // 업로드 시작
     xhr.open('PUT', uploadUrl);
     xhr.setRequestHeader('Content-Type', file.type);
-    xhr.timeout = 30000; // 30초
+    xhr.timeout = APP_CONFIG.FILE.UPLOAD_TIMEOUT_MS;
     xhr.send(file);
   });
 }

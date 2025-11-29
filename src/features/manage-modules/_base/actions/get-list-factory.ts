@@ -116,7 +116,7 @@ export function createGetListAction<TData>(config: GetListFactoryConfig) {
       page: rawPage = '1',
       search = '',
       category = '',
-      pageSize = APP_CONFIG.PAGINATION.PAGE_SIZE_OPTIONS[0],
+      pageSize = APP_CONFIG.UI.PAGINATION.PAGE_SIZE_OPTIONS[0],
     }) => {
       const supabase = createServerClient();
 
