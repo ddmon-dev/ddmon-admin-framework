@@ -22,13 +22,13 @@ export function FormSkeleton() {
       {/* 날짜 선택기 */}
       <div className='space-y-2'>
         <Skeleton className='h-4 w-12' />
-        <Skeleton className='h-10 w-48' />
+        <Skeleton className='h-9 w-48' />
       </div>
 
       {/* 숫자 입력 */}
       <div className='space-y-2'>
         <Skeleton className='h-4 w-12' />
-        <Skeleton className='h-10 w-32' />
+        <Skeleton className='h-9 w-32' />
       </div>
 
       {/* 에디터 */}
@@ -40,13 +40,13 @@ export function FormSkeleton() {
       {/* 파일 업로드 (썸네일) */}
       <div className='space-y-2'>
         <Skeleton className='h-4 w-14' />
-        <Skeleton className='h-10 w-full rounded-lg' />
+        <Skeleton className='h-9 w-full rounded-lg' />
       </div>
 
       {/* Footer */}
-      <div className='flex justify-end gap-2 pt-4 border-t mt-auto'>
-        <Skeleton className='h-10 w-16' />
-        <Skeleton className='h-10 w-16' />
+      <div className='flex justify-end gap-2 p-4 pb-0 border-t mt-auto sticky bottom-0 bg-background md:rounded-b-xl z-50 -mx-4 md:-mx-8'>
+        <Skeleton className='h-9 w-16' />
+        <Skeleton className='h-9 w-16' />
       </div>
     </div>
   );
