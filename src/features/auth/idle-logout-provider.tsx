@@ -1,5 +1,6 @@
 'use client';
 
+import { APP_CONFIG } from '@/app.config';
 import { useEffect, useRef } from 'react';
 import { signOut } from './actions/sign-out';
 import { toast } from 'sonner';
@@ -15,8 +16,8 @@ interface IdleLogoutProviderProps {
 
 export function IdleLogoutProvider({
   children,
-  timeout = 60 * 60 * 1000, // 1시간
-  warningTime = 5 * 60 * 1000, // 5분 전 경고
+  timeout = APP_CONFIG.AUTH.IDLE_TIMEOUT, // 1시간
+  warningTime = APP_CONFIG.AUTH.IDLE_WARNING_TIME, // 5분 전 경고
   onWarning,
   onIdle,
 }: IdleLogoutProviderProps) {

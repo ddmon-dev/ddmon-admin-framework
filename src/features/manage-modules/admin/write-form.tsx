@@ -1,5 +1,6 @@
 'use client';
 
+import { APP_CONFIG } from '@/app.config';
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -13,7 +14,6 @@ import { schemaPresets } from '@/shared/schemas';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 
-import { AUTH_POLICIES } from '@/features/auth/constants';
 import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
@@ -25,11 +25,11 @@ const createFormSchema = (isEdit: boolean) => {
       name: z.string().min(3, '이름은 3자 이상 입력해주세요.'),
       password: schemaPresets.password({
         optional: isEdit,
-        strength: AUTH_POLICIES.PASSWORD_STRENGTH,
+        strength: APP_CONFIG.AUTH.PASSWORD_STRENGTH,
       }),
       confirmPassword: schemaPresets.password({
         optional: isEdit,
-        strength: AUTH_POLICIES.PASSWORD_STRENGTH,
+        strength: APP_CONFIG.AUTH.PASSWORD_STRENGTH,
       }),
       email: schemaPresets.email(),
     })
@@ -114,7 +114,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
           description={
             id
               ? '아이디는 수정할 수 없습니다.'
-              : `아이디는 최소 ${AUTH_POLICIES.ID_MIN_LENGTH}자 이상 입력해주세요.`
+              : `아이디는 최소 ${APP_CONFIG.AUTH.ID_MIN_LENGTH}자 이상 입력해주세요.`
           }
           disabled={!!id}
         />

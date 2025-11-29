@@ -1,10 +1,10 @@
 'use client';
 
+import { APP_CONFIG } from '@/app.config';
 import { useSession as useNextAuthSession, UpdateSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import type { User } from 'next-auth';
 import { useEffect, useRef } from 'react';
-import { AUTH_PATHS } from './constants';
 
 /**
  * 인증 상태 타입
@@ -134,10 +134,10 @@ export function useRequireAuth(options?: UseRequireAuthOptions): AuthState {
 
   useEffect(() => {
     if (auth.status === 'unauthenticated') {
-      router.push(AUTH_PATHS.SIGN_IN);
+      router.push(APP_CONFIG.AUTH.PATHS.SIGN_IN);
     }
     if (options?.requireSuper && auth.status === 'authenticated' && !auth.isSuperAdmin) {
-      router.push(AUTH_PATHS.FORBIDDEN);
+      router.push(APP_CONFIG.AUTH.PATHS.FORBIDDEN);
     }
   }, [auth.status, auth.isSuperAdmin, options, router]);
 

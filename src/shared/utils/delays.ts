@@ -1,4 +1,4 @@
-import { UX_CONFIG } from '@/app.config';
+import { APP_CONFIG } from '@/app.config';
 
 export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -19,7 +19,7 @@ export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, 
  */
 export async function atLeast<T>(
   fn: () => Promise<T>,
-  minDuration = UX_CONFIG.MIN_LOADING_TIME
+  minDuration = APP_CONFIG.UX.MIN_LOADING_TIME
 ): Promise<T> {
   const [result] = await Promise.all([fn(), delay(minDuration)]);
   return result;

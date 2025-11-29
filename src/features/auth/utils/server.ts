@@ -1,9 +1,9 @@
 'use server';
 
+import { APP_CONFIG } from '@/app.config';
 import { redirect } from 'next/navigation';
 import type { User } from 'next-auth';
 import { auth } from '../handler';
-import { AUTH_PATHS } from '../constants';
 
 /**
  * 현재 로그인한 사용자 정보를 반환합니다.
@@ -52,11 +52,11 @@ export async function requireAuth({ requireSuper = false }: RequireAuthParams = 
   const user = await getUserSession();
 
   if (!user) {
-    redirect(AUTH_PATHS.SIGN_IN);
+    redirect(APP_CONFIG.AUTH.PATHS.SIGN_IN);
   }
 
   if (requireSuper && !user.superAdmin) {
-    redirect(AUTH_PATHS.FORBIDDEN);
+    redirect(APP_CONFIG.AUTH.PATHS.FORBIDDEN);
   }
 
   return user;

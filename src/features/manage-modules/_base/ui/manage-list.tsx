@@ -1,9 +1,9 @@
 'use client';
 
+import { APP_CONFIG } from '@/app.config';
 import { type ColumnDef } from '@tanstack/react-table';
 import { DataList, useDataList } from '@/shared/ui/data-list';
 import { useManageSheet } from './manage-sheet';
-import { BASE_CONFIG } from '../config';
 
 interface ManageListProps<TData extends { id?: string }> {
   data: TData[];
@@ -22,7 +22,7 @@ export function ManageList<TData extends { id?: string }>({
 
   const { page, setPage, pageCount } = useDataList({
     totalCount,
-    defaultPageSize: BASE_CONFIG.defaultListPageSize,
+    defaultPageSize: APP_CONFIG.PAGINATION.PAGE_SIZE_OPTIONS[0],
   });
 
   const handleRowClick = (row: TData) => {
@@ -40,7 +40,7 @@ export function ManageList<TData extends { id?: string }>({
       totalCount={totalCount}
       pageCount={pageCount}
       currentPage={page}
-      maxVisible={BASE_CONFIG.defaultListPaginationMaxVisible}
+      maxVisible={APP_CONFIG.PAGINATION.MAX_VISIBLE_PAGES}
       onPageChange={setPage}
       onRowClick={handleRowClick}
     />

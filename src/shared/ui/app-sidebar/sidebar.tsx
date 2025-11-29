@@ -1,5 +1,6 @@
 'use client';
 
+import { APP_CONFIG } from '@/app.config';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/shared/ui/sidebar';
 import { AppSidebarIdentity } from '@/shared/ui/app-sidebar/identity';
 import { NavMenu } from '@/shared/ui/app-sidebar/nav-menu';
@@ -12,7 +13,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar
       collapsible='offcanvas'
-      variant='inset'
+      variant={APP_CONFIG.UI.SIDEBAR.VARIANT}
       {...props}
     >
       <SidebarHeader>
