@@ -1,6 +1,7 @@
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { FileLoader } from '@ckeditor/ckeditor5-upload';
 
+import { APP_CONFIG } from '@/app.config';
 import { createPresignedUploadUrl } from '@/shared/lib/supabase/storage';
 import { generateUniqueFileName } from '@/shared/lib/file-system/utils';
 import { mbToBytes } from '@/shared/utils/formats';
@@ -125,7 +126,7 @@ class CustomUploadAdapter {
       // 업로드 시작
       xhr.open('PUT', uploadUrl);
       xhr.setRequestHeader('Content-Type', file.type);
-      xhr.timeout = 30000; // 30초
+      xhr.timeout = APP_CONFIG.FILE.UPLOAD_TIMEOUT_MS;
       xhr.send(file);
     });
   }

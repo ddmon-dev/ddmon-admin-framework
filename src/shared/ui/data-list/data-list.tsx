@@ -9,6 +9,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
+import { APP_CONFIG } from '@/app.config';
 import { cn } from '@/shared/utils/classnames';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { Spinner } from '@/shared/ui/spinner';
@@ -248,8 +249,8 @@ interface DataListPaginationProps {
 
 function DataListPagination({
   pageCount: rawPageCount,
-  maxVisible = 7,
-  mobileMaxVisible = 5,
+  maxVisible = APP_CONFIG.UI.PAGINATION.MAX_VISIBLE_PAGES,
+  mobileMaxVisible = APP_CONFIG.UI.PAGINATION.MOBILE_MAX_VISIBLE_PAGES,
   currentPage,
   onPageChange,
 }: DataListPaginationProps) {

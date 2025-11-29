@@ -13,7 +13,7 @@ interface PageSizeSelectProps {
 
 export function PageSizeSelect({
   paramKey = 'pageSize',
-  options = APP_CONFIG.PAGINATION.PAGE_SIZE_OPTIONS,
+  options = APP_CONFIG.UI.PAGINATION.PAGE_SIZE_OPTIONS,
   className,
 }: PageSizeSelectProps) {
   const { get, set } = useQueryParams();

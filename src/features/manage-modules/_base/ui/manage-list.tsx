@@ -22,7 +22,7 @@ export function ManageList<TData extends { id?: string }>({
 
   const { page, setPage, pageCount } = useDataList({
     totalCount,
-    defaultPageSize: APP_CONFIG.PAGINATION.PAGE_SIZE_OPTIONS[0],
+    defaultPageSize: APP_CONFIG.UI.PAGINATION.PAGE_SIZE_OPTIONS[0],
   });
 
   const handleRowClick = (row: TData) => {
@@ -40,7 +40,7 @@ export function ManageList<TData extends { id?: string }>({
       totalCount={totalCount}
       pageCount={pageCount}
       currentPage={page}
-      maxVisible={APP_CONFIG.PAGINATION.MAX_VISIBLE_PAGES}
+      maxVisible={APP_CONFIG.UI.PAGINATION.MAX_VISIBLE_PAGES}
       onPageChange={setPage}
       onRowClick={handleRowClick}
     />

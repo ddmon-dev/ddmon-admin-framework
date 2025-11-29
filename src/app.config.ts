@@ -11,13 +11,6 @@ export const APP_CONFIG = {
     TITLE: 'Admin Dashboard',
     DESCRIPTION: 'Admin Dashboard',
   },
-  UX: {
-    MIN_LOADING_TIME: 400,
-  },
-  PAGINATION: {
-    PAGE_SIZE_OPTIONS: [15, 30, 50, 100],
-    MAX_VISIBLE_PAGES: 7,
-  },
   AUTH: {
     ADMIN_TABLE_NAME: 'admins',
     SALT_ROUNDS: 10,
@@ -34,5 +27,17 @@ export const APP_CONFIG = {
     SIDEBAR: {
       VARIANT: 'sidebar', // 'inset' | 'floating' | 'sidebar'
     },
+    PAGINATION: {
+      PAGE_SIZE_OPTIONS: [15, 30, 50, 100],
+      MAX_VISIBLE_PAGES: 7,
+      MOBILE_MAX_VISIBLE_PAGES: 5,
+    },
+  },
+  UX: {
+    MIN_LOADING_TIME: 400,
+  },
+  FILE: {
+    UPLOAD_TIMEOUT_MS: 30000,
+    EDITOR_IMAGE_MAX_SIZE_MB: 2,
   },
 } as const;
