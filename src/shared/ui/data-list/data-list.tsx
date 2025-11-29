@@ -33,6 +33,7 @@ declare module '@tanstack/react-table' {
     className?: string;
     headerClassName?: string;
     cellClassName?: string;
+    truncate?: boolean;
   }
 }
 
@@ -198,7 +199,11 @@ export function DataList<TData>({
                         style={size ? { width: size } : undefined}
                         className={cn('text-center', meta?.className, meta?.cellClassName)}
                       >
-                        {cellContent}
+                        {meta?.truncate ? (
+                          <div className='truncate w-[90%]'>{cellContent}</div>
+                        ) : (
+                          cellContent
+                        )}
                       </TableCell>
                     );
                   })}
