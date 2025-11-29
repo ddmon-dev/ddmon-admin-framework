@@ -6,7 +6,6 @@ import {
   AlertCircle,
   Bell,
   Check,
-  ChevronRight,
   Info,
   Loader2,
   Mail,
@@ -15,7 +14,6 @@ import {
   Settings,
   Trash2,
   User,
-  X,
 } from 'lucide-react';
 
 // Basic Components

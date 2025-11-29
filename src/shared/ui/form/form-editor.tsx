@@ -48,7 +48,7 @@ export const FormEditor = <
       orientation={orientation}
       optional={optional}
     >
-      {({ onChange, fieldState, ...field }) => (
+      {({ onChange, ...field }) => (
         <Editor
           ref={field.ref}
           content={field.value as string}
