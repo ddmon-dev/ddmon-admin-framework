@@ -6,17 +6,20 @@ import { Toaster } from 'sonner';
 import { ThemeProvider } from 'next-themes';
 import { SessionProvider } from 'next-auth/react';
 import { DialogProvider } from '@/shared/ui/app-dialog';
+import { auth } from '@/features/auth';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
   description: 'Admin Dashboard',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html
       lang='ko'
@@ -29,7 +32,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SessionProvider>
+          <SessionProvider session={session}>
             <DialogProvider>
               {children}
               <Toaster
