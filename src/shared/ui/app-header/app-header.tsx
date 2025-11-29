@@ -45,13 +45,8 @@ export function AppHeader({
   const hasBottom = bottom || bottomLeft || bottomRight;
 
   return (
-    <header
-      className={cn(
-        'border-b sticky top-0 z-10 bg-background rounded-t-xl py-4',
-        className
-      )}
-    >
-      <Container className={cn('grid gap-2')}>
+    <header className={cn('border-b sticky top-0 z-10 bg-background rounded-t-xl py-4', className)}>
+      <Container className={cn('grid gap-2 md:px-4!')}>
         {/* 상단 줄 */}
         <div className='flex items-center gap-2'>
           <SidebarTrigger />
