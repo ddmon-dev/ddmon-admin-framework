@@ -12,13 +12,11 @@ import { type ItemDTO } from '../config';
 export const getItem = createServerAction<GetItemParams, ItemDTO>({
   name: 'getItem',
   auth: { requireSuper: true },
-  validate: params => {
-    if (!params.id) {
+  handler: async ({ id }) => {
+    if (!id) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
-    return null;
-  },
-  handler: async ({ id }) => {
+
     const supabase = createServerClient();
 
     const { data: rawData, error } = await supabase

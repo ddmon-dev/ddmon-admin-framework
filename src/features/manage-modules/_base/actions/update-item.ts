@@ -14,13 +14,11 @@ export const updateItem = createServerAction<UpdateItemParams<any> & { tableName
   {
     name: 'updateItem',
     auth: true,
-    validate: params => {
-      if (!params.id) {
+    handler: async ({ tableName, id, values, pathname }) => {
+      if (!id) {
         return Result.error(VALIDATION_ERRORS.NO_ID);
       }
-      return null;
-    },
-    handler: async ({ tableName, id, values, pathname }) => {
+
       const supabase = createServerClient();
 
       const oldFiles = await getOldFiles({

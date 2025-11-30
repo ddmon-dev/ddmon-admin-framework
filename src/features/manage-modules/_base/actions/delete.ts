@@ -15,13 +15,11 @@ import { DeleteItemParams } from '../types';
 export const softDelete = createServerAction<DeleteItemParams, any>({
   name: 'softDelete',
   auth: true,
-  validate: params => {
-    if (!params.id) {
+  handler: async ({ tableName, id, pathname }) => {
+    if (!id) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
-    return null;
-  },
-  handler: async ({ tableName, id, pathname }) => {
+
     const supabase = createServerClient();
 
     const { data, error } = await supabase
@@ -52,13 +50,11 @@ export const softDelete = createServerAction<DeleteItemParams, any>({
 export const hardDelete = createServerAction<DeleteItemParams, any>({
   name: 'hardDelete',
   auth: { requireSuper: true },
-  validate: params => {
-    if (!params.id) {
+  handler: async ({ tableName, id, pathname }) => {
+    if (!id) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
-    return null;
-  },
-  handler: async ({ tableName, id, pathname }) => {
+
     const supabase = createServerClient();
 
     // DB에서 완전 삭제
