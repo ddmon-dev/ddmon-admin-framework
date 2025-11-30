@@ -1,23 +1,34 @@
 import { type MenuData } from './types';
-import { Settings2, FileText, HelpCircle, Newspaper, Users } from 'lucide-react';
+import { Settings2, FileText, Users, AlertCircle, ServerCrash, ShieldX } from 'lucide-react';
 
-export const navigationConfig: {
+interface MenuConfig {
   navMain: MenuData[];
-} = {
+}
+
+export const navigationConfig: MenuConfig = {
   navMain: [
     {
-      title: '템플릿',
+      title: '샘플',
       items: [
         {
-          title: '템플릿',
-          url: '#',
+          title: '관리모듈 템플릿',
+          url: '/template',
           icon: Settings2,
-          items: [
-            {
-              title: '템플릿',
-              url: '/template',
-            },
-          ],
+        },
+        {
+          title: '404 not found',
+          url: '/404',
+          icon: AlertCircle,
+        },
+        {
+          title: '500 internal server error',
+          url: '/500',
+          icon: ServerCrash,
+        },
+        {
+          title: 'unauthorized',
+          url: '/unauthorized',
+          icon: ShieldX,
         },
       ],
     },
@@ -25,19 +36,23 @@ export const navigationConfig: {
       title: '게시판',
       items: [
         {
-          title: '공지사항',
-          url: '/manage-notice',
+          title: '게시판 관리',
+          url: '#',
           icon: FileText,
-        },
-        {
-          title: '뉴스',
-          url: '/manage-news',
-          icon: Newspaper,
-        },
-        {
-          title: 'FAQ',
-          url: '/manage-faq',
-          icon: HelpCircle,
+          items: [
+            {
+              title: '공지사항',
+              url: '/manage-notice',
+            },
+            {
+              title: '뉴스',
+              url: '/manage-news',
+            },
+            {
+              title: 'FAQ',
+              url: '/manage-faq',
+            },
+          ],
         },
       ],
     },
