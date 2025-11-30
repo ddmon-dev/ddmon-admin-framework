@@ -63,7 +63,9 @@ export const FormDatePicker = <
     disabled,
     fromDate,
     toDate,
-    captionLayout,
+    startMonth,
+    endMonth,
+    layout,
     showOutsideDays,
     optional,
   } = props;
@@ -93,7 +95,9 @@ export const FormDatePicker = <
               disabled={disabled}
               fromDate={fromDate}
               toDate={toDate}
-              captionLayout={captionLayout}
+              startMonth={startMonth}
+              endMonth={endMonth}
+              layout={layout}
               showOutsideDays={showOutsideDays}
               presets={presets}
               aria-invalid={fieldState.invalid}
@@ -113,7 +117,9 @@ export const FormDatePicker = <
               disabled={disabled}
               fromDate={fromDate}
               toDate={toDate}
-              captionLayout={captionLayout}
+              startMonth={startMonth}
+              endMonth={endMonth}
+              layout={layout}
               showOutsideDays={showOutsideDays}
               min={min}
               max={max}
@@ -134,7 +140,9 @@ export const FormDatePicker = <
               disabled={disabled}
               fromDate={fromDate}
               toDate={toDate}
-              captionLayout={captionLayout}
+              startMonth={startMonth}
+              endMonth={endMonth}
+              layout={layout}
               showOutsideDays={showOutsideDays}
               numberOfMonths={numberOfMonths}
               min={min}
