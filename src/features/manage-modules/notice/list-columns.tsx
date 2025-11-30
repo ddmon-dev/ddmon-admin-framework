@@ -1,4 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
+import { createSelectionColumn } from '@/shared/ui/data-list';
 import { Badge } from '@/shared/ui/badge';
 import { Separator } from '@/shared/ui/separator';
 import { ModifyButton, SoftDeleteButton } from '../_base/ui';
@@ -7,6 +8,7 @@ import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
+  createSelectionColumn<ItemDTO>(),
   {
     accessorKey: 'category',
     header: '카테고리',
