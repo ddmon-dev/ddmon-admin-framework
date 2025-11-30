@@ -11,13 +11,11 @@ import { TableName } from '@/shared/lib/supabase/db-helpers';
 export const getItem = createServerAction<GetItemParams & { tableName: TableName }, any>({
   name: 'getItem',
   auth: true,
-  validate: params => {
-    if (!params.id) {
+  handler: async ({ tableName, id }) => {
+    if (!id) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
-    return null;
-  },
-  handler: async ({ tableName, id }) => {
+
     const supabase = createServerClient();
 
     const { data: rawData, error } = await supabase

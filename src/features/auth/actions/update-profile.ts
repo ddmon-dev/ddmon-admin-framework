@@ -12,14 +12,12 @@ import { type UpdateProfileValues } from '../types';
 export const updateProfile = createServerAction<UpdateProfileValues, void>({
   name: 'updateProfile',
   auth: true,
-  validate: values => {
+  handler: async values => {
     // 새 비밀번호가 있으면 현재 비밀번호도 필수
     if (values.newPassword && !values.currentPassword) {
       return Result.error(VALIDATION_ERRORS.REQUIRED_FIELD('현재 비밀번호'));
     }
-    return null;
-  },
-  handler: async values => {
+
     const user = await requireAuth();
     const supabase = createServerClient();
 

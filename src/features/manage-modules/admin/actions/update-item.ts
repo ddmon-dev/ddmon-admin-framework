@@ -16,13 +16,11 @@ import { type ItemDTO } from '../config';
 export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>({
   name: 'updateItem',
   auth: { requireSuper: true },
-  validate: params => {
-    if (!params.id) {
+  handler: async ({ id, values, pathname }) => {
+    if (!id) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
-    return null;
-  },
-  handler: async ({ id, values, pathname }) => {
+
     // 아이디는 수정 불가
     // 비밀번호 확인은 제거
     // 삭제는 업데이트 액션에서 처리하지 않음
