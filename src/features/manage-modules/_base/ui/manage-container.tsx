@@ -3,7 +3,7 @@ import { type SearchParams } from '@/shared/types/search-params';
 import { type ActionResult } from '@/shared/types/results';
 import { Container } from '@/shared/ui/container';
 import { ListSkeleton } from '@/shared/ui/skeletons';
-import { type ListProps } from '../config';
+import { type ListProps } from '../types';
 import { ManageModuleHeader } from './manage-header';
 import { ManageSheetProvider } from './manage-sheet';
 

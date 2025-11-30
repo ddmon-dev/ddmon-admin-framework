@@ -4,7 +4,7 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/shared/utils/server-actions';
 import { Result } from '@/shared/utils/results';
-import { GetExportDataParams } from '../config';
+import { GetExportDataParams } from '../types';
 import { CRUD_ERRORS } from '@/shared/constants/error-messages';
 
 /**

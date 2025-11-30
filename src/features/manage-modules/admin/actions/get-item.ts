@@ -5,7 +5,7 @@ import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/shared/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { GetItemParams } from '../../_base/config';
+import { GetItemParams } from '../../_base/types';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 

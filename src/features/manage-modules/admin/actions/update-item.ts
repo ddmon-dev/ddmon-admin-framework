@@ -9,7 +9,7 @@ import { hashPassword } from '@/features/auth';
 import { createServerAction } from '@/shared/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { UpdateItemParams } from '../../_base/config';
+import { UpdateItemParams } from '../../_base/types';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 
