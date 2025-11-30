@@ -18,7 +18,7 @@ export interface UploadConfig {
  * 기본 이미지 업로드 설정
  */
 export const UPLOAD_CONFIG: UploadConfig = {
-  uploadFolder: APP_CONFIG.EDITOR.UPLOAD_FOLDER,
+  uploadFolder: APP_CONFIG.EDITOR.UPLOAD_ROOT,
   imageMaxSizeMb: APP_CONFIG.EDITOR.IMAGE_MAX_SIZE_MB,
   acceptedFormats: [...APP_CONFIG.EDITOR.IMAGE_ACCEPTED_FORMATS],
   uploadTimeoutMS: APP_CONFIG.FILE.UPLOAD_TIMEOUT_MS,
