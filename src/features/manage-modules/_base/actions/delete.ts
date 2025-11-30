@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { deleteFolderFromStorage } from '@/shared/lib/file-system';
-import { createServerAction } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { DeleteItemParams } from '../types';

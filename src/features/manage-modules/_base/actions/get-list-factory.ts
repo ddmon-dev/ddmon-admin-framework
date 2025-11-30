@@ -1,7 +1,7 @@
 import { APP_CONFIG } from '@/app.config';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
-import { createServerAction } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { GetListParams, ListProps } from '../types';
 import { TableName } from '@/shared/lib/supabase/db-helpers';

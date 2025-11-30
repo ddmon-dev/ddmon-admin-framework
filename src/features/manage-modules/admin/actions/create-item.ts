@@ -6,7 +6,7 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { schemaPresets } from '@/shared/schemas';
 import { hashPassword } from '@/features/auth';
-import { createServerAction } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { CreateItemParams } from '../../_base/types';
 import { CONFIG } from '../config';

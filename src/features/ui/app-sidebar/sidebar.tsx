@@ -2,12 +2,12 @@
 
 import { APP_CONFIG } from '@/app.config';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/shared/ui/sidebar';
-import { AppSidebarIdentity } from '@/shared/ui/app-sidebar/identity';
-import { NavMenu } from '@/shared/ui/app-sidebar/nav-menu';
-import { NavUser } from '@/shared/ui/app-sidebar/nav-user';
+import { AppSidebarIdentity } from '@/features/ui/app-sidebar/identity';
+import { NavMenu } from '@/features/ui/app-sidebar/nav-menu';
+import { NavUser } from '@/features/ui/app-sidebar/nav-user';
 import { ThemeToggle } from '@/shared/ui/theme-switcher';
 
-import { navigationConfig } from '@/shared/ui/app-sidebar/config';
+import { navigationConfig } from '@/features/ui/app-sidebar/config';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (

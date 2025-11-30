@@ -1,4 +1,5 @@
 import type { PasswordStrength } from '@/shared/schemas/presets/password';
+import type { SidebarVariant } from '@/shared/ui/sidebar';
 import { Radar } from 'lucide-react';
 
 /**
@@ -26,7 +27,7 @@ export const APP_CONFIG = {
   },
   UI: {
     SIDEBAR: {
-      VARIANT: 'sidebar', // 'inset' | 'floating' | 'sidebar'
+      VARIANT: 'inset' as SidebarVariant,
       WIDTH: '20rem',
       WIDTH_MD: '15rem',
       WIDTH_MOBILE: '18rem',
