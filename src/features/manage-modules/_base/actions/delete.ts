@@ -7,7 +7,7 @@ import { deleteFolderFromStorage } from '@/shared/lib/file-system';
 import { createServerAction } from '@/shared/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { DeleteItemParams } from '../config';
+import { DeleteItemParams } from '../types';
 
 /**
  * Soft delete: deleted 컬럼을 true로 설정

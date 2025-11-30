@@ -6,7 +6,7 @@ import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/obj
 import { createServerAction } from '@/shared/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { UpdateItemParams } from '../config';
+import { UpdateItemParams } from '../types';
 import { getOldFiles, cleanupDeletedFiles } from '@/shared/lib/file-system';
 import { TableName } from '@/shared/lib/supabase/db-helpers';
 

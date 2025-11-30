@@ -5,7 +5,7 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/shared/utils/server-actions';
 import { Result } from '@/shared/utils/results';
-import { CreateItemParams } from '../config';
+import { CreateItemParams } from '../types';
 import { TableName } from '@/shared/lib/supabase/db-helpers';
 import { CRUD_ERRORS } from '@/shared/constants/error-messages';
 

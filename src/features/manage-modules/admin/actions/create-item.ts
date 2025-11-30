@@ -8,7 +8,7 @@ import { schemaPresets } from '@/shared/schemas';
 import { hashPassword } from '@/features/auth';
 import { createServerAction } from '@/shared/utils/server-actions';
 import { Result } from '@/shared/utils/results';
-import { CreateItemParams } from '../../_base/config';
+import { CreateItemParams } from '../../_base/types';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
 import { CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';

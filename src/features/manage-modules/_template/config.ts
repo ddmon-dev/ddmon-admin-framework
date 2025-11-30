@@ -1,5 +1,5 @@
 import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
-import { ItemDTO as BaseItemDTO } from '../_base/config';
+import { ItemDTO as BaseItemDTO } from '../_base/types';
 
 export const CONFIG = {
   moduleName: '관리모듈 템플릿 데이터',

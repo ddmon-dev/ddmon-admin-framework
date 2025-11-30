@@ -1,6 +1,6 @@
 import { updateItem as baseUpdateItem } from '../../_base/actions/update-item';
 import { CONFIG } from '../config';
-import { type UpdateItemParams } from '../../_base/config';
+import { type UpdateItemParams } from '../../_base/types';
 import { type ActionResult } from '@/shared/types/results';
 import { type ItemDTO } from '../config';
 

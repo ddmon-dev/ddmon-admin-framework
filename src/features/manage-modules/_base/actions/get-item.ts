@@ -5,7 +5,7 @@ import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/shared/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { GetItemParams } from '../config';
+import { GetItemParams } from '../types';
 import { TableName } from '@/shared/lib/supabase/db-helpers';
 
 export const getItem = createServerAction<GetItemParams & { tableName: TableName }, any>({
