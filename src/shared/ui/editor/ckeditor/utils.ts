@@ -1,10 +1,10 @@
-import { DEFAULT_IMAGE_CONFIG } from './config';
+import { UPLOAD_CONFIG } from './config';
 
 /**
  * 환경변수에서 에디터 업로드 루트 폴더 가져오기
  */
 export function getEditorUploadRoot(): string {
-  return process.env.NEXT_PUBLIC_EDITOR_UPLOAD_ROOT || DEFAULT_IMAGE_CONFIG.defaultFolder;
+  return UPLOAD_CONFIG.uploadFolder;
 }
 
 /**
@@ -33,5 +33,5 @@ export function generateUploadPath(uploadFolder?: string, entity?: string): stri
   }
 
   // 3순위: 기본 폴더
-  return DEFAULT_IMAGE_CONFIG.defaultFolder;
+  return UPLOAD_CONFIG.uploadFolder;
 }

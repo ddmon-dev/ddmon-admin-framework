@@ -52,7 +52,6 @@ import {
 import 'ckeditor5/ckeditor5.css';
 import './theme.css';
 import { CustomUploadAdapterPlugin } from './custom-upload-adapter';
-import { DEFAULT_IMAGE_CONFIG } from './config';
 import { generateUploadPath } from './utils';
 
 interface CKEditorProps {
@@ -80,8 +79,8 @@ export function CKEditor({
   className,
   uploadFolder,
   entity,
-  maxImageSizeMB = DEFAULT_IMAGE_CONFIG.maxSizeMB,
-  acceptedImageFormats = DEFAULT_IMAGE_CONFIG.acceptedFormats,
+  maxImageSizeMB,
+  acceptedImageFormats,
   ref,
 }: CKEditorProps) {
   const finalUploadFolder = generateUploadPath(uploadFolder, entity);

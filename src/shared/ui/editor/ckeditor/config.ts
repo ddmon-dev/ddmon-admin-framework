@@ -3,20 +3,23 @@ import { APP_CONFIG } from '@/app.config';
 /**
  * 에디터 이미지 업로드 설정 타입
  */
-export interface ImageUploadConfig {
+export interface UploadConfig {
+  /** 업로드 폴더 */
+  uploadFolder: string;
   /** 최대 파일 크기 (MB 단위) */
-  maxSizeMB: number;
+  imageMaxSizeMb: number;
   /** 허용되는 이미지 형식 (MIME 타입) */
   acceptedFormats: string[];
-  /** 기본 업로드 폴더 */
-  defaultFolder: string;
+  /** 업로드 타임아웃 (ms) */
+  uploadTimeoutMS: number;
 }
 
 /**
  * 기본 이미지 업로드 설정
  */
-export const DEFAULT_IMAGE_CONFIG: ImageUploadConfig = {
-  maxSizeMB: APP_CONFIG.FILE.EDITOR_IMAGE_MAX_SIZE_MB,
-  acceptedFormats: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
-  defaultFolder: 'editor',
+export const UPLOAD_CONFIG: UploadConfig = {
+  uploadFolder: APP_CONFIG.EDITOR.UPLOAD_FOLDER,
+  imageMaxSizeMb: APP_CONFIG.EDITOR.IMAGE_MAX_SIZE_MB,
+  acceptedFormats: [...APP_CONFIG.EDITOR.IMAGE_ACCEPTED_FORMATS],
+  uploadTimeoutMS: APP_CONFIG.FILE.UPLOAD_TIMEOUT_MS,
 };

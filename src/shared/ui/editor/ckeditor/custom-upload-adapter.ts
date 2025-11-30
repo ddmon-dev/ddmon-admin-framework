@@ -1,12 +1,11 @@
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { FileLoader } from '@ckeditor/ckeditor5-upload';
 
-import { APP_CONFIG } from '@/app.config';
 import { createPresignedUploadUrl } from '@/shared/lib/supabase/storage';
 import { generateUniqueFileName } from '@/shared/lib/file-system/utils';
 import { mbToBytes } from '@/shared/utils/formats';
-import { DEFAULT_IMAGE_CONFIG } from './config';
 import { GENERAL_ERRORS, FILE_ERRORS } from '@/shared/constants/error-messages';
+import { UPLOAD_CONFIG } from './config';
 
 /**
  * CKEditor 커스텀 업로드 어댑터 설정
@@ -79,8 +78,8 @@ class CustomUploadAdapter {
    * 파일 검증 (크기, 타입)
    */
   private validateFile(file: File): void {
-    const maxSizeMB = this.config.maxSizeMB ?? DEFAULT_IMAGE_CONFIG.maxSizeMB;
-    const acceptedFormats = this.config.acceptedFormats ?? DEFAULT_IMAGE_CONFIG.acceptedFormats;
+    const maxSizeMB = this.config.maxSizeMB ?? UPLOAD_CONFIG.imageMaxSizeMb;
+    const acceptedFormats = this.config.acceptedFormats ?? UPLOAD_CONFIG.acceptedFormats;
 
     // 파일 크기 검증
     const maxSizeBytes = mbToBytes(maxSizeMB);
@@ -126,7 +125,7 @@ class CustomUploadAdapter {
       // 업로드 시작
       xhr.open('PUT', uploadUrl);
       xhr.setRequestHeader('Content-Type', file.type);
-      xhr.timeout = APP_CONFIG.FILE.UPLOAD_TIMEOUT_MS;
+      xhr.timeout = UPLOAD_CONFIG.uploadTimeoutMS;
       xhr.send(file);
     });
   }

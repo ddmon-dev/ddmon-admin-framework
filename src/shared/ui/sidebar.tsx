@@ -1,5 +1,6 @@
 'use client';
 
+import { APP_CONFIG } from '@/app.config';
 import * as React from 'react';
 import { usePathname } from 'next/navigation';
 import { Slot } from '@radix-ui/react-slot';
@@ -14,14 +15,6 @@ import { Separator } from '@/shared/ui/separator';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/shared/ui/sheet';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/ui/tooltip';
-
-const SIDEBAR_COOKIE_NAME = 'sidebar_state';
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
-const SIDEBAR_WIDTH = '20rem';
-const SIDEBAR_WIDTH_MD = '15rem';
-const SIDEBAR_WIDTH_MOBILE = '18rem';
-const SIDEBAR_WIDTH_ICON = '3rem';
-const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
 
 type SidebarContextProps = {
   state: 'expanded' | 'collapsed';
@@ -75,7 +68,7 @@ function SidebarProvider({
       }
 
       // This sets the cookie to keep the sidebar state.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+      document.cookie = `${APP_CONFIG.UI.SIDEBAR.COOKIE_NAME}=${openState}; path=/; max-age=${APP_CONFIG.UI.SIDEBAR.COOKIE_MAX_AGE}`;
     },
     [setOpenProp, open]
   );
@@ -88,7 +81,10 @@ function SidebarProvider({
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === SIDEBAR_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
+      if (
+        event.key === APP_CONFIG.UI.SIDEBAR.KEYBOARD_SHORTCUT &&
+        (event.metaKey || event.ctrlKey)
+      ) {
         event.preventDefault();
         toggleSidebar();
       }
@@ -128,9 +124,9 @@ function SidebarProvider({
           data-slot='sidebar-wrapper'
           style={
             {
-              '--sidebar-width': SIDEBAR_WIDTH,
-              '--sidebar-width-md': SIDEBAR_WIDTH_MD,
-              '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
+              '--sidebar-width': APP_CONFIG.UI.SIDEBAR.WIDTH,
+              '--sidebar-width-md': APP_CONFIG.UI.SIDEBAR.WIDTH_MD,
+              '--sidebar-width-icon': APP_CONFIG.UI.SIDEBAR.WIDTH_ICON,
               ...style,
             } as React.CSSProperties
           }
@@ -190,7 +186,7 @@ function Sidebar({
           className='bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-3! [&>button]:hidden'
           style={
             {
-              '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
+              '--sidebar-width': APP_CONFIG.UI.SIDEBAR.WIDTH_MOBILE,
             } as React.CSSProperties
           }
           side={side}
