@@ -22,7 +22,7 @@ export const navigationConfig: MenuConfig = {
         },
         {
           title: '500 internal server error',
-          url: '/500',
+          url: '/error-test',
           icon: ServerCrash,
         },
         {
