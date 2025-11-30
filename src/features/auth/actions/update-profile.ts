@@ -1,7 +1,7 @@
 'use server';
 
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { createServerAction } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 

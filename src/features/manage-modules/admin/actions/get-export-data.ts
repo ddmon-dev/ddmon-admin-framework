@@ -2,7 +2,7 @@
 
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
-import { createServerAction } from '@/shared/utils/server-actions';
+import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { CONFIG } from '../config';
 import { type ItemDTO } from '../config';
@@ -23,7 +23,7 @@ export const getExportData = createServerAction<void, ItemDTO[]>({
       .select('id, name, email, super_admin, created_at, updated_at, deleted')
       .eq('deleted', false);
 
-    query = query.order('created_at', { ascending: false }).order('id', { ascending: false});
+    query = query.order('created_at', { ascending: false }).order('id', { ascending: false });
 
     const { data: rawData, error } = await query;
 

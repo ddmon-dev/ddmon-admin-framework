@@ -3,6 +3,7 @@ import { type LucideIcon } from 'lucide-react';
 export interface MenuData {
   title: string;
   items: MenuItem[];
+  requireSuper?: boolean;
 }
 
 export interface MenuItem {
@@ -10,6 +11,7 @@ export interface MenuItem {
   url: string;
   icon?: LucideIcon;
   items?: MenuSubItem[];
+  requireSuper?: boolean;
 }
 
 export interface MenuSubItem {

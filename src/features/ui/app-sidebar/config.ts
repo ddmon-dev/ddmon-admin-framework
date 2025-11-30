@@ -58,6 +58,7 @@ export const navigationConfig: MenuConfig = {
     },
     {
       title: '관리자',
+      requireSuper: true,
       items: [
         {
           title: '관리자 계정 관리',
