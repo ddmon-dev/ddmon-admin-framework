@@ -17,7 +17,9 @@ type DatePickerBaseProps = {
   disabled?: Matcher | Matcher[];
   fromDate?: Date;
   toDate?: Date;
-  captionLayout?: 'label' | 'dropdown';
+  startMonth?: Date;
+  endMonth?: Date;
+  layout?: 'dropdown' | 'dropdown-months' | 'dropdown-years';
   showOutsideDays?: boolean;
   className?: string;
   'aria-invalid'?: boolean;
@@ -67,12 +69,16 @@ const DEFAULT_PRESETS = [
 export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((props, ref) => {
   const [open, setOpen] = React.useState(false);
 
+  const currentYear = new Date().getFullYear();
+
   const {
     placeholder = '날짜 선택',
     disabled,
     fromDate,
     toDate,
-    captionLayout = 'label',
+    startMonth = new Date(currentYear - 100, 0),
+    endMonth = new Date(currentYear + 100, 11),
+    layout = 'dropdown',
     showOutsideDays = true,
     className,
     'aria-invalid': ariaInvalid,
@@ -135,10 +141,12 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
           disabled={disabled}
           fromDate={fromDate}
           toDate={toDate}
-          captionLayout={captionLayout}
+          startMonth={startMonth}
+          endMonth={endMonth}
+          captionLayout={layout}
           showOutsideDays={showOutsideDays}
           locale={ko}
-          initialFocus
+          autoFocus
         />
       );
     }
@@ -153,12 +161,14 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
           disabled={disabled}
           fromDate={fromDate}
           toDate={toDate}
-          captionLayout={captionLayout}
+          startMonth={startMonth}
+          endMonth={endMonth}
+          captionLayout={layout}
           showOutsideDays={showOutsideDays}
           locale={ko}
           min={min}
           max={max}
-          initialFocus
+          autoFocus
         />
       );
     }
@@ -173,13 +183,15 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
           disabled={disabled}
           fromDate={fromDate}
           toDate={toDate}
-          captionLayout={captionLayout}
+          startMonth={startMonth}
+          endMonth={endMonth}
+          captionLayout={layout}
           showOutsideDays={showOutsideDays}
           locale={ko}
           numberOfMonths={numberOfMonths}
           min={min}
           max={max}
-          initialFocus
+          autoFocus
         />
       );
     }
