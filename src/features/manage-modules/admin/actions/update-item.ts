@@ -62,6 +62,12 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
       .single();
 
     if (error) {
+      // 아이디 중복 에러 처리
+      if (error.code === '23505') {
+        const key = error.details.includes('(id)') ? '아이디' : '이메일';
+        return Result.error(CRUD_ERRORS.DUPLICATE(key));
+      }
+
       console.error('Supabase error:', error);
       return Result.error(CRUD_ERRORS.UPDATE_FAILED('관리자'));
     }
