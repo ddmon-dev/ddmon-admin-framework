@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
-    "db:types": "supabase gen types typescript --linked > src/shared/lib/supabase/types.ts"
+    "db:types": "supabase gen types typescript --linked > src/shared/lib/supabase/types.ts",
+    "db:types:local": "supabase gen types typescript --local > src/shared/lib/supabase/types.ts"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^11.0.0",
