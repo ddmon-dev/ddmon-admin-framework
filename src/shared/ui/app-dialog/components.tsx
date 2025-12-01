@@ -24,9 +24,9 @@ import { cn } from '@/shared/utils/classnames';
 import { type ConfirmDialogData, type AlertDialogData, type DialogSize } from './types';
 
 const SIZE_CLASSES: Record<DialogSize, string> = {
-  sm: 'sm:max-w-sm',
-  md: 'sm:max-w-md',
-  lg: 'sm:max-w-lg',
+  sm: 'sm:max-w-xs',
+  md: 'sm:max-w-sm',
+  lg: 'sm:max-w-md',
 };
 
 // Confirm Dialog Component
@@ -114,22 +114,26 @@ const VARIANT_CONFIG = {
   success: {
     icon: Check,
     iconClassName: 'bg-success-light text-success-light-foreground',
-    buttonVariant: 'default',
+    buttonVariant: 'black',
+    title: 'Success!',
   },
   error: {
     icon: X,
     iconClassName: 'bg-destructive-light text-destructive-light-foreground',
-    buttonVariant: 'default',
+    buttonVariant: 'black',
+    title: 'Error!',
   },
   warning: {
     icon: CircleAlert,
     iconClassName: 'bg-warning-light text-warning',
-    buttonVariant: 'default',
+    buttonVariant: 'black',
+    title: 'Warning!',
   },
   default: {
     icon: Info,
     iconClassName: 'bg-info-light text-info-light-foreground',
-    buttonVariant: 'default',
+    buttonVariant: 'black',
+    title: 'Info.',
   },
 } as const;
 
@@ -176,7 +180,7 @@ export function AlertDialogComponent({ data, onClose }: AlertDialogComponentProp
           <DialogHeader className='flex flex-col items-center gap-5 text-center'>
             <Icon />
             <div className='space-y-2'>
-              <DialogTitle className='text-center'>{title}</DialogTitle>
+              <DialogTitle className='text-center'>{title || variantConfig.title}</DialogTitle>
               {description && (
                 <DialogDescription className='text-center'>{description}</DialogDescription>
               )}
