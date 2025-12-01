@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { APP_CONFIG } from '@/app.config';
 import { type ColumnDef } from '@tanstack/react-table';
-import { DataList, useDataList } from '@/shared/ui/data-list';
+import { DataList, useDataList, createSelectionColumn } from '@/shared/ui/data-list';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 import { useManageSheet } from './manage-sheet';
 import { BulkActionBar } from './bulk-action-bar';
@@ -29,6 +29,12 @@ export function ManageList<TData extends { id?: string }>({
   const [selectedRows, setSelectedRows] = useState<TData[]>([]);
   const [selectionKey, setSelectionKey] = useState(0);
   const isInitialMount = useRef(true);
+
+  // enableBulkAction이 true면 selection column을 자동으로 맨 앞에 추가
+  const processedColumns = useMemo(() => {
+    if (!enableBulkAction) return listColumns;
+    return [createSelectionColumn<TData>(), ...listColumns];
+  }, [listColumns, enableBulkAction]);
 
   // 데이터 변경 시 선택 상태 초기화 (페이지 전환, 검색 등)
   useEffect(() => {
@@ -70,7 +76,7 @@ export function ManageList<TData extends { id?: string }>({
       <DataList
         key={enableBulkAction ? selectionKey : undefined}
         data={data}
-        columns={listColumns}
+        columns={processedColumns}
         totalCount={totalCount}
         pageCount={pageCount}
         currentPage={page}

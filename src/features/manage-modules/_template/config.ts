@@ -4,6 +4,7 @@ import { ItemDTO as BaseItemDTO } from '../_base/types';
 export const CONFIG = {
   moduleName: '관리모듈 템플릿 데이터',
   tableName: 'templates',
+  enableBulkAction: true,
 
   // FormCheckboxGroup 옵션
   interestOptions: [

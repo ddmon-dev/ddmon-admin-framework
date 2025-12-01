@@ -16,7 +16,7 @@ export function List({ data, totalCount }: ListProps) {
       totalCount={totalCount}
       listColumns={listColumns}
       tableName={CONFIG.tableName}
-      enableBulkAction
+      enableBulkAction={CONFIG.enableBulkAction}
     />
   );
 }

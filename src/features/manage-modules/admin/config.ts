@@ -4,6 +4,7 @@ import { ItemDTO as BaseItemDTO } from '../_base/types';
 export const CONFIG = {
   moduleName: '관리자 계정',
   tableName: 'admins',
+  enableBulkAction: false,
 } as const;
 
 export type RowData = BaseRowData<typeof CONFIG.tableName>;
