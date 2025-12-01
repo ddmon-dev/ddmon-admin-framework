@@ -63,7 +63,7 @@ export const updateProfile = createServerAction<UpdateProfileValues, void>({
       console.error('Supabase error:', updateError);
       if (updateError.code === '23505') {
         // UNIQUE 제약 위반
-        return Result.error(CRUD_ERRORS.DUPLICATE('이메일'));
+        return Result.error(CRUD_ERRORS.ALREADY_EXISTS('이메일'));
       }
       return Result.error(CRUD_ERRORS.UPDATE_FAILED('프로필'));
     }
