@@ -1,9 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Separator } from '@/shared/ui/separator';
-import { ModifyButton, SoftDeleteButton } from '../_base/ui';
+import { ModifyButton } from '../_base/ui';
 
-import { CONFIG } from './config';
 import { type ItemDTO } from './config';
+import { DeleteAdminButton } from './delete-button';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
   {
@@ -46,7 +46,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
       className: 'text-right',
     },
     cell: ({ row }) => {
-      const { id } = row.original;
+      const { id, superAdmin } = row.original;
       return (
         <nav className='flex items-center justify-end gap-2'>
           <ModifyButton id={id}>정보수정</ModifyButton>
@@ -54,9 +54,9 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
             orientation='vertical'
             className='data-[orientation=vertical]:h-6'
           />
-          <SoftDeleteButton
-            tableName={CONFIG.tableName}
+          <DeleteAdminButton
             id={id}
+            disabled={superAdmin}
           />
         </nav>
       );
