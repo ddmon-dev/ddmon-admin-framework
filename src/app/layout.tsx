@@ -54,7 +54,7 @@ export default async function RootLayout({
               {children}
               <Toaster
                 richColors
-                position='bottom-center'
+                position='top-center'
               />
             </DialogProvider>
           </SessionProvider>
