@@ -55,6 +55,14 @@ const formDefaultValues = {
   email: '',
 };
 
+function validatePrevValues(prevValues: ItemDTO | null) {
+  return {
+    ...prevValues,
+    password: '',
+    confirmPassword: '',
+  };
+}
+
 interface WriteFormProps {
   id?: string;
   prevValues: ItemDTO | null;
@@ -66,11 +74,13 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   const formSchema = createFormSchema(!!id);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof formSchema>,
+    defaultValues: (validatePrevValues(prevValues) ?? formDefaultValues) as z.infer<
+      typeof formSchema
+    >,
   });
 
   useEffect(() => {
-    form.reset((prevValues ?? formDefaultValues) as z.infer<typeof formSchema>);
+    form.reset((validatePrevValues(prevValues) ?? formDefaultValues) as z.infer<typeof formSchema>);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevValues]);
 
