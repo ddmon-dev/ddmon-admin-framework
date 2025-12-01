@@ -105,7 +105,7 @@ export interface ConfirmDialogData {
  */
 export interface AlertDialogData {
   /** 다이얼로그 제목 (문자열 또는 React 컴포넌트) */
-  title: string | React.ReactNode;
+  title?: string | React.ReactNode;
   /** 설명 텍스트 (선택사항, 문자열 또는 React 컴포넌트) */
   description?: string | React.ReactNode;
   /** 확인 버튼 텍스트 (기본값: "확인") */

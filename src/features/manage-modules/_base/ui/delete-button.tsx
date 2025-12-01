@@ -18,6 +18,7 @@ interface DeleteButtonProps {
   children?: React.ReactNode;
   dataLabel?: string;
   disabled?: boolean;
+  onDisabled?: () => void;
 }
 
 export function SoftDeleteButton({
@@ -27,6 +28,7 @@ export function SoftDeleteButton({
   children,
   dataLabel,
   disabled,
+  onDisabled,
 }: DeleteButtonProps) {
   const dialog = useDialog();
   const pathname = usePathname();
@@ -35,7 +37,24 @@ export function SoftDeleteButton({
   const handleClick = async () => {
     setIsLoading(true);
 
-    const dataLabelText = dataLabel ? `"${dataLabel}"` : '';
+    if (disabled) {
+      if (onDisabled) {
+        onDisabled();
+      } else {
+        dialog.alert({
+          title: 'Error!',
+          description: '삭제할 수 없는 데이터입니다.',
+          variant: 'error',
+          layout: 'vertical',
+          size: 'sm',
+        });
+      }
+
+      setIsLoading(false);
+      return;
+    }
+
+    const dataLabelText = dataLabel ? <b>[{dataLabel}]</b> : '';
 
     await dialog.confirm({
       title: '데이터 삭제하기',
@@ -61,7 +80,11 @@ export function SoftDeleteButton({
             return false;
           }
 
-          toast.success(`${dataLabelText} 데이터가 삭제되었습니다.`);
+          toast.success(
+            <>
+              <b>[{dataLabel}]</b> 데이터가 삭제되었습니다.
+            </>
+          );
           return true;
         } catch (error) {
           console.error(error);
@@ -82,7 +105,6 @@ export function SoftDeleteButton({
       variant='destructive-light'
       onClick={handleClick}
       isLoading={isLoading}
-      disabled={disabled}
     >
       {children ?? <Trash2 />}
     </LoadingButton>
@@ -96,6 +118,7 @@ export function HardDeleteButton({
   children,
   dataLabel,
   disabled,
+  onDisabled,
 }: DeleteButtonProps) {
   const dialog = useDialog();
   const pathname = usePathname();
@@ -103,6 +126,23 @@ export function HardDeleteButton({
 
   const handleClick = async () => {
     setIsLoading(true);
+
+    if (disabled) {
+      if (onDisabled) {
+        onDisabled();
+      } else {
+        dialog.alert({
+          title: '삭제할 수 없는 데이터입니다.',
+          description: '삭제할 수 없는 데이터입니다.',
+          variant: 'error',
+          confirmText: '확인',
+          layout: 'vertical',
+        });
+      }
+
+      setIsLoading(false);
+      return;
+    }
 
     const dataLabelText = dataLabel ? `"${dataLabel}"` : '';
 
@@ -153,7 +193,6 @@ export function HardDeleteButton({
       variant='destructive'
       onClick={handleClick}
       isLoading={isLoading}
-      disabled={disabled}
     >
       {children ?? <Trash2 />}
     </LoadingButton>
