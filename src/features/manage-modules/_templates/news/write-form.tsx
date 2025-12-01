@@ -1,0 +1,155 @@
+'use client';
+
+import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+
+import { FieldGroup } from '@/shared/ui/field';
+import {
+  FormTextInput,
+  FormNumberInput,
+  FormEditor,
+  FormFileUpload,
+  FormDatePicker,
+} from '@/shared/ui/form';
+import { schemaPresets } from '@/shared/schemas';
+import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
+import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
+import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+
+import {
+  useManageSheet,
+  ManageSheetFooter,
+  ManageFormSubmit,
+  ManageSheetClose,
+} from '../../_base/ui';
+import { CONFIG } from './config';
+import { type ItemDTO } from './config';
+import { createItem, updateItem } from './actions';
+
+const formSchema = z.object({
+  createdAt: z.date().nullish(),
+  viewCount: schemaPresets.numberRange(),
+  title: z.string().min(1, '제목을 입력해주세요.'),
+  content: z.string().min(1, '내용을 입력해주세요.'),
+  files: schemaPresets.files({ thumbnail: 1, attachments: 0 }),
+});
+
+const formDefaultValues = {
+  createdAt: new Date(),
+  viewCount: 0,
+  title: '',
+  content: '',
+  files: undefined,
+};
+
+interface WriteFormProps {
+  id?: string;
+  prevValues: ItemDTO | null;
+}
+
+export function WriteForm({ id, prevValues }: WriteFormProps) {
+  const sheet = useManageSheet();
+  const pathname = usePathname();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof formSchema>,
+  });
+
+  useEffect(() => {
+    form.reset((prevValues ?? formDefaultValues) as z.infer<typeof formSchema>);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prevValues]);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const { files: formFiles, ...restValues } = values;
+
+      // 데이터 DB 저장
+      const { success, data, error } = id
+        ? await updateItem({ id, values: restValues as Partial<ItemDTO>, pathname })
+        : await createItem({ values: restValues as Partial<ItemDTO>, pathname });
+
+      if (!success || !data) {
+        toast.error(id ? CRUD_ERRORS.UPDATE_FAILED() : CRUD_ERRORS.CREATE_FAILED(), {
+          description: error,
+        });
+        return;
+      }
+
+      // 파일 업로드
+      await uploadFormFiles({
+        formFiles: formFiles as FormFilesField,
+        id: data.id,
+        tableName: CONFIG.tableName,
+        pathname,
+        updateAction: updateItem,
+      });
+
+      toast.success(id ? SUCCESS_MESSAGES.UPDATE_SUCCESS() : SUCCESS_MESSAGES.CREATE_SUCCESS());
+      sheet.close();
+    } catch (error) {
+      console.error(error);
+      toast.error(GENERAL_ERRORS.UNEXPECTED, {
+        description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
+      });
+    }
+  }
+
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FieldGroup>
+        <FormDatePicker
+          control={form.control}
+          name='createdAt'
+          label='작성일'
+          mode='single'
+          presets
+          optional
+        />
+        <FormNumberInput
+          control={form.control}
+          name='viewCount'
+          label='조회수'
+          thousandSeparator
+        />
+        <FormTextInput
+          control={form.control}
+          name='title'
+          label='제목'
+        />
+        <FormEditor
+          control={form.control}
+          name='content'
+          label='내용'
+          entity={CONFIG.tableName}
+        />
+        <FormFileUpload
+          control={form.control}
+          name='files.thumbnail'
+          label='썸네일'
+          acceptPreset='images'
+          maxSize={5}
+          max={1}
+        />
+        <FormFileUpload
+          control={form.control}
+          name='files.attachments'
+          label='첨부 파일'
+          acceptPreset='documents'
+          maxSize={10}
+          max={5}
+          optional
+        />
+      </FieldGroup>
+
+      <ManageSheetFooter>
+        <ManageSheetClose />
+        <ManageFormSubmit isLoading={form.formState.isSubmitting} />
+      </ManageSheetFooter>
+    </form>
+  );
+}
