@@ -40,6 +40,7 @@ export const CRUD_ERRORS = {
     `${josa(entityName, '을/를')} 삭제하는 중 오류가 발생했습니다.`,
   NOT_FOUND: (entityName: string) => `${josa(entityName, '을/를')} 찾을 수 없습니다.`,
   DUPLICATE: (fieldName: string) => `이미 존재하는 ${fieldName}입니다.`,
+  ALREADY_EXISTS: (fieldName: string) => `이미 사용된 ${fieldName}입니다.`,
 } as const;
 
 // ============================================================
