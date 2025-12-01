@@ -17,6 +17,7 @@ interface DeleteButtonProps {
   deleteFn?: () => Promise<ActionResult<any>>;
   children?: React.ReactNode;
   dataLabel?: string;
+  disabled?: boolean;
 }
 
 export function SoftDeleteButton({
@@ -25,6 +26,7 @@ export function SoftDeleteButton({
   deleteFn,
   children,
   dataLabel,
+  disabled,
 }: DeleteButtonProps) {
   const dialog = useDialog();
   const pathname = usePathname();
@@ -80,6 +82,7 @@ export function SoftDeleteButton({
       variant='destructive-light'
       onClick={handleClick}
       isLoading={isLoading}
+      disabled={disabled}
     >
       {children ?? <Trash2 />}
     </LoadingButton>
@@ -92,6 +95,7 @@ export function HardDeleteButton({
   deleteFn,
   children,
   dataLabel,
+  disabled,
 }: DeleteButtonProps) {
   const dialog = useDialog();
   const pathname = usePathname();
@@ -149,6 +153,7 @@ export function HardDeleteButton({
       variant='destructive'
       onClick={handleClick}
       isLoading={isLoading}
+      disabled={disabled}
     >
       {children ?? <Trash2 />}
     </LoadingButton>

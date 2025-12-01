@@ -15,6 +15,7 @@ export function LoadingButton({
   isLoading,
   variant,
   className,
+  disabled,
   ...props
 }: LoadingButtonProps) {
   const child = icon ? (
@@ -33,7 +34,7 @@ export function LoadingButton({
       {...props}
       className={cn(className, isLoading && 'opacity-100!')}
       variant={variant}
-      disabled={isLoading}
+      disabled={isLoading || disabled}
     >
       {child}
     </Button>
