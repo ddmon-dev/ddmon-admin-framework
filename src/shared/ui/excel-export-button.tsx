@@ -47,9 +47,7 @@ export function ExcelExportButton<TData = any>({
       const { success, data, error } = await fetchData();
 
       if (!success) {
-        toast.error(CRUD_ERRORS.READ_FAILED(), {
-          description: error,
-        });
+        toast.error(error);
         return;
       }
 
@@ -65,9 +63,7 @@ export function ExcelExportButton<TData = any>({
       toast.success(SUCCESS_MESSAGES.DOWNLOAD_SUCCESS());
     } catch (error) {
       console.error('엑셀 다운로드 실패:', error);
-      toast.error(GENERAL_ERRORS.UNEXPECTED, {
-        description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
-      });
+      toast.error(GENERAL_ERRORS.UNEXPECTED);
     } finally {
       setIsLoading(false);
     }

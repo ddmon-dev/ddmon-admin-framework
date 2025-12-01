@@ -74,9 +74,7 @@ export function SoftDeleteButton({
             : await softDelete({ tableName, id, pathname });
 
           if (!result.success) {
-            toast.error(CRUD_ERRORS.DELETE_FAILED(), {
-              description: result.error,
-            });
+            toast.error(result.error);
             return false;
           }
 
@@ -88,9 +86,7 @@ export function SoftDeleteButton({
           return true;
         } catch (error) {
           console.error(error);
-          toast.error(GENERAL_ERRORS.UNEXPECTED, {
-            description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
-          });
+          toast.error(GENERAL_ERRORS.UNEXPECTED);
           return false;
         }
       },
@@ -176,9 +172,7 @@ export function HardDeleteButton({
         } catch (error) {
           // 예상치 못한 에러 (네트워크 등)
           console.error(error);
-          toast.error(GENERAL_ERRORS.UNEXPECTED, {
-            description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
-          });
+          toast.error(GENERAL_ERRORS.UNEXPECTED);
           return false;
         }
       },

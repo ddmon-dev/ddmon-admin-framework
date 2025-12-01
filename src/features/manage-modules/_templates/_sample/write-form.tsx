@@ -118,9 +118,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
         : await createItem({ values: submitValues as Partial<ItemDTO>, pathname });
 
       if (!success || !data) {
-        toast.error(id ? CRUD_ERRORS.UPDATE_FAILED() : CRUD_ERRORS.CREATE_FAILED(), {
-          description: error,
-        });
+        toast.error(error);
         return;
       }
 
@@ -137,9 +135,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
       sheet.close();
     } catch (error) {
       console.error(error);
-      toast.error(GENERAL_ERRORS.UNEXPECTED, {
-        description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
-      });
+      toast.error(GENERAL_ERRORS.UNEXPECTED);
     }
   }
 
