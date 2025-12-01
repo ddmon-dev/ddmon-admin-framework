@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
-    "db:types": "supabase gen types typescript --linked > src/shared/lib/supabase/types.ts"
+    "db:types": "supabase gen types typescript --linked > src/shared/lib/supabase/types.ts",
+    "db:types:local": "supabase gen types typescript --local > src/shared/lib/supabase/types.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
