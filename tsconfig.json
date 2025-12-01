@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "src/features/manage-modules/notice/actions/get-export-data.ts"
+    "src/features/manage-modules/_templates/notice/actions/get-export-data.ts"
   ],
   "exclude": ["node_modules"]
 }

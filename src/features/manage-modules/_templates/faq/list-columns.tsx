@@ -1,30 +1,17 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Separator } from '@/shared/ui/separator';
-import { ModifyButton } from '../_base/ui';
+import { ModifyButton, SoftDeleteButton } from '../../_base/ui';
 
+import { CONFIG } from './config';
 import { type ItemDTO } from './config';
-import { DeleteAdminButton } from './delete-button';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
   {
-    accessorKey: 'id',
-    header: '아이디',
+    accessorKey: 'question',
+    header: '질문',
     meta: {
       className: 'text-left',
-    },
-  },
-  {
-    accessorKey: 'name',
-    header: '이름',
-    size: 150,
-  },
-  {
-    accessorKey: 'superAdmin',
-    header: '구분',
-    size: 150,
-    cell: ({ row }) => {
-      const { superAdmin } = row.original;
-      return superAdmin ? '최고관리자' : '일반관리자';
+      truncate: true,
     },
   },
   {
@@ -46,17 +33,17 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
       className: 'text-right',
     },
     cell: ({ row }) => {
-      const { id, superAdmin } = row.original;
+      const { id } = row.original;
       return (
         <nav className='flex items-center justify-end gap-2'>
-          <ModifyButton id={id}>정보수정</ModifyButton>
+          <ModifyButton id={id} />
           <Separator
             orientation='vertical'
             className='data-[orientation=vertical]:h-6'
           />
-          <DeleteAdminButton
+          <SoftDeleteButton
+            tableName={CONFIG.tableName}
             id={id}
-            disabled={superAdmin}
           />
         </nav>
       );

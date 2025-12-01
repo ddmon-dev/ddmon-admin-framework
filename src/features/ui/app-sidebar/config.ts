@@ -11,8 +11,8 @@ export const navigationConfig: MenuConfig = {
       title: '샘플',
       items: [
         {
-          title: '관리모듈 템플릿',
-          url: '/template',
+          title: '관리모듈 샘플',
+          url: '/manage-sample',
           icon: Settings2,
         },
         {

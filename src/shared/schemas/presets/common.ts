@@ -164,3 +164,27 @@ export const numberRange = (options?: {
 
   return options?.optional ? schema.nullish() : schema;
 };
+
+/**
+ * 배열 필드 검증
+ * - 배열 요소의 스키마를 받아서 배열 필드를 검증
+ *
+ * @param itemSchema - 배열 요소의 스키마
+ * @param options - 선택 여부 options = { optional: true } → 선택 필드
+ * @returns 배열 필드 스키마
+ */
+export const fieldArray = (itemSchema: z.ZodSchema, options?: { optional?: boolean }) => {
+  let schema = z.array(z.object({ value: itemSchema }));
+
+  if (options?.optional) {
+    schema = schema.refine(
+      data => data.some(item => item.value !== null && item.value !== undefined),
+      {
+        message: 'VLT 옵션은 최소 1개 이상 입력해주세요.',
+        path: ['root'],
+      }
+    );
+  }
+
+  return schema;
+};

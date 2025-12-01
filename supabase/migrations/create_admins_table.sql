@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS admins (
   super_admin BOOLEAN NOT NULL DEFAULT false,    -- 슈퍼 관리자 여부
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  deleted BOOLEAN DEFAULT false         -- soft delete
+  deleted BOOLEAN NOT NULL DEFAULT false         -- soft delete
 );
 
 -- 인덱스 생성
