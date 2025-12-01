@@ -4,6 +4,7 @@ import { ItemDTO as BaseItemDTO } from '../_base/types';
 export const CONFIG = {
   moduleName: '공지사항',
   tableName: 'notices',
+  enableBulkAction: true,
   categoryOptions: [
     { label: '공지', value: 'notice' },
     { label: '일반', value: 'normal' },

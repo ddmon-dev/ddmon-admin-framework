@@ -4,6 +4,7 @@ import { ItemDTO as BaseItemDTO } from '../_base/types';
 export const CONFIG = {
   moduleName: 'FAQ',
   tableName: 'faqs',
+  enableBulkAction: true,
 } as const;
 
 export type RowData = BaseRowData<typeof CONFIG.tableName>;
