@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { format, addDays, addMonths } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, X } from 'lucide-react';
 import { type Matcher, type DateRange } from 'react-day-picker';
 
 import { cn } from '@/shared/utils/classnames';
@@ -229,6 +229,19 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
 
   const hasPresets = mode === 'single' && !!(props as SingleDatePickerProps).presets;
 
+  const handleClear = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen(false);
+    if (mode === 'single') {
+      (props as SingleDatePickerProps).onValueChange(undefined);
+    } else if (mode === 'multiple') {
+      (props as MultipleDatePickerProps).onValueChange(undefined);
+    } else if (mode === 'range') {
+      (props as RangeDatePickerProps).onValueChange(undefined);
+    }
+  };
+
   const renderMultipleBadges = () => {
     if (mode !== 'multiple') return null;
 
@@ -255,22 +268,34 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
         open={open}
         onOpenChange={setOpen}
       >
-        <PopoverTrigger asChild>
-          <Button
-            ref={ref}
-            variant='outline'
-            aria-invalid={ariaInvalid}
-            data-placeholder={!hasValue()}
-            className={cn(
-              "border-input data-[placeholder=true]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-start gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-11 md:data-[size=default]:h-9 data-[size=sm]:h-10 md:data-[size=sm]:h-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-              'w-full hover:bg-background font-normal',
-              className
-            )}
-          >
-            <CalendarIcon className='opacity-50' />
-            {renderButtonText()}
-          </Button>
-        </PopoverTrigger>
+        <div className='relative'>
+          <PopoverTrigger asChild>
+            <Button
+              ref={ref}
+              variant='outline'
+              aria-invalid={ariaInvalid}
+              data-placeholder={!hasValue()}
+              className={cn(
+                "border-input data-[placeholder=true]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-start gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-11 md:data-[size=default]:h-9 data-[size=sm]:h-10 md:data-[size=sm]:h-8 [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+                'w-full hover:bg-background font-normal',
+                hasValue() && 'pr-8!',
+                className
+              )}
+            >
+              <CalendarIcon className='opacity-50' />
+              <span className='flex-1 text-left'>{renderButtonText()}</span>
+            </Button>
+          </PopoverTrigger>
+          {hasValue() && (
+            <button
+              type='button'
+              onClick={handleClear}
+              className='absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded-sm hover:bg-muted'
+            >
+              <X className='size-4 opacity-50 hover:opacity-100' />
+            </button>
+          )}
+        </div>
         <PopoverContent
           className={cn('w-auto p-0', hasPresets && 'flex flex-col space-y-2 p-2')}
           align='start'
