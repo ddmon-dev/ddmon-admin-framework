@@ -2,7 +2,8 @@ import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
 import { ItemDTO as BaseItemDTO } from '../../_base/types';
 
 export const CONFIG = {
-  moduleName: '공지사항 관리',
+  title: '',
+  moduleName: '공지사항',
   tableName: 'notices',
   enableBulkAction: true,
   categoryOptions: [

@@ -16,6 +16,7 @@ interface Props {
 export default function ManageModule({ searchParams }: Props) {
   return (
     <ManageContainer
+      title={CONFIG.title}
       moduleName={CONFIG.moduleName}
       headerAddons={<HeaderAddons />}
     >
