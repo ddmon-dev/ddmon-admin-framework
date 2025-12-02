@@ -15,7 +15,9 @@ export type FormFieldArrayProps = {
   max?: number;
   addButtonText?: string;
   defaultValue?: any;
-  children: (props: { index: number; name: string; control: Control<any> }) => ReactNode;
+  /** 비활성화 */
+  disabled?: boolean;
+  children: (props: { index: number; name: string; control: Control<any>; disabled?: boolean }) => ReactNode;
 };
 
 /**
@@ -77,6 +79,7 @@ export const FormFieldArray = ({
   max,
   addButtonText = '추가',
   defaultValue = '',
+  disabled = false,
   children,
 }: FormFieldArrayProps): ReactElement => {
   const { fields, append, remove } = useFieldArray({
@@ -144,6 +147,7 @@ export const FormFieldArray = ({
                     index,
                     name: `${name}.${index}`,
                     control,
+                    disabled,
                   })}
                 </div>
 
@@ -153,7 +157,7 @@ export const FormFieldArray = ({
                   variant='secondary'
                   size='icon'
                   onClick={() => handleRemove(index)}
-                  disabled={!canRemove}
+                  disabled={disabled || !canRemove}
                   className='shrink-0'
                 >
                   <Trash2 />
@@ -169,7 +173,7 @@ export const FormFieldArray = ({
             type='button'
             variant='black'
             onClick={handleAdd}
-            disabled={!canAdd}
+            disabled={disabled || !canAdd}
             className='w-full'
           >
             <Plus />
