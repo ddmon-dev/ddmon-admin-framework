@@ -25,6 +25,12 @@ export type FormNumberInputProps<
   allowNegative?: boolean;
   /** placeholder */
   placeholder?: string;
+  /** 비활성화 */
+  disabled?: boolean;
+  /** 읽기 전용 */
+  readOnly?: boolean;
+  /** 추가 className */
+  className?: string;
 };
 
 /**
@@ -83,6 +89,9 @@ export const FormNumberInput = <
   decimalScale,
   allowNegative = false,
   placeholder,
+  disabled = false,
+  readOnly = false,
+  className,
 }: FormNumberInputProps<V, N>): ReactElement => {
   return (
     <FormField
@@ -108,6 +117,9 @@ export const FormNumberInput = <
           decimalScale={allowDecimal ? decimalScale : 0}
           fixedDecimalScale={allowDecimal && decimalScale !== undefined}
           placeholder={placeholder}
+          disabled={disabled}
+          readOnly={readOnly}
+          className={className}
           aria-invalid={fieldState.invalid}
           inputMode={allowDecimal ? 'decimal' : 'numeric'}
         />

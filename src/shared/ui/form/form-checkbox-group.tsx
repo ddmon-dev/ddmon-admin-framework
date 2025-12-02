@@ -24,6 +24,8 @@ export type FormCheckboxGroupProps<
     value: string | number;
   }[];
   vertical?: boolean;
+  /** 비활성화 */
+  disabled?: boolean;
 };
 
 export const FormCheckboxGroup = <
@@ -37,6 +39,7 @@ export const FormCheckboxGroup = <
   options,
   vertical = false,
   optional = false,
+  disabled = false,
 }: FormCheckboxGroupProps<V, N>): ReactElement => {
   return (
     <Controller
@@ -73,6 +76,7 @@ export const FormCheckboxGroup = <
                   ref={index === 0 ? field.ref : undefined}
                   id={`${field.name}-${index}`}
                   name={field.name}
+                  disabled={disabled}
                   aria-invalid={fieldState.invalid}
                   checked={field.value.includes(option.value)}
                   onCheckedChange={checked => {

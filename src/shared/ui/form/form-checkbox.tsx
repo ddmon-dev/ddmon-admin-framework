@@ -9,7 +9,10 @@ import type { FormBaseProps } from './types';
 export type FormCheckboxProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = Omit<FormBaseProps<V, N>, 'description' | 'orientation'>;
+> = Omit<FormBaseProps<V, N>, 'description' | 'orientation'> & {
+  /** 비활성화 */
+  disabled?: boolean;
+};
 
 export const FormCheckbox = <
   V extends FieldValues = FieldValues,
@@ -18,6 +21,7 @@ export const FormCheckbox = <
   control,
   name,
   label,
+  disabled = false,
 }: FormCheckboxProps<V, N>): ReactElement => {
   return (
     <Controller
@@ -35,6 +39,7 @@ export const FormCheckbox = <
               id={field.name}
               checked={field.value}
               onCheckedChange={field.onChange}
+              disabled={disabled}
               aria-invalid={fieldState.invalid}
             />
             <FieldLabel

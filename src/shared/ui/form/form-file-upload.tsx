@@ -23,6 +23,8 @@ export type FormFileUploadProps<
   maxSize?: number;
   placeholder?: string;
   hideConstraints?: boolean;
+  /** 비활성화 */
+  disabled?: boolean;
 };
 
 const generateFileConstraintsText = (
@@ -83,6 +85,7 @@ export const FormFileUpload = <
   maxSize,
   placeholder,
   hideConstraints = false,
+  disabled = false,
 }: FormFileUploadProps<V, N>): ReactElement => {
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -124,6 +127,7 @@ export const FormFileUpload = <
             maxSize={maxSize}
             max={max}
             placeholder={placeholder}
+            disabled={disabled}
             aria-invalid={fieldState.invalid || !!validationError}
           />
           {(fieldState.error || validationError) && (
