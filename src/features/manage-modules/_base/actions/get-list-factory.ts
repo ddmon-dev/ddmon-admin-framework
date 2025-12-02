@@ -1,5 +1,4 @@
 import { APP_CONFIG } from '@/app.config';
-import type { User } from 'next-auth';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/features/utils/server-actions';

@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/shared/ui/badge';
 import { Separator } from '@/shared/ui/separator';
@@ -41,9 +42,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     size: 100,
     cell: ({ row }) => {
       const { createdAt } = row.original;
-      if (!createdAt) return '-';
-      const date = new Date(createdAt);
-      return date.toLocaleDateString();
+      return format(createdAt, 'yyyy-MM-dd');
     },
   },
   {
