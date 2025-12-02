@@ -24,9 +24,6 @@ interface ManageModuleHeaderProps {
 }
 
 export function ManageModuleHeader({ title, moduleName, headerAddons }: ManageModuleHeaderProps) {
-  const [open, setOpen] = useState(false);
-  const hasFilters = !!headerAddons;
-
   return (
     <header className={cn('border-b sticky top-0 z-10 bg-background rounded-t-xl py-1.5 md:py-4')}>
       <Container className={cn('grid gap-3 px-1.5 md:px-4')}>
@@ -43,43 +40,18 @@ export function ManageModuleHeader({ title, moduleName, headerAddons }: ManageMo
           </h1>
           <div className='flex items-center gap-1 ml-auto'>
             {/* 모바일: 필터 다이얼로그 버튼 */}
-            {hasFilters && (
-              <Dialog
-                open={open}
-                onOpenChange={setOpen}
-              >
-                <DialogTrigger asChild>
-                  <Button
-                    variant='ghost'
-                    size='icon-sm'
-                    className='md:hidden'
-                  >
-                    <Filter className='size-4' />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>필터 및 검색</DialogTitle>
-                  </DialogHeader>
-                  <div className='flex flex-col gap-3 pt-4 **:ml-0!'>
-                    {headerAddons}
-                    <SearchBar />
-                  </div>
-                  <Button
-                    onClick={() => setOpen(false)}
-                    className='w-full mt-4'
-                  >
-                    닫기
-                  </Button>
-                </DialogContent>
-              </Dialog>
+            <FilterDialog headerAddons={headerAddons} />
+            {!headerAddons && (
+              <div className='hidden md:block'>
+                <SearchBar />
+              </div>
             )}
             <CreateButton>{moduleName} 생성</CreateButton>
           </div>
         </div>
 
         {/* 데스크톱: 필터 및 검색 표시 */}
-        {hasFilters && (
+        {headerAddons && (
           <div className='hidden md:flex items-center gap-2'>
             {headerAddons}
             <div className='ml-auto'>
@@ -89,5 +61,41 @@ export function ManageModuleHeader({ title, moduleName, headerAddons }: ManageMo
         )}
       </Container>
     </header>
+  );
+}
+
+function FilterDialog({ headerAddons }: { headerAddons?: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+    >
+      <DialogTrigger asChild>
+        <Button
+          variant='ghost'
+          size='icon-sm'
+          className='md:hidden'
+        >
+          <Filter className='size-4' />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>필터 및 검색</DialogTitle>
+        </DialogHeader>
+        <div className='flex flex-col gap-3 pt-4 **:ml-0!'>
+          {headerAddons}
+          <SearchBar />
+        </div>
+        <Button
+          onClick={() => setOpen(false)}
+          className='w-full mt-4'
+        >
+          닫기
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 }
