@@ -9,7 +9,9 @@ import type { FormBaseProps } from './types';
 export type FormSwitchProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = Omit<FormBaseProps<V, N>, 'description' | 'orientation'>;
+> = Omit<FormBaseProps<V, N>, 'description' | 'orientation'> & {
+  disabled?: boolean;
+};
 
 export const FormSwitch = <
   V extends FieldValues = FieldValues,
@@ -18,6 +20,7 @@ export const FormSwitch = <
   control,
   name,
   label,
+  disabled = false,
 }: FormSwitchProps<V, N>): ReactElement => {
   return (
     <Controller
@@ -35,6 +38,7 @@ export const FormSwitch = <
               checked={field.value}
               onCheckedChange={field.onChange}
               aria-invalid={fieldState.invalid}
+              disabled={disabled}
             />
             <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
           </Field>

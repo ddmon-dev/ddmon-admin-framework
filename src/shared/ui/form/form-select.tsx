@@ -15,6 +15,7 @@ export type FormSelectProps<
     value: string;
   }[];
   placeholder?: string;
+  disabled?: boolean;
 };
 
 export const FormSelect = <
@@ -29,6 +30,7 @@ export const FormSelect = <
   optional,
   options,
   placeholder = 'Select',
+  disabled = false,
 }: FormSelectProps<V, N>): ReactElement => {
   return (
     <FormField
@@ -44,6 +46,7 @@ export const FormSelect = <
           name={field.name}
           value={field.value}
           onValueChange={onChange}
+          disabled={disabled}
         >
           <SelectTrigger
             ref={field.ref}

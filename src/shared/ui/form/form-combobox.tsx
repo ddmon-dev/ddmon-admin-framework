@@ -18,6 +18,7 @@ export type FormComboboxProps<
   searchPlaceholder?: string;
   emptyMessage?: string;
   className?: string;
+  disabled?: boolean;
 };
 
 export const FormCombobox = <
@@ -35,6 +36,7 @@ export const FormCombobox = <
   searchPlaceholder,
   emptyMessage,
   className,
+  disabled = false,
 }: FormComboboxProps<V, N>): ReactElement => {
   return (
     <FormField
@@ -56,6 +58,7 @@ export const FormCombobox = <
           emptyMessage={emptyMessage}
           className={className}
           aria-invalid={fieldState.invalid}
+          disabled={disabled}
         />
       )}
     </FormField>

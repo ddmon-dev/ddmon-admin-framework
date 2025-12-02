@@ -18,6 +18,7 @@ export type FormMultiComboboxProps<
   searchPlaceholder?: string;
   emptyMessage?: string;
   className?: string;
+  disabled?: boolean;
 };
 
 export const FormMultiCombobox = <
@@ -35,6 +36,7 @@ export const FormMultiCombobox = <
   searchPlaceholder,
   emptyMessage,
   className,
+  disabled = false,
 }: FormMultiComboboxProps<V, N>): ReactElement => {
   return (
     <FormField
@@ -56,6 +58,7 @@ export const FormMultiCombobox = <
           emptyMessage={emptyMessage}
           className={className}
           aria-invalid={fieldState.invalid}
+          disabled={disabled}
         />
       )}
     </FormField>
