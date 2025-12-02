@@ -11,6 +11,7 @@ interface ManageContainerProps {
   title?: string;
   moduleName: string;
   headerAddons?: React.ReactNode;
+  headerSearchBar?: React.ReactNode;
   createButtonLabel?: string;
   children: React.ReactNode;
 }
@@ -19,6 +20,7 @@ export function ManageContainer({
   title,
   moduleName,
   headerAddons,
+  headerSearchBar,
   createButtonLabel,
   children,
 }: ManageContainerProps) {
@@ -29,6 +31,7 @@ export function ManageContainer({
           title={title}
           moduleName={moduleName}
           headerAddons={headerAddons}
+          headerSearchBar={headerSearchBar}
           createButtonLabel={createButtonLabel}
         />
         <Container className='flex flex-col gap-8 md:gap-4 flex-1 mt-8 md:mt-4'>
