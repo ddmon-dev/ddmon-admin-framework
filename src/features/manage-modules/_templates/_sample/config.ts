@@ -2,6 +2,7 @@ import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
 import { ItemDTO as BaseItemDTO } from '../../_base/types';
 
 export const CONFIG = {
+  title: '모듈 페이지의 타이틀이 따로 필요할 경우 이곳에 작성',
   moduleName: '관리모듈 템플릿 데이터',
   tableName: 'templates',
   enableBulkAction: true,

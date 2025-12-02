@@ -14,7 +14,10 @@ interface Props {
 
 export default function ManageModule({ searchParams }: Props) {
   return (
-    <ManageContainer moduleName={CONFIG.moduleName}>
+    <ManageContainer
+      title={CONFIG.title}
+      moduleName={CONFIG.moduleName}
+    >
       <ManageListFetcher<ItemDTO>
         searchParams={searchParams}
         getList={getList}

@@ -18,11 +18,12 @@ import {
 import { CreateButton } from './create-button';
 
 interface ManageModuleHeaderProps {
+  title?: string;
   moduleName: string;
   headerAddons?: React.ReactNode;
 }
 
-export function ManageModuleHeader({ moduleName, headerAddons }: ManageModuleHeaderProps) {
+export function ManageModuleHeader({ title, moduleName, headerAddons }: ManageModuleHeaderProps) {
   const [open, setOpen] = useState(false);
   const hasFilters = !!headerAddons;
 
@@ -37,7 +38,9 @@ export function ManageModuleHeader({ moduleName, headerAddons }: ManageModuleHea
             className={cn('data-[orientation=vertical]:h-4 mx-1 hidden md:block')}
           />
 
-          <h1 className='text-xl font-semibold hidden md:block'>{moduleName}</h1>
+          <h1 className='text-xl font-semibold hidden md:block'>
+            {title ? title : `${moduleName} 관리`}
+          </h1>
           <div className='flex items-center gap-1 ml-auto'>
             {/* 모바일: 필터 다이얼로그 버튼 */}
             {hasFilters && (

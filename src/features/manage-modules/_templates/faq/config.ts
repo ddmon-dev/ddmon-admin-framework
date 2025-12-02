@@ -2,7 +2,8 @@ import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
 import { ItemDTO as BaseItemDTO } from '../../_base/types';
 
 export const CONFIG = {
-  moduleName: 'FAQ 관리',
+  title: '',
+  moduleName: 'FAQ',
   tableName: 'faqs',
   enableBulkAction: true,
 } as const;

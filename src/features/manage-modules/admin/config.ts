@@ -2,7 +2,8 @@ import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
 import { ItemDTO as BaseItemDTO } from '../_base/types';
 
 export const CONFIG = {
-  moduleName: '관리자 계정 관리',
+  title: '',
+  moduleName: '관리자 계정',
   tableName: 'admins',
   enableBulkAction: false,
 } as const;
