@@ -37,7 +37,7 @@ export function ManageModuleHeader({ moduleName, headerAddons }: ManageModuleHea
             className={cn('data-[orientation=vertical]:h-4 mx-1 hidden md:block')}
           />
 
-          <h1 className='text-xl font-semibold hidden md:block'>{moduleName} 관리</h1>
+          <h1 className='text-xl font-semibold hidden md:block'>{moduleName}</h1>
           <div className='flex items-center gap-1 ml-auto'>
             {/* 모바일: 필터 다이얼로그 버튼 */}
             {hasFilters && (
