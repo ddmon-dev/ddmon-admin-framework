@@ -21,9 +21,15 @@ interface ManageModuleHeaderProps {
   title?: string;
   moduleName: string;
   headerAddons?: React.ReactNode;
+  createButtonLabel?: string;
 }
 
-export function ManageModuleHeader({ title, moduleName, headerAddons }: ManageModuleHeaderProps) {
+export function ManageModuleHeader({
+  title,
+  moduleName,
+  headerAddons,
+  createButtonLabel,
+}: ManageModuleHeaderProps) {
   return (
     <header className={cn('border-b sticky top-0 z-10 bg-background rounded-t-xl py-1.5 md:py-4')}>
       <Container className={cn('grid gap-3 px-1.5 md:px-4')}>
@@ -46,7 +52,7 @@ export function ManageModuleHeader({ title, moduleName, headerAddons }: ManageMo
                 <SearchBar />
               </div>
             )}
-            <CreateButton>{moduleName} 생성</CreateButton>
+            <CreateButton>{createButtonLabel ?? `${moduleName} 생성`}</CreateButton>
           </div>
         </div>
 
