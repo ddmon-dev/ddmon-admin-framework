@@ -21,6 +21,7 @@ interface ManageModuleHeaderProps {
   title?: string;
   moduleName: string;
   headerAddons?: React.ReactNode;
+  headerSearchBar?: React.ReactNode;
   createButtonLabel?: string;
 }
 
@@ -28,6 +29,7 @@ export function ManageModuleHeader({
   title,
   moduleName,
   headerAddons,
+  headerSearchBar,
   createButtonLabel,
 }: ManageModuleHeaderProps) {
   return (
@@ -46,8 +48,11 @@ export function ManageModuleHeader({
           </h1>
           <div className='flex items-center gap-1 ml-auto'>
             {/* 모바일: 필터 다이얼로그 버튼 */}
-            <FilterDialog headerAddons={headerAddons} />
-            {!headerAddons && (
+            <FilterDialog
+              headerAddons={headerAddons}
+              headerSearchBar={headerSearchBar}
+            />
+            {!headerAddons && !headerSearchBar && (
               <div className='hidden md:block'>
                 <SearchBar />
               </div>
@@ -57,12 +62,10 @@ export function ManageModuleHeader({
         </div>
 
         {/* 데스크톱: 필터 및 검색 표시 */}
-        {headerAddons && (
-          <div className='hidden md:flex items-center gap-2'>
+        {(headerAddons || headerSearchBar) && (
+          <div className='hidden md:flex items-center gap-2 flex-wrap'>
             {headerAddons}
-            <div className='ml-auto'>
-              <SearchBar />
-            </div>
+            <div className='ml-auto'>{headerSearchBar ?? <SearchBar />}</div>
           </div>
         )}
       </Container>
@@ -70,7 +73,13 @@ export function ManageModuleHeader({
   );
 }
 
-function FilterDialog({ headerAddons }: { headerAddons?: React.ReactNode }) {
+function FilterDialog({
+  headerAddons,
+  headerSearchBar,
+}: {
+  headerAddons?: React.ReactNode;
+  headerSearchBar?: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -93,7 +102,7 @@ function FilterDialog({ headerAddons }: { headerAddons?: React.ReactNode }) {
         </DialogHeader>
         <div className='flex flex-col gap-3 pt-4 **:ml-0!'>
           {headerAddons}
-          <SearchBar />
+          {headerSearchBar ?? <SearchBar />}
         </div>
         <Button
           onClick={() => setOpen(false)}
