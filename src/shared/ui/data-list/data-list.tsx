@@ -126,10 +126,16 @@ export function DataList<TData>({
 
   const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement>, row: TData) => {
     const eventTarget = event.target as HTMLElement;
-    const preventElements = ['BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'A'];
+    const currentTarget = event.currentTarget as HTMLElement;
 
-    if (preventElements.includes(eventTarget.tagName.toUpperCase())) {
-      event.stopPropagation();
+    // 클릭 대상이 row 내부가 아니면 무시 (포탈로 렌더링된 다이얼로그 등)
+    if (!currentTarget.contains(eventTarget)) {
+      return;
+    }
+
+    // 인터랙티브 요소 자체이거나, 그 안의 자식 요소 클릭 시 무시
+    const isInteractive = eventTarget.closest('button, input, select, textarea, a');
+    if (isInteractive) {
       return;
     }
 
