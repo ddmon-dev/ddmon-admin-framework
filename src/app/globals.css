@@ -7,7 +7,7 @@
   /* Fonts */
   /* Primary: layout.tsx에서 import한 폰트의 CSS variable을 사용 */
   /* Secondary: Pretendard 고정 */
-  --font-primary: var(--font-suit), system-ui, sans-serif;
+  --font-primary: var(--font-poppins), system-ui, sans-serif;
   --font-secondary: var(--font-pretendard), system-ui, sans-serif;
 
   /* Colors - Background & Foreground */
@@ -85,6 +85,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
 }
 
 :root {
@@ -92,7 +94,7 @@
   /* Background & Foreground */
   /* ============================================================ */
   --background: oklch(0.995 0.002 30);
-  --background-secondary: oklch(0.975 0.0005 0);
+  --background-secondary: oklch(0.975 0.0035 35);
   --foreground: oklch(0.18 0.04 260);
 
   /* ============================================================ */
@@ -158,7 +160,7 @@
   /* ============================================================ */
   /* Border & Input */
   /* ============================================================ */
-  --border: oklch(0.92 0.003 30);
+  --border: oklch(0.8 0.003 30);
   --border-dark: oklch(0.88 0.005 30);
   --input: var(--border);
   --ring: oklch(0.65 0.21 237 / 50%);
@@ -313,10 +315,11 @@
     height: 4px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--background);
+    background: var(--secondary);
+    border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--primary);
+    background: #909090;
     border-radius: 10px;
   }
 }
