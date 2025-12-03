@@ -40,7 +40,7 @@ export function ManageModuleHeader({
 
           <Separator
             orientation='vertical'
-            className={cn('data-[orientation=vertical]:h-4 mx-1 hidden md:block')}
+            className={cn('data-[orientation=vertical]:h-4 mx-2 hidden md:block')}
           />
 
           <h1 className='text-xl font-semibold hidden md:block'>
