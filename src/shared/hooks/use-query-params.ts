@@ -3,14 +3,18 @@
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import type { NavigateOptions } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
+interface SetOptions extends NavigateOptions {
+  hash?: string;
+}
+
 interface UseQueryStringReturn {
   searchParams: URLSearchParams;
   createURLSearchParams: () => URLSearchParams;
   get(key: string): string | null;
   getValues(): Record<string, string>;
   getValues(...keys: string[]): Record<string, string | null>;
-  set(key: string, value: string, options?: NavigateOptions): void;
-  set(params: Record<string, string>, options?: NavigateOptions): void;
+  set(key: string, value: string, options?: SetOptions): void;
+  set(params: Record<string, string>, options?: SetOptions): void;
   remove(keys: string | string[], options?: NavigateOptions): void;
   clear(options?: NavigateOptions): void;
   has(key: string): boolean;
@@ -24,8 +28,9 @@ export function useQueryParams(): UseQueryStringReturn {
 
   const createURLSearchParams = () => new URLSearchParams(searchParams);
 
-  const navigate = (params: URLSearchParams, options?: NavigateOptions) => {
-    const path = `${pathname}?${params.toString()}`;
+  const navigate = (params: URLSearchParams, options?: SetOptions) => {
+    const hash = options?.hash ? `#${options.hash}` : '';
+    const path = `${pathname}?${params.toString()}${hash}`;
     router.push(path, options);
   };
 
@@ -53,20 +58,20 @@ export function useQueryParams(): UseQueryStringReturn {
     return result;
   }
 
-  function set(key: string, value: string, options?: NavigateOptions): void;
-  function set(params: Record<string, string>, options?: NavigateOptions): void;
+  function set(key: string, value: string, options?: SetOptions): void;
+  function set(params: Record<string, string>, options?: SetOptions): void;
   function set(
-    ...args: [string, string, NavigateOptions?] | [Record<string, string>, NavigateOptions?]
+    ...args: [string, string, SetOptions?] | [Record<string, string>, SetOptions?]
   ): void {
     if (typeof args[0] === 'string') {
       // 단일 키-값 설정
-      const [key, value, options] = args as [string, string, NavigateOptions?];
+      const [key, value, options] = args as [string, string, SetOptions?];
       const params = createURLSearchParams();
       params.set(key, value);
       navigate(params, options);
     } else {
       // 여러 키-값 설정
-      const [paramsToSet, options] = args as [Record<string, string>, NavigateOptions?];
+      const [paramsToSet, options] = args as [Record<string, string>, SetOptions?];
       const params = createURLSearchParams();
       Object.entries(paramsToSet).forEach(([key, value]) => {
         params.set(key, value);
