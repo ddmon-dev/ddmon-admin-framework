@@ -347,3 +347,8 @@
 [data-sonner-toast] {
   border-radius: var(--radius) !important;
 }
+
+/* Lucide Icons */
+.lucide {
+  stroke-width: 1.5;
+}
