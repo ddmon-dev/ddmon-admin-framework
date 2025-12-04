@@ -15,8 +15,8 @@ interface UseQueryStringReturn {
   getValues(...keys: string[]): Record<string, string | null>;
   set(key: string, value: string, options?: SetOptions): void;
   set(params: Record<string, string>, options?: SetOptions): void;
-  remove(keys: string | string[], options?: NavigateOptions): void;
-  clear(options?: NavigateOptions): void;
+  remove(keys: string | string[], options?: SetOptions): void;
+  clear(options?: SetOptions): void;
   has(key: string): boolean;
   createQueryString(paramsToSet?: Record<string, string | number> | null, anchor?: string): string;
 }
@@ -95,7 +95,7 @@ export function useQueryParams(): UseQueryStringReturn {
   }
 
   function clear(options?: NavigateOptions): void {
-    router.push(pathname, options);
+    navigate(new URLSearchParams(), options);
   }
 
   function has(key: string): boolean {
