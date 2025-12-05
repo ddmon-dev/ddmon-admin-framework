@@ -2,7 +2,7 @@
 
 import { APP_CONFIG } from '@/app.config';
 import { useEffect, useRef } from 'react';
-import { signOut } from './actions/sign-out';
+import { signOut } from 'next-auth/react';
 import { toast } from 'sonner';
 import { useDialog } from '@/shared/ui/app-dialog';
 
@@ -49,8 +49,6 @@ export function IdleLogoutProvider({
         if (onIdle) {
           onIdle();
         } else {
-          signOut();
-
           dialog.alert({
             title: 'Session Expired',
             description: '일정 시간 활동이 없어 로그아웃 되었습니다.',
@@ -58,6 +56,8 @@ export function IdleLogoutProvider({
             size: 'sm',
             layout: 'vertical',
           });
+
+          signOut();
         }
       }, timeout);
     };

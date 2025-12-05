@@ -70,6 +70,11 @@ export function useAuth(): AuthState {
     };
   }
 
+  // unauthenticated일 때 이전 user 초기화 (로그아웃 후 다른 계정 로그인 시 필요)
+  if (status === 'unauthenticated') {
+    prevUserRef.current = undefined;
+  }
+
   // loading이지만 이전 user가 있으면 유지 (refetch 중)
   if (status === 'loading' && prevUserRef.current) {
     return {

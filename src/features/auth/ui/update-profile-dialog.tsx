@@ -22,9 +22,9 @@ import { FormTextInput, FormPasswordInput, FormEmailInput, FormRootError } from 
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 
+import { signOut } from 'next-auth/react';
 import { useAuth } from '../use-auth';
-import { signOut } from '../actions/sign-out';
-import { updateProfile } from '../actions/update-profile';
+import { updateProfile } from '../actions';
 import { type UpdateProfileValues } from '../types';
 
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
@@ -131,7 +131,7 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
           variant: 'success',
           layout: 'vertical',
           size: 'sm',
-          onConfirm: async () => {
+          onConfirm: () => {
             signOut();
           },
         });
