@@ -9,7 +9,7 @@ import { FieldGroup } from '@/shared/ui/field';
 import { FormTextInput, FormPasswordInput, FormRootError } from '@/shared/ui/form';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { AUTH_ERRORS } from '@/shared/constants/error-messages';
-import { signIn } from '../actions';
+import { signIn } from 'next-auth/react';
 
 const signInSchema = z.object({
   id: z.string().min(1, { message: '아이디를 입력해주세요.' }),
@@ -34,15 +34,18 @@ export function SignInForm() {
     setError(null);
 
     try {
-      const result = await signIn(values);
+      const result = await signIn('credentials', {
+        id: values.id,
+        password: values.password,
+        redirect: false,
+      });
 
-      if (!result.success) {
+      if (result?.error) {
         setError(AUTH_ERRORS.CREDENTIALS_SIGNIN);
         return;
       }
 
       router.push('/');
-      router.refresh();
     } catch (error) {
       console.error('로그인 에러:', error);
       setError(AUTH_ERRORS.UNKNOWN_ERROR);

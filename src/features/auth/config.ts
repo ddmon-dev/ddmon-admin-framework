@@ -64,6 +64,7 @@ export default {
   ],
   pages: {
     signIn: APP_CONFIG.AUTH.PATHS.SIGN_IN,
+    signOut: APP_CONFIG.AUTH.PATHS.SIGN_IN,
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
