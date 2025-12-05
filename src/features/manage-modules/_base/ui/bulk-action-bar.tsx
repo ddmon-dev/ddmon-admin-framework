@@ -46,16 +46,12 @@ export function BulkActionBar<TData extends { id?: string }>({
       confirmText: '삭제',
       onConfirm: async () => {
         try {
-          const ids = selectedRows
-            .map((row) => row.id)
-            .filter((id): id is string => !!id);
+          const ids = selectedRows.map(row => row.id).filter((id): id is string => !!id);
 
           const result = await bulkSoftDelete({ tableName, ids, pathname });
 
           if (!result.success) {
-            toast.error(CRUD_ERRORS.DELETE_FAILED(), {
-              description: result.error,
-            });
+            toast.error(result.error);
             return false;
           }
 
@@ -64,9 +60,7 @@ export function BulkActionBar<TData extends { id?: string }>({
           return true;
         } catch (error) {
           console.error(error);
-          toast.error(GENERAL_ERRORS.UNEXPECTED, {
-            description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
-          });
+          toast.error(GENERAL_ERRORS.UNEXPECTED);
           return false;
         }
       },
@@ -79,14 +73,18 @@ export function BulkActionBar<TData extends { id?: string }>({
     <div
       className={cn(
         'fixed bottom-6 left-1/2 z-50 -translate-x-1/2',
-        'flex items-center gap-4 rounded-full border bg-background px-6 py-3 shadow-lg',
+        'flex justify-center items-center gap-4 rounded-full border bg-background pl-6 pr-3 py-3 shadow-lg',
         'transition-all duration-300 ease-out',
+        'w-full max-w-[300px]',
+        'md:bottom-14 md:max-w-[350px]',
         isVisible
           ? 'pointer-events-auto translate-y-0 opacity-100'
-          : 'pointer-events-none translate-y-4 opacity-0',
+          : 'pointer-events-none translate-y-4 opacity-0'
       )}
     >
-      <span className='text-sm font-medium'>{selectedCount}개 선택됨</span>
+      <span className='text-sm font-medium'>
+        {selectedCount}개 <span className='hidden md:inline'>선택됨</span>
+      </span>
 
       <div className='h-4 w-px bg-border' />
 
@@ -102,9 +100,10 @@ export function BulkActionBar<TData extends { id?: string }>({
 
       <Button
         size='icon-sm'
-        variant='ghost'
+        variant='secondary'
         onClick={onClearSelection}
         aria-label='선택 해제'
+        className='ml-auto'
       >
         <X className='size-4' />
       </Button>

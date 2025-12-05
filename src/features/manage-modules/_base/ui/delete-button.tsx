@@ -17,6 +17,8 @@ interface DeleteButtonProps {
   deleteFn?: () => Promise<ActionResult<any>>;
   children?: React.ReactNode;
   dataLabel?: string;
+  disabled?: boolean;
+  onDisabled?: () => void;
 }
 
 export function SoftDeleteButton({
@@ -25,6 +27,8 @@ export function SoftDeleteButton({
   deleteFn,
   children,
   dataLabel,
+  disabled,
+  onDisabled,
 }: DeleteButtonProps) {
   const dialog = useDialog();
   const pathname = usePathname();
@@ -33,7 +37,24 @@ export function SoftDeleteButton({
   const handleClick = async () => {
     setIsLoading(true);
 
-    const dataLabelText = dataLabel ? `"${dataLabel}"` : '';
+    if (disabled) {
+      if (onDisabled) {
+        onDisabled();
+      } else {
+        dialog.alert({
+          title: 'Error!',
+          description: '삭제할 수 없는 데이터입니다.',
+          variant: 'error',
+          layout: 'vertical',
+          size: 'sm',
+        });
+      }
+
+      setIsLoading(false);
+      return;
+    }
+
+    const dataLabelText = dataLabel ? <b>[{dataLabel}]</b> : '';
 
     await dialog.confirm({
       title: '데이터 삭제하기',
@@ -53,19 +74,19 @@ export function SoftDeleteButton({
             : await softDelete({ tableName, id, pathname });
 
           if (!result.success) {
-            toast.error(CRUD_ERRORS.DELETE_FAILED(), {
-              description: result.error,
-            });
+            toast.error(result.error);
             return false;
           }
 
-          toast.success(`${dataLabelText} 데이터가 삭제되었습니다.`);
+          toast.success(
+            <>
+              <b>[{dataLabel}]</b> 데이터가 삭제되었습니다.
+            </>
+          );
           return true;
         } catch (error) {
           console.error(error);
-          toast.error(GENERAL_ERRORS.UNEXPECTED, {
-            description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
-          });
+          toast.error(GENERAL_ERRORS.UNEXPECTED);
           return false;
         }
       },
@@ -92,6 +113,8 @@ export function HardDeleteButton({
   deleteFn,
   children,
   dataLabel,
+  disabled,
+  onDisabled,
 }: DeleteButtonProps) {
   const dialog = useDialog();
   const pathname = usePathname();
@@ -99,6 +122,23 @@ export function HardDeleteButton({
 
   const handleClick = async () => {
     setIsLoading(true);
+
+    if (disabled) {
+      if (onDisabled) {
+        onDisabled();
+      } else {
+        dialog.alert({
+          title: '삭제할 수 없는 데이터입니다.',
+          description: '삭제할 수 없는 데이터입니다.',
+          variant: 'error',
+          confirmText: '확인',
+          layout: 'vertical',
+        });
+      }
+
+      setIsLoading(false);
+      return;
+    }
 
     const dataLabelText = dataLabel ? `"${dataLabel}"` : '';
 
@@ -132,9 +172,7 @@ export function HardDeleteButton({
         } catch (error) {
           // 예상치 못한 에러 (네트워크 등)
           console.error(error);
-          toast.error(GENERAL_ERRORS.UNEXPECTED, {
-            description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
-          });
+          toast.error(GENERAL_ERRORS.UNEXPECTED);
           return false;
         }
       },

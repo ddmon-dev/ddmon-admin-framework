@@ -1,4 +1,4 @@
-import { APP_CONFIG } from '@/app.config';
+import { Radar } from 'lucide-react';
 import { cn } from '../utils/classnames';
 import Link from 'next/link';
 
@@ -17,7 +17,7 @@ export function ProjectSymbol({
       )}
       linkToHome={linkToHome}
     >
-      <APP_CONFIG.LOGO.SYMBOL className={cn('size-[1.5em]')} />
+      <Radar className={cn('size-[1.5em]')} />
     </Wrapper>
   );
 }

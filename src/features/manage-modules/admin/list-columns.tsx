@@ -1,9 +1,10 @@
+import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
 import { Separator } from '@/shared/ui/separator';
-import { ModifyButton, SoftDeleteButton } from '../_base/ui';
+import { ModifyButton } from '../_base/ui';
 
-import { CONFIG } from './config';
 import { type ItemDTO } from './config';
+import { DeleteAdminButton } from './delete-button';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
   {
@@ -33,20 +34,18 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     size: 120,
     cell: ({ row }) => {
       const { createdAt } = row.original;
-      if (!createdAt) return '-';
-      const date = new Date(createdAt);
-      return date.toLocaleDateString();
+      return format(createdAt, 'yyyy-MM-dd');
     },
   },
   {
-    accessorKey: 'etc',
-    header: '기타',
+    accessorKey: 'addons',
+    header: '',
     size: 120,
     meta: {
       className: 'text-right',
     },
     cell: ({ row }) => {
-      const { id } = row.original;
+      const { id, superAdmin } = row.original;
       return (
         <nav className='flex items-center justify-end gap-2'>
           <ModifyButton id={id}>정보수정</ModifyButton>
@@ -54,9 +53,9 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
             orientation='vertical'
             className='data-[orientation=vertical]:h-6'
           />
-          <SoftDeleteButton
-            tableName={CONFIG.tableName}
+          <DeleteAdminButton
             id={id}
+            disabled={superAdmin}
           />
         </nav>
       );

@@ -6,16 +6,21 @@ import { useManageSheet } from './manage-sheet';
 interface ManageFormSubmitProps {
   isLoading: boolean;
   className?: string;
+  children?: React.ReactNode;
 }
 
-export function ManageFormSubmit({ isLoading, className }: ManageFormSubmitProps) {
+export function ManageFormSubmit({
+  isLoading,
+  className,
+  children = '저장하기',
+}: ManageFormSubmitProps) {
   return (
     <LoadingButton
       type='submit'
       isLoading={isLoading}
       className={cn('font-semibold', className)}
     >
-      저장하기
+      {children}
     </LoadingButton>
   );
 }

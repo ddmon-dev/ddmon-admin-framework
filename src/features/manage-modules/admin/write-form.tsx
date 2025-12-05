@@ -55,6 +55,14 @@ const formDefaultValues = {
   email: '',
 };
 
+function validatePrevValues(prevValues: ItemDTO | null) {
+  return {
+    ...prevValues,
+    password: '',
+    confirmPassword: '',
+  };
+}
+
 interface WriteFormProps {
   id?: string;
   prevValues: ItemDTO | null;
@@ -66,11 +74,13 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   const formSchema = createFormSchema(!!id);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof formSchema>,
+    defaultValues: (validatePrevValues(prevValues) ?? formDefaultValues) as z.infer<
+      typeof formSchema
+    >,
   });
 
   useEffect(() => {
-    form.reset((prevValues ?? formDefaultValues) as z.infer<typeof formSchema>);
+    form.reset((validatePrevValues(prevValues) ?? formDefaultValues) as z.infer<typeof formSchema>);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevValues]);
 
@@ -84,9 +94,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
         : await createItem({ values: submitValues, pathname });
 
       if (!success || !data) {
-        toast.error(id ? CRUD_ERRORS.UPDATE_FAILED() : CRUD_ERRORS.CREATE_FAILED(), {
-          description: error,
-        });
+        toast.error(error);
         return;
       }
 
@@ -94,9 +102,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
       sheet.close();
     } catch (error) {
       console.error(error);
-      toast.error(GENERAL_ERRORS.UNEXPECTED, {
-        description: GENERAL_ERRORS.PLEASE_TRY_AGAIN,
-      });
+      toast.error(GENERAL_ERRORS.UNEXPECTED);
     }
   }
 

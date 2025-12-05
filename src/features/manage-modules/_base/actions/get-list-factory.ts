@@ -3,8 +3,8 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
-import { GetListParams, ListProps } from '../types';
-import { TableName } from '@/shared/lib/supabase/db-helpers';
+import type { GetListParams, ListProps } from '../types';
+import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
 /** 정렬 설정 */
 interface OrderByConfig {
@@ -21,7 +21,7 @@ interface GetListFactoryConfig {
   orderBy?: OrderByConfig[];
   softDelete?: boolean;
   categoryField?: string;
-  additionalFilters?: (query: any) => any;
+  additionalFilters?: (query: any, ctx: any) => any;
 }
 
 const DEFAULT_ORDER_BY: OrderByConfig[] = [
@@ -85,7 +85,7 @@ export function createGetListAction<TData>(config: GetListFactoryConfig) {
   };
 
   // 공통 필터 적용 함수
-  const applyFilters = (query: any, search: string, category: string) => {
+  const applyFilters = (query: any, search: string, category: string, ctx: any) => {
     // soft delete 필터
     if (softDelete) {
       query = query.eq('deleted', false);
@@ -103,7 +103,7 @@ export function createGetListAction<TData>(config: GetListFactoryConfig) {
 
     // 추가 필터
     if (additionalFilters) {
-      query = additionalFilters(query);
+      query = additionalFilters(query, ctx);
     }
 
     return query;
@@ -112,17 +112,19 @@ export function createGetListAction<TData>(config: GetListFactoryConfig) {
   return createServerAction<GetListParams, ListProps<TData>>({
     name: 'getList',
     auth,
-    handler: async ({
-      page: rawPage = '1',
-      search = '',
-      category = '',
-      pageSize = APP_CONFIG.UI.PAGINATION.PAGE_SIZE_OPTIONS[0],
-    }) => {
+    handler: async (params, ctx) => {
+      const {
+        page: rawPage = '1',
+        search = '',
+        category = '',
+        pageSize = APP_CONFIG.UI.PAGINATION.PAGE_SIZE_OPTIONS[0],
+      } = params;
+
       const supabase = createServerClient();
 
       // 1. count 먼저 쿼리
       let countQuery = supabase.from(tableName).select('*', { count: 'exact', head: true });
-      countQuery = applyFilters(countQuery, search, category);
+      countQuery = applyFilters(countQuery, search, category, ctx);
 
       const { count, error: countError } = await countQuery;
 
@@ -140,7 +142,7 @@ export function createGetListAction<TData>(config: GetListFactoryConfig) {
 
       // 3. 보정된 page로 data 쿼리
       let dataQuery = supabase.from(tableName).select(selectColumns);
-      dataQuery = applyFilters(dataQuery, search, category);
+      dataQuery = applyFilters(dataQuery, search, category, ctx);
 
       // 정렬 적용
       for (const order of orderBy) {

@@ -20,6 +20,8 @@ export type FormEditorProps<
   maxImageSizeMB?: number;
   /** 허용되는 이미지 형식 (기본값: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']) */
   acceptedImageFormats?: string[];
+  /** 비활성화 */
+  disabled?: boolean;
 };
 
 export const FormEditor = <
@@ -38,6 +40,7 @@ export const FormEditor = <
   entity,
   maxImageSizeMB,
   acceptedImageFormats,
+  disabled = false,
 }: FormEditorProps<V, N>): ReactElement => {
   return (
     <FormField
@@ -59,6 +62,7 @@ export const FormEditor = <
           entity={entity}
           maxImageSizeMB={maxImageSizeMB}
           acceptedImageFormats={acceptedImageFormats}
+          disabled={disabled}
         />
       )}
     </FormField>

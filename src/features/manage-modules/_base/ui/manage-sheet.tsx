@@ -74,6 +74,20 @@ interface ManageSheetProps<T extends { files?: DbFilesJSONB }> {
   viewComponent?: React.ComponentType<{ data: T }>;
   size?: 'sm' | 'md' | 'lg';
   moduleName?: string;
+  customVariant?: {
+    create?: {
+      title: (moduleName?: string) => string;
+      description: string;
+    };
+    modify?: {
+      title: (moduleName?: string) => string;
+      description: string;
+    };
+    view?: {
+      title: (moduleName?: string) => string;
+      description: string;
+    };
+  };
 }
 
 const VARIANTS = {
@@ -104,6 +118,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   viewComponent: ViewComponent,
   moduleName,
   size = 'md',
+  customVariant,
 }: ManageSheetProps<T>) {
   const manageSheet = useManageSheet();
   const { id, mode } = manageSheet.data ?? {};
@@ -164,9 +179,11 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
           <SheetHeader className='border-b md:p-8 md:pb-4 gap-0.5'>
             {mode && (
               <>
-                <SheetTitle className='text-lg'>{VARIANTS[mode].title(moduleName)}</SheetTitle>
+                <SheetTitle className='text-lg'>
+                  {customVariant?.[mode]?.title?.(moduleName) ?? VARIANTS[mode].title(moduleName)}
+                </SheetTitle>
                 <SheetDescription className='text-sm'>
-                  {VARIANTS[mode].description}
+                  {customVariant?.[mode]?.description ?? VARIANTS[mode].description}
                 </SheetDescription>
               </>
             )}

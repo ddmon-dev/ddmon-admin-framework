@@ -40,7 +40,9 @@ export function transformSnakeToCamel<T extends Record<string, any>>(obj: T): Ca
  * SnakeCase<"userCreatedAt"> → "user_created_at"
  */
 type SnakeCase<S extends string> = S extends `${infer Head}${infer Tail}`
-  ? `${Lowercase<Head>}_${SnakeCase<Tail>}`
+  ? Tail extends Uncapitalize<Tail>
+    ? `${Lowercase<Head>}${SnakeCase<Tail>}`
+    : `${Lowercase<Head>}_${SnakeCase<Tail>}`
   : S;
 
 /**

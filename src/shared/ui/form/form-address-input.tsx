@@ -36,6 +36,8 @@ export type FormAddressInputProps<V extends FieldValues = FieldValues> = Omit<
   optional?: boolean;
   // 커스텀 주소 검색 API 함수 (Kakao 대신 사용)
   onCustomSearch?: () => Promise<{ zipCode: string; address: string }>;
+  /** 비활성화 */
+  disabled?: boolean;
 };
 
 /**
@@ -91,6 +93,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
     orientation,
     optional,
     onCustomSearch,
+    disabled = false,
     ...inputProps
   } = props;
   const searchButtonRef = useRef<HTMLButtonElement>(null);
@@ -191,6 +194,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
                 onClick={handleSearch}
                 variant='secondary'
                 type='button'
+                disabled={disabled}
               >
                 <MapPin className='h-4 w-4' />
                 <span className='text-xs'>주소찾기</span>
@@ -201,6 +205,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
               value={zipCodeValue}
               placeholder='우편번호'
               readOnly
+              disabled={disabled}
               aria-invalid={hasError}
               className='w-20 pl-3!'
             />
@@ -209,6 +214,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
             value={addressValue}
             placeholder='주소'
             readOnly
+            disabled={disabled}
             aria-invalid={hasError}
             className='sm:flex-1'
           />
@@ -220,6 +226,7 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
           value={addressDetailValue}
           onChange={e => addressDetail.field.onChange(e.target.value)}
           placeholder='상세주소를 입력하세요'
+          disabled={disabled}
           aria-invalid={hasError}
         />
       </FieldGroup>

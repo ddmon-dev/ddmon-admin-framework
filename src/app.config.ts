@@ -1,11 +1,7 @@
 import type { PasswordStrength } from '@/shared/schemas/presets/password';
 import type { SidebarVariant } from '@/shared/ui/sidebar';
-import { Radar } from 'lucide-react';
 
 export const APP_CONFIG = {
-  LOGO: {
-    SYMBOL: Radar, // 사이드바, 로그인 페이지 상단 로고 아이콘
-  },
   SEO: {
     TITLE: 'Admin Dashboard Template',
     DESCRIPTION: 'This is the admin dashboard template',

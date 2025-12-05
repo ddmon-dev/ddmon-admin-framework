@@ -40,6 +40,7 @@ export const CRUD_ERRORS = {
     `${josa(entityName, '을/를')} 삭제하는 중 오류가 발생했습니다.`,
   NOT_FOUND: (entityName: string) => `${josa(entityName, '을/를')} 찾을 수 없습니다.`,
   DUPLICATE: (fieldName: string) => `이미 존재하는 ${fieldName}입니다.`,
+  ALREADY_EXISTS: (fieldName: string) => `이미 사용된 ${fieldName}입니다.`,
 } as const;
 
 // ============================================================
@@ -64,9 +65,9 @@ export const FILE_ERRORS = {
 // 일반 에러
 // ============================================================
 export const GENERAL_ERRORS = {
-  UNEXPECTED: '예상치 못한 오류가 발생했습니다.',
+  UNEXPECTED: '예상치 못한 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
   NETWORK: '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
   SERVER: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
-  DATABASE: '데이터베이스 오류가 발생했습니다.',
+  DATABASE: '데이터베이스 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
   PLEASE_TRY_AGAIN: '잠시 후 다시 시도해주세요.',
 } as const;

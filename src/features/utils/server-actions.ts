@@ -1,4 +1,5 @@
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
+import { type User } from 'next-auth';
 import { type ActionResult as TActionResult } from '@/shared/types/results';
 import { requireAuth } from '@/features/auth';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
@@ -19,7 +20,7 @@ interface ServerActionOptions<T, R> {
    * 예상 가능한 에러는 ActionResult.error()로 직접 반환
    * 예상치 못한 에러는 throw (자동으로 catch됨)
    */
-  handler: (params: T) => Promise<TActionResult<R>>;
+  handler: (params: T, { user }: { user: User | null }) => Promise<TActionResult<R>>;
 }
 
 /**
@@ -63,12 +64,14 @@ export function createServerAction<T, R>(options: ServerActionOptions<T, R>) {
 
     try {
       // 1. 인증 확인
+      let user = null;
       if (auth) {
-        await requireAuth(typeof auth === 'object' ? auth : {});
+        user = await requireAuth(typeof auth === 'object' ? auth : {});
       }
 
       // 2. 핸들러 실행
-      return await handler(params);
+      const ctx = { user };
+      return await handler(params, ctx);
     } catch (error) {
       // Next.js redirect는 재throw (리디렉션이 정상 동작하도록)
       if (isRedirectError(error)) {

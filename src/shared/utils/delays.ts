@@ -19,8 +19,12 @@ export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, 
  */
 export async function atLeast<T>(
   fn: () => Promise<T>,
-  minDuration = APP_CONFIG.UX.MIN_LOADING_TIME
+  minDuration: number = APP_CONFIG.UX.MIN_LOADING_TIME
 ): Promise<T> {
-  const [result] = await Promise.all([fn(), delay(minDuration)]);
-  return result;
+  const [result] = await Promise.allSettled([fn(), delay(minDuration)]);
+
+  if (result.status === 'rejected') {
+    throw result.reason;
+  }
+  return result.value;
 }

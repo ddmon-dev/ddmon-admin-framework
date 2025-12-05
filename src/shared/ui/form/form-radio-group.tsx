@@ -23,6 +23,7 @@ export type FormRadioGroupProps<
     value: string;
   }[];
   vertical?: boolean;
+  disabled?: boolean;
 };
 
 export const FormRadioGroup = <
@@ -36,6 +37,7 @@ export const FormRadioGroup = <
   options,
   vertical = false,
   optional = false,
+  disabled = false,
 }: FormRadioGroupProps<V, N>): ReactElement => {
   return (
     <Controller
@@ -58,6 +60,7 @@ export const FormRadioGroup = <
             value={field.value}
             onValueChange={field.onChange}
             aria-invalid={fieldState.invalid}
+            disabled={disabled}
             className={
               vertical ? '' : 'flex flex-wrap flex-row gap-x-6 gap-y-3 [&>[data-slot=field]]:w-auto'
             }

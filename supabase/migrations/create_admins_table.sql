@@ -4,10 +4,10 @@ CREATE TABLE IF NOT EXISTS admins (
   name TEXT NOT NULL,                   -- 실제 이름
   email TEXT NOT NULL UNIQUE,           -- 이메일 (중복 불가)
   password TEXT NOT NULL,               -- bcrypt 해시
-  super_admin BOOLEAN DEFAULT false,    -- 슈퍼 관리자 여부
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now(),
-  deleted BOOLEAN DEFAULT false         -- soft delete
+  super_admin BOOLEAN NOT NULL DEFAULT false,    -- 슈퍼 관리자 여부
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  deleted BOOLEAN NOT NULL DEFAULT false         -- soft delete
 );
 
 -- 인덱스 생성
@@ -29,14 +29,14 @@ ALTER TABLE admins ENABLE ROW LEVEL SECURITY;
 
 -- 초기 슈퍼 관리자 계정 생성
 -- 로그인 아이디: admin
--- 비밀번호: admin123 (실제 환경에서는 반드시 변경 필요)
+-- 비밀번호: qwe123 (실제 환경에서는 반드시 변경 필요)
 -- bcrypt 해시: $2b$10$... 형태로 저장됨
 INSERT INTO admins (id, name, email, password, super_admin)
 VALUES (
   'admin',                                                          -- 로그인 아이디
-  '관리자',                                                         -- 실제 이름
+  '최고관리자',                                                         -- 실제 이름
   'admin@example.com',                                             -- 이메일
-  '$2b$10$tOVHNYdWsXrenLRrqr/J2.8d5xC0P4WsmcbZ0z.vyp7GSgoKC1Qvy', -- admin123
+  '$2b$10$P0yomBva3XEmHfZS9umK3.EDqhFrJWxVx0ahI2u57V/3uje.avGhW', -- qwe123
   true
 )
 ON CONFLICT (id) DO NOTHING;
