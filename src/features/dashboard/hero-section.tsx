@@ -5,8 +5,8 @@ import { useAuth } from '@/features/auth';
 
 function getTimeGreeting(): string {
   const hour = new Date().getHours();
-  if (hour < 12) return '오늘도 좋은 아침입니다.';
-  if (hour < 18) return '오늘 오후도 화이팅입니다.';
+  if (hour >= 6 && hour < 12) return '오늘도 좋은 아침입니다.';
+  if (hour >= 12 && hour < 18) return '오늘 오후도 화이팅입니다.';
   return '오늘도 고생하셨습니다.';
 }
 
