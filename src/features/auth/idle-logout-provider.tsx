@@ -2,28 +2,38 @@
 
 import { APP_CONFIG } from '@/app.config';
 import { useEffect, useRef } from 'react';
-import { signOut } from 'next-auth/react';
+import { signOut, useAuth } from '@/features/auth';
 import { toast } from 'sonner';
 import { useDialog } from '@/shared/ui/app-dialog';
 
 interface IdleLogoutProviderProps {
   children: React.ReactNode;
-  timeout?: number; // 기본: 1시간
-  warningTime?: number; // 5분 전 경고
+  /** 자동 로그아웃 시간 (분) */
+  timeoutMinutes?: number;
+  /** 로그아웃 경고 표시 시간 (분) */
+  warningMinutes?: number;
   onWarning?: () => void;
   onIdle?: () => void;
 }
 
+const MINUTE_MS = 60 * 1000;
+
 export function IdleLogoutProvider({
   children,
-  timeout = APP_CONFIG.AUTH.IDLE_TIMEOUT, // 1시간
-  warningTime = APP_CONFIG.AUTH.IDLE_WARNING_TIME, // 5분 전 경고
+  timeoutMinutes = APP_CONFIG.AUTH.IDLE_TIMEOUT_MINUTES,
+  warningMinutes = APP_CONFIG.AUTH.IDLE_WARNING_MINUTES,
   onWarning,
   onIdle,
 }: IdleLogoutProviderProps) {
   const dialog = useDialog();
+  const { updateSession } = useAuth();
   const warningTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const logoutTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const lastUpdateRef = useRef<number>(Date.now());
+
+  // 분 → ms 변환
+  const timeout = timeoutMinutes * MINUTE_MS;
+  const warningTime = warningMinutes * MINUTE_MS;
 
   useEffect(() => {
     const resetTimers = () => {
@@ -68,6 +78,13 @@ export function IdleLogoutProvider({
     // 이벤트 핸들러
     const handleActivity = () => {
       resetTimers();
+
+      // 5분(warningTime)마다 세션 갱신 (서버 토큰 만료 방지)
+      const now = Date.now();
+      if (now - lastUpdateRef.current > warningTime) {
+        lastUpdateRef.current = now;
+        updateSession();
+      }
     };
 
     // 이벤트 리스너 등록
@@ -90,7 +107,7 @@ export function IdleLogoutProvider({
         document.removeEventListener(event, handleActivity);
       });
     };
-  }, [timeout, warningTime, onWarning, onIdle]);
+  }, [timeout, warningTime, onWarning, onIdle, updateSession]);
 
   return <>{children}</>;
 }

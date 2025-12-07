@@ -1,5 +1,5 @@
 // NextAuth 핵심 함수
-export { auth, nextAuthHandlers } from './handler';
+export { auth, nextAuthHandlers } from './next-auth';
 
 // Auth UI
 export * from './ui/auth-layout';

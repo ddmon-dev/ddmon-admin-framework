@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import type { User } from 'next-auth';
 import { useEffect, useRef } from 'react';
 
+export { signIn, signOut } from 'next-auth/react';
+
 /**
  * 인증 상태 타입
  */

@@ -11,8 +11,8 @@ export const APP_CONFIG = {
     SALT_ROUNDS: 10, // bcrypt 해시 라운드
     ID_MIN_LENGTH: 5,
     PASSWORD_STRENGTH: 'minimum' as PasswordStrength, // 관리자 비밀번호 강도
-    IDLE_TIMEOUT: 1 * 60 * 60 * 1000, // 자동 로그아웃 (1시간)
-    IDLE_WARNING_TIME: 5 * 60 * 1000, // 로그아웃 경고 표시 (5분 전)
+    IDLE_TIMEOUT_MINUTES: 60, // 자동 로그아웃 (60분)
+    IDLE_WARNING_MINUTES: 5, // 로그아웃 경고 표시 (5분 전)
     PATHS: {
       SIGN_IN: '/auth/sign-in',
       FORBIDDEN: '/unauthorized',

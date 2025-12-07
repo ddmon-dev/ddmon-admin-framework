@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '@/features/auth';
 
 function getTimeGreeting(): string {
   const hour = new Date().getHours();
@@ -11,8 +11,8 @@ function getTimeGreeting(): string {
 }
 
 export function HeroSection() {
-  const { data: session } = useSession();
-  const userName = session?.user?.name || '관리자';
+  const { user } = useAuth();
+  const userName = user?.name || '관리자';
   const [greeting, setGreeting] = useState('');
 
   useEffect(() => {

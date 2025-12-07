@@ -22,10 +22,7 @@ import { FormTextInput, FormPasswordInput, FormEmailInput, FormRootError } from 
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 
-import { signOut } from 'next-auth/react';
-import { useAuth } from '../use-auth';
-import { updateProfile } from '../actions';
-import { type UpdateProfileValues } from '../types';
+import { signOut, useAuth, updateProfile, type UpdateProfileValues } from '@/features/auth';
 
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';

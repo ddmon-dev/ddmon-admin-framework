@@ -9,7 +9,7 @@ import { FieldGroup } from '@/shared/ui/field';
 import { FormTextInput, FormPasswordInput, FormRootError } from '@/shared/ui/form';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { AUTH_ERRORS } from '@/shared/constants/error-messages';
-import { signIn } from 'next-auth/react';
+import { signIn } from '@/features/auth';
 
 const signInSchema = z.object({
   id: z.string().min(1, { message: '아이디를 입력해주세요.' }),

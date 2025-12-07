@@ -14,8 +14,7 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/shared/ui/sidebar';
 import { Skeleton } from '@/shared/ui/skeleton';
 
-import { signOut } from 'next-auth/react';
-import { useAuth, type User } from '@/features/auth';
+import { signOut, useAuth, type User } from '@/features/auth';
 import { UpdateProfileDialog } from '@/features/auth/ui/update-profile-dialog';
 
 export function NavUser() {
