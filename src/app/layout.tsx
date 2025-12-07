@@ -26,8 +26,8 @@ import { auth } from '@/features/auth';
 import { suit as primaryFont, pretendard as secondaryFont } from '@/fonts';
 
 export const metadata: Metadata = {
-  title: APP_CONFIG.SEO.TITLE,
-  description: APP_CONFIG.SEO.DESCRIPTION,
+  title: APP_CONFIG.META.TITLE,
+  description: APP_CONFIG.META.DESCRIPTION,
 };
 
 export default async function RootLayout({

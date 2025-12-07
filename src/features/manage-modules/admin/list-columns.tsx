@@ -1,3 +1,4 @@
+import { APP_CONFIG } from '@/app.config';
 import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
 import { Separator } from '@/shared/ui/separator';
@@ -25,7 +26,9 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     size: 150,
     cell: ({ row }) => {
       const { superAdmin } = row.original;
-      return superAdmin ? '최고관리자' : '일반관리자';
+      return superAdmin
+        ? APP_CONFIG.AUTH.ADMIN_LABELS.SUPER_ADMIN
+        : APP_CONFIG.AUTH.ADMIN_LABELS.ADMIN;
     },
   },
   {

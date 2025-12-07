@@ -2,7 +2,7 @@ import type { PasswordStrength } from '@/shared/schemas/presets/password';
 import type { SidebarVariant } from '@/shared/ui/sidebar';
 
 export const APP_CONFIG = {
-  SEO: {
+  META: {
     TITLE: 'Admin Dashboard Template',
     DESCRIPTION: 'This is the admin dashboard template',
   },
@@ -16,6 +16,10 @@ export const APP_CONFIG = {
     PATHS: {
       SIGN_IN: '/auth/sign-in',
       FORBIDDEN: '/unauthorized',
+    },
+    ADMIN_LABELS: {
+      SUPER_ADMIN: '최고관리자',
+      ADMIN: '일반관리자',
     },
   },
   UI: {

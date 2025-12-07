@@ -47,7 +47,7 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
 
     // 최고관리자 설정은 할 수 없음
     if ('superAdmin' in values) {
-      return Result.error('최고관리자 설정은 할 수 없습니다.');
+      return Result.error(`${APP_CONFIG.AUTH.ADMIN_LABELS.SUPER_ADMIN} 설정은 할 수 없습니다.`);
     }
 
     const supabase = createServerClient();

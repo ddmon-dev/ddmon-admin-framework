@@ -1,7 +1,7 @@
 'use client';
 
+import { APP_CONFIG } from '@/app.config';
 import { ChevronsUpDown, LogOut, Shield, Pencil } from 'lucide-react';
-
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import {
   DropdownMenu,
@@ -72,7 +72,10 @@ function UserInfo({ user }: { user: User | undefined }) {
     .toUpperCase()
     .slice(0, 2);
 
-  const role = user?.superAdmin === true ? '최고관리자' : '일반관리자';
+  const role =
+    user?.superAdmin === true
+      ? APP_CONFIG.AUTH.ADMIN_LABELS.SUPER_ADMIN
+      : APP_CONFIG.AUTH.ADMIN_LABELS.ADMIN;
 
   return (
     <div className='flex items-center gap-2 py-1.5 text-left text-sm'>
