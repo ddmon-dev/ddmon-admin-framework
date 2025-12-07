@@ -138,9 +138,9 @@ export default function UIPreviewPage() {
   const dialog = useDialog();
 
   return (
-    <div className='flex min-h-screen'>
+    <div className='flex min-h-dvh'>
       {/* Sidebar Navigation */}
-      <aside className='w-72 shrink-0 border-r bg-background sticky top-0 h-screen overflow-y-auto p-4 space-y-4'>
+      <aside className='w-72 shrink-0 border-r bg-background sticky top-0 h-dvh overflow-y-auto p-4 space-y-4'>
         <h1 className='text-lg font-bold shrink-0'>UI Preview</h1>
         <nav className='space-y-1'>
           {NAV_ITEMS.map(item => (

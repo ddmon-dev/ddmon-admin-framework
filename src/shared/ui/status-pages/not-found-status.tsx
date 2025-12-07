@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
-import { StatusLayout } from './status-layout';
+import { StatusLayout, type StatusSize } from './status-layout';
 
 interface NotFoundStatusProps {
   fullScreen?: boolean;
+  size?: StatusSize;
 }
 
-export function NotFoundStatus({ fullScreen }: NotFoundStatusProps) {
+export function NotFoundStatus({ fullScreen, size = 'lg' }: NotFoundStatusProps) {
   return (
     <StatusLayout
       code='404'
@@ -28,6 +29,7 @@ export function NotFoundStatus({ fullScreen }: NotFoundStatusProps) {
         </Button>
       }
       fullScreen={fullScreen}
+      size={size}
     />
   );
 }

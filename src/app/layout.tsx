@@ -23,7 +23,11 @@ import { auth } from '@/features/auth';
  * - 예: import { suit as primaryFont } from '@/fonts';
  *       import { nanumSquareNeo as primaryFont } from '@/fonts';
  */
-import { suit as primaryFont, pretendard as secondaryFont } from '@/fonts';
+import {
+  poppins as primaryFont,
+  pretendard as secondaryFont,
+  oswald as tertiaryFont,
+} from '@/fonts';
 
 export const metadata: Metadata = {
   title: APP_CONFIG.META.TITLE,
@@ -40,7 +44,7 @@ export default async function RootLayout({
   return (
     <html
       lang='ko'
-      className={cn(primaryFont.variable, secondaryFont.variable)}
+      className={cn(primaryFont.variable, secondaryFont.variable, tertiaryFont.variable)}
       suppressHydrationWarning
     >
       <body className={cn('antialiased')}>

@@ -13,5 +13,5 @@ export default function Error({ error, reset }: ErrorProps) {
     console.error(error);
   }, [error]);
 
-  return <ErrorStatus reset={reset} />;
+  return <ErrorStatus onRetry={reset} />;
 }

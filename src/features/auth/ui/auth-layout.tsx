@@ -5,7 +5,7 @@ import { ProjectSymbol } from '@/shared/ui/logo';
 
 export function AuthContainer({ children }: { children: React.ReactNode }) {
   return (
-    <Container className={cn('flex items-center justify-center min-h-screen py-24')}>
+    <Container className={cn('flex items-center justify-center min-h-dvh py-24')}>
       {children}
     </Container>
   );

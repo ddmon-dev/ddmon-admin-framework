@@ -2,18 +2,20 @@
 
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
-import { StatusLayout } from './status-layout';
+import { StatusLayout, type StatusSize } from './status-layout';
 
 interface ErrorStatusProps {
-  reset: () => void;
+  onRetry?: () => void;
+  actions?: React.ReactNode;
   fullScreen?: boolean;
+  size?: StatusSize;
 }
 
-export function ErrorStatus({ reset, fullScreen }: ErrorStatusProps) {
+export function ErrorStatus({ onRetry, actions, fullScreen, size = 'lg' }: ErrorStatusProps) {
   return (
     <StatusLayout
       code='ERROR'
-      title='문제가 발생했습니다'
+      title='어플리케이션에 문제가 발생했습니다'
       description={
         <>
           예기치 않은 오류가 발생했습니다.
@@ -23,24 +25,29 @@ export function ErrorStatus({ reset, fullScreen }: ErrorStatusProps) {
       }
       actions={
         <div className='flex gap-2'>
-          <Button
-            size='lg'
-            onClick={reset}
-            className='w-32'
-            variant='default'
-          >
-            다시 시도
-          </Button>
-          <Button
-            asChild
-            variant='black'
-            size='lg'
-          >
-            <Link href='/'>홈으로</Link>
-          </Button>
+          {actions ?? (
+            <>
+              <Button
+                size='lg'
+                onClick={onRetry}
+                className='w-32'
+                variant='default'
+              >
+                다시 시도
+              </Button>
+              <Button
+                asChild
+                variant='black'
+                size='lg'
+              >
+                <Link href='/'>홈으로</Link>
+              </Button>
+            </>
+          )}
         </div>
       }
       fullScreen={fullScreen}
+      size={size}
     />
   );
 }
