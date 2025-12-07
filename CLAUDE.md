@@ -41,6 +41,7 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 ### 개발
 
 - **[개발 가이드](docs/development.md)** - 명령어, 환경변수, 설정 파일
+- **[Supabase 워크플로우](docs/supabase.md)** - 로컬 개발, 클라우드 배포, 마이그레이션
 
 ---
 
@@ -104,6 +105,29 @@ export default function ProductsPage() {
 ```
 
 📄 자세한 내용: [conventions.md](docs/conventions.md#새로운-기능-추가-시)
+
+### Supabase 로컬 개발
+
+```bash
+# 초기화 (새 프로젝트)
+yarn db:init
+
+# 로컬 Supabase 시작/중지
+yarn db:start
+yarn db:stop
+
+# 마이그레이션 재적용
+yarn db:reset
+
+# 새 마이그레이션 생성
+yarn db:migrate:new feature_name
+
+# 클라우드 연결 및 배포
+yarn db:link --project-ref <ref>
+yarn db:push
+```
+
+📄 자세한 내용: [supabase.md](docs/supabase.md)
 
 ---
 
