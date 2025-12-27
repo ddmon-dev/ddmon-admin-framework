@@ -43,8 +43,9 @@ yarn-error.log*
 next-env.d.ts
 
 # supabase - migrations만 추적
-/supabase/*
-!/supabase/migrations/
+/supabase/.temp/
+/supabase/.branches/
+/supabase/seed.sql
 
 # ai agents
 /.claude

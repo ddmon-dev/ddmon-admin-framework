@@ -1,0 +1,55 @@
+# Supabase 로컬 설정 예시
+# supabase init 후 생성되는 config.toml에 아래 내용을 참고하여 수정하세요.
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+
+# 스토리지 버킷 설정
+# 로컬에서 자동 생성됨
+[[storage.buckets]]
+name = "public-assets"
+public = true
+file_size_limit = "50MB"
+allowed_mime_types = ["image/*", "application/pdf", "application/zip"]
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+
+# 로컬 개발 시 이메일 확인 비활성화
+[auth.external.apple]
+enabled = false
+
+[auth.external.google]
+enabled = false
+
+[analytics]
+enabled = false
+
+# Edge Functions (필요시 활성화)
+[functions]
+enabled = false
