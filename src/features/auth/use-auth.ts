@@ -67,7 +67,7 @@ export function useAuth(): AuthState {
       user: session.user,
       status: 'authenticated',
       isLoading: false,
-      isSuperAdmin: session.user.superAdmin ?? false,
+      isSuperAdmin: session.user.super_admin ?? false,
       updateSession,
     };
   }
@@ -83,7 +83,7 @@ export function useAuth(): AuthState {
       user: prevUserRef.current,
       status: 'authenticated',
       isLoading: false,
-      isSuperAdmin: prevUserRef.current.superAdmin ?? false,
+      isSuperAdmin: prevUserRef.current.super_admin ?? false,
       updateSession,
     };
   }

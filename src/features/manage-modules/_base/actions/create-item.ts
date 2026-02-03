@@ -2,7 +2,6 @@
 
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { CreateItemParams } from '../types';
@@ -16,11 +15,9 @@ export const createItem = createServerAction<CreateItemParams<any> & { tableName
     handler: async ({ tableName, values, pathname }) => {
       const supabase = createServerClient();
 
-      const snakedValues = transformCamelToSnake(values);
-
       const { data, error } = await supabase
         .from(tableName)
-        .insert(snakedValues as any)
+        .insert(values as any)
         .select()
         .single();
 
@@ -33,8 +30,7 @@ export const createItem = createServerAction<CreateItemParams<any> & { tableName
         revalidatePath(pathname);
       }
 
-      const createdItem = transformSnakeToCamel(data);
-      return Result.success(createdItem);
+      return Result.success(data);
     },
   }
 );

@@ -22,13 +22,13 @@ import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
 const formSchema = z.object({
-  createdAt: z.date().nullish(),
+  created_at: z.date().nullish(),
   question: z.string().min(1, '질문을 입력해주세요.'),
   answer: z.string().min(1, '답변을 입력해주세요.'),
 });
 
 const formDefaultValues = {
-  createdAt: new Date(),
+  created_at: new Date(),
   question: '',
   answer: '',
 };
@@ -82,7 +82,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
       <FieldGroup>
         <FormDatePicker
           control={form.control}
-          name='createdAt'
+          name='created_at'
           label='작성일'
           mode='single'
           presets

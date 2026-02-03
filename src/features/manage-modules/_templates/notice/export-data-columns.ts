@@ -14,12 +14,12 @@ export const exportDataColumns: ExcelColumn<ItemDTO>[] = [
   },
   {
     header: '조회수',
-    accessorKey: 'viewCount',
+    accessorKey: 'view_count',
     width: 10,
   },
   {
     header: '작성일',
-    accessorFn: row => new Date(row.createdAt).toLocaleDateString(),
+    accessorFn: row => new Date(row.created_at).toLocaleDateString(),
     width: 15,
   },
 ];

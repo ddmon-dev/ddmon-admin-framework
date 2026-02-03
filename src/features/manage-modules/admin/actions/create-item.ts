@@ -3,7 +3,6 @@
 import { APP_CONFIG } from '@/app.config';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { schemaPresets } from '@/shared/schemas';
 import { hashPassword } from '@/features/auth';
 import { createServerAction } from '@/features/utils/server-actions';
@@ -18,9 +17,9 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
   auth: { requireSuper: true },
   handler: async ({ values, pathname }) => {
     // confirmPassword 제거
-    // superAdmin은 항상 false (최고관리자는 1명만 / 어플리케이션 단에서 생성 불가)
+    // super_admin은 항상 false (최고관리자는 1명만 / 어플리케이션 단에서 생성 불가)
     'confirmPassword' in values && delete values.confirmPassword;
-    'superAdmin' in values && delete values.superAdmin;
+    'super_admin' in values && delete values.super_admin;
 
     // 비밀번호 검증 및 해시
     if (!values.password) {
@@ -41,11 +40,9 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
 
     const supabase = createServerClient();
 
-    const snakedValues = transformCamelToSnake(values);
-
     const { data, error } = await supabase
       .from(CONFIG.tableName)
-      .insert(snakedValues as any)
+      .insert(values as any)
       .select()
       .single();
 
@@ -65,8 +62,6 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
       revalidatePath(pathname);
     }
 
-    const createdItem = transformSnakeToCamel(data);
-
-    return Result.success(createdItem as ItemDTO);
+    return Result.success(data as ItemDTO);
   },
 });

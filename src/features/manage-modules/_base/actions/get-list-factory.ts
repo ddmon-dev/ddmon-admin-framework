@@ -1,6 +1,5 @@
 import { APP_CONFIG } from '@/app.config';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import type { GetListParams, ListProps } from '../types';
@@ -159,9 +158,7 @@ export function createGetListAction<TData>(config: GetListFactoryConfig) {
         return Result.success({ data: [] as TData[], totalCount, error: dataError.message });
       }
 
-      const data = rawData.map(row => transformSnakeToCamel(row)) as TData[];
-
-      return Result.success({ data, totalCount });
+      return Result.success({ data: rawData as TData[], totalCount });
     },
   });
 }

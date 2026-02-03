@@ -16,12 +16,12 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     },
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'created_at',
     header: '생성일',
     size: 120,
     cell: ({ row }) => {
-      const { createdAt } = row.original;
-      return format(createdAt, 'yyyy-MM-dd');
+      const { created_at } = row.original;
+      return format(created_at, 'yyyy-MM-dd');
     },
   },
   {

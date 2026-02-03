@@ -4,7 +4,6 @@ import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { verifyPassword } from './utils/password';
-import { transformSnakeToCamel } from '@/shared/utils/objects';
 
 const signInSchema = z.object({
   id: z.string().min(1, '아이디를 입력하세요'),
@@ -39,10 +38,8 @@ export default {
             return null;
           }
 
-          const admin = transformSnakeToCamel(data);
-
           // 비밀번호 검증
-          const isPasswordValid = await verifyPassword(password, admin.password);
+          const isPasswordValid = await verifyPassword(password, data.password);
 
           if (!isPasswordValid) {
             return null;
@@ -50,10 +47,10 @@ export default {
 
           // 사용자 정보 반환 (JWT 토큰에 저장)
           return {
-            id: admin.id,
-            name: admin.name,
-            email: admin.email,
-            superAdmin: admin.superAdmin ?? false,
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            super_admin: data.super_admin ?? false,
           } satisfies User;
         } catch (error) {
           console.error('로그인 에러:', error);
@@ -73,7 +70,7 @@ export default {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
-        token.superAdmin = user.superAdmin;
+        token.super_admin = user.super_admin;
       }
 
       // updateSession() 호출 시
@@ -88,7 +85,7 @@ export default {
       session.user.id = token.id!;
       session.user.name = token.name!;
       session.user.email = token.email!;
-      session.user.superAdmin = token.superAdmin!;
+      session.user.super_admin = token.super_admin!;
       return session;
     },
   },

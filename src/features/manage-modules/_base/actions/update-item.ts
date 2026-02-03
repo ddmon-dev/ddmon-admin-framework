@@ -2,7 +2,6 @@
 
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
@@ -28,11 +27,9 @@ export const updateItem = createServerAction<UpdateItemParams<any> & { tableName
         values,
       });
 
-      const snakedValues = transformCamelToSnake(values);
-
       const { data, error } = await supabase
         .from(tableName)
-        .update(snakedValues as any)
+        .update(values as any)
         .eq('id', id)
         .select()
         .single();
@@ -51,8 +48,7 @@ export const updateItem = createServerAction<UpdateItemParams<any> & { tableName
         revalidatePath(pathname);
       }
 
-      const updatedItem = transformSnakeToCamel(data);
-      return Result.success(updatedItem);
+      return Result.success(data);
     },
   }
 );

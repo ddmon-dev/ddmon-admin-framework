@@ -5,14 +5,6 @@
  */
 
 import { Database } from './types';
-import {
-  transformSnakeToCamel,
-  transformCamelToSnake,
-  type CamelCaseKeys,
-} from '../../utils/objects';
-
-// Re-export 변환 함수
-export { transformSnakeToCamel, transformCamelToSnake, type CamelCaseKeys };
 
 /**
  * 테이블 이름 타입
@@ -39,14 +31,3 @@ export type DbInsert<T extends TableName> = Database['public']['Tables'][T]['Ins
  * DbUpdate<'Notices'> → Database['public']['Tables']['Notices']['Update']
  */
 export type DbUpdate<T extends TableName> = Database['public']['Tables'][T]['Update'];
-
-/**
- * DB Row 배열을 camelCase 배열로 변환
- * @example
- * transformRowDatas<NoticeRowData>(rawData)
- */
-export function transformRowDatas<TRowData extends Record<string, any>>(
-  rows: TRowData[] | null
-): CamelCaseKeys<TRowData>[] {
-  return (rows || []).map(row => transformSnakeToCamel(row));
-}

@@ -14,7 +14,7 @@ export const exportDataColumns: ExcelColumn<ItemDTO>[] = [
   },
   {
     header: '작성일',
-    accessorFn: row => new Date(row.createdAt).toLocaleDateString(),
+    accessorFn: row => new Date(row.created_at).toLocaleDateString(),
     width: 15,
   },
 ];

@@ -1,7 +1,6 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { deleteFolderFromStorage } from '@/shared/lib/file-system';
 import { createServerAction } from '@/features/utils/server-actions';
@@ -39,8 +38,7 @@ export const softDelete = createServerAction<DeleteItemParams, any>({
       revalidatePath(pathname);
     }
 
-    const deletedItem = transformSnakeToCamel(data);
-    return Result.success(deletedItem);
+    return Result.success(data);
   },
 });
 
@@ -74,7 +72,6 @@ export const hardDelete = createServerAction<DeleteItemParams, any>({
       revalidatePath(pathname);
     }
 
-    const deletedItem = transformSnakeToCamel(data);
-    return Result.success(deletedItem);
+    return Result.success(data);
   },
 });

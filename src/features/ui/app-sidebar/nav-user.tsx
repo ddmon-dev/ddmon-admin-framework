@@ -73,7 +73,7 @@ function UserInfo({ user }: { user: User | undefined }) {
     .slice(0, 2);
 
   const role =
-    user?.superAdmin === true
+    user?.super_admin === true
       ? APP_CONFIG.AUTH.ADMIN_LABELS.SUPER_ADMIN
       : APP_CONFIG.AUTH.ADMIN_LABELS.ADMIN;
 

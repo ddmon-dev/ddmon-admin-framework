@@ -55,7 +55,7 @@ export async function requireAuth({ requireSuper = false }: RequireAuthParams = 
     redirect(APP_CONFIG.AUTH.PATHS.SIGN_IN);
   }
 
-  if (requireSuper && !user.superAdmin) {
+  if (requireSuper && !user.super_admin) {
     redirect(APP_CONFIG.AUTH.PATHS.FORBIDDEN);
   }
 

@@ -1,5 +1,4 @@
 import { WithFiles } from '@/shared/lib/file-system';
-import { CamelCaseKeys } from '@/shared/utils/objects';
 import { RowData, TableName } from '@/shared/lib/supabase/db-helpers';
 
 // 관리 모듈 공통 타입
@@ -8,7 +7,7 @@ export interface ListProps<T> {
   totalCount: number;
 }
 
-export type ItemDTO<T extends TableName> = WithFiles<CamelCaseKeys<RowData<T>>>;
+export type ItemDTO<T extends TableName> = WithFiles<RowData<T>>;
 
 export interface GetListParams {
   page?: string;

@@ -1,7 +1,6 @@
 'use server';
 
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
@@ -30,8 +29,6 @@ export const getItem = createServerAction<GetItemParams, ItemDTO>({
       return Result.error(CRUD_ERRORS.READ_FAILED('관리자'));
     }
 
-    const item = transformSnakeToCamel(rawData);
-
-    return Result.success(item as ItemDTO);
+    return Result.success(rawData as ItemDTO);
   },
 });

@@ -1,7 +1,6 @@
 'use server';
 
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { GetExportDataParams } from '../types';
@@ -29,7 +28,6 @@ export const getExportData = createServerAction<GetExportDataParams, any[]>({
       return Result.error(CRUD_ERRORS.READ_FAILED());
     }
 
-    const data = rawData.map(row => transformSnakeToCamel(row));
-    return Result.success(data);
+    return Result.success(rawData);
   },
 });

@@ -37,24 +37,24 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     size: 120,
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'created_at',
     header: '작성일',
     size: 100,
     cell: ({ row }) => {
-      const { createdAt } = row.original;
-      return format(createdAt, 'yyyy-MM-dd');
+      const { created_at } = row.original;
+      return format(created_at, 'yyyy-MM-dd');
     },
   },
   {
-    accessorKey: 'viewCount',
+    accessorKey: 'view_count',
     header: '조회수',
     meta: {
       className: 'text-center',
     },
     size: 120,
     cell: ({ row }) => {
-      const { viewCount } = row.original;
-      return viewCount?.toLocaleString() ?? '-';
+      const { view_count } = row.original;
+      return view_count?.toLocaleString() ?? '-';
     },
   },
   {

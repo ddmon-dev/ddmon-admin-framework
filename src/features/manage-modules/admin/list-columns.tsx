@@ -21,23 +21,23 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'superAdmin',
+    accessorKey: 'super_admin',
     header: '구분',
     size: 150,
     cell: ({ row }) => {
-      const { superAdmin } = row.original;
-      return superAdmin
+      const { super_admin } = row.original;
+      return super_admin
         ? APP_CONFIG.AUTH.ADMIN_LABELS.SUPER_ADMIN
         : APP_CONFIG.AUTH.ADMIN_LABELS.ADMIN;
     },
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'created_at',
     header: '생성일',
     size: 120,
     cell: ({ row }) => {
-      const { createdAt } = row.original;
-      return format(createdAt, 'yyyy-MM-dd');
+      const { created_at } = row.original;
+      return format(created_at, 'yyyy-MM-dd');
     },
   },
   {
@@ -48,7 +48,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
       className: 'text-right',
     },
     cell: ({ row }) => {
-      const { id, superAdmin } = row.original;
+      const { id, super_admin } = row.original;
       return (
         <nav className='flex items-center justify-end gap-2'>
           <ModifyButton id={id}>정보수정</ModifyButton>
@@ -58,7 +58,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
           />
           <DeleteAdminButton
             id={id}
-            disabled={superAdmin}
+            disabled={super_admin}
           />
         </nav>
       );

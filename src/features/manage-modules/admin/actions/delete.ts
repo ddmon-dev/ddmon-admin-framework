@@ -2,7 +2,6 @@
 
 import { CONFIG } from '../config';
 import { revalidatePath } from 'next/cache';
-import { transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
@@ -55,7 +54,6 @@ export const deleteAdmin = createServerAction<{ id: string; pathname: string }, 
       revalidatePath(pathname);
     }
 
-    const deletedItem = transformSnakeToCamel(data);
-    return Result.success(deletedItem);
+    return Result.success(data);
   },
 });

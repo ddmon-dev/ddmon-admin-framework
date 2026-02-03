@@ -3,7 +3,6 @@
 import { APP_CONFIG } from '@/app.config';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { schemaPresets } from '@/shared/schemas';
 import { hashPassword } from '@/features/auth';
 import { createServerAction } from '@/features/utils/server-actions';
@@ -46,17 +45,15 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
     }
 
     // 최고관리자 설정은 할 수 없음
-    if ('superAdmin' in values) {
+    if ('super_admin' in values) {
       return Result.error(`${APP_CONFIG.AUTH.ADMIN_LABELS.SUPER_ADMIN} 설정은 할 수 없습니다.`);
     }
 
     const supabase = createServerClient();
 
-    const snakedValues = transformCamelToSnake(values);
-
     const { data, error } = await supabase
       .from(CONFIG.tableName)
-      .update(snakedValues as any)
+      .update(values as any)
       .eq('id', id)
       .select()
       .single();
@@ -77,8 +74,6 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
       revalidatePath(pathname);
     }
 
-    const updatedItem = transformSnakeToCamel(data);
-
-    return Result.success(updatedItem as ItemDTO);
+    return Result.success(data as ItemDTO);
   },
 });

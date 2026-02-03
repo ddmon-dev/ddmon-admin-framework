@@ -5,7 +5,7 @@ declare module 'next-auth' {
     id: string;
     name: string;
     email: string;
-    superAdmin: boolean;
+    super_admin: boolean;
   }
 
   interface Session {
@@ -18,6 +18,6 @@ declare module '@auth/core/jwt' {
     id?: string;
     name?: string;
     email?: string;
-    superAdmin?: boolean;
+    super_admin?: boolean;
   }
 }

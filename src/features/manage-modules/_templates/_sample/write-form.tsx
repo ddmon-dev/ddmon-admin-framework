@@ -46,9 +46,9 @@ const formSchema = z.object({
   name: z.string().min(1, '이름을 입력해주세요.'),
   email: schemaPresets.email({ optional: true }),
   phone: schemaPresets.phone({ optional: true }),
-  zipCode: z.string(),
+  zip_code: z.string(),
   address: z.string(),
-  addressDetail: z.string(),
+  address_detail: z.string(),
   description: z.string().nullish(),
   age: z.number().min(0).max(150, '나이는 0~150 사이의 숫자를 입력해주세요.').int().nullish(),
   price: z.number().min(0).int().nullish(),
@@ -57,12 +57,12 @@ const formSchema = z.object({
   country: z.string().min(0),
   city: z.string().min(0),
   languages: z.array(z.string()).min(0),
-  newsletterSubscribed: z.boolean(),
-  termsAccepted: z.boolean(),
-  birthDate: z.date().nullish(),
+  newsletter_subscribed: z.boolean(),
+  terms_accepted: z.boolean(),
+  birth_date: z.date().nullish(),
   bio: z.string().nullish(),
   files: schemaPresets.files({ avatar: 0, attachments: 0 }),
-  socialLinks: schemaPresets.fieldArray(schemaPresets.url({ optional: false }), {
+  social_links: schemaPresets.fieldArray(schemaPresets.url({ optional: false }), {
     optional: false,
   }),
 });
@@ -74,20 +74,20 @@ const formDefaultValues = {
   age: undefined,
   price: undefined,
   phone: '',
-  zipCode: '',
+  zip_code: '',
   address: '',
-  addressDetail: '',
-  newsletterSubscribed: false,
-  termsAccepted: false,
+  address_detail: '',
+  newsletter_subscribed: false,
+  terms_accepted: false,
   interests: [],
   gender: '',
   country: '',
   city: '',
   languages: [],
-  birthDate: null,
+  birth_date: null,
   bio: '',
   files: undefined,
-  socialLinks: [{ value: null }],
+  social_links: [{ value: null }],
 };
 
 interface WriteFormProps {
@@ -253,14 +253,14 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
 
         <FormSwitch
           control={form.control}
-          name='newsletterSubscribed'
+          name='newsletter_subscribed'
           label='뉴스레터 구독 (Switch)'
           // description='이메일로 뉴스레터를 받으시겠습니까?'
         />
 
         <FormCheckbox
           control={form.control}
-          name='termsAccepted'
+          name='terms_accepted'
           label='이용약관 동의 (Checkbox)'
           // description='서비스 이용약관에 동의합니다.'
         />
@@ -272,7 +272,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
 
         <FormDatePicker
           control={form.control}
-          name='birthDate'
+          name='birth_date'
           label='생년월일 (Date Picker)'
           optional
         />
@@ -321,7 +321,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
 
         <FormFieldArray
           control={form.control}
-          name='socialLinks'
+          name='social_links'
           label='소셜 미디어 링크 (Field Array)'
           description='SNS 링크를 추가하고 순서를 변경할 수 있습니다.'
           max={5}
@@ -331,7 +331,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
           {({ index, control }) => (
             <FormTextInput
               control={control}
-              name={`socialLinks.${index}.value`}
+              name={`social_links.${index}.value`}
               placeholder='https://twitter.com/username'
               inputMode='url'
             />

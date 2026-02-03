@@ -31,16 +31,16 @@ import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
 const formSchema = z.object({
-  createdAt: z.date().nullish(),
-  viewCount: schemaPresets.numberRange(),
+  created_at: z.date().nullish(),
+  view_count: schemaPresets.numberRange(),
   title: z.string().min(1, '제목을 입력해주세요.'),
   content: z.string().min(1, '내용을 입력해주세요.'),
   files: schemaPresets.files({ thumbnail: 1, attachments: 0 }),
 });
 
 const formDefaultValues = {
-  createdAt: new Date(),
-  viewCount: 0,
+  created_at: new Date(),
+  view_count: 0,
   title: '',
   content: '',
   files: undefined,
@@ -100,7 +100,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
       <FieldGroup>
         <FormDatePicker
           control={form.control}
-          name='createdAt'
+          name='created_at'
           label='작성일'
           mode='single'
           presets
@@ -108,7 +108,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
         />
         <FormNumberInput
           control={form.control}
-          name='viewCount'
+          name='view_count'
           label='조회수'
           thousandSeparator
         />

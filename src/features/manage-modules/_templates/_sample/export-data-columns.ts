@@ -19,7 +19,7 @@ export const exportDataColumns: ExcelColumn<ItemDTO>[] = [
   },
   {
     header: '우편번호',
-    accessorKey: 'zipCode',
+    accessorKey: 'zip_code',
     width: 10,
   },
   {
@@ -29,12 +29,12 @@ export const exportDataColumns: ExcelColumn<ItemDTO>[] = [
   },
   {
     header: '주소 상세',
-    accessorKey: 'addressDetail',
+    accessorKey: 'address_detail',
     width: 10,
   },
   {
     header: '작성일',
-    accessorFn: row => new Date(row.createdAt).toLocaleDateString(),
+    accessorFn: row => new Date(row.created_at).toLocaleDateString(),
     width: 15,
   },
 ];
