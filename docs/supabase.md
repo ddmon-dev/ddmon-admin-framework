@@ -22,18 +22,18 @@ supabase/
 
 ## 명령어
 
-| 명령어 | 설명 |
-|--------|------|
-| `yarn db:init` | Supabase CLI 초기화 |
-| `yarn db:start` | 로컬 Supabase 시작 |
-| `yarn db:stop` | 로컬 Supabase 중지 |
-| `yarn db:reset` | 마이그레이션 재적용 |
-| `yarn db:migrate:new <name>` | 새 마이그레이션 생성 |
-| `yarn db:link` | 클라우드 프로젝트 연결 |
-| `yarn db:push` | 마이그레이션 클라우드로 푸시 |
-| `yarn db:pull` | 클라우드 스키마 로컬로 가져오기 |
-| `yarn db:types` | 클라우드 기준 타입 생성 |
-| `yarn db:types:local` | 로컬 기준 타입 생성 |
+| 명령어                          | 설명                            |
+| ------------------------------- | ------------------------------- |
+| `npm run db:init`               | Supabase CLI 초기화             |
+| `npm run db:start`              | 로컬 Supabase 시작              |
+| `npm run db:stop`               | 로컬 Supabase 중지              |
+| `npm run db:reset`              | 마이그레이션 재적용             |
+| `npm run db:migrate:new <name>` | 새 마이그레이션 생성            |
+| `npm run db:link`               | 클라우드 프로젝트 연결          |
+| `npm run db:push`               | 마이그레이션 클라우드로 푸시    |
+| `npm run db:pull`               | 클라우드 스키마 로컬로 가져오기 |
+| `npm run db:types`              | 클라우드 기준 타입 생성         |
+| `npm run db:types:local`        | 로컬 기준 타입 생성             |
 
 ---
 
@@ -45,7 +45,7 @@ supabase/
 
 ```bash
 # Supabase CLI 초기화
-yarn db:init
+npm run db:init
 
 # 템플릿 SQL을 마이그레이션으로 복사
 cp supabase/templates/00_common_functions.sql \
@@ -59,13 +59,13 @@ cp supabase/templates/01_admins_table.sql \
 
 ```bash
 # 로컬 Supabase 시작
-yarn db:start
+npm run db:start
 
 # 환경변수 설정 (로컬 키 기본값 포함)
 cp .env.local.example .env.local
 
 # 개발 서버 시작
-yarn dev
+npm run dev
 ```
 
 ### 3. 클라우드 배포
@@ -74,15 +74,15 @@ yarn dev
 # 1. Supabase 콘솔에서 프로젝트 생성
 
 # 2. 프로젝트 연결
-yarn db:link --project-ref <project-ref>
+npm run db:link --project-ref <project-ref>
 
 # 3. 마이그레이션 푸시
-yarn db:push
+npm run db:push
 
 # 4. 스토리지 버킷 생성 (콘솔 또는 SQL)
 # 5. .env.local을 클라우드 키로 전환
 # 6. 타입 재생성
-yarn db:types
+npm run db:types
 ```
 
 ---
@@ -93,20 +93,20 @@ yarn db:types
 
 ```bash
 # 1. Supabase CLI 초기화
-yarn db:init
+npm run db:init
 
 # 2. 프로젝트 연결
-yarn db:link --project-ref <project-ref>
+npm run db:link --project-ref <project-ref>
 
 # 3. 클라우드 스키마 가져오기
-yarn db:pull
+npm run db:pull
 
 # 4. 로컬 환경 시작
-yarn db:start
-yarn db:reset
+npm run db:start
+npm run db:reset
 
 # 5. 타입 생성
-yarn db:types:local
+npm run db:types:local
 ```
 
 ---
@@ -117,19 +117,19 @@ yarn db:types:local
 
 ```bash
 # 1. 새 마이그레이션 생성
-yarn db:migrate:new add_products_table
+npm run db:migrate:new add_products_table
 
 # 2. 마이그레이션 파일 작성
 # supabase/migrations/YYYYMMDDHHMMSS_add_products_table.sql
 
 # 3. 로컬 테스트
-yarn db:reset
+npm run db:reset
 
 # 4. 클라우드 적용
-yarn db:push
+npm run db:push
 
 # 5. 타입 업데이트
-yarn db:types
+npm run db:types
 ```
 
 ### 클라우드 변경사항 동기화
@@ -137,9 +137,9 @@ yarn db:types
 클라우드에서 직접 스키마를 변경한 경우:
 
 ```bash
-yarn db:pull
-yarn db:reset
-yarn db:types:local
+npm run db:pull
+npm run db:reset
+npm run db:types:local
 ```
 
 ---
@@ -203,18 +203,18 @@ VALUES (
 
 ### 필수
 
-| 파일 | 설명 |
-|------|------|
+| 파일                      | 설명                                   |
+| ------------------------- | -------------------------------------- |
 | `00_common_functions.sql` | `updated_at` 자동 업데이트 트리거 함수 |
-| `01_admins_table.sql` | 관리자 계정 테이블 + 초기 계정 |
+| `01_admins_table.sql`     | 관리자 계정 테이블 + 초기 계정         |
 
 ### 샘플
 
-| 파일 | 설명 |
-|------|------|
-| `notices_table.sql` | 공지사항 (파일 첨부, 카테고리, 목 데이터) |
-| `faqs_table.sql` | FAQ |
-| `board_template_function.sql` | 게시판 테이블 자동 생성 함수 |
+| 파일                          | 설명                                      |
+| ----------------------------- | ----------------------------------------- |
+| `notices_table.sql`           | 공지사항 (파일 첨부, 카테고리, 목 데이터) |
+| `faqs_table.sql`              | FAQ                                       |
+| `board_template_function.sql` | 게시판 테이블 자동 생성 함수              |
 
 ---
 
@@ -222,10 +222,10 @@ VALUES (
 
 ### 클라이언트 구분
 
-| 클라이언트 | 키 | RLS | 용도 |
-|-----------|-----|-----|------|
-| Browser Client | ANON KEY | 적용 | 클라이언트 컴포넌트 |
-| Server Client | SERVICE KEY | 우회 | 서버 액션, API 라우트 |
+| 클라이언트     | 키          | RLS  | 용도                  |
+| -------------- | ----------- | ---- | --------------------- |
+| Browser Client | ANON KEY    | 적용 | 클라이언트 컴포넌트   |
+| Server Client  | SERVICE KEY | 우회 | 서버 액션, API 라우트 |
 
 ### 파일 구조
 

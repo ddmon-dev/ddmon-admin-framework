@@ -4,27 +4,17 @@
 
 ```bash
 # 개발 서버 실행 (http://localhost:3000)
-yarn dev
+npm run dev
 
 # 프로덕션 빌드
-yarn build
+npm run build
 
 # 프로덕션 서버 실행
-yarn start
+npm run start
 
 # ESLint 실행
-yarn lint
+npm run lint
 ```
-
-### Claude Code용 빌드
-
-Claude Code에서 빌드 시 `.next-claude` 디렉토리를 사용합니다.
-
-```bash
-IS_CLAUDE=1 yarn build
-```
-
-`.gitignore`에 `/.next-claude/`가 추가되어 있습니다.
 
 ## 환경변수
 
@@ -56,12 +46,13 @@ NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
 const nextConfig: NextConfig = {
   distDir: process.env.IS_CLAUDE ? '.next-claude' : undefined,
   experimental: {
-    reactCompiler: true,  // React Compiler 활성화
+    reactCompiler: true, // React Compiler 활성화
   },
 };
 ```
 
 **주요 설정:**
+
 - React Compiler: 활성화 (불필요한 useMemo, useCallback 지양)
 - distDir: Claude Code 전용 빌드 디렉토리
 
@@ -79,6 +70,7 @@ const nextConfig: NextConfig = {
 ```
 
 **주요 설정:**
+
 - Strict mode: 활성화
 - Path alias: `@/*` → `./src/*`
 
@@ -104,6 +96,7 @@ const nextConfig: NextConfig = {
 ```
 
 **주요 설정:**
+
 - 스타일: New York
 - 기본 색상: neutral
 - CSS Variables: 사용
@@ -111,11 +104,13 @@ const nextConfig: NextConfig = {
 ### Tailwind CSS V4
 
 **특징:**
+
 - PostCSS 플러그인 방식
 - CSS Variables 기반 테마
 - `globals.css`에서 @import로 설정
 
 **설정 파일:**
+
 - `postcss.config.js`: Tailwind 플러그인 등록
 - `src/app/globals.css`: @import로 Tailwind 설정
 
@@ -150,27 +145,32 @@ const nextConfig: NextConfig = {
 ## 기술 스택
 
 ### Core
+
 - **Framework**: Next.js 16.0.3 (App Router)
 - **React**: 19.2.0 (React Compiler 활성화)
 - **Language**: TypeScript (Strict Mode)
 - **Node.js**: 24.3.0
-- **Package Manager**: Yarn
+- **Package Manager**: npm run
 
 ### Styling & UI
+
 - **CSS Framework**: Tailwind CSS V4 (PostCSS 플러그인)
 - **UI Library**: Shadcn UI (New York 스타일)
 - **Icons**: Lucide React
 - **Theme**: next-themes (다크모드)
 
 ### Forms & Validation
+
 - **Form**: React Hook Form
 - **Validation**: Zod
 
 ### Database
+
 - **Database**: Supabase
 - **Storage**: Supabase Storage
 
 ### Fonts
+
 - **영문**: Poppins (Google Fonts)
 - **한글**: Pretendard (Local Fonts)
 
@@ -194,7 +194,7 @@ V4는 PostCSS 플러그인 방식이므로 `globals.css`에서 설정을 관리�
 
 ```css
 /* src/app/globals.css */
-@import "tailwindcss";
+@import 'tailwindcss';
 ```
 
 ### FSD 패턴

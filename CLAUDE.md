@@ -15,15 +15,15 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 
 ### 기술 스택
 
-| 분야 | 기술 |
-|------|------|
-| **Framework** | Next.js 16.0.3 (App Router) |
-| **React** | 19.2.0 (React Compiler 활성화) |
-| **Language** | TypeScript (Strict Mode) |
-| **Database** | Supabase |
-| **CSS** | Tailwind CSS V4 |
-| **UI** | Shadcn UI (New York 스타일) |
-| **Form** | React Hook Form + Zod |
+| 분야          | 기술                           |
+| ------------- | ------------------------------ |
+| **Framework** | Next.js 16.0.3 (App Router)    |
+| **React**     | 19.2.0 (React Compiler 활성화) |
+| **Language**  | TypeScript (Strict Mode)       |
+| **Database**  | Supabase                       |
+| **CSS**       | Tailwind CSS V4                |
+| **UI**        | Shadcn UI (New York 스타일)    |
+| **Form**      | React Hook Form + Zod          |
 
 ---
 
@@ -79,16 +79,19 @@ export type ItemFiles = {
 };
 
 // item-form.tsx
-<FormFileUpload name='files.attachments' label='첨부 파일' />
+<FormFileUpload name="files.attachments" label="첨부 파일" />;
 
 // actions/create-item.ts
-uploadedFiles = await processFiles({ filesInput: values.files, folder: `notices/${id}` });
+uploadedFiles = await processFiles({
+  filesInput: values.files,
+  folder: `notices/${id}`,
+});
 ```
 
 **Tiptap (에디터 이미지):**
 
 ```typescript
-<FormEditor entity={CONFIG.tableName} name='content' label='내용' />
+<FormEditor entity={CONFIG.tableName} name="content" label="내용" />
 ```
 
 📄 자세한 내용: [file-system.md](docs/file-system.md)
@@ -110,21 +113,21 @@ export default function ProductsPage() {
 
 ```bash
 # 초기화 (새 프로젝트)
-yarn db:init
+npm run db:init
 
 # 로컬 Supabase 시작/중지
-yarn db:start
-yarn db:stop
+npm run db:start
+npm run db:stop
 
 # 마이그레이션 재적용
-yarn db:reset
+npm run db:reset
 
 # 새 마이그레이션 생성
-yarn db:migrate:new feature_name
+npm run db:migrate:new feature_name
 
 # 클라우드 연결 및 배포
-yarn db:link --project-ref <ref>
-yarn db:push
+npm run db:link --project-ref <ref>
+npm run db:push
 ```
 
 📄 자세한 내용: [supabase.md](docs/supabase.md)
@@ -135,13 +138,13 @@ yarn db:push
 
 ```bash
 # 개발 서버
-yarn dev
+npm run dev
 
-# 빌드 (Claude Code용)
-IS_CLAUDE=1 yarn build
+# 빌드
+npm run build
 
 # ESLint
-yarn lint
+npm run lint
 ```
 
 📄 자세한 내용: [development.md](docs/development.md)
@@ -216,18 +219,23 @@ src/
 # 기능명
 
 ## 개요
+
 핵심 특징 3-5개
 
 ## 구조
+
 폴더 트리
 
 ## 핵심 개념
+
 주요 패턴 설명 (코드 예시 5-10줄)
 
 ## 사용 방법
+
 복사-붙여넣기 가능한 템플릿
 
 ## 주의사항
+
 간결하게 (5-10줄)
 ```
 
@@ -237,6 +245,7 @@ src/
 
 ```markdown
 ### 아키텍처 & 시스템
+
 - **[새 기능](docs/new-feature.md)** - 간단한 설명
 ```
 
