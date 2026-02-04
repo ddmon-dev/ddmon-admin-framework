@@ -1,5 +1,5 @@
 import { type MenuData } from './types';
-import { Settings2, FileText, Users, AlertCircle, ServerCrash, ShieldX, MessageSquare } from 'lucide-react';
+import { FileText, Users, AlertCircle, ServerCrash, ShieldX, MessageSquare } from 'lucide-react';
 
 interface MenuConfig {
   navMain: MenuData[];
@@ -10,11 +10,6 @@ export const navigationConfig: MenuConfig = {
     {
       title: '샘플',
       items: [
-        {
-          title: '관리모듈 샘플',
-          url: '/manage-sample',
-          icon: Settings2,
-        },
         {
           title: '404 not found',
           url: '/404',
