@@ -64,18 +64,18 @@ export function ReplyForm({ inquiryId, onReplyCreated }: ReplyFormProps) {
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <div className='space-y-2'>
+      <div className="space-y-2">
         <FormTextarea
           control={form.control}
-          name='replyContent'
-          label='답변 내용'
-          placeholder='답변 내용을 입력하세요'
+          name="replyContent"
+          label="답변 내용"
+          placeholder="답변 내용을 입력하세요"
           rows={6}
         />
-        <div className='flex justify-end'>
-          <Button type='submit' disabled={isSubmitting}>
-            {isSubmitting && <Loader2 className='mr-2 size-4 animate-spin' />}
-            답변 저장
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting && <Loader2 className="mr-2 size-4 animate-spin" />}
+            답변 발송
           </Button>
         </div>
       </div>

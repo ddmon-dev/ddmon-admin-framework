@@ -76,7 +76,7 @@ export function useManageSheet() {
 interface ManageSheetProps<T extends { files?: DbFilesJSONB }> {
   fetchFn: GetItemAction<T>;
   additionalDateFields?: string[];
-  formComponent: React.ComponentType<{ id?: string; prevValues: T | null }>;
+  formComponent?: React.ComponentType<{ id?: string; prevValues: T | null }>;
   viewComponent?: React.ComponentType<{ data: T }>;
   size?: 'sm' | 'md' | 'lg';
   moduleName?: string;
@@ -137,9 +137,9 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
 
   // 렌더링 로직
   const renderContent = () => {
-    // create 모드: 바로 폼 표시 (깜빡임 없음)
+    // create 모드: FormComponent가 있을 때만 렌더링
     if (mode === 'create') {
-      return <FormComponent id={id} prevValues={null} />;
+      return FormComponent ? <FormComponent id={id} prevValues={null} /> : null;
     }
 
     // 로딩 중
@@ -152,9 +152,11 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
       return <ManageSheetError />;
     }
 
-    // modify 모드: 폼 표시
+    // modify 모드: FormComponent가 있을 때만 렌더링
     if (mode === 'modify') {
-      return <FormComponent id={id} prevValues={prevValues ?? null} />;
+      return FormComponent ? (
+        <FormComponent id={id} prevValues={prevValues ?? null} />
+      ) : null;
     }
 
     // view 모드: 뷰 표시
