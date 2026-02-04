@@ -51,7 +51,7 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 
 ```bash
 # 1. 템플릿 복사
-cp -r src/features/manage-modules/_template src/features/manage-modules/products
+cp -r src/features/manage-modules/_templates/_sample src/features/manage-modules/products
 
 # 2. config.ts 수정
 export const CONFIG = {
@@ -159,12 +159,11 @@ src/
 │   ├── (auth)/             # 인증 페이지 (레이아웃 없음)
 │   └── (protected)/        # 보호된 페이지 (Sidebar + Header)
 ├── features/                # 기능 레이어 (비즈니스 로직)
-│   ├── auth/
-│   └── manage-modules/     # CRUD 모듈 시스템
-├── widgets/                 # 위젯 레이어 (복합 UI)
-│   ├── app-sidebar/
-│   ├── app-breadcrumb/
-│   └── app-header/
+│   ├── auth/               # 인증 시스템
+│   ├── dashboard/          # 대시보드
+│   ├── manage-modules/     # CRUD 모듈 시스템
+│   ├── ui/                 # UI 위젯 (Sidebar, Header, Breadcrumb)
+│   └── utils/              # 유틸리티
 └── shared/                  # 공유 레이어
     ├── ui/                  # 67개 컴포넌트 (Shadcn UI)
     ├── lib/                 # 도메인 라이브러리
@@ -250,6 +249,26 @@ src/
 ```
 
 빠른 참조 섹션에 예시 추가 (선택사항)
+
+---
+
+## 문서 동기화
+
+코드 변경 시 관련 문서도 함께 업데이트해야 합니다.
+
+### 체크리스트
+
+- [ ] 폴더 구조 변경 → `CLAUDE.md` 파일 구조, `docs/conventions.md`
+- [ ] 타입/인터페이스 변경 → 관련 문서의 코드 예시
+- [ ] 새 기능 추가 → 해당 기능 문서 또는 새 문서 작성
+- [ ] API/import 경로 변경 → 모든 문서의 import 예시
+
+### 검증
+
+```bash
+# 변경된 키워드가 문서에 남아있는지 확인
+grep -r "변경전키워드" docs/ CLAUDE.md
+```
 
 ---
 
