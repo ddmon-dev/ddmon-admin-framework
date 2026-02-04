@@ -23,8 +23,8 @@ npm run lint
 ```bash
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
 
 # NextAuth
 NEXTAUTH_SECRET=
@@ -120,9 +120,9 @@ const nextConfig: NextConfig = {
 
 ```json
 {
-  "next": "16.0.3",
-  "react": "19.2.0",
-  "react-dom": "19.2.0",
+  "next": "16.0.7",
+  "react": "19.2.1",
+  "react-dom": "19.2.1",
   "@hookform/resolvers": "3.9.1",
   "react-hook-form": "7.54.2",
   "zod": "3.24.1",
@@ -146,8 +146,8 @@ const nextConfig: NextConfig = {
 
 ### Core
 
-- **Framework**: Next.js 16.0.3 (App Router)
-- **React**: 19.2.0 (React Compiler 활성화)
+- **Framework**: Next.js 16.0.7 (App Router)
+- **React**: 19.2.1 (React Compiler 활성화)
 - **Language**: TypeScript (Strict Mode)
 - **Node.js**: 24.3.0
 - **Package Manager**: npm run
@@ -199,6 +199,6 @@ V4는 PostCSS 플러그인 방식이므로 `globals.css`에서 설정을 관리�
 
 ### FSD 패턴
 
-새로운 코드 추가 시 반드시 적절한 레이어(features, widgets, shared)에 배치합니다.
+새로운 코드 추가 시 반드시 적절한 레이어(features, shared)에 배치합니다.
 
 자세한 내용: [conventions.md](conventions.md#프로젝트-아키텍처)
