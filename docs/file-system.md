@@ -84,7 +84,7 @@ export type ItemDTO = WithFiles<BaseItemDTO<typeof CONFIG.tableName>>;
 #### 2. 폼 스키마
 
 ```typescript
-// notice/item-form.tsx
+// notice/write-form.tsx
 import { schemaPresets } from '@/shared/schemas';
 
 const formSchema = z.object({
@@ -116,7 +116,7 @@ const formSchema = z.object({
 />
 ```
 
-#### 4. 폼 제출 (item-form.tsx)
+#### 4. 폼 제출 (write-form.tsx)
 
 ```typescript
 import { uploadFormFiles, type FormFilesField } from '@/shared/lib/file-system';
@@ -251,7 +251,7 @@ entity prop 전달 시 자동으로 경로 생성
 #### 기본 사용 (권장)
 
 ```typescript
-// notice/item-form.tsx
+// notice/write-form.tsx
 import { CONFIG } from './config';
 
 <FormEditor

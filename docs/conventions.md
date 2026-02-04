@@ -28,7 +28,11 @@ Next.js App Router로 페이지 구성과 라우팅만 담당합니다.
 app/
 ├── (auth)/              # 인증 페이지 (레이아웃 없음)
 ├── (protected)/         # 보호된 페이지 (Sidebar + Header)
-└── unauthorized/
+│   ├── (super-admin-only)/  # 슈퍼 관리자 전용
+│   ├── (system)/            # 시스템 페이지 (unauthorized 등)
+│   └── (manage-samples)/    # 관리 모듈 샘플
+├── (preview)/           # 미리보기 페이지
+└── api/                 # API 라우트
 ```
 
 **features/** - 기능 레이어
@@ -51,9 +55,10 @@ shared/
 ├── ui/                  # UI 컴포넌트 (Shadcn UI)
 ├── lib/                 # 도메인 라이브러리
 ├── utils/               # 범용 유틸리티
-├── hooks/
-├── types/
-└── schemas/
+├── hooks/               # 커스텀 훅
+├── types/               # 공통 타입
+├── schemas/             # Zod 스키마
+└── constants/           # 공통 상수
 ```
 
 ### 레이어 선택 가이드
@@ -227,7 +232,7 @@ manage-modules/notice/
 │   ├── create-item.ts
 │   └── ...
 ├── list.tsx           ← 나머지는 루트에 플랫
-├── item-form.tsx
+├── write-form.tsx
 ├── types.ts
 ├── config.ts
 └── index.tsx
@@ -294,18 +299,20 @@ features/ui/app-breadcrumb/
 shared/
 ├── ui/                ← UI 컴포넌트들
 │   ├── button.tsx
-│   ├── form-fields/
+│   ├── form/
 │   └── editor/
 ├── lib/               ← 도메인 라이브러리
 │   ├── excel/
 │   ├── supabase/
 │   └── file-system/
 ├── utils/             ← 범용 유틸리티
-│   ├── objects/
-│   └── date/
+│   ├── classnames.ts
+│   ├── formats.ts
+│   └── results.ts
 ├── hooks/             ← 커스텀 훅들
 ├── types/             ← 공통 타입들
-└── schemas/           ← Zod 스키마들
+├── schemas/           ← Zod 스키마들
+└── constants/         ← 공통 상수들
 ```
 
 **이유**:
@@ -495,11 +502,11 @@ auth/
 ```typescript
 // Before
 import { auth } from '@/features/auth/lib/auth.handler';
-import type { AdminUser } from '@/features/auth/lib/auth.types';
+import type { SignInValues } from '@/features/auth/lib/auth.types';
 
 // After
 import { auth } from '@/features/auth';
-import type { AdminUser } from '@/features/auth/types';
+import type { SignInValues } from '@/features/auth/types';
 ```
 
 ### features/ui 예시 (Before → After)
@@ -661,7 +668,7 @@ sidebar types      → features/ui/app-sidebar/types.ts
 
 # Symbol Search (Cmd/Ctrl + Shift + O)
 AuthConfig         → 타입 직접 검색
-AdminUser          → 타입 직접 검색
+SignInValues       → 타입 직접 검색
 
 # Recent Files (Cmd/Ctrl + E)
 최근 작업 파일 빠른 전환

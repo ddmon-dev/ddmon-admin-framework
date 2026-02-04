@@ -13,15 +13,34 @@ manage-modules/
 │   ├── actions/         # 공통 Server Actions (softDelete, hardDelete)
 │   ├── hooks/           # 커스텀 훅 (useManageItemData)
 │   └── utils/           # 유틸리티
-├── _templates/_sample/  # 템플릿 (복사해서 사용)
-└── notice/              # 실제 구현 예시
-    ├── actions/
-    ├── list.tsx
-    ├── item-form.tsx
-    ├── item-sheet.tsx
-    ├── filters.tsx
-    ├── config.ts
-    └── types.ts
+├── _templates/          # 템플릿 (복사해서 사용)
+│   ├── _sample/         # 기본 템플릿
+│   ├── faq/             # FAQ 템플릿
+│   ├── news/            # 뉴스 템플릿
+│   └── notice/          # 공지사항 템플릿 (파일 업로드 포함)
+└── admin/               # 관리자 관리 모듈
+```
+
+### 모듈 파일 구조
+
+```
+_templates/_sample/
+├── actions/
+│   ├── create-item.ts
+│   ├── get-item.ts
+│   ├── get-list.ts
+│   ├── get-export-data.ts
+│   ├── update-item.ts
+│   └── index.ts
+├── addons.tsx           # 헤더 추가 요소
+├── config.ts            # 모듈 설정 및 타입
+├── export-data-button.tsx
+├── export-data-columns.ts
+├── index.tsx            # 모듈 진입점
+├── item-sheet.tsx       # 상세/수정 시트
+├── list.tsx             # 목록 컴포넌트
+├── list-columns.tsx     # 테이블 컬럼 정의
+└── write-form.tsx       # 생성/수정 폼
 ```
 
 ## 핵심 패턴
@@ -32,10 +51,16 @@ manage-modules/
 
 ```typescript
 // _base/ui/manage-sheet.tsx
-const { openManageSheet, closeManageSheet } = useManageSheet();
+const sheet = useManageSheet();
 
 // 시트 열기
-openManageSheet({ id: '123', mode: 'modify' });
+sheet.open({ id: '123', mode: 'modify' });
+
+// 시트 닫기
+sheet.close();
+
+// 현재 데이터 접근
+const { id, mode } = sheet.data ?? {};
 ```
 
 **장점:**
@@ -135,13 +160,20 @@ export const CONFIG = {
 } as const;
 ```
 
-**types.ts:**
+**config.ts (타입 포함):**
 ```typescript
-import type { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
-import type { ItemDTO as BaseItemDTO } from '../_base/types';
+import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
+import { ItemDTO as BaseItemDTO } from '../../_base/types';
 
-export type RowData = BaseRowData<'products'>;
-export type ItemDTO = BaseItemDTO<'products'>;
+export const CONFIG = {
+  title: '상품 관리',
+  moduleName: '상품',
+  tableName: 'products',
+  enableBulkAction: true,
+} as const;
+
+export type RowData = BaseRowData<typeof CONFIG.tableName>;
+export type ItemDTO = BaseItemDTO<typeof CONFIG.tableName>;
 ```
 
 ### 3. Server Actions 수정
@@ -170,13 +202,13 @@ export const getList = createGetListAction<ItemDTO>({
 
 ### 4. 컴포넌트 수정
 
-- `list-columns.tsx`: 컬럼 정의
-- `filters.tsx`: 필터 UI
-- `item-form.tsx`: 폼 스키마 및 필드
+- `list-columns.tsx`: 테이블 컬럼 정의
+- `write-form.tsx`: 폼 스키마 및 필드
+- `addons.tsx`: 헤더 추가 요소 (필터, 검색 등)
 
 ### 5. 페이지 통합
 
-ManageContainer의 render props 패턴을 사용합니다.
+ManageContainer + ManageListFetcher 조합을 사용합니다.
 
 ```typescript
 // app/(protected)/products/page.tsx
@@ -194,35 +226,50 @@ export default function ProductsPage({ searchParams }: Props) {
 
 ```typescript
 // features/manage-modules/products/index.tsx
-import { ManageContainer } from '../_base/ui';
+import { type SearchParams } from '@/shared/types/search-params';
+import { ManageContainer, ManageListFetcher } from '../../_base/ui';
 import { CONFIG, type ItemDTO } from './config';
+import { HeaderAddons } from './addons';
+import { List } from './list';
+import { ItemSheet } from './item-sheet';
 import { getList } from './actions/get-list';
-import { Filters, List, ItemSheet } from './';
+
+interface Props {
+  searchParams: SearchParams;
+}
 
 export default function ManageModule({ searchParams }: Props) {
   return (
-    <ManageContainer<ItemDTO>
+    <ManageContainer
+      title={CONFIG.title}
       moduleName={CONFIG.moduleName}
-      searchParams={searchParams}
-      getList={getList}
+      headerAddons={<HeaderAddons />}
     >
-      {({ data, totalCount }) => (
-        <>
-          <Filters />
-          <List data={data} totalCount={totalCount} />
-          <ItemSheet />
-        </>
-      )}
+      <ManageListFetcher<ItemDTO>
+        searchParams={searchParams}
+        getList={getList}
+      >
+        {({ data, totalCount }) => (
+          <>
+            <List data={data} totalCount={totalCount} />
+            <ItemSheet />
+          </>
+        )}
+      </ManageListFetcher>
     </ManageContainer>
   );
 }
 ```
 
 **ManageContainer가 처리하는 것:**
+- 공통 레이아웃 (제목, 헤더)
+- ManageSheetProvider 래핑
+- Suspense fallback (ListSkeleton)
+
+**ManageListFetcher가 처리하는 것:**
 - searchParams 파싱
 - getList 호출 및 데이터 페칭
-- 공통 레이아웃 (제목, 생성 버튼)
-- ManageSheetProvider 래핑
+- render props로 data, totalCount 전달
 
 ## 베스트 프랙티스
 
@@ -280,8 +327,31 @@ await createItem({ values, path: pathname });
 manage-modules에서 파일 업로드가 필요한 경우 [file-system.md](file-system.md#formfileupload)를 참고하세요.
 
 **빠른 시작:**
-1. `types.ts`에 ItemFiles 타입 추가
-2. `item-form.tsx`에 FormFileUpload 추가
-3. `actions/create-item.ts`에서 processFiles() 호출
+1. `config.ts`에서 ItemDTO 타입이 WithFiles로 확장되어 있는지 확인
+2. `write-form.tsx`에 FormFileUpload 추가
+3. 폼 제출 시 `uploadFormFiles()` 호출
+
+```typescript
+// write-form.tsx 예시
+import { uploadFormFiles, type FormFilesField } from '@/shared/lib/file-system';
+
+async function onSubmit(values: FormValues) {
+  const { files: formFiles, ...restValues } = values;
+
+  // 1. 데이터 저장 (파일 제외)
+  const { data } = id
+    ? await updateItem({ id, values: restValues, pathname })
+    : await createItem({ values: restValues, pathname });
+
+  // 2. 파일 업로드
+  await uploadFormFiles({
+    formFiles: formFiles as FormFilesField,
+    id: data.id,
+    tableName: CONFIG.tableName,
+    pathname,
+    updateAction: updateItem,
+  });
+}
+```
 
 자세한 내용: [파일 시스템 가이드](file-system.md)

@@ -63,7 +63,7 @@ export const CONFIG = {
 export type RowData = BaseRowData<'products'>;
 
 # 4. Server Actions 수정 (tableName 변경)
-# 5. 컴포넌트 수정 (list-columns, filters, item-form)
+# 5. 컴포넌트 수정 (list-columns, write-form, addons)
 ```
 
 📄 자세한 내용: [manage-modules.md](docs/manage-modules.md#새로운-모듈-추가)
@@ -73,18 +73,18 @@ export type RowData = BaseRowData<'products'>;
 **FormFileUpload (manage-modules 첨부파일):**
 
 ```typescript
-// types.ts
-export type ItemFiles = {
-  attachments?: DbFileMetadata[];
-};
+// write-form.tsx
+import { uploadFormFiles, type FormFilesField } from '@/shared/lib/file-system';
 
-// item-form.tsx
 <FormFileUpload name="files.attachments" label="첨부 파일" />;
 
-// actions/create-item.ts
-uploadedFiles = await processFiles({
-  filesInput: values.files,
-  folder: `notices/${id}`,
+// 폼 제출 시
+await uploadFormFiles({
+  formFiles: formFiles as FormFilesField,
+  id: data.id,
+  tableName: CONFIG.tableName,
+  pathname,
+  updateAction: updateItem,
 });
 ```
 
@@ -157,7 +157,9 @@ npm run lint
 src/
 ├── app/                     # Next.js App Router (라우팅)
 │   ├── (auth)/             # 인증 페이지 (레이아웃 없음)
-│   └── (protected)/        # 보호된 페이지 (Sidebar + Header)
+│   ├── (protected)/        # 보호된 페이지 (Sidebar + Header)
+│   ├── (preview)/          # 미리보기 페이지
+│   └── api/                # API 라우트
 ├── features/                # 기능 레이어 (비즈니스 로직)
 │   ├── auth/               # 인증 시스템
 │   ├── dashboard/          # 대시보드
@@ -165,11 +167,13 @@ src/
 │   ├── ui/                 # UI 위젯 (Sidebar, Header, Breadcrumb)
 │   └── utils/              # 유틸리티
 └── shared/                  # 공유 레이어
-    ├── ui/                  # 67개 컴포넌트 (Shadcn UI)
+    ├── ui/                  # Shadcn UI 컴포넌트
     ├── lib/                 # 도메인 라이브러리
     ├── utils/               # 범용 유틸리티
-    ├── hooks/
-    └── schemas/
+    ├── hooks/               # 커스텀 훅
+    ├── types/               # 공통 타입
+    ├── schemas/             # Zod 스키마
+    └── constants/           # 공통 상수
 ```
 
 📄 자세한 내용: [conventions.md](docs/conventions.md#프로젝트-아키텍처)
