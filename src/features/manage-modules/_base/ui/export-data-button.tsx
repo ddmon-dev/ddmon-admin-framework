@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { ExcelExportButton } from '@/shared/ui/excel-export-button';
 import { type ActionResult } from '@/shared/types/results';
 import { type ExcelColumn } from '@/shared/lib/excel';
@@ -22,7 +23,10 @@ export function ExportDataButton<T>({
     <ExcelExportButton
       fetchData={fetchDataFn}
       columns={columns}
-      fileName={`${fileName ? fileName : '데이터내보내기'}_${new Date().toLocaleDateString()}.xlsx`}
+      fileName={`${fileName ? fileName : '데이터내보내기'}_${format(
+        new Date(),
+        'yyyyMMddHHmmss'
+      )}.xlsx`}
       sheetName={sheetName}
     >
       {children}
