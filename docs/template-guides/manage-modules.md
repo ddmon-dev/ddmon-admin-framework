@@ -34,6 +34,7 @@ _templates/_sample/
 │   └── index.ts
 ├── addons.tsx           # 헤더 추가 요소
 ├── config.ts            # 모듈 설정 및 타입
+├── detail-view.tsx      # 상세 보기 (읽기 전용)
 ├── export-data-button.tsx
 ├── export-data-columns.ts
 ├── index.tsx            # 모듈 진입점
@@ -121,6 +122,39 @@ if (!success) {
 - revalidatePath(path)
 - 타입 안전성
 
+**author/updated_by 자동 주입:**
+
+create/update 시 현재 로그인 사용자 정보가 자동 주입됩니다.
+
+| 액션 | 필드 | 값 |
+|------|------|-----|
+| `createItem` | `author` | 현재 사용자 이름 |
+| `updateItem` | `updated_by` | 현재 사용자 이름 |
+
+```typescript
+// create-item.ts 내부 (자동 처리됨)
+const insertValues = {
+  ...values,
+  author: user?.name ?? null,  // 자동 주입
+};
+
+// update-item.ts 내부 (자동 처리됨)
+const updateValues = {
+  ...values,
+  updated_by: user?.name ?? null,  // 자동 주입
+};
+```
+
+**DB 스키마 요구사항:**
+
+```sql
+CREATE TABLE my_table (
+  -- ... 기타 컬럼
+  author TEXT,        -- Create 시 작성자
+  updated_by TEXT,    -- Update 시 수정자
+);
+```
+
 ### 5. 에러 처리
 
 try-catch-finally 구조로 안전하게 처리합니다.
@@ -137,6 +171,86 @@ const handleClick = async () => {
     setIsLoading(false); // 항상 실행
   }
 };
+```
+
+### 6. Detail View (상세 보기)
+
+테이블 행 클릭 시 항목 상세 정보를 표시하는 읽기 전용 뷰입니다.
+
+**4개 핵심 컴포넌트:**
+
+| 컴포넌트 | 용도 |
+|---------|------|
+| `DetailContainer` | 최상위 래퍼 (간격 관리) |
+| `DetailGroup` | 섹션 그룹화 (테두리, 구분선) |
+| `DetailField` | 라벨-값 쌍 표시 |
+| `DetailRow` | 2컬럼 행 배치 |
+
+**사용 예시:**
+
+```typescript
+// notice/detail-view.tsx
+import {
+  DetailContainer,
+  DetailField,
+  DetailGroup,
+  DetailRow,
+  ManageSheetFooter,
+  ManageSheetClose,
+  ManageSheetModeChange,
+} from '../../_base/ui';
+
+export function DetailView({ data }: { data: ItemDTO }) {
+  return (
+    <>
+      <DetailContainer>
+        <DetailGroup>
+          <DetailField label="제목" value={data.title} />
+          <DetailRow>
+            <DetailField label="작성자" value={data.author} />
+            <DetailField label="조회수" value={data.view_count?.toLocaleString()} />
+          </DetailRow>
+          <DetailField
+            label="내용"
+            value={<RichTextContent>{data.content}</RichTextContent>}
+          />
+        </DetailGroup>
+      </DetailContainer>
+      <ManageSheetFooter>
+        <ManageSheetClose />
+        <ManageSheetModeChange mode="modify" />
+      </ManageSheetFooter>
+    </>
+  );
+}
+```
+
+**DetailField 옵션:**
+
+```typescript
+<DetailField
+  label="카테고리"
+  value={<Badge>{label}</Badge>}    // ReactNode 가능
+  emptyText="없음"                   // 빈 값 표시 (기본: '-')
+  labelClassName="items-center"      // 라벨 스타일
+/>
+```
+
+**유용한 렌더링 컴포넌트:**
+
+| 컴포넌트 | 용도 | 위치 |
+|---------|------|------|
+| `RichTextContent` | 에디터 HTML 렌더링 | `@/shared/ui/editor/rich-text-content` |
+| `NewlineText` | `\n` 줄바꿈 표시 | `@/shared/ui/newline-text` |
+
+```typescript
+// NewlineText 사용
+import { NewlineText } from '@/shared/ui/newline-text';
+
+<DetailField
+  label="메모"
+  value={<NewlineText>{data.memo}</NewlineText>}
+/>
 ```
 
 ## 새로운 모듈 추가

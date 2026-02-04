@@ -295,6 +295,30 @@ NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
 - 주기적으로 사용하지 않는 파일 정리
 - 날짜별 폴더 분석하여 오래된 파일 삭제
 
+### Tiptap 콘텐츠 렌더링
+
+Tiptap로 작성한 HTML 콘텐츠를 상세보기에서 렌더링할 때 `RichTextContent` 컴포넌트를 사용합니다.
+
+**기본 사용:**
+
+```typescript
+import { RichTextContent } from '@/shared/ui/editor/rich-text-content';
+
+// 기본 사용
+<RichTextContent>{data.content}</RichTextContent>
+
+// DetailField와 함께
+<DetailField
+  label="내용"
+  value={<RichTextContent>{data.content}</RichTextContent>}
+/>
+```
+
+**지원 요소:**
+- 이미지 (`img`, px 너비 인라인 스타일), 리스트 (`ul`, `ol`), 테이블
+- 링크, 인용문 (`blockquote`), 단락
+- **YouTube 임베드**: `<div data-youtube-video>` iframe 반응형 렌더링
+
 ---
 
 ## 비교 요약
