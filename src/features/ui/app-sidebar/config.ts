@@ -1,5 +1,5 @@
 import { type MenuData } from './types';
-import { FileText, Users, AlertCircle, ServerCrash, ShieldX, MessageSquare } from 'lucide-react';
+import { FileText, Users, AlertCircle, ServerCrash, ShieldX, MessageSquare, AppWindow } from 'lucide-react';
 
 interface MenuConfig {
   navMain: MenuData[];
@@ -53,6 +53,16 @@ export const navigationConfig: MenuConfig = {
           title: '문의 관리',
           url: '/manage-inquiry',
           icon: MessageSquare,
+        },
+      ],
+    },
+    {
+      title: '사이트 관리',
+      items: [
+        {
+          title: '팝업 관리',
+          url: '/manage-popup',
+          icon: AppWindow,
         },
       ],
     },

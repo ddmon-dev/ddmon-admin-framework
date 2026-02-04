@@ -267,6 +267,63 @@ export type Database = {
         }
         Relationships: []
       }
+      popups: {
+        Row: {
+          author: string | null
+          content: string
+          created_at: string
+          deleted: boolean
+          end_date: string | null
+          id: string
+          is_active: boolean
+          is_always: boolean
+          position_left: number
+          position_top: number
+          start_date: string | null
+          title: string
+          updated_at: string
+          updated_by: string | null
+          width: number
+          z_index: number
+        }
+        Insert: {
+          author?: string | null
+          content: string
+          created_at?: string
+          deleted?: boolean
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          is_always?: boolean
+          position_left?: number
+          position_top?: number
+          start_date?: string | null
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+          width?: number
+          z_index?: number
+        }
+        Update: {
+          author?: string | null
+          content?: string
+          created_at?: string
+          deleted?: boolean
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          is_always?: boolean
+          position_left?: number
+          position_top?: number
+          start_date?: string | null
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          width?: number
+          z_index?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
