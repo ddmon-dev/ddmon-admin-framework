@@ -65,6 +65,8 @@ const formDefaultValues = {
 };
 
 function validatePrevValues(prevValues: ItemDTO | null) {
+  if (!prevValues) return null;
+
   return {
     ...prevValues,
     password: '',
