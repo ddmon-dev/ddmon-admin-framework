@@ -1,21 +1,9 @@
 import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
-import { Badge } from '@/shared/ui/badge';
 import { Separator } from '@/shared/ui/separator';
 import { ViewButton, SoftDeleteButton } from '../../_base/ui';
-
-import { CONFIG } from './config';
-import { type ItemDTO } from './config';
-
-const statusVariants: Record<string, 'default' | 'secondary'> = {
-  pending: 'secondary',
-  answered: 'default',
-};
-
-const statusLabels: Record<string, string> = {
-  pending: '대기',
-  answered: '답변완료',
-};
+import { CONFIG, type ItemDTO } from './config';
+import { StatusBadge } from './status-badge';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
   {
@@ -41,14 +29,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     accessorKey: 'status',
     header: '상태',
     size: 100,
-    cell: ({ row }) => {
-      const { status } = row.original;
-      return (
-        <Badge variant={statusVariants[status] || 'secondary'}>
-          {statusLabels[status] || status}
-        </Badge>
-      );
-    },
+    cell: ({ row }) => <StatusBadge status={row.original.status} />,
   },
   {
     accessorKey: 'created_at',

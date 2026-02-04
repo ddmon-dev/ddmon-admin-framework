@@ -21,7 +21,7 @@ export const getItem = createServerAction<GetItemParams, InquiryWithReplies>({
       .from(CONFIG.tableName)
       .select(`
         *,
-        replies:inquiry_replies(
+        replies:${CONFIG.replyTableName}(
           id,
           content,
           author,
@@ -30,7 +30,7 @@ export const getItem = createServerAction<GetItemParams, InquiryWithReplies>({
         )
       `)
       .eq('id', id)
-      .order('created_at', { referencedTable: 'inquiry_replies', ascending: false })
+      .order('created_at', { referencedTable: CONFIG.replyTableName, ascending: false })
       .single();
 
     if (error) {

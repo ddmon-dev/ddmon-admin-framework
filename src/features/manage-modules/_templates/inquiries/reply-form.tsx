@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { Button } from '@/shared/ui/button';
 import { FormTextarea } from '@/shared/ui/form';
+import { useDialog } from '@/shared/ui/app-dialog';
 import { Loader2 } from 'lucide-react';
 
 import { createReply } from './actions';
@@ -25,6 +26,7 @@ interface ReplyFormProps {
 
 export function ReplyForm({ inquiryId, onReplyCreated }: ReplyFormProps) {
   const pathname = usePathname();
+  const dialog = useDialog();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,7 +43,11 @@ export function ReplyForm({ inquiryId, onReplyCreated }: ReplyFormProps) {
       });
 
       if (!success || !data) {
-        toast.error(error);
+        await dialog.alert({
+          title: '이메일 발송 실패',
+          description: error,
+          variant: 'error',
+        });
         return;
       }
 

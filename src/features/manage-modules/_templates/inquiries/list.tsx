@@ -1,6 +1,6 @@
 'use client';
 
-import { ManageList, useManageSheet } from '../../_base/ui';
+import { ManageList } from '../../_base/ui';
 import { listColumns } from './list-columns';
 import { CONFIG, type ItemDTO } from './config';
 
@@ -10,12 +10,6 @@ interface ListProps {
 }
 
 export function List({ data, totalCount }: ListProps) {
-  const manageSheet = useManageSheet();
-
-  const handleRowClick = (row: ItemDTO) => {
-    manageSheet.open({ id: row.id, mode: 'view' });
-  };
-
   return (
     <ManageList
       data={data}
@@ -23,7 +17,7 @@ export function List({ data, totalCount }: ListProps) {
       listColumns={listColumns}
       tableName={CONFIG.tableName}
       enableBulkAction={CONFIG.enableBulkAction}
-      onRowClick={handleRowClick}
+      rowClickMode="view"
     />
   );
 }

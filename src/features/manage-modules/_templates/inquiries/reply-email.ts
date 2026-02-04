@@ -1,18 +1,18 @@
-interface InquiryReplyEmailParams {
+interface ReplyEmailParams {
   name: string;
   inquiryContent: string;
   replyContent: string;
 }
 
-export function getInquiryReplyEmailSubject() {
-  return '[GOLFZON] Your Inquiry Has Been Answered';
+export function getReplyEmailSubject() {
+  return '[ADMIN] Your Inquiry Has Been Answered';
 }
 
-export function getInquiryReplyEmailHtml({
+export function getReplyEmailHtml({
   name,
   inquiryContent,
   replyContent,
-}: InquiryReplyEmailParams) {
+}: ReplyEmailParams) {
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +30,7 @@ export function getInquiryReplyEmailHtml({
           <!-- Header -->
           <tr>
             <td style="padding: 48px 40px; background: linear-gradient(135deg, #18181b 0%, #27272a 100%); text-align: center;">
-              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">GOLFZON</h1>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">ADMIN</h1>
               <p style="color: #a1a1aa; margin: 12px 0 0; font-size: 14px; font-weight: 400;">Thank you for contacting us</p>
             </td>
           </tr>
@@ -79,7 +79,7 @@ export function getInquiryReplyEmailHtml({
 
               <p style="margin: 24px 0 0; font-size: 14px; color: #18181b; font-weight: 500;">
                 Best regards,<br>
-                <span style="color: #71717a; font-weight: 400;">The GOLFZON Team</span>
+                <span style="color: #71717a; font-weight: 400;">The ADMIN Team</span>
               </p>
             </td>
           </tr>
@@ -94,7 +94,7 @@ export function getInquiryReplyEmailHtml({
                       This is an automated message. Please do not reply directly to this email.
                     </p>
                     <p style="margin: 0; font-size: 12px; color: #d4d4d8;">
-                      &copy; ${new Date().getFullYear()} GOLFZON. All rights reserved.
+                      &copy; ${new Date().getFullYear()} ADMIN. All rights reserved.
                     </p>
                   </td>
                 </tr>

@@ -4,10 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { getUserSession } from '@/features/auth/utils/server';
 import { sendEmail } from '@/shared/lib/email/send-email';
-import {
-  getInquiryReplyEmailSubject,
-  getInquiryReplyEmailHtml,
-} from '@/shared/lib/email/templates/inquiry-reply';
+import { getReplyEmailSubject, getReplyEmailHtml } from '../reply-email';
 import { type ActionResult } from '@/shared/types/results';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { CONFIG, type ReplyRowData } from '../config';
@@ -43,10 +40,26 @@ export async function createReply({
       return { success: false, error: CRUD_ERRORS.READ_FAILED('문의') };
     }
 
-    // 1. inquiry_replies 테이블에 답변 저장 (이메일 발송 시각 기록)
+    // 1. 이메일 발송 (먼저 수행 - 실패 시 DB 저장하지 않음)
     const sentAt = new Date().toISOString();
+    try {
+      await sendEmail({
+        to: inquiry.email,
+        subject: getReplyEmailSubject(),
+        html: getReplyEmailHtml({
+          name: inquiry.name,
+          inquiryContent: inquiry.content,
+          replyContent: content,
+        }),
+      });
+    } catch (emailError) {
+      console.error('Email send error:', emailError);
+      return { success: false, error: '이메일 발송에 실패했습니다. 답변이 저장되지 않았습니다.' };
+    }
+
+    // 2. 답변 테이블에 저장 (이메일 발송 성공 후)
     const { data: replyData, error: replyError } = await supabase
-      .from('inquiry_replies')
+      .from(CONFIG.replyTableName)
       .insert({
         inquiry_id: inquiryId,
         content,
@@ -61,7 +74,7 @@ export async function createReply({
       return { success: false, error: CRUD_ERRORS.CREATE_FAILED('답변') };
     }
 
-    // 2. inquiries 상태를 answered로 변경
+    // 3. inquiries 상태를 answered로 변경
     const { error: updateError } = await supabase
       .from(CONFIG.tableName)
       .update({ status: 'answered' })
@@ -70,23 +83,6 @@ export async function createReply({
     if (updateError) {
       console.error('Update inquiry status error:', updateError);
       return { success: false, error: CRUD_ERRORS.UPDATE_FAILED('문의 상태') };
-    }
-
-    // 3. 이메일 발송 (항상 발송)
-    try {
-      await sendEmail({
-        to: inquiry.email,
-        subject: getInquiryReplyEmailSubject(),
-        html: getInquiryReplyEmailHtml({
-          name: inquiry.name,
-          inquiryContent: inquiry.content,
-          replyContent: content,
-        }),
-      });
-    } catch (emailError) {
-      console.error('Email send error:', emailError);
-      // 이메일 발송 실패해도 답변은 저장되었으므로 성공 처리
-      // 단, 로그만 남김
     }
 
     revalidatePath(pathname);
