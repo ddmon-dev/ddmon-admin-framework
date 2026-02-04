@@ -18,6 +18,9 @@ CREATE TABLE public.news (
 -- GIN 인덱스 생성 (JSONB 쿼리 성능 향상)
 CREATE INDEX idx_news_files_gin ON public.news USING gin(files);
 
+-- 목록 조회 최적화: deleted 필터 + created_at 정렬을 복합 인덱스로 처리
+CREATE INDEX idx_news_deleted_created ON public.news(deleted, created_at DESC);
+
 -- updated_at 자동 업데이트 트리거 (기존 함수 사용)
 CREATE TRIGGER trigger_news_updated_at
   BEFORE UPDATE ON public.news

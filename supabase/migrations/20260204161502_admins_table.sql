@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS admins (
 );
 
 -- 인덱스 생성
+-- NOTE: email 컬럼은 UNIQUE 제약조건이 이미 인덱스를 생성하므로 별도 인덱스 불필요
 CREATE INDEX IF NOT EXISTS idx_admins_name ON admins(name);
-CREATE INDEX IF NOT EXISTS idx_admins_email ON admins(email);
 CREATE INDEX IF NOT EXISTS idx_admins_deleted ON admins(deleted);
 
 -- updated_at 자동 업데이트 트리거 (공통 함수 사용)
