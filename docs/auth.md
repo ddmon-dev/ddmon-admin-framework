@@ -43,7 +43,7 @@ app/(protected)/
 ├── layout.tsx              # requireAuth() 호출
 ├── (super-admin-only)/     # 슈퍼 관리자 전용
 │   ├── layout.tsx          # requireAuth({ requireSuper: true })
-│   └── manage-admin/
+│   └── admins/
 └── (system)/
     └── unauthorized/       # 권한 없음 페이지
 ```

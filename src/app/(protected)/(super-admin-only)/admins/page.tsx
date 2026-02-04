@@ -1,5 +1,5 @@
 import { type SearchParams } from '@/shared/types/search-params';
-import ManageModule from '@/features/manage-modules/faq';
+import ManageModule from '@/features/manage-modules/admins';
 
 interface PageProps {
   searchParams: SearchParams;

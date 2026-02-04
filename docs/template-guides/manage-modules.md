@@ -18,7 +18,7 @@ manage-modules/
 │   ├── faq/             # FAQ 템플릿
 │   ├── news/            # 뉴스 템플릿
 │   └── notice/          # 공지사항 템플릿 (파일 업로드 포함)
-└── admin/               # 관리자 관리 모듈
+└── admins/              # 관리자 관리 모듈
 ```
 
 ### 모듈 파일 구조
@@ -189,7 +189,7 @@ const handleClick = async () => {
 **사용 예시:**
 
 ```typescript
-// notice/detail-view.tsx
+// notices/detail-view.tsx
 import {
   DetailContainer,
   DetailField,

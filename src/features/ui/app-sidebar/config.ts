@@ -37,21 +37,21 @@ export const navigationConfig: MenuConfig = {
           items: [
             {
               title: '공지사항',
-              url: '/manage-notice',
+              url: '/notices',
             },
             {
               title: '뉴스',
-              url: '/manage-news',
+              url: '/news',
             },
             {
               title: 'FAQ',
-              url: '/manage-faq',
+              url: '/faqs',
             },
           ],
         },
         {
           title: '문의 관리',
-          url: '/manage-inquiry',
+          url: '/inquiries',
           icon: MessageSquare,
         },
       ],
@@ -61,7 +61,7 @@ export const navigationConfig: MenuConfig = {
       items: [
         {
           title: '팝업 관리',
-          url: '/manage-popup',
+          url: '/popups',
           icon: AppWindow,
         },
       ],
@@ -72,7 +72,7 @@ export const navigationConfig: MenuConfig = {
       items: [
         {
           title: '관리자 계정 관리',
-          url: '/manage-admin',
+          url: '/admins',
           icon: Users,
         },
       ],
