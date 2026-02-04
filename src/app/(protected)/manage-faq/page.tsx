@@ -1,10 +1,10 @@
 import { type SearchParams } from '@/shared/types/search-params';
-import ManageModule from '@/features/manage-modules/popup';
+import ManageModule from '@/features/manage-modules/faq';
 
 interface PageProps {
   searchParams: SearchParams;
 }
 
-export default function ManagePopupPage({ searchParams }: PageProps) {
+export default function ManageModulePage({ searchParams }: PageProps) {
   return <ManageModule searchParams={searchParams} />;
 }
