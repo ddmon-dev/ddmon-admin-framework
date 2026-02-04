@@ -9,6 +9,7 @@ import {
   ManageSheetModeChange,
 } from '../../_base/ui';
 import { Badge } from '@/shared/ui/badge';
+import { RichTextContent } from '@/shared/ui/editor/rich-text-content';
 import { CONFIG, type ItemDTO } from './config';
 
 export function DetailView({ data }: { data: ItemDTO }) {
@@ -49,7 +50,10 @@ export function DetailView({ data }: { data: ItemDTO }) {
             value={format(data.updated_at, 'yyyy-MM-dd HH:mm:ss')}
           />
 
-          <DetailField label="내용" value={data.content} />
+          <DetailField
+            label="내용"
+            value={<RichTextContent>{data.content}</RichTextContent>}
+          />
           <DetailField
             label="첨부 파일"
             value={data.files?.attachments?.map(file => file.url).join(', ')}
