@@ -1,9 +1,13 @@
 'use server';
 
+import { APP_CONFIG } from '@/app.config';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
-import { CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import {
+  CRUD_ERRORS,
+  VALIDATION_ERRORS,
+} from '@/shared/constants/error-messages';
 
 import { requireAuth } from '../utils/server';
 import { hashPassword, verifyPassword } from '../utils/password';
@@ -25,7 +29,7 @@ export const updateProfile = createServerAction<UpdateProfileValues, void>({
     if (values.newPassword) {
       // DB에서 현재 해시된 비밀번호 가져오기
       const { data: adminData, error: fetchError } = await supabase
-        .from('admins')
+        .from(APP_CONFIG.AUTH.ADMIN_TABLE_NAME)
         .select('password')
         .eq('id', user.id)
         .single();
@@ -35,7 +39,10 @@ export const updateProfile = createServerAction<UpdateProfileValues, void>({
       }
 
       // 현재 비밀번호 검증
-      const isValid = await verifyPassword(values.currentPassword!, adminData.password);
+      const isValid = await verifyPassword(
+        values.currentPassword!,
+        adminData.password
+      );
 
       if (!isValid) {
         return Result.error('현재 비밀번호가 일치하지 않습니다.');
@@ -55,7 +62,7 @@ export const updateProfile = createServerAction<UpdateProfileValues, void>({
 
     // DB 업데이트 (본인만)
     const { error: updateError } = await supabase
-      .from('admins')
+      .from(APP_CONFIG.AUTH.ADMIN_TABLE_NAME)
       .update(updateData)
       .eq('id', user.id);
 
