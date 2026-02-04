@@ -103,6 +103,86 @@ export type Database = {
         }
         Relationships: []
       }
+      inquiries: {
+        Row: {
+          company: string | null
+          content: string
+          created_at: string
+          deleted: boolean
+          email: string
+          id: string
+          name: string
+          phone: string | null
+          position: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company?: string | null
+          content: string
+          created_at?: string
+          deleted?: boolean
+          email: string
+          id?: string
+          name: string
+          phone?: string | null
+          position?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string | null
+          content?: string
+          created_at?: string
+          deleted?: boolean
+          email?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          position?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      inquiry_replies: {
+        Row: {
+          author: string
+          content: string
+          created_at: string
+          id: string
+          inquiry_id: string
+          sent_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          content: string
+          created_at?: string
+          id?: string
+          inquiry_id: string
+          sent_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          content?: string
+          created_at?: string
+          id?: string
+          inquiry_id?: string
+          sent_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inquiry_replies_inquiry_id_fkey"
+            columns: ["inquiry_id"]
+            isOneToOne: false
+            referencedRelation: "inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news: {
         Row: {
           author: string | null

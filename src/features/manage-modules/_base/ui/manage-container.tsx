@@ -13,6 +13,7 @@ interface ManageContainerProps {
   headerAddons?: React.ReactNode;
   headerSearchBar?: React.ReactNode;
   createButtonLabel?: string;
+  hideCreateButton?: boolean;
   children: React.ReactNode;
 }
 
@@ -22,20 +23,22 @@ export function ManageContainer({
   headerAddons,
   headerSearchBar,
   createButtonLabel,
+  hideCreateButton,
   children,
 }: ManageContainerProps) {
   return (
     <ManageSheetProvider>
-      <div className='flex flex-col gap-4 flex-1'>
+      <div className="flex flex-col gap-4 flex-1">
         <ManageModuleHeader
           title={title}
           moduleName={moduleName}
           headerAddons={headerAddons}
           headerSearchBar={headerSearchBar}
           createButtonLabel={createButtonLabel}
+          hideCreateButton={hideCreateButton}
         />
-        <Container className='flex flex-col gap-8 md:gap-4 flex-1 mt-8 md:mt-4'>
-          <h1 className='text-2xl font-bold block md:hidden text-center md:text-left'>
+        <Container className="flex flex-col gap-8 md:gap-4 flex-1 mt-8 md:mt-4">
+          <h1 className="text-2xl font-bold block md:hidden text-center md:text-left">
             {title ? title : `${moduleName} 관리`}
           </h1>
           <Suspense fallback={<ListSkeleton />}>{children}</Suspense>
@@ -47,7 +50,9 @@ export function ManageContainer({
 
 interface ManageListFetcherProps<TData> {
   searchParams: SearchParams;
-  getList: (params: Record<string, unknown>) => Promise<ActionResult<ListProps<TData>>>;
+  getList: (
+    params: Record<string, unknown>
+  ) => Promise<ActionResult<ListProps<TData>>>;
   children: (props: { data: TData[]; totalCount: number }) => React.ReactNode;
 }
 

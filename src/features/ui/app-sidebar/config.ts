@@ -1,5 +1,5 @@
 import { type MenuData } from './types';
-import { Settings2, FileText, Users, AlertCircle, ServerCrash, ShieldX } from 'lucide-react';
+import { Settings2, FileText, Users, AlertCircle, ServerCrash, ShieldX, MessageSquare } from 'lucide-react';
 
 interface MenuConfig {
   navMain: MenuData[];
@@ -53,6 +53,11 @@ export const navigationConfig: MenuConfig = {
               url: '/manage-faq',
             },
           ],
+        },
+        {
+          title: '문의 관리',
+          url: '/manage-inquiry',
+          icon: MessageSquare,
         },
       ],
     },
