@@ -118,13 +118,13 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     },
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'created_at',
     header: '등록일',
     size: 120,
     cell: ({ row }) => {
-      const { createdAt } = row.original;
-      if (!createdAt) return '-';
-      return new Date(createdAt).toLocaleDateString();
+      const { created_at } = row.original;
+      if (!created_at) return '-';
+      return new Date(created_at).toLocaleDateString();
     },
   },
   {
@@ -396,7 +396,7 @@ export const exportDataColumns: ExcelColumn<ItemDTO>[] = [
   { header: '가격', accessorKey: 'price', width: 15 },
   {
     header: '등록일',
-    accessorFn: row => new Date(row.createdAt).toLocaleDateString(),
+    accessorFn: row => new Date(row.created_at).toLocaleDateString(),
     width: 15,
   },
 ];
@@ -474,7 +474,6 @@ export default function ManageModule({ searchParams }: Props) {
 
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { transformCamelToSnake, transformSnakeToCamel } from '@/shared/utils/objects';
 import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import { CreateItemParams } from '../../_base/types';
@@ -493,11 +492,10 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
     values.password = await hashPassword(values.password);
 
     const supabase = createServerClient();
-    const snakedValues = transformCamelToSnake(values);
 
     const { data, error } = await supabase
       .from(CONFIG.tableName)
-      .insert(snakedValues as any)
+      .insert(values as any)
       .select()
       .single();
 
@@ -511,7 +509,7 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
 
     if (pathname) revalidatePath(pathname);
 
-    return Result.success(transformSnakeToCamel(data) as ItemDTO);
+    return Result.success(data as ItemDTO);
   },
 });
 ```
@@ -552,12 +550,12 @@ export const getList = createGetListAction<ItemDTO>({
 Supabase에서 조회한 timestamp는 string으로 넘어옴. `useManageItemData`에서 자동 변환:
 
 ```typescript
-// 기본: createdAt, updatedAt 자동 변환
+// 기본: created_at, updated_at 자동 변환
 const { prevValues } = useManageItemData(getItem);
 
 // 추가 날짜 필드 변환
 const { prevValues } = useManageItemData(getItem, {
-  additionalDateFields: ['publishedAt', 'expiredAt'],
+  additionalDateFields: ['published_at', 'expired_at'],
 });
 ```
 

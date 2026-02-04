@@ -13,7 +13,7 @@ manage-modules/
 │   ├── actions/         # 공통 Server Actions (softDelete, hardDelete)
 │   ├── hooks/           # 커스텀 훅 (useManageItemData)
 │   └── utils/           # 유틸리티
-├── _template/           # 템플릿 (복사해서 사용)
+├── _templates/_sample/  # 템플릿 (복사해서 사용)
 └── notice/              # 실제 구현 예시
     ├── actions/
     ├── list.tsx
@@ -93,7 +93,6 @@ if (!success) {
 ```
 
 **자동 처리:**
-- snake_case ↔ camelCase 변환
 - revalidatePath(path)
 - 타입 안전성
 
@@ -120,7 +119,7 @@ const handleClick = async () => {
 ### 1. 템플릿 복사 (권장)
 
 ```bash
-cp -r src/features/manage-modules/_template src/features/manage-modules/products
+cp -r src/features/manage-modules/_templates/_sample src/features/manage-modules/products
 ```
 
 ### 2. 설정 파일 수정
@@ -138,12 +137,11 @@ export const CONFIG = {
 
 **types.ts:**
 ```typescript
-import type { BaseRowData, CamelCaseKeys, DbInsert, DbUpdate } from '@/types/supabase/helpers';
+import type { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
+import type { ItemDTO as BaseItemDTO } from '../_base/types';
 
 export type RowData = BaseRowData<'products'>;
-export type ItemDTO = CamelCaseKeys<RowData>;
-export type CreateItemValues = DbInsert<'products'>;
-export type UpdateItemValues = DbUpdate<'products'>;
+export type ItemDTO = BaseItemDTO<'products'>;
 ```
 
 ### 3. Server Actions 수정
@@ -231,7 +229,6 @@ export default function ManageModule({ searchParams }: Props) {
 ### 타입 안전성
 - Supabase 자동 생성 타입 활용
 - Zod 스키마로 런타임 검증
-- snake_case ↔ camelCase 자동 변환
 
 ### 코드 재사용
 - `_base` 컴포넌트/actions/hooks 활용

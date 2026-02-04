@@ -77,7 +77,7 @@ type FormFilesField = Record<string, FormFileValue[]>;
 // notice/config.ts
 import type { WithFiles } from '@/shared/lib/file-system';
 
-export type ItemDTO = WithFiles<CamelCaseKeys<RowData>>;
+export type ItemDTO = WithFiles<BaseItemDTO<typeof CONFIG.tableName>>;
 // WithFiles<T>는 T & { files?: DbFilesJSONB }로 확장
 ```
 

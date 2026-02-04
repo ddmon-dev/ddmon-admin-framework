@@ -72,7 +72,7 @@ await signOut();
 ### 세션 확인
 
 ```typescript
-import { auth } from '@/features/auth/handler';
+import { auth } from '@/features/auth';
 
 const session = await auth();
 if (!session) {
@@ -121,7 +121,7 @@ export const authConfig = {
 인증 미들웨어는 `/middleware.ts`에서 적용됩니다.
 
 ```typescript
-export { auth as middleware } from '@/features/auth/handler';
+export { auth as middleware } from '@/features/auth';
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
@@ -133,14 +133,14 @@ export const config = {
 ```typescript
 // features/auth/types.ts
 export type AdminUser = {
-  id: string;        // 로그인 아이디 (Primary Key)
-  name: string;      // 실제 이름
-  email: string;     // 이메일
-  superAdmin: boolean;
+  id: string;         // 로그인 아이디 (Primary Key)
+  name: string;       // 실제 이름
+  email: string;      // 이메일
+  super_admin: boolean;
 };
 
 export type SignInValues = {
-  id: string;        // 로그인 아이디
+  id: string;         // 로그인 아이디
   password: string;
 };
 ```

@@ -36,18 +36,11 @@ app/
 
 ```
 features/
-├── auth/                # 인증 시스템
-└── manage-modules/      # CRUD 모듈 시스템
-```
-
-**widgets/** - 위젯 레이어
-복합 UI 위젯, 독립적으로 동작하는 모듈입니다.
-
-```
-widgets/
-├── app-sidebar/
-├── app-breadcrumb/
-└── app-header/
+├── auth/               # 인증 시스템
+├── dashboard/          # 대시보드
+├── manage-modules/     # CRUD 모듈 시스템
+├── ui/                 # UI 위젯 (Sidebar, Header, Breadcrumb)
+└── utils/              # 유틸리티
 ```
 
 **shared/** - 공유 레이어
@@ -69,13 +62,13 @@ shared/
 | ---------------- | --------- |
 | 라우팅만         | app/      |
 | 비즈니스 로직    | features/ |
-| 복합 UI 위젯     | widgets/  |
+| 복합 UI 위젯     | features/ui/ |
 | 재사용 가능      | shared/   |
 
 **원칙:**
 - 비즈니스 로직은 features/
 - 페이지는 app/에서 features/ 조합
-- widgets/는 독립적으로 동작
+- UI 위젯은 features/ui/에서 관리
 - shared/는 레이어 무관하게 사용
 
 ### Path Alias
@@ -85,7 +78,7 @@ shared/
 ```typescript
 import { Button } from '@/shared/ui/button';
 import { auth } from '@/features/auth';
-import { AppSidebar } from '@/widgets/app-sidebar/sidebar';
+import { AppSidebar } from '@/features/ui/app-sidebar/sidebar';
 ```
 
 ---
@@ -270,12 +263,12 @@ auth/
 - 설정 파일들은 프리픽스 없이 루트에 위치
 - UI가 2개뿐이라 ui/ 폴더로 분리
 
-### 2. widgets 레이어
+### 2. features/ui 레이어
 
 **구조**: 플랫 구조
 
 ```
-widgets/app-sidebar/
+features/ui/app-sidebar/
 ├── sidebar.tsx
 ├── types.ts
 ├── config.ts
@@ -283,14 +276,14 @@ widgets/app-sidebar/
 ├── nav-menu.tsx
 └── identity.tsx
 
-widgets/app-breadcrumb/
+features/ui/app-breadcrumb/
 ├── breadcrumb.tsx
 └── config.ts
 ```
 
 **이유**:
 
-- widget은 독립적이고 파일 개수가 적음
+- UI 위젯은 독립적이고 파일 개수가 적음
 - 플랫 구조가 더 직관적
 
 ### 3. shared 레이어
@@ -338,7 +331,7 @@ shared/
 **예시**:
 ```typescript
 // features/auth/lib/session.ts
-import { auth } from '../handler';
+import { auth } from '@/features/auth';
 import { redirect } from 'next/navigation';
 
 export async function requireAuth() {
@@ -424,7 +417,7 @@ auth/config.ts         ✅
 auth/auth.config.ts    ❌ (중복)
 ```
 
-### widgets/
+### features/ui/
 
 **특징**: 복합 UI 위젯, 독립적 모듈
 
@@ -433,12 +426,12 @@ auth/auth.config.ts    ❌ (중복)
 **파일명**: 프리픽스 없음
 
 ```
-widgets/app-sidebar/
+features/ui/app-sidebar/
 ├── sidebar.tsx        ✅
 ├── types.ts           ✅
 └── config.ts          ✅
 
-widgets/app-sidebar/
+features/ui/app-sidebar/
 ├── app-sidebar.tsx    ❌ (엔티티 중복)
 ```
 
@@ -505,11 +498,11 @@ import { auth } from '@/features/auth/lib/auth.handler';
 import type { AdminUser } from '@/features/auth/lib/auth.types';
 
 // After
-import { auth } from '@/features/auth/handler';
+import { auth } from '@/features/auth';
 import type { AdminUser } from '@/features/auth/types';
 ```
 
-### widgets 예시 (Before → After)
+### features/ui 예시 (Before → After)
 
 **Before**:
 
@@ -525,7 +518,7 @@ widgets/app-sidebar/
 **After**:
 
 ```
-widgets/app-sidebar/
+features/ui/app-sidebar/
 ├── sidebar.tsx              ← 프리픽스 제거
 ├── types.ts
 ├── config.ts
@@ -541,8 +534,8 @@ import { AppSidebar } from '@/widgets/app-sidebar/app-sidebar';
 import type { MenuData } from '@/widgets/app-sidebar/app-sidebar.types';
 
 // After
-import { AppSidebar } from '@/widgets/app-sidebar/sidebar';
-import type { MenuData } from '@/widgets/app-sidebar/types';
+import { AppSidebar } from '@/features/ui/app-sidebar/sidebar';
+import type { MenuData } from '@/features/ui/app-sidebar/types';
 ```
 
 ---
@@ -587,12 +580,12 @@ payment/
 └── utils.ts
 ```
 
-### 2. widgets 추가
+### 2. features/ui 추가
 
 플랫 구조 + 프리픽스 없음
 
 ```
-widgets/app-footer/
+features/ui/app-footer/
 ├── footer.tsx         ✅
 ├── types.ts           ✅
 ├── config.ts          ✅
@@ -602,7 +595,7 @@ widgets/app-footer/
 **❌ 하지 말 것**:
 
 ```
-widgets/app-footer/
+features/ui/app-footer/
 ├── app-footer.tsx     ❌ (엔티티 중복)
 ├── app-footer.types.ts ❌
 ```
@@ -664,7 +657,7 @@ npx shadcn@latest add component-name
 ```bash
 # Quick Open (Cmd/Ctrl + P)
 auth config        → auth/config.ts
-sidebar types      → widgets/app-sidebar/types.ts
+sidebar types      → features/ui/app-sidebar/types.ts
 
 # Symbol Search (Cmd/Ctrl + Shift + O)
 AuthConfig         → 타입 직접 검색
