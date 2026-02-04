@@ -6,4 +6,5 @@ export { CreateButton } from './create-button';
 export { ModifyButton } from './modify-button';
 export { SoftDeleteButton, HardDeleteButton } from './delete-button';
 export { BulkActionBar } from './bulk-action-bar';
-export { ManageFormSubmit, ManageSheetClose } from './manage-sheet-buttons';
+export * from './manage-sheet-buttons';
+export * from './manage-detail';

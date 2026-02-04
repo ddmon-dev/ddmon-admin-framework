@@ -3,8 +3,13 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { APP_CONFIG } from '@/app.config';
 import { type ColumnDef } from '@tanstack/react-table';
-import { DataList, useDataList, createSelectionColumn } from '@/shared/ui/data-list';
+import {
+  DataList,
+  useDataList,
+  createSelectionColumn,
+} from '@/shared/ui/data-list';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
+import type { ManageSheetMode } from '../types';
 import { useManageSheet } from './manage-sheet';
 import { BulkActionBar } from './bulk-action-bar';
 
@@ -14,6 +19,7 @@ interface ManageListProps<TData extends { id?: string }> {
   listColumns: ColumnDef<TData>[];
   tableName?: TableName;
   onRowClick?: (row: TData) => void;
+  rowClickMode?: ManageSheetMode;
   enableBulkAction?: boolean;
 }
 
@@ -23,6 +29,7 @@ export function ManageList<TData extends { id?: string }>({
   listColumns,
   tableName,
   onRowClick,
+  rowClickMode = 'modify',
   enableBulkAction = false,
 }: ManageListProps<TData>) {
   const manageSheet = useManageSheet();
@@ -45,7 +52,7 @@ export function ManageList<TData extends { id?: string }>({
 
     if (enableBulkAction && selectedRows.length > 0) {
       setSelectedRows([]);
-      setSelectionKey((prev) => prev + 1);
+      setSelectionKey(prev => prev + 1);
     }
   }, [data, enableBulkAction]);
 
@@ -58,7 +65,7 @@ export function ManageList<TData extends { id?: string }>({
     if (onRowClick) {
       onRowClick(row);
     } else {
-      manageSheet.open({ id: row.id, mode: 'modify' });
+      manageSheet.open({ id: row.id, mode: rowClickMode });
     }
   };
 
@@ -68,7 +75,7 @@ export function ManageList<TData extends { id?: string }>({
 
   const handleClearSelection = useCallback(() => {
     setSelectedRows([]);
-    setSelectionKey((prev) => prev + 1);
+    setSelectionKey(prev => prev + 1);
   }, []);
 
   return (

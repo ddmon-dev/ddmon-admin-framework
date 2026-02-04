@@ -3,6 +3,7 @@
 import { ManageSheet } from '../../_base/ui';
 import { CONFIG } from './config';
 import { WriteForm } from './write-form';
+import { DetailView } from './detail-view';
 import { getItem } from './actions/get-item';
 
 export function ItemSheet() {
@@ -10,6 +11,7 @@ export function ItemSheet() {
     <ManageSheet
       fetchFn={getItem}
       formComponent={WriteForm}
+      viewComponent={DetailView}
       moduleName={CONFIG.moduleName}
     />
   );

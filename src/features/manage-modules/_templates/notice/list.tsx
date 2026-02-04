@@ -17,6 +17,7 @@ export function List({ data, totalCount }: ListProps) {
       listColumns={listColumns}
       tableName={CONFIG.tableName}
       enableBulkAction={CONFIG.enableBulkAction}
+      rowClickMode="view"
     />
   );
 }

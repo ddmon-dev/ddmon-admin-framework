@@ -15,11 +15,12 @@ import { cn } from '@/shared/utils/classnames';
 import type { DbFilesJSONB } from '@/shared/lib/file-system';
 import type { GetItemAction } from '../hooks/use-manage-item-data';
 import { useManageItemData } from '../hooks/use-manage-item-data';
+import type { ManageSheetMode } from '../types';
 import { ManageSheetError } from './manage-sheet-error';
 
 interface ManageSheetData {
   id?: string;
-  mode: 'view' | 'modify' | 'create';
+  mode: ManageSheetMode;
 }
 
 interface ManageSheetContextType {
@@ -34,8 +35,13 @@ const ManageSheetContext = createContext<ManageSheetContextType>({
   closeManageSheet: () => {},
 });
 
-export function ManageSheetProvider({ children }: { children: React.ReactNode }) {
-  const [manageSheetData, setManageSheetData] = useState<ManageSheetData | null>(null);
+export function ManageSheetProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [manageSheetData, setManageSheetData] =
+    useState<ManageSheetData | null>(null);
 
   const openManageSheet = (data: ManageSheetData) => {
     setManageSheetData(data);
@@ -133,12 +139,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   const renderContent = () => {
     // create 모드: 바로 폼 표시 (깜빡임 없음)
     if (mode === 'create') {
-      return (
-        <FormComponent
-          id={id}
-          prevValues={null}
-        />
-      );
+      return <FormComponent id={id} prevValues={null} />;
     }
 
     // 로딩 중
@@ -153,12 +154,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
 
     // modify 모드: 폼 표시
     if (mode === 'modify') {
-      return (
-        <FormComponent
-          id={id}
-          prevValues={prevValues ?? null}
-        />
-      );
+      return <FormComponent id={id} prevValues={prevValues ?? null} />;
     }
 
     // view 모드: 뷰 표시
@@ -170,20 +166,24 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   };
 
   return (
-    <Sheet
-      open={isOpen}
-      onOpenChange={open => !open && manageSheet.close()}
-    >
-      <SheetContent className={cn(SIZES[size], 'w-[440px] max-w-full md:w-full md:rounded-l-xl')}>
+    <Sheet open={isOpen} onOpenChange={open => !open && manageSheet.close()}>
+      <SheetContent
+        className={cn(
+          SIZES[size],
+          'w-[440px] max-w-full md:w-full md:rounded-l-xl'
+        )}
+      >
         {!error && (
-          <SheetHeader className='border-b md:p-8 md:pb-4 gap-0.5'>
+          <SheetHeader className="border-b md:p-8 md:pb-4 gap-0.5">
             {mode && (
               <>
-                <SheetTitle className='text-lg'>
-                  {customVariant?.[mode]?.title?.(moduleName) ?? VARIANTS[mode].title(moduleName)}
+                <SheetTitle className="text-lg">
+                  {customVariant?.[mode]?.title?.(moduleName) ??
+                    VARIANTS[mode].title(moduleName)}
                 </SheetTitle>
-                <SheetDescription className='text-sm'>
-                  {customVariant?.[mode]?.description ?? VARIANTS[mode].description}
+                <SheetDescription className="text-sm">
+                  {customVariant?.[mode]?.description ??
+                    VARIANTS[mode].description}
                 </SheetDescription>
               </>
             )}

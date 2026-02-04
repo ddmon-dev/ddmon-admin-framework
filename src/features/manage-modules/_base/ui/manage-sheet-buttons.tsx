@@ -1,7 +1,9 @@
+import type { VariantProps } from 'class-variance-authority';
 import { cn } from '@/shared/utils/classnames';
-import { Button } from '@/shared/ui/button';
+import { Button, buttonVariants } from '@/shared/ui/button';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { useManageSheet } from './manage-sheet';
+import type { ManageSheetMode } from '../types';
 
 interface ManageFormSubmitProps {
   isLoading: boolean;
@@ -16,7 +18,7 @@ export function ManageFormSubmit({
 }: ManageFormSubmitProps) {
   return (
     <LoadingButton
-      type='submit'
+      type="submit"
       isLoading={isLoading}
       className={cn('font-semibold', className)}
     >
@@ -30,16 +32,57 @@ interface ManageSheetCloseProps {
   className?: string;
 }
 
-export function ManageSheetClose({ children = '취소하기', className }: ManageSheetCloseProps) {
+export function ManageSheetClose({
+  children = '닫기',
+  className,
+}: ManageSheetCloseProps) {
   const manageSheet = useManageSheet();
   return (
     <Button
-      type='button'
-      variant='secondary'
+      type="button"
+      variant="secondary"
       onClick={() => manageSheet.close()}
       className={cn('font-semibold', className)}
     >
       {children}
+    </Button>
+  );
+}
+
+interface ManageSheetModeChangeProps {
+  children?: React.ReactNode;
+  className?: string;
+  variant?: VariantProps<typeof buttonVariants>['variant'];
+  mode: ManageSheetMode;
+}
+
+const MODE_CHANGE_LABELS = {
+  view: '상세 보기',
+  modify: '수정하기',
+  create: '생성하기',
+};
+
+export function ManageSheetModeChange({
+  children,
+  className,
+  variant,
+  mode,
+}: ManageSheetModeChangeProps) {
+  const manageSheet = useManageSheet();
+  const { id } = manageSheet.data ?? {};
+
+  const handleClick = () => {
+    manageSheet.open({ id, mode });
+  };
+
+  return (
+    <Button
+      type="button"
+      variant={variant}
+      onClick={handleClick}
+      className={cn('font-semibold', className)}
+    >
+      {children ?? MODE_CHANGE_LABELS[mode]}
     </Button>
   );
 }
