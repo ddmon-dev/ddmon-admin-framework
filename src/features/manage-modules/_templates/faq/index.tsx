@@ -3,7 +3,6 @@ import { type SearchParams } from '@/shared/types/search-params';
 import { ManageContainer, ManageListFetcher } from '../../_base/ui';
 
 import { CONFIG, type ItemDTO } from './config';
-import { HeaderAddons } from './addons';
 import { List } from './list';
 import { ItemSheet } from './item-sheet';
 
@@ -15,11 +14,7 @@ interface Props {
 
 export default function ManageModule({ searchParams }: Props) {
   return (
-    <ManageContainer
-      title={CONFIG.title}
-      moduleName={CONFIG.moduleName}
-      headerAddons={<HeaderAddons />}
-    >
+    <ManageContainer title={CONFIG.title} moduleName={CONFIG.moduleName}>
       <ManageListFetcher<ItemDTO>
         searchParams={searchParams}
         getList={getList}
