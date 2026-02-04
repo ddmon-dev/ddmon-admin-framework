@@ -218,11 +218,12 @@ export function ListRowActions({ row }: ListRowActionsProps) {
 ### Server Action 결과 표시
 
 ```typescript
-// src/features/manage-modules/_base/ui/item-form.tsx
+// 예시: 폼 컴포넌트에서의 사용
 import { useDialog } from '@/shared/providers';
 
-export function ItemForm({ mode, id }: ItemFormProps) {
+export function WriteForm({ mode, id }: WriteFormProps) {
   const dialog = useDialog();
+  const sheet = useManageSheet();
 
   const onSubmit = async (values: FormValues) => {
     const result = mode === 'create'
@@ -230,7 +231,7 @@ export function ItemForm({ mode, id }: ItemFormProps) {
       : await updateItem(id, values);
 
     if (result.success) {
-      closeManageSheet();
+      sheet.close();
       await dialog.alert({
         title: mode === 'create' ? '등록 완료' : '수정 완료',
         description: result.message,
