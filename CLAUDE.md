@@ -29,19 +29,19 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 
 ## 상세 문서
 
-프로젝트의 특정 주제에 대한 자세한 내용은 `docs/` 폴더를 참조하세요.
+프로젝트의 특정 주제에 대한 자세한 내용은 `docs/template-guides/` 폴더를 참조하세요.
 
 ### 아키텍처 & 시스템
 
-- **[프로젝트 구조 & 컨벤션](docs/conventions.md)** - FSD 아키텍처, 파일명 규칙, lib vs utils 구분
-- **[manage-modules (CRUD 시스템)](docs/manage-modules.md)** - 템플릿 기반 CRUD 모듈, 핵심 패턴
-- **[파일 시스템](docs/file-system.md)** - FormFileUpload + 에디터(Tiptap) 이미지 업로드
-- **[인증 시스템](docs/auth.md)** - NextAuth 설정, 라우팅, 세션 관리
+- **[프로젝트 구조 & 컨벤션](docs/template-guides/conventions.md)** - FSD 아키텍처, 파일명 규칙, lib vs utils 구분
+- **[manage-modules (CRUD 시스템)](docs/template-guides/manage-modules.md)** - 템플릿 기반 CRUD 모듈, 핵심 패턴
+- **[파일 시스템](docs/template-guides/file-system.md)** - FormFileUpload + 에디터(Tiptap) 이미지 업로드
+- **[인증 시스템](docs/template-guides/auth.md)** - NextAuth 설정, 라우팅, 세션 관리
 
 ### 개발
 
-- **[개발 가이드](docs/development.md)** - 명령어, 환경변수, 설정 파일
-- **[Supabase 워크플로우](docs/supabase.md)** - 로컬 개발, 클라우드 배포, 마이그레이션
+- **[개발 가이드](docs/template-guides/development.md)** - 명령어, 환경변수, 설정 파일
+- **[Supabase 워크플로우](docs/template-guides/supabase.md)** - 로컬 개발, 클라우드 배포, 마이그레이션
 
 ---
 
@@ -66,7 +66,7 @@ export type RowData = BaseRowData<'products'>;
 # 5. 컴포넌트 수정 (list-columns, write-form, addons)
 ```
 
-📄 자세한 내용: [manage-modules.md](docs/manage-modules.md#새로운-모듈-추가)
+📄 자세한 내용: [manage-modules.md](docs/template-guides/manage-modules.md#새로운-모듈-추가)
 
 ### 파일 업로드 추가
 
@@ -94,7 +94,7 @@ await uploadFormFiles({
 <FormEditor entity={CONFIG.tableName} name="content" label="내용" />
 ```
 
-📄 자세한 내용: [file-system.md](docs/file-system.md)
+📄 자세한 내용: [file-system.md](docs/template-guides/file-system.md)
 
 ### 새 페이지 추가
 
@@ -107,7 +107,7 @@ export default function ProductsPage() {
 }
 ```
 
-📄 자세한 내용: [conventions.md](docs/conventions.md#새로운-기능-추가-시)
+📄 자세한 내용: [conventions.md](docs/template-guides/conventions.md#새로운-기능-추가-시)
 
 ### Supabase 로컬 개발
 
@@ -130,7 +130,7 @@ npm run db:link --project-ref <ref>
 npm run db:push
 ```
 
-📄 자세한 내용: [supabase.md](docs/supabase.md)
+📄 자세한 내용: [supabase.md](docs/template-guides/supabase.md)
 
 ---
 
@@ -147,7 +147,7 @@ npm run build
 npm run lint
 ```
 
-📄 자세한 내용: [development.md](docs/development.md)
+📄 자세한 내용: [development.md](docs/template-guides/development.md)
 
 ---
 
@@ -176,7 +176,7 @@ src/
     └── constants/           # 공통 상수
 ```
 
-📄 자세한 내용: [conventions.md](docs/conventions.md#프로젝트-아키텍처)
+📄 자세한 내용: [conventions.md](docs/template-guides/conventions.md#프로젝트-아키텍처)
 
 ---
 
@@ -206,7 +206,7 @@ src/
 
 **타입**: `feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore`
 
-📄 자세한 내용: [conventions.md](docs/conventions.md#파일명-규칙)
+📄 자세한 내용: [conventions.md](docs/template-guides/conventions.md#파일명-규칙)
 
 ---
 
@@ -216,7 +216,7 @@ src/
 
 ### 복잡한 시스템
 
-`docs/` 폴더에 전문 문서 작성:
+`docs/template-guides/` 폴더에 전문 문서 작성:
 
 ```markdown
 # 기능명
@@ -249,7 +249,7 @@ src/
 ```markdown
 ### 아키텍처 & 시스템
 
-- **[새 기능](docs/new-feature.md)** - 간단한 설명
+- **[새 기능](docs/template-guides/new-feature.md)** - 간단한 설명
 ```
 
 빠른 참조 섹션에 예시 추가 (선택사항)
@@ -262,7 +262,7 @@ src/
 
 ### 체크리스트
 
-- [ ] 폴더 구조 변경 → `CLAUDE.md` 파일 구조, `docs/conventions.md`
+- [ ] 폴더 구조 변경 → `CLAUDE.md` 파일 구조, `docs/template-guides/conventions.md`
 - [ ] 타입/인터페이스 변경 → 관련 문서의 코드 예시
 - [ ] 새 기능 추가 → 해당 기능 문서 또는 새 문서 작성
 - [ ] API/import 경로 변경 → 모든 문서의 import 예시
@@ -271,7 +271,7 @@ src/
 
 ```bash
 # 변경된 키워드가 문서에 남아있는지 확인
-grep -r "변경전키워드" docs/ CLAUDE.md
+grep -r "변경전키워드" docs/template-guides/ CLAUDE.md
 ```
 
 ---
