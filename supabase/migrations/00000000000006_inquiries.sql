@@ -1,3 +1,8 @@
+-- =============================================
+-- 문의 테이블 (선택)
+-- 불필요시 이 파일 삭제
+-- =============================================
+
 -- 문의 테이블
 CREATE TABLE public.inquiries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -27,7 +32,6 @@ CREATE TRIGGER trigger_inquiries_updated_at
 ALTER TABLE public.inquiries ENABLE ROW LEVEL SECURITY;
 
 -- 정책: Service Role만 접근 가능 (RLS 우회)
--- 일반 사용자 접근 불가
 
 
 -- 문의 답변 테이블
@@ -55,4 +59,3 @@ CREATE TRIGGER trigger_inquiry_replies_updated_at
 ALTER TABLE public.inquiry_replies ENABLE ROW LEVEL SECURITY;
 
 -- 정책: Service Role만 접근 가능 (RLS 우회)
--- 일반 사용자 접근 불가

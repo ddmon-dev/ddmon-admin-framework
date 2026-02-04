@@ -1,4 +1,8 @@
--- 팝업 관리 테이블
+-- =============================================
+-- 팝업 테이블 (선택)
+-- 불필요시 이 파일 삭제
+-- =============================================
+
 CREATE TABLE public.popups (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
@@ -31,7 +35,7 @@ CREATE TRIGGER trigger_popups_updated_at
 -- RLS 활성화
 ALTER TABLE public.popups ENABLE ROW LEVEL SECURITY;
 
--- 정책: 활성화된 팝업은 모든 사용자가 조회 가능 (날짜 필터링은 클라이언트에서 처리)
+-- 정책: 활성화된 팝업은 모든 사용자가 조회 가능
 CREATE POLICY "Active popups are viewable by everyone"
   ON public.popups
   FOR SELECT
@@ -39,3 +43,5 @@ CREATE POLICY "Active popups are viewable by everyone"
     deleted = false
     AND is_active = true
   );
+
+-- 생성/수정/삭제는 서버에서 Service Role Key로만 처리

@@ -1,5 +1,9 @@
--- 공통 함수: updated_at 자동 업데이트
--- 모든 테이블에서 사용 가능한 트리거 함수
+-- =============================================
+-- 핵심 함수 (필수)
+-- 모든 테이블에서 사용하는 공통 함수
+-- =============================================
+
+-- updated_at 자동 업데이트 트리거 함수
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -12,8 +16,7 @@ COMMENT ON FUNCTION update_updated_at_column() IS 'updated_at 컬럼을 자동�
 
 
 -- 조회수 증가 함수 (홈페이지에서 사용)
--- newsroom 등 view_count 컬럼이 있는 테이블에 사용
-
+-- view_count 컬럼이 있는 테이블에 사용
 CREATE OR REPLACE FUNCTION increment_view_count(table_name TEXT, row_id UUID)
 RETURNS void AS $$
 BEGIN

@@ -4,18 +4,23 @@
 
 ## 개요
 
-이 템플릿은 SQL 보일러플레이트를 제공합니다. 새 프로젝트에서 `supabase init` 후 템플릿을 복사하여 사용합니다.
+테이블별로 분리된 마이그레이션 구조로, 불필요한 테이블을 쉽게 제거할 수 있습니다.
 
-**템플릿 구조:**
+**폴더 구조:**
 
 ```
 supabase/
-├── README.md              # 빠른 시작 가이드
-├── config.example.toml    # 로컬 설정 예시
-└── templates/             # SQL 보일러플레이트
-    ├── 00_common_functions.sql
-    ├── 01_admins_table.sql
-    └── samples/
+├── migrations/                      # 테이블별 마이그레이션 (스키마만)
+│   ├── 00000000000001_core.sql      # 필수: 공통 함수
+│   ├── 00000000000002_admins.sql    # 필수: 관리자
+│   ├── 00000000000003_notices.sql   # 선택: 공지사항
+│   ├── 00000000000004_news.sql      # 선택: 뉴스
+│   ├── 00000000000005_faqs.sql      # 선택: FAQ
+│   ├── 00000000000006_inquiries.sql # 선택: 문의
+│   └── 00000000000007_popups.sql    # 선택: 팝업
+├── seed.sql                         # 개발용 목 데이터
+├── templates/                       # 새 테이블 추가 시 참고
+└── config.toml
 ```
 
 ---
@@ -27,7 +32,7 @@ supabase/
 | `npm run db:init`               | Supabase CLI 초기화             |
 | `npm run db:start`              | 로컬 Supabase 시작              |
 | `npm run db:stop`               | 로컬 Supabase 중지              |
-| `npm run db:reset`              | 마이그레이션 재적용             |
+| `npm run db:reset`              | 마이그레이션 + 시드 재적용      |
 | `npm run db:migrate:new <name>` | 새 마이그레이션 생성            |
 | `npm run db:link`               | 클라우드 프로젝트 연결          |
 | `npm run db:push`               | 마이그레이션 클라우드로 푸시    |
@@ -37,38 +42,56 @@ supabase/
 
 ---
 
-## 새 프로젝트 시작 (Local First)
-
-로컬에서 먼저 개발하고, 나중에 클라우드로 배포하는 방식.
-
-### 1. 초기 설정
+## 템플릿 개발/테스트
 
 ```bash
-# Supabase CLI 초기화
-npm run db:init
-
-# 템플릿 SQL을 마이그레이션으로 복사
-cp supabase/templates/00_common_functions.sql \
-   supabase/migrations/$(date +%Y%m%d%H%M%S)_common_functions.sql
-
-cp supabase/templates/01_admins_table.sql \
-   supabase/migrations/$(date +%Y%m%d%H%M%S)_admins_table.sql
-```
-
-### 2. 로컬 환경 시작
-
-```bash
-# 로컬 Supabase 시작
 npm run db:start
-
-# 환경변수 설정 (로컬 키 기본값 포함)
-cp .env.local.example .env.local
-
-# 개발 서버 시작
+npm run db:reset      # 스키마 + 시드 자동 적용
+npm run db:types:local
 npm run dev
 ```
 
-### 3. 클라우드 배포
+---
+
+## 새 프로젝트 시작
+
+### 1. 템플릿 클론
+
+```bash
+git clone <template-repo> my-project
+cd my-project
+```
+
+### 2. 불필요한 테이블 제거
+
+```bash
+# 예: FAQ, 팝업 불필요시
+rm supabase/migrations/*_faqs.sql
+rm supabase/migrations/*_popups.sql
+```
+
+### 3. 시드 데이터 정리
+
+```bash
+# 시드 전체 삭제 (프로덕션용)
+rm supabase/seed.sql
+
+# 또는 필요한 데이터만 남기기
+# supabase/seed.sql 편집
+```
+
+### 4. 로컬 환경 시작
+
+```bash
+npm run db:start
+npm run db:reset
+npm run db:types:local
+npm run dev
+```
+
+---
+
+## 프로덕션 배포
 
 ```bash
 # 1. Supabase 콘솔에서 프로젝트 생성
@@ -76,11 +99,13 @@ npm run dev
 # 2. 프로젝트 연결
 npm run db:link --project-ref <project-ref>
 
-# 3. 마이그레이션 푸시
+# 3. 마이그레이션 푸시 (시드 제외)
 npm run db:push
 
 # 4. 스토리지 버킷 생성 (콘솔 또는 SQL)
+
 # 5. .env.local을 클라우드 키로 전환
+
 # 6. 타입 재생성
 npm run db:types
 ```
@@ -120,7 +145,6 @@ npm run db:types:local
 npm run db:migrate:new add_products_table
 
 # 2. 마이그레이션 파일 작성
-# supabase/migrations/YYYYMMDDHHMMSS_add_products_table.sql
 
 # 3. 로컬 테스트
 npm run db:reset
@@ -133,8 +157,6 @@ npm run db:types
 ```
 
 ### 클라우드 변경사항 동기화
-
-클라우드에서 직접 스키마를 변경한 경우:
 
 ```bash
 npm run db:pull
@@ -196,25 +218,6 @@ VALUES (
   ARRAY['image/*', 'application/pdf', 'application/zip']
 );
 ```
-
----
-
-## 템플릿 SQL
-
-### 필수
-
-| 파일                      | 설명                                   |
-| ------------------------- | -------------------------------------- |
-| `00_common_functions.sql` | `updated_at` 자동 업데이트 트리거 함수 |
-| `01_admins_table.sql`     | 관리자 계정 테이블 + 초기 계정         |
-
-### 샘플
-
-| 파일                          | 설명                                      |
-| ----------------------------- | ----------------------------------------- |
-| `notices_table.sql`           | 공지사항 (파일 첨부, 카테고리, 목 데이터) |
-| `faqs_table.sql`              | FAQ                                       |
-| `board_template_function.sql` | 게시판 테이블 자동 생성 함수              |
 
 ---
 

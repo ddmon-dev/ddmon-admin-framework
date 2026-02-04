@@ -1,4 +1,8 @@
--- Admins 테이블 생성
+-- =============================================
+-- 관리자 테이블 (필수)
+-- 인증 시스템의 핵심 테이블
+-- =============================================
+
 CREATE TABLE IF NOT EXISTS admins (
   id TEXT PRIMARY KEY,                  -- 로그인 아이디 (중복 불가)
   name TEXT NOT NULL,                   -- 실제 이름
@@ -11,11 +15,11 @@ CREATE TABLE IF NOT EXISTS admins (
 );
 
 -- 인덱스 생성
+-- NOTE: email 컬럼은 UNIQUE 제약조건이 이미 인덱스를 생성하므로 별도 인덱스 불필요
 CREATE INDEX IF NOT EXISTS idx_admins_name ON admins(name);
-CREATE INDEX IF NOT EXISTS idx_admins_email ON admins(email);
 CREATE INDEX IF NOT EXISTS idx_admins_deleted ON admins(deleted);
 
--- updated_at 자동 업데이트 트리거 (공통 함수 사용)
+-- updated_at 자동 업데이트 트리거
 CREATE TRIGGER update_admins_updated_at
   BEFORE UPDATE ON admins
   FOR EACH ROW
@@ -30,12 +34,11 @@ ALTER TABLE admins ENABLE ROW LEVEL SECURITY;
 -- 초기 슈퍼 관리자 계정 생성
 -- 로그인 아이디: admin
 -- 비밀번호: qwe123 (실제 환경에서는 반드시 변경 필요)
--- bcrypt 해시: $2b$10$... 형태로 저장됨
 INSERT INTO admins (id, name, email, password, super_admin)
 VALUES (
-  'admin',                                                          -- 로그인 아이디
-  '최고관리자',                                                         -- 실제 이름
-  'admin@example.com',                                             -- 이메일
+  'admin',
+  '최고관리자',
+  'admin@example.com',
   '$2b$10$P0yomBva3XEmHfZS9umK3.EDqhFrJWxVx0ahI2u57V/3uje.avGhW', -- qwe123
   true
 )

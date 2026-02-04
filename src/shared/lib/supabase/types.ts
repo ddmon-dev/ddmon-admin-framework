@@ -329,7 +329,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_view_count: {
+        Args: { row_id: string; table_name: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
