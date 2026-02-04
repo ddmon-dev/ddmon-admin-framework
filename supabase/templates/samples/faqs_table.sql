@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS public.faqs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   question TEXT NOT NULL,
   answer TEXT NOT NULL,
+  author TEXT,
+  updated_by TEXT,
   "order" INTEGER NOT NULL DEFAULT 0,
   deleted BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),

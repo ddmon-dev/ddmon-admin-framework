@@ -16,6 +16,11 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     },
   },
   {
+    accessorKey: 'author',
+    header: '작성자',
+    size: 120,
+  },
+  {
     accessorKey: 'created_at',
     header: '생성일',
     size: 120,

@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
-  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -42,7 +37,7 @@ export type Database = {
       admins: {
         Row: {
           created_at: string
-          deleted: boolean | null
+          deleted: boolean
           email: string
           id: string
           name: string
@@ -52,7 +47,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          deleted?: boolean | null
+          deleted?: boolean
           email: string
           id: string
           name: string
@@ -62,7 +57,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          deleted?: boolean | null
+          deleted?: boolean
           email?: string
           id?: string
           name?: string
@@ -75,30 +70,36 @@ export type Database = {
       faqs: {
         Row: {
           answer: string
+          author: string | null
           created_at: string
           deleted: boolean
           id: string
           order: number
           question: string
           updated_at: string
+          updated_by: string | null
         }
         Insert: {
           answer: string
+          author?: string | null
           created_at?: string
           deleted?: boolean
           id?: string
           order?: number
           question: string
           updated_at?: string
+          updated_by?: string | null
         }
         Update: {
           answer?: string
+          author?: string | null
           created_at?: string
           deleted?: boolean
           id?: string
           order?: number
           question?: string
           updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -110,9 +111,9 @@ export type Database = {
           deleted: boolean
           files: Json | null
           id: string
-          order: number
           title: string
           updated_at: string
+          updated_by: string | null
           view_count: number
         }
         Insert: {
@@ -122,9 +123,9 @@ export type Database = {
           deleted?: boolean
           files?: Json | null
           id?: string
-          order?: number
           title: string
           updated_at?: string
+          updated_by?: string | null
           view_count?: number
         }
         Update: {
@@ -134,16 +135,16 @@ export type Database = {
           deleted?: boolean
           files?: Json | null
           id?: string
-          order?: number
           title?: string
           updated_at?: string
+          updated_by?: string | null
           view_count?: number
         }
         Relationships: []
       }
       notices: {
         Row: {
-          author: string | null
+          author: string
           category: string
           content: string | null
           created_at: string
@@ -153,10 +154,11 @@ export type Database = {
           order: number
           title: string
           updated_at: string
+          updated_by: string | null
           view_count: number
         }
         Insert: {
-          author?: string | null
+          author: string
           category?: string
           content?: string | null
           created_at?: string
@@ -166,10 +168,11 @@ export type Database = {
           order?: number
           title: string
           updated_at?: string
+          updated_by?: string | null
           view_count?: number
         }
         Update: {
-          author?: string | null
+          author?: string
           category?: string
           content?: string | null
           created_at?: string
@@ -179,88 +182,8 @@ export type Database = {
           order?: number
           title?: string
           updated_at?: string
+          updated_by?: string | null
           view_count?: number
-        }
-        Relationships: []
-      }
-      templates: {
-        Row: {
-          address: string | null
-          address_detail: string | null
-          age: number | null
-          bio: string | null
-          birth_date: string | null
-          city: string | null
-          country: string | null
-          created_at: string
-          deleted: boolean | null
-          description: string | null
-          email: string | null
-          files: Json | null
-          gender: string | null
-          id: string
-          interests: string[] | null
-          languages: string[] | null
-          name: string
-          newsletter_subscribed: boolean | null
-          phone: string | null
-          price: number | null
-          social_links: Json | null
-          terms_accepted: boolean | null
-          updated_at: string | null
-          zip_code: string | null
-        }
-        Insert: {
-          address?: string | null
-          address_detail?: string | null
-          age?: number | null
-          bio?: string | null
-          birth_date?: string | null
-          city?: string | null
-          country?: string | null
-          created_at?: string
-          deleted?: boolean | null
-          description?: string | null
-          email?: string | null
-          files?: Json | null
-          gender?: string | null
-          id?: string
-          interests?: string[] | null
-          languages?: string[] | null
-          name: string
-          newsletter_subscribed?: boolean | null
-          phone?: string | null
-          price?: number | null
-          social_links?: Json | null
-          terms_accepted?: boolean | null
-          updated_at?: string | null
-          zip_code?: string | null
-        }
-        Update: {
-          address?: string | null
-          address_detail?: string | null
-          age?: number | null
-          bio?: string | null
-          birth_date?: string | null
-          city?: string | null
-          country?: string | null
-          created_at?: string
-          deleted?: boolean | null
-          description?: string | null
-          email?: string | null
-          files?: Json | null
-          gender?: string | null
-          id?: string
-          interests?: string[] | null
-          languages?: string[] | null
-          name?: string
-          newsletter_subscribed?: boolean | null
-          phone?: string | null
-          price?: number | null
-          social_links?: Json | null
-          terms_accepted?: boolean | null
-          updated_at?: string | null
-          zip_code?: string | null
         }
         Relationships: []
       }
@@ -269,14 +192,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      create_board_table: {
-        Args: {
-          has_category?: boolean
-          has_files?: boolean
-          table_name: string
-        }
-        Returns: undefined
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
@@ -412,3 +328,4 @@ export const Constants = {
     Enums: {},
   },
 } as const
+

@@ -12,12 +12,18 @@ export const createItem = createServerAction<CreateItemParams<any> & { tableName
   {
     name: 'createItem',
     auth: true,
-    handler: async ({ tableName, values, pathname }) => {
+    handler: async ({ tableName, values, pathname }, { user }) => {
       const supabase = createServerClient();
+
+      // author 자동 주입
+      const insertValues = {
+        ...values,
+        author: user?.name ?? null,
+      };
 
       const { data, error } = await supabase
         .from(tableName)
-        .insert(values as any)
+        .insert(insertValues as any)
         .select()
         .single();
 

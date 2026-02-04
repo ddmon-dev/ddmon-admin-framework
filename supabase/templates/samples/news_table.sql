@@ -3,6 +3,8 @@ CREATE TABLE public.news (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT,
+  author TEXT,
+  updated_by TEXT,
   view_count INTEGER NOT NULL DEFAULT 0,
 
   -- 파일 메타데이터 저장용 JSONB 컬럼

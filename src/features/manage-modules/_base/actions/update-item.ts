@@ -13,7 +13,7 @@ export const updateItem = createServerAction<UpdateItemParams<any> & { tableName
   {
     name: 'updateItem',
     auth: true,
-    handler: async ({ tableName, id, values, pathname }) => {
+    handler: async ({ tableName, id, values, pathname }, { user }) => {
       if (!id) {
         return Result.error(VALIDATION_ERRORS.NO_ID);
       }
@@ -27,9 +27,15 @@ export const updateItem = createServerAction<UpdateItemParams<any> & { tableName
         values,
       });
 
+      // updated_by 자동 주입
+      const updateValues = {
+        ...values,
+        updated_by: user?.name ?? null,
+      };
+
       const { data, error } = await supabase
         .from(tableName)
-        .update(values as any)
+        .update(updateValues as any)
         .eq('id', id)
         .select()
         .single();
