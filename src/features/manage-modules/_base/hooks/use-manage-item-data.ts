@@ -14,7 +14,7 @@ export type GetItemAction<T> = (params: { id: string }) => Promise<ActionResult<
 /**
  * 공통 날짜 필드 목록 (자동으로 Date 객체로 변환됨)
  */
-const DEFAULT_DATE_FIELDS = ['createdAt', 'updatedAt'];
+const DEFAULT_DATE_FIELDS = ['created_at', 'updated_at'];
 
 /**
  * 관리 모듈의 항목 데이터를 페칭하고 처리하는 커스텀 훅
@@ -25,7 +25,7 @@ const DEFAULT_DATE_FIELDS = ['createdAt', 'updatedAt'];
  * @returns prevValues, isLoading, error
  *
  * @example
- * // 기본 사용 (createdAt, modifiedAt, updatedAt 자동 변환)
+ * // 기본 사용 (created_at, modifiedAt, updated_at 자동 변환)
  * const { prevValues } = useManageItemData(getItem);
  *
  * @example
