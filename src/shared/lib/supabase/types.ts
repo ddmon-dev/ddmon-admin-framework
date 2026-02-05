@@ -336,6 +336,16 @@ export type Database = {
         Args: { row_id: string; table_name: string }
         Returns: undefined
       }
+      swap_order: {
+        Args: {
+          p_table_name: string
+          p_id1: string
+          p_order1: number
+          p_id2: string
+          p_order2: number
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

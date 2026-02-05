@@ -17,6 +17,9 @@ export function List({ data, totalCount }: ListProps) {
       listColumns={listColumns}
       tableName={CONFIG.tableName}
       enableBulkAction={CONFIG.enableBulkAction}
+      enableSortOrder={true}
+      hideSortOrderWhen={['search']}
+      sortDirection="asc"
     />
   );
 }
