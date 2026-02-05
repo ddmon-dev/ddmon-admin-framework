@@ -15,7 +15,7 @@ export async function getItem(params: GetItemParams): Promise<ActionResult<ItemD
     return Result.error(VALIDATION_ERRORS.NO_ID);
   }
 
-  await requireAuth({ requireSuper: true });
+  await requireAuth(CONFIG.auth);
 
   try {
     const supabase = createServerClient();

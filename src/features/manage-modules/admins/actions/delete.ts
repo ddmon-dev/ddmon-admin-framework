@@ -23,7 +23,7 @@ export async function deleteAdmin(params: DeleteAdminParams): Promise<ActionResu
     return Result.error(VALIDATION_ERRORS.NO_ID);
   }
 
-  await requireAuth();
+  await requireAuth(CONFIG.auth);
 
   try {
     const supabase = createServerClient();

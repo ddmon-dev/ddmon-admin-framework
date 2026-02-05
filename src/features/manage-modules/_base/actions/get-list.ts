@@ -15,8 +15,7 @@ interface OrderByConfig {
   ascending?: boolean;
 }
 
-/** getList 설정 인터페이스 */
-export interface GetListConfig {
+interface GetListConfig {
   tableName: TableName;
   searchFields?: readonly string[] | string[];
   auth?: boolean | { requireSuper?: boolean };
@@ -25,10 +24,9 @@ export interface GetListConfig {
   softDelete?: boolean;
   categoryField?: string;
   additionalFilters?: (query: any, ctx: any) => any;
-  /** enableReorder 설정 시 자동으로 sort_order 기준 정렬 적용 */
   enableReorder?: ReorderConfig;
   // CONFIG 전체 전달 시 무시되는 속성들 (타입 호환성)
-  [key: string]: unknown;
+  [key: string]: unknown; 
 }
 
 const DEFAULT_ORDER_BY: OrderByConfig[] = [
@@ -36,29 +34,6 @@ const DEFAULT_ORDER_BY: OrderByConfig[] = [
   { column: 'id', ascending: false },
 ];
 
-/**
- * 목록 조회 Server Action
- *
- * @template TData - 반환될 데이터 타입 (보통 ItemDTO)
- * @param config - 조회 설정
- * @param config.tableName - Supabase 테이블명 (필수)
- * @param config.searchFields - 검색할 필드 배열 (기본: ['name', 'email'])
- * @param config.auth - 인증 설정 (기본: true, 예: { requireSuper: true })
- * @param config.selectColumns - SELECT할 컬럼 (기본: '*', 예: 'id, name, email')
- * @param config.orderBy - 정렬 설정 (기본: created_at desc, id desc)
- * @param config.softDelete - deleted=false 필터 적용 여부 (기본: true)
- * @param config.categoryField - 카테고리 필터 필드명 (기본: 'category')
- * @param config.additionalFilters - 추가 필터 함수 (query => query.eq('status', 'active'))
- * @param params - 검색, 페이지네이션 파라미터
- *
- * @example
- * // _base/actions/get-list.ts 에서 import 후 사용
- * import { getList as baseGetList } from '../../_base/actions/get-list';
- *
- * export async function getList(params: GetListParams) {
- *   return baseGetList<ItemDTO>(CONFIG, params);
- * }
- */
 export async function getList<TData>(
   config: GetListConfig,
   params: GetListParams

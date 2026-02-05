@@ -8,7 +8,7 @@ import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constan
 import type { ActionResult } from '@/shared/types/results';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
-export interface BulkDeleteParams {
+interface BulkDeleteParams {
   tableName: TableName;
   ids: string[];
   pathname?: string;

@@ -8,18 +8,12 @@ import type { ActionResult } from '@/shared/types/results';
 import type { GetItemParams } from '../types';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
-export interface GetItemConfig {
+interface GetItemConfig {
   tableName: TableName;
   // CONFIG 전체 전달 시 무시되는 속성들 (타입 호환성)
   [key: string]: unknown;
 }
 
-/**
- * 단일 항목 조회 Server Action
- *
- * @param config - 조회 설정 (tableName)
- * @param params - 조회할 항목 ID
- */
 export async function getItem<TData>(
   config: GetItemConfig,
   params: GetItemParams

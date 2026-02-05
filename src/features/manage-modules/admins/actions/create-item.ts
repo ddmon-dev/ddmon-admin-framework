@@ -14,7 +14,7 @@ import { CONFIG, type ItemDTO } from '../config';
 export async function createItem(params: CreateItemParams<ItemDTO>): Promise<ActionResult<ItemDTO>> {
   const { values, pathname } = params;
 
-  await requireAuth({ requireSuper: true });
+  await requireAuth(CONFIG.auth);
 
   try {
     // confirmPassword 제거

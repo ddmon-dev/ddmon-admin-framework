@@ -14,19 +14,14 @@ interface SwapOrderParams {
   direction: 'up' | 'down';
   pathname: string;
   filters?: Record<string, string>;
-  /** 목록 정렬 방향 (기본값: 'asc') */
   sortDirection?: 'asc' | 'desc';
 }
 
-// sort_order 필드를 가진 항목 타입
 interface OrderedItem {
   id: string;
   sort_order: number;
 }
 
-/**
- * 순서 변경 Server Action
- */
 export async function swapOrder(params: SwapOrderParams): Promise<ActionResult<boolean>> {
   const {
     tableName,

@@ -18,7 +18,7 @@ export async function updateItem(params: UpdateItemParams<ItemDTO>): Promise<Act
     return Result.error(VALIDATION_ERRORS.NO_ID);
   }
 
-  await requireAuth({ requireSuper: true });
+  await requireAuth(CONFIG.auth);
 
   try {
     // 아이디는 수정 불가

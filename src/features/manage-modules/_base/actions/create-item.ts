@@ -9,19 +9,13 @@ import type { ActionResult } from '@/shared/types/results';
 import type { CreateItemParams, ReorderConfig } from '../types';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
-export interface CreateItemConfig {
+interface CreateItemConfig {
   tableName: TableName;
   enableReorder?: ReorderConfig;
   // CONFIG 전체 전달 시 무시되는 속성들 (타입 호환성)
   [key: string]: unknown;
 }
 
-/**
- * 항목 생성 Server Action
- *
- * @param config - 생성 설정 (tableName, enableReorder 등)
- * @param params - 생성할 데이터 및 pathname
- */
 export async function createItem<TData>(
   config: CreateItemConfig,
   params: CreateItemParams<TData>

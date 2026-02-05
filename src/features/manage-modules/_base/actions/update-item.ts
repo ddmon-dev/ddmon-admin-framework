@@ -10,18 +10,12 @@ import type { ActionResult } from '@/shared/types/results';
 import type { UpdateItemParams } from '../types';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
-export interface UpdateItemConfig {
+interface UpdateItemConfig {
   tableName: TableName;
   // CONFIG 전체 전달 시 무시되는 속성들 (타입 호환성)
   [key: string]: unknown;
 }
 
-/**
- * 항목 수정 Server Action
- *
- * @param config - 수정 설정 (tableName)
- * @param params - 수정할 데이터 (id, values, pathname)
- */
 export async function updateItem<TData>(
   config: UpdateItemConfig,
   params: UpdateItemParams<TData>
