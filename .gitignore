@@ -46,6 +46,9 @@ next-env.d.ts
 /supabase/.branches/
 /supabase/seed.sql
 
+# ide
+.vscode/
+
 # ai agents
 /.claude
 .mcp.json
