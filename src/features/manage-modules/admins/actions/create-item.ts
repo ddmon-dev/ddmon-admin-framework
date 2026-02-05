@@ -1,21 +1,23 @@
 'use server';
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { APP_CONFIG } from '@/app.config';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { schemaPresets } from '@/shared/schemas';
-import { hashPassword } from '@/features/auth';
-import { createServerAction } from '@/features/utils/server-actions';
+import { hashPassword, requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
-import { CreateItemParams } from '../../_base/types';
-import { CONFIG } from '../config';
-import { type ItemDTO } from '../config';
-import { CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS, CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import type { ActionResult } from '@/shared/types/results';
+import type { CreateItemParams } from '../../_base/types';
+import { CONFIG, type ItemDTO } from '../config';
 
-export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>({
-  name: 'createItem',
-  auth: { requireSuper: true },
-  handler: async ({ values, pathname }) => {
+export async function createItem(params: CreateItemParams<ItemDTO>): Promise<ActionResult<ItemDTO>> {
+  const { values, pathname } = params;
+
+  try {
+    await requireAuth({ requireSuper: true });
+
     // confirmPassword 제거
     // super_admin은 항상 false (최고관리자는 1명만 / 어플리케이션 단에서 생성 불가)
     'confirmPassword' in values && delete values.confirmPassword;
@@ -63,5 +65,9 @@ export const createItem = createServerAction<CreateItemParams<ItemDTO>, ItemDTO>
     }
 
     return Result.success(data as ItemDTO);
-  },
-});
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error('[createItem] Unexpected error:', error);
+    return Result.error(GENERAL_ERRORS.UNEXPECTED);
+  }
+}

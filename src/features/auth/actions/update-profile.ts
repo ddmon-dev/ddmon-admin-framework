@@ -1,22 +1,22 @@
 'use server';
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { APP_CONFIG } from '@/app.config';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
 import {
+  GENERAL_ERRORS,
   CRUD_ERRORS,
   VALIDATION_ERRORS,
 } from '@/shared/constants/error-messages';
+import type { ActionResult } from '@/shared/types/results';
 
 import { requireAuth } from '../utils/server';
 import { hashPassword, verifyPassword } from '../utils/password';
-import { type UpdateProfileValues } from '../types';
+import type { UpdateProfileValues } from '../types';
 
-export const updateProfile = createServerAction<UpdateProfileValues, void>({
-  name: 'updateProfile',
-  auth: true,
-  handler: async values => {
+export async function updateProfile(values: UpdateProfileValues): Promise<ActionResult<void>> {
+  try {
     // 새 비밀번호가 있으면 현재 비밀번호도 필수
     if (values.newPassword && !values.currentPassword) {
       return Result.error(VALIDATION_ERRORS.REQUIRED_FIELD('현재 비밀번호'));
@@ -76,5 +76,9 @@ export const updateProfile = createServerAction<UpdateProfileValues, void>({
     }
 
     return Result.ok();
-  },
-});
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error('[updateProfile] Unexpected error:', error);
+    return Result.error(GENERAL_ERRORS.UNEXPECTED);
+  }
+}

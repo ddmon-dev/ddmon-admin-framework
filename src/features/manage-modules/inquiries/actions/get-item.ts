@@ -1,20 +1,23 @@
 'use server';
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { createServerAction } from '@/features/utils/server-actions';
+import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
-import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import type { ActionResult } from '@/shared/types/results';
 import { CONFIG, type InquiryWithReplies } from '../config';
-import { type GetItemParams } from '../../_base/types';
+import type { GetItemParams } from '../../_base/types';
 
-export const getItem = createServerAction<GetItemParams, InquiryWithReplies>({
-  name: 'getItem',
-  auth: true,
-  handler: async ({ id }) => {
+export async function getItem(params: GetItemParams): Promise<ActionResult<InquiryWithReplies>> {
+  const { id } = params;
+
+  try {
     if (!id) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
 
+    await requireAuth();
     const supabase = createServerClient();
 
     const { data, error } = await supabase
@@ -39,5 +42,9 @@ export const getItem = createServerAction<GetItemParams, InquiryWithReplies>({
     }
 
     return Result.success(data as InquiryWithReplies);
-  },
-});
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error('[getItem] Unexpected error:', error);
+    return Result.error(GENERAL_ERRORS.UNEXPECTED);
+  }
+}

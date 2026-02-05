@@ -1,60 +1,81 @@
 'use server';
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { createServerAction } from '@/features/utils/server-actions';
+import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
-import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { UpdateItemParams } from '../types';
+import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { getOldFiles, cleanupDeletedFiles } from '@/shared/lib/file-system';
-import { TableName } from '@/shared/lib/supabase/db-helpers';
+import type { ActionResult } from '@/shared/types/results';
+import type { UpdateItemParams } from '../types';
+import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
-export const updateItem = createServerAction<UpdateItemParams<any> & { tableName: TableName }, any>(
-  {
-    name: 'updateItem',
-    auth: true,
-    handler: async ({ tableName, id, values, pathname }, { user }) => {
-      if (!id) {
-        return Result.error(VALIDATION_ERRORS.NO_ID);
-      }
+export interface UpdateItemConfig {
+  tableName: TableName;
+  // CONFIG 전체 전달 시 무시되는 속성들 (타입 호환성)
+  [key: string]: unknown;
+}
 
-      const supabase = createServerClient();
+/**
+ * 항목 수정 Server Action
+ *
+ * @param config - 수정 설정 (tableName)
+ * @param params - 수정할 데이터 (id, values, pathname)
+ */
+export async function updateItem<TData>(
+  config: UpdateItemConfig,
+  params: UpdateItemParams<TData>
+): Promise<ActionResult<TData>> {
+  const { tableName } = config;
+  const { id, values, pathname } = params;
 
-      const oldFiles = await getOldFiles({
-        supabase,
-        tableName,
-        id,
-        values,
-      });
+  try {
+    if (!id) {
+      return Result.error(VALIDATION_ERRORS.NO_ID);
+    }
 
-      // updated_by 자동 주입
-      const updateValues = {
-        ...values,
-        updated_by: user?.name ?? null,
-      };
+    const user = await requireAuth();
+    const supabase = createServerClient();
 
-      const { data, error } = await supabase
-        .from(tableName)
-        .update(updateValues as any)
-        .eq('id', id)
-        .select()
-        .single();
+    const oldFiles = await getOldFiles({
+      supabase,
+      tableName,
+      id,
+      values,
+    });
 
-      if (error) {
-        console.error('Supabase error:', error);
-        return Result.error(CRUD_ERRORS.UPDATE_FAILED());
-      }
+    // updated_by 자동 주입
+    const updateValues = {
+      ...values,
+      updated_by: user?.name ?? null,
+    };
 
-      await cleanupDeletedFiles({
-        oldFiles,
-        newFiles: values.files,
-      });
+    const { data, error } = await supabase
+      .from(tableName)
+      .update(updateValues as any)
+      .eq('id', id)
+      .select()
+      .single();
 
-      if (pathname) {
-        revalidatePath(pathname);
-      }
+    if (error) {
+      console.error('Supabase error:', error);
+      return Result.error(CRUD_ERRORS.UPDATE_FAILED());
+    }
 
-      return Result.success(data);
-    },
+    await cleanupDeletedFiles({
+      oldFiles,
+      newFiles: (values as any).files,
+    });
+
+    if (pathname) {
+      revalidatePath(pathname);
+    }
+
+    return Result.success(data as TData);
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error('[updateItem] Unexpected error:', error);
+    return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }
-);
+}

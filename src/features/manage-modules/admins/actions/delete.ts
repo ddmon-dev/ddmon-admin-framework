@@ -1,23 +1,31 @@
 'use server';
 
-import { CONFIG } from '../config';
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { createServerAction } from '@/features/utils/server-actions';
+import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
-import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import type { ActionResult } from '@/shared/types/results';
+import { CONFIG } from '../config';
+
+interface DeleteAdminParams {
+  id: string;
+  pathname: string;
+}
 
 /**
  * Soft delete: deleted 컬럼을 true로 설정
  */
-export const deleteAdmin = createServerAction<{ id: string; pathname: string }, any>({
-  name: 'deleteAdmin',
-  auth: true,
-  handler: async ({ id, pathname }) => {
+export async function deleteAdmin(params: DeleteAdminParams): Promise<ActionResult<any>> {
+  const { id, pathname } = params;
+
+  try {
     if (!id) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
 
+    await requireAuth();
     const supabase = createServerClient();
 
     const { data: checkData, error: checkError } = await supabase
@@ -49,11 +57,14 @@ export const deleteAdmin = createServerAction<{ id: string; pathname: string }, 
       return Result.error(CRUD_ERRORS.DELETE_FAILED());
     }
 
-    // 성공 처리
     if (pathname) {
       revalidatePath(pathname);
     }
 
     return Result.success(data);
-  },
-});
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error('[deleteAdmin] Unexpected error:', error);
+    return Result.error(GENERAL_ERRORS.UNEXPECTED);
+  }
+}

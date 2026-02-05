@@ -1,24 +1,26 @@
 'use server';
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { APP_CONFIG } from '@/app.config';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { schemaPresets } from '@/shared/schemas';
-import { hashPassword } from '@/features/auth';
-import { createServerAction } from '@/features/utils/server-actions';
+import { hashPassword, requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
-import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { UpdateItemParams } from '../../_base/types';
-import { CONFIG } from '../config';
-import { type ItemDTO } from '../config';
+import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import type { ActionResult } from '@/shared/types/results';
+import type { UpdateItemParams } from '../../_base/types';
+import { CONFIG, type ItemDTO } from '../config';
 
-export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>({
-  name: 'updateItem',
-  auth: { requireSuper: true },
-  handler: async ({ id, values, pathname }) => {
+export async function updateItem(params: UpdateItemParams<ItemDTO>): Promise<ActionResult<ItemDTO>> {
+  const { id, values, pathname } = params;
+
+  try {
     if (!id) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
+
+    await requireAuth({ requireSuper: true });
 
     // 아이디는 수정 불가
     // 비밀번호 확인은 제거
@@ -75,5 +77,9 @@ export const updateItem = createServerAction<UpdateItemParams<ItemDTO>, ItemDTO>
     }
 
     return Result.success(data as ItemDTO);
-  },
-});
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error('[updateItem] Unexpected error:', error);
+    return Result.error(GENERAL_ERRORS.UNEXPECTED);
+  }
+}

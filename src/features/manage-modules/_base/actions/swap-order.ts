@@ -1,9 +1,12 @@
 'use server';
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { createServerAction } from '@/features/utils/server-actions';
+import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
+import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
+import type { ActionResult } from '@/shared/types/results';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
 interface SwapOrderParams {
@@ -22,17 +25,21 @@ interface OrderedItem {
   sort_order: number;
 }
 
-export const swapOrder = createServerAction<SwapOrderParams, boolean>({
-  name: 'swapOrder',
-  auth: true,
-  handler: async ({
+/**
+ * 순서 변경 Server Action
+ */
+export async function swapOrder(params: SwapOrderParams): Promise<ActionResult<boolean>> {
+  const {
     tableName,
     id,
     direction,
     pathname,
     filters = {},
     sortDirection = 'asc',
-  }) => {
+  } = params;
+
+  try {
+    await requireAuth();
     const supabase = createServerClient();
 
     // 1. 현재 항목 조회
@@ -105,5 +112,9 @@ export const swapOrder = createServerAction<SwapOrderParams, boolean>({
 
     revalidatePath(pathname);
     return Result.success(true);
-  },
-});
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error('[swapOrder] Unexpected error:', error);
+    return Result.error(GENERAL_ERRORS.UNEXPECTED);
+  }
+}

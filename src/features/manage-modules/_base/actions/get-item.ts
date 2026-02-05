@@ -1,20 +1,39 @@
 'use server';
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { createServerAction } from '@/features/utils/server-actions';
+import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
-import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { GetItemParams } from '../types';
-import { TableName } from '@/shared/lib/supabase/db-helpers';
+import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import type { ActionResult } from '@/shared/types/results';
+import type { GetItemParams } from '../types';
+import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
-export const getItem = createServerAction<GetItemParams & { tableName: TableName }, any>({
-  name: 'getItem',
-  auth: true,
-  handler: async ({ tableName, id }) => {
+export interface GetItemConfig {
+  tableName: TableName;
+  // CONFIG 전체 전달 시 무시되는 속성들 (타입 호환성)
+  [key: string]: unknown;
+}
+
+/**
+ * 단일 항목 조회 Server Action
+ *
+ * @param config - 조회 설정 (tableName)
+ * @param params - 조회할 항목 ID
+ */
+export async function getItem<TData>(
+  config: GetItemConfig,
+  params: GetItemParams
+): Promise<ActionResult<TData>> {
+  const { tableName } = config;
+  const { id } = params;
+
+  try {
     if (!id) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
 
+    await requireAuth();
     const supabase = createServerClient();
 
     const { data: rawData, error } = await supabase
@@ -28,6 +47,10 @@ export const getItem = createServerAction<GetItemParams & { tableName: TableName
       return Result.error(CRUD_ERRORS.READ_FAILED());
     }
 
-    return Result.success(rawData);
-  },
-});
+    return Result.success(rawData as TData);
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error('[getItem] Unexpected error:', error);
+    return Result.error(GENERAL_ERRORS.UNEXPECTED);
+  }
+}

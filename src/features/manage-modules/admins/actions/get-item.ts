@@ -1,21 +1,23 @@
 'use server';
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { createServerAction } from '@/features/utils/server-actions';
+import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
-import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { GetItemParams } from '../../_base/types';
-import { CONFIG } from '../config';
-import { type ItemDTO } from '../config';
+import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import type { ActionResult } from '@/shared/types/results';
+import type { GetItemParams } from '../../_base/types';
+import { CONFIG, type ItemDTO } from '../config';
 
-export const getItem = createServerAction<GetItemParams, ItemDTO>({
-  name: 'getItem',
-  auth: { requireSuper: true },
-  handler: async ({ id }) => {
+export async function getItem(params: GetItemParams): Promise<ActionResult<ItemDTO>> {
+  const { id } = params;
+
+  try {
     if (!id) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
 
+    await requireAuth({ requireSuper: true });
     const supabase = createServerClient();
 
     const { data: rawData, error } = await supabase
@@ -30,5 +32,9 @@ export const getItem = createServerAction<GetItemParams, ItemDTO>({
     }
 
     return Result.success(rawData as ItemDTO);
-  },
-});
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error('[getItem] Unexpected error:', error);
+    return Result.error(GENERAL_ERRORS.UNEXPECTED);
+  }
+}

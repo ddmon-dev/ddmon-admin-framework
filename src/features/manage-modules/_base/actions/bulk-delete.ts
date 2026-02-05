@@ -1,11 +1,13 @@
 'use server';
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { createServerAction } from '@/features/utils/server-actions';
+import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
-import { VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
-import { TableName } from '@/shared/lib/supabase/db-helpers';
+import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import type { ActionResult } from '@/shared/types/results';
+import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
 export interface BulkDeleteParams {
   tableName: TableName;
@@ -16,14 +18,15 @@ export interface BulkDeleteParams {
 /**
  * Bulk soft delete: 여러 항목의 deleted 컬럼을 true로 설정
  */
-export const bulkSoftDelete = createServerAction<BulkDeleteParams, { count: number }>({
-  name: 'bulkSoftDelete',
-  auth: true,
-  handler: async ({ tableName, ids, pathname }) => {
+export async function bulkSoftDelete(params: BulkDeleteParams): Promise<ActionResult<{ count: number }>> {
+  const { tableName, ids, pathname } = params;
+
+  try {
     if (!ids || ids.length === 0) {
       return Result.error(VALIDATION_ERRORS.NO_ID);
     }
 
+    await requireAuth();
     const supabase = createServerClient();
 
     const { data, error } = await supabase
@@ -42,5 +45,9 @@ export const bulkSoftDelete = createServerAction<BulkDeleteParams, { count: numb
     }
 
     return Result.success({ count: data?.length || 0 });
-  },
-});
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error('[bulkSoftDelete] Unexpected error:', error);
+    return Result.error(GENERAL_ERRORS.UNEXPECTED);
+  }
+}
