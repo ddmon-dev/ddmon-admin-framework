@@ -6,9 +6,9 @@ import { Button } from '@/shared/ui/button';
 import { Spinner } from '@/shared/ui/spinner';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
-import { moveSortOrder } from '../actions/move-sort-order';
+import { swapOrder } from '../actions/swap-order';
 
-interface SortOrderButtonsProps {
+interface ReorderButtonsProps {
   tableName: TableName;
   id: string;
   isFirst: boolean;
@@ -23,7 +23,7 @@ interface SortOrderButtonsProps {
   onSortEnd?: () => void;
 }
 
-export function SortOrderButtons({
+export function ReorderButtons({
   tableName,
   id,
   isFirst,
@@ -32,7 +32,7 @@ export function SortOrderButtons({
   disabled = false,
   onSortStart,
   onSortEnd,
-}: SortOrderButtonsProps) {
+}: ReorderButtonsProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -45,7 +45,7 @@ export function SortOrderButtons({
   const handleMove = async (direction: 'up' | 'down') => {
     onSortStart?.();
     try {
-      const result = await moveSortOrder({
+      const result = await swapOrder({
         tableName,
         id,
         direction,

@@ -7,6 +7,6 @@ export { ModifyButton } from './modify-button';
 export { ViewButton } from './view-button';
 export { SoftDeleteButton, HardDeleteButton } from './delete-button';
 export { BulkActionBar } from './bulk-action-bar';
-export { SortOrderButtons } from './sort-order-buttons';
+export { ReorderButtons } from './reorder-buttons';
 export * from './manage-sheet-buttons';
 export * from './manage-detail';

@@ -4,4 +4,5 @@ import { CONFIG, type ItemDTO } from '../config';
 export const getList = createGetListAction<ItemDTO>({
   tableName: CONFIG.tableName,
   searchFields: ['question', 'answer'],
+  enableReorder: CONFIG.enableReorder,
 });

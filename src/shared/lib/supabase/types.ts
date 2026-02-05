@@ -75,8 +75,8 @@ export type Database = {
           created_at: string
           deleted: boolean
           id: string
-          order: number
           question: string
+          sort_order: number
           updated_at: string
           updated_by: string | null
         }
@@ -87,8 +87,8 @@ export type Database = {
           created_at?: string
           deleted?: boolean
           id?: string
-          order?: number
           question: string
+          sort_order?: number
           updated_at?: string
           updated_by?: string | null
         }
@@ -99,8 +99,8 @@ export type Database = {
           created_at?: string
           deleted?: boolean
           id?: string
-          order?: number
           question?: string
+          sort_order?: number
           updated_at?: string
           updated_by?: string | null
         }
@@ -234,7 +234,7 @@ export type Database = {
           deleted: boolean
           files: Json | null
           id: string
-          order: number
+          sort_order: number
           title: string
           updated_at: string
           updated_by: string | null
@@ -248,7 +248,7 @@ export type Database = {
           deleted?: boolean
           files?: Json | null
           id?: string
-          order?: number
+          sort_order?: number
           title: string
           updated_at?: string
           updated_by?: string | null
@@ -262,7 +262,7 @@ export type Database = {
           deleted?: boolean
           files?: Json | null
           id?: string
-          order?: number
+          sort_order?: number
           title?: string
           updated_at?: string
           updated_by?: string | null
@@ -336,13 +336,13 @@ export type Database = {
         Args: { row_id: string; table_name: string }
         Returns: undefined
       }
-      swap_order: {
+      swap_sort_order: {
         Args: {
-          p_table_name: string
           p_id1: string
-          p_order1: number
           p_id2: string
+          p_order1: number
           p_order2: number
+          p_table_name: string
         }
         Returns: undefined
       }

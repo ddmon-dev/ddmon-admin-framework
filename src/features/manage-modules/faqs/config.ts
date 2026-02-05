@@ -11,6 +11,7 @@ export const CONFIG = {
     { label: '서비스', value: 'service' },
     { label: '결제', value: 'payment' },
   ],
+  enableReorder: true,
 } as const;
 
 export type RowData = BaseRowData<typeof CONFIG.tableName>;

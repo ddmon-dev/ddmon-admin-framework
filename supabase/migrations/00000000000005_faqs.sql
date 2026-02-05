@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS public.faqs (
   answer TEXT NOT NULL,
   author TEXT,                          -- 작성자
   updated_by TEXT,                      -- 수정자
-  "order" INTEGER NOT NULL DEFAULT 0,
+  category TEXT NOT NULL DEFAULT 'general',
+  sort_order INTEGER NOT NULL DEFAULT 0,
   deleted BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -17,8 +18,11 @@ CREATE TABLE IF NOT EXISTS public.faqs (
 
 -- 인덱스
 CREATE INDEX IF NOT EXISTS idx_faqs_deleted ON public.faqs(deleted);
-CREATE INDEX IF NOT EXISTS idx_faqs_order ON public.faqs("order");
+CREATE INDEX IF NOT EXISTS idx_faqs_sort_order ON public.faqs(sort_order);
 CREATE INDEX IF NOT EXISTS idx_faqs_created_at ON public.faqs(created_at);
+CREATE INDEX IF NOT EXISTS idx_faqs_category ON public.faqs(category);
+CREATE INDEX IF NOT EXISTS idx_faqs_deleted_category_created
+  ON public.faqs(deleted, category, created_at DESC);
 
 -- 트리거
 CREATE TRIGGER trigger_faqs_updated_at

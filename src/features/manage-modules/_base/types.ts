@@ -42,3 +42,15 @@ export interface DeleteItemParams {
 export interface GetExportDataParams {
   tableName: TableName;
 }
+
+/**
+ * 순서 재정렬 기능 설정
+ *
+ * @example
+ * // 기본 사용 (asc 정렬)
+ * enableReorder: true
+ *
+ * // 정렬 방향 변경 (드묾)
+ * enableReorder: { direction: 'desc' }
+ */
+export type ReorderConfig = true | { direction?: 'asc' | 'desc' };

@@ -11,7 +11,7 @@ CREATE TABLE public.notices (
   updated_by TEXT,                      -- 수정자
   category TEXT NOT NULL DEFAULT 'normal',
   view_count INTEGER NOT NULL DEFAULT 0,
-  "order" INTEGER NOT NULL DEFAULT 0,
+  sort_order INTEGER NOT NULL DEFAULT 0,
 
   -- 파일 메타데이터 저장용 JSONB 컬럼
   -- 구조: { "thumbnail": [...], "attachments": [...] }

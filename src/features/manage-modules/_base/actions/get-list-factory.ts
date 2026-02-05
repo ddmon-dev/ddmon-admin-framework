@@ -2,7 +2,7 @@ import { APP_CONFIG } from '@/app.config';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { createServerAction } from '@/features/utils/server-actions';
 import { Result } from '@/shared/utils/results';
-import type { GetListParams, ListProps } from '../types';
+import type { GetListParams, ListProps, ReorderConfig } from '../types';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
 /** 정렬 설정 */
@@ -21,6 +21,8 @@ interface GetListFactoryConfig {
   softDelete?: boolean;
   categoryField?: string;
   additionalFilters?: (query: any, ctx: any) => any;
+  /** enableReorder 설정 시 자동으로 sort_order 기준 정렬 적용 */
+  enableReorder?: ReorderConfig;
 }
 
 const DEFAULT_ORDER_BY: OrderByConfig[] = [
@@ -72,11 +74,18 @@ export function createGetListAction<TData>(config: GetListFactoryConfig) {
     searchFields = ['name', 'email'],
     auth = true,
     selectColumns = '*',
-    orderBy = DEFAULT_ORDER_BY,
+    orderBy: customOrderBy,
     softDelete = true,
     categoryField = 'category',
     additionalFilters,
+    enableReorder,
   } = config;
+
+  // enableReorder 설정 시 자동 정렬, 그렇지 않으면 커스텀 또는 기본 정렬
+  const direction = enableReorder === true ? 'desc' : enableReorder?.direction ?? 'desc';
+  const orderBy = enableReorder
+    ? [{ column: 'sort_order', ascending: direction !== 'desc' }]
+    : customOrderBy ?? DEFAULT_ORDER_BY;
 
   // 검색 쿼리 문자열 생성
   const buildSearchFilter = (search: string) => {

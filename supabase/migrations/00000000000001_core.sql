@@ -28,3 +28,29 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- 함수 실행 권한 부여
 GRANT EXECUTE ON FUNCTION increment_view_count(TEXT, UUID) TO anon;
 GRANT EXECUTE ON FUNCTION increment_view_count(TEXT, UUID) TO authenticated;
+
+
+-- 두 레코드의 sort_order 값을 원자적으로 교환하는 함수
+-- 관리자 페이지 순서 변경에 사용
+CREATE OR REPLACE FUNCTION swap_sort_order(
+  p_table_name TEXT,
+  p_id1 UUID,
+  p_order1 INTEGER,
+  p_id2 UUID,
+  p_order2 INTEGER
+)
+RETURNS void AS $$
+BEGIN
+  -- 동적 SQL로 지정된 테이블의 두 레코드 sort_order 값 교환
+  -- CASE 문을 사용하여 단일 UPDATE로 두 값을 동시에 변경
+  EXECUTE format(
+    'UPDATE %I SET sort_order = CASE
+      WHEN id = $1 THEN $2
+      WHEN id = $3 THEN $4
+    END WHERE id IN ($1, $3)',
+    p_table_name
+  ) USING p_id1, p_order2, p_id2, p_order1;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON FUNCTION swap_sort_order IS '두 레코드의 sort_order 값을 원자적으로 교환합니다. manage-modules 순서 변경에 사용됩니다.';
