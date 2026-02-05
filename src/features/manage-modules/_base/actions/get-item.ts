@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
@@ -28,12 +27,13 @@ export async function getItem<TData>(
   const { tableName } = config;
   const { id } = params;
 
-  try {
-    if (!id) {
-      return Result.error(VALIDATION_ERRORS.NO_ID);
-    }
+  if (!id) {
+    return Result.error(VALIDATION_ERRORS.NO_ID);
+  }
 
-    await requireAuth();
+  await requireAuth();
+
+  try {
     const supabase = createServerClient();
 
     const { data: rawData, error } = await supabase
@@ -49,7 +49,6 @@ export async function getItem<TData>(
 
     return Result.success(rawData as TData);
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[getItem] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }

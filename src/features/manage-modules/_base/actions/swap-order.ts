@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
@@ -38,8 +37,9 @@ export async function swapOrder(params: SwapOrderParams): Promise<ActionResult<b
     sortDirection = 'asc',
   } = params;
 
+  await requireAuth();
+
   try {
-    await requireAuth();
     const supabase = createServerClient();
 
     // 1. 현재 항목 조회
@@ -113,7 +113,6 @@ export async function swapOrder(params: SwapOrderParams): Promise<ActionResult<b
     revalidatePath(pathname);
     return Result.success(true);
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[swapOrder] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }

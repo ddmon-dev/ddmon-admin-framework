@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { APP_CONFIG } from '@/app.config';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
@@ -76,14 +75,14 @@ export async function getList<TData>(
     enableReorder,
   } = config;
 
-  try {
-    // 1. 인증 확인
-    let user = null;
-    if (auth) {
-      user = await requireAuth(typeof auth === 'object' ? auth : {});
-    }
-    const ctx = { user };
+  // 1. 인증 확인
+  let user = null;
+  if (auth) {
+    user = await requireAuth(typeof auth === 'object' ? auth : {});
+  }
+  const ctx = { user };
 
+  try {
     // enableReorder 설정 시 자동 정렬, 그렇지 않으면 커스텀 또는 기본 정렬
     const direction = enableReorder === true ? 'desc' : enableReorder?.direction ?? 'desc';
     const orderBy = enableReorder
@@ -168,7 +167,6 @@ export async function getList<TData>(
 
     return Result.success({ data: rawData as TData[], totalCount });
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[getList] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }

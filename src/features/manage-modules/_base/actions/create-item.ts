@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
@@ -30,8 +29,9 @@ export async function createItem<TData>(
   const { tableName, enableReorder } = config;
   const { values, pathname } = params;
 
+  const user = await requireAuth();
+
   try {
-    const user = await requireAuth();
     const supabase = createServerClient();
 
     // author 자동 주입
@@ -71,7 +71,6 @@ export async function createItem<TData>(
 
     return Result.success(data as TData);
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[createItem] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }

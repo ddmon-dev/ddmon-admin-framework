@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
@@ -16,8 +15,9 @@ import type { GetExportDataParams } from '../types';
 export async function getExportData(params: GetExportDataParams): Promise<ActionResult<any[]>> {
   const { tableName } = params;
 
+  await requireAuth();
+
   try {
-    await requireAuth();
     const supabase = createServerClient();
 
     let query = supabase.from(tableName).select('*').eq('deleted', false);
@@ -33,7 +33,6 @@ export async function getExportData(params: GetExportDataParams): Promise<Action
 
     return Result.success(rawData);
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[getExportData] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }

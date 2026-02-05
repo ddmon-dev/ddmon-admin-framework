@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
@@ -21,12 +20,13 @@ export interface BulkDeleteParams {
 export async function bulkSoftDelete(params: BulkDeleteParams): Promise<ActionResult<{ count: number }>> {
   const { tableName, ids, pathname } = params;
 
-  try {
-    if (!ids || ids.length === 0) {
-      return Result.error(VALIDATION_ERRORS.NO_ID);
-    }
+  if (!ids || ids.length === 0) {
+    return Result.error(VALIDATION_ERRORS.NO_ID);
+  }
 
-    await requireAuth();
+  await requireAuth();
+
+  try {
     const supabase = createServerClient();
 
     const { data, error } = await supabase
@@ -46,7 +46,6 @@ export async function bulkSoftDelete(params: BulkDeleteParams): Promise<ActionRe
 
     return Result.success({ count: data?.length || 0 });
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[bulkSoftDelete] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }

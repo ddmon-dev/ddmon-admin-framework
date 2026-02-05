@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { deleteFolderFromStorage } from '@/shared/lib/file-system';
@@ -16,12 +15,13 @@ import type { DeleteItemParams } from '../types';
 export async function softDelete(params: DeleteItemParams): Promise<ActionResult<any>> {
   const { tableName, id, pathname } = params;
 
-  try {
-    if (!id) {
-      return Result.error(VALIDATION_ERRORS.NO_ID);
-    }
+  if (!id) {
+    return Result.error(VALIDATION_ERRORS.NO_ID);
+  }
 
-    await requireAuth();
+  await requireAuth();
+
+  try {
     const supabase = createServerClient();
 
     const { data, error } = await supabase
@@ -42,7 +42,6 @@ export async function softDelete(params: DeleteItemParams): Promise<ActionResult
 
     return Result.success(data);
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[softDelete] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }
@@ -54,12 +53,13 @@ export async function softDelete(params: DeleteItemParams): Promise<ActionResult
 export async function hardDelete(params: DeleteItemParams): Promise<ActionResult<any>> {
   const { tableName, id, pathname } = params;
 
-  try {
-    if (!id) {
-      return Result.error(VALIDATION_ERRORS.NO_ID);
-    }
+  if (!id) {
+    return Result.error(VALIDATION_ERRORS.NO_ID);
+  }
 
-    await requireAuth({ requireSuper: true });
+  await requireAuth({ requireSuper: true });
+
+  try {
     const supabase = createServerClient();
 
     // DB에서 완전 삭제
@@ -80,7 +80,6 @@ export async function hardDelete(params: DeleteItemParams): Promise<ActionResult
 
     return Result.success(data);
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[hardDelete] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }

@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
@@ -20,12 +19,13 @@ interface DeleteAdminParams {
 export async function deleteAdmin(params: DeleteAdminParams): Promise<ActionResult<any>> {
   const { id, pathname } = params;
 
-  try {
-    if (!id) {
-      return Result.error(VALIDATION_ERRORS.NO_ID);
-    }
+  if (!id) {
+    return Result.error(VALIDATION_ERRORS.NO_ID);
+  }
 
-    await requireAuth();
+  await requireAuth();
+
+  try {
     const supabase = createServerClient();
 
     const { data: checkData, error: checkError } = await supabase
@@ -63,7 +63,6 @@ export async function deleteAdmin(params: DeleteAdminParams): Promise<ActionResu
 
     return Result.success(data);
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[deleteAdmin] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }

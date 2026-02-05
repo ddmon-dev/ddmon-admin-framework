@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
@@ -12,12 +11,13 @@ import { CONFIG, type ItemDTO } from '../config';
 export async function getItem(params: GetItemParams): Promise<ActionResult<ItemDTO>> {
   const { id } = params;
 
-  try {
-    if (!id) {
-      return Result.error(VALIDATION_ERRORS.NO_ID);
-    }
+  if (!id) {
+    return Result.error(VALIDATION_ERRORS.NO_ID);
+  }
 
-    await requireAuth({ requireSuper: true });
+  await requireAuth({ requireSuper: true });
+
+  try {
     const supabase = createServerClient();
 
     const { data: rawData, error } = await supabase
@@ -33,7 +33,6 @@ export async function getItem(params: GetItemParams): Promise<ActionResult<ItemD
 
     return Result.success(rawData as ItemDTO);
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[getItem] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }

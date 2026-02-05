@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { APP_CONFIG } from '@/app.config';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
@@ -15,13 +14,13 @@ import { CONFIG, type ItemDTO } from '../config';
 export async function updateItem(params: UpdateItemParams<ItemDTO>): Promise<ActionResult<ItemDTO>> {
   const { id, values, pathname } = params;
 
+  if (!id) {
+    return Result.error(VALIDATION_ERRORS.NO_ID);
+  }
+
+  await requireAuth({ requireSuper: true });
+
   try {
-    if (!id) {
-      return Result.error(VALIDATION_ERRORS.NO_ID);
-    }
-
-    await requireAuth({ requireSuper: true });
-
     // 아이디는 수정 불가
     // 비밀번호 확인은 제거
     // 삭제는 업데이트 액션에서 처리하지 않음
@@ -78,7 +77,6 @@ export async function updateItem(params: UpdateItemParams<ItemDTO>): Promise<Act
 
     return Result.success(data as ItemDTO);
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[updateItem] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }

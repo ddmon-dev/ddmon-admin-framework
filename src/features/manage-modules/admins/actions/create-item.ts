@@ -1,6 +1,5 @@
 'use server';
 
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { APP_CONFIG } from '@/app.config';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
@@ -15,9 +14,9 @@ import { CONFIG, type ItemDTO } from '../config';
 export async function createItem(params: CreateItemParams<ItemDTO>): Promise<ActionResult<ItemDTO>> {
   const { values, pathname } = params;
 
-  try {
-    await requireAuth({ requireSuper: true });
+  await requireAuth({ requireSuper: true });
 
+  try {
     // confirmPassword 제거
     // super_admin은 항상 false (최고관리자는 1명만 / 어플리케이션 단에서 생성 불가)
     'confirmPassword' in values && delete values.confirmPassword;
@@ -66,7 +65,6 @@ export async function createItem(params: CreateItemParams<ItemDTO>): Promise<Act
 
     return Result.success(data as ItemDTO);
   } catch (error) {
-    if (isRedirectError(error)) throw error;
     console.error('[createItem] Unexpected error:', error);
     return Result.error(GENERAL_ERRORS.UNEXPECTED);
   }
