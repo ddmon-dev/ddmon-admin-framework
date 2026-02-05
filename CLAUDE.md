@@ -56,16 +56,37 @@ cp -r src/features/manage-modules/faqs src/features/manage-modules/products
 # 2. config.ts 수정
 export const CONFIG = {
   tableName: 'products',
+  searchFields: ['name', 'description'],  # 검색 대상 필드
+  enableReorder: true,                     # 순서 변경 (선택)
   ...
 };
 
-# 3. types.ts는 config.ts에 통합되어 있음
+# 3. Server Actions는 CONFIG 직접 전달
+export const getList = createGetListAction<ItemDTO>(CONFIG);
 
-# 4. Server Actions 수정 (tableName 변경)
-# 5. 컴포넌트 수정 (list-columns, write-form, addons)
+# 4. 컴포넌트 수정 (list-columns, write-form, addons)
 ```
 
 📄 자세한 내용: [manage-modules.md](docs/template-guides/manage-modules.md#새로운-모듈-추가)
+
+### 순서 변경(Reorder) 기능 추가
+
+**1. DB 마이그레이션**
+```sql
+sort_order INTEGER NOT NULL DEFAULT 0,
+CREATE INDEX idx_[table]_sort_order ON public.[table](sort_order);
+```
+
+**2. config.ts**
+```typescript
+export const CONFIG = {
+  tableName: 'products',
+  searchFields: ['name'],
+  enableReorder: true,  // 또는 { direction: 'asc' }
+} as const;
+```
+
+📄 자세한 내용: [manage-modules.md](docs/template-guides/manage-modules.md#순서-변경-기능-enablereorder)
 
 ### 파일 업로드 추가
 

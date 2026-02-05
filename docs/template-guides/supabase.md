@@ -11,11 +11,11 @@
 ```
 supabase/
 ├── migrations/                      # 테이블별 마이그레이션 (스키마만)
-│   ├── 00000000000001_core.sql      # 필수: 공통 함수
+│   ├── 00000000000001_core.sql      # 필수: 공통 함수 (swap_sort_order 등)
 │   ├── 00000000000002_admins.sql    # 필수: 관리자
 │   ├── 00000000000003_notices.sql   # 선택: 공지사항
 │   ├── 00000000000004_news.sql      # 선택: 뉴스
-│   ├── 00000000000005_faqs.sql      # 선택: FAQ
+│   ├── 00000000000005_faqs.sql      # 선택: FAQ (sort_order 포함)
 │   ├── 00000000000006_inquiries.sql # 선택: 문의
 │   └── 00000000000007_popups.sql    # 선택: 팝업
 ├── seed.sql                         # 개발용 목 데이터
@@ -240,6 +240,55 @@ src/shared/lib/supabase/
 ├── types.ts       # 자동 생성 DB 타입
 └── db-helpers.ts  # 타입 헬퍼
 ```
+
+---
+
+## core.sql 공통 함수
+
+`00000000000001_core.sql`에는 여러 테이블에서 사용하는 공통 함수가 포함되어 있습니다.
+
+| 함수명 | 용도 |
+|--------|------|
+| `update_updated_at_column()` | 자동 타임스탬프 업데이트 (트리거용) |
+| `increment_view_count()` | 조회수 증가 |
+| `swap_sort_order()` | 순서 변경 (manage-modules에서 사용) |
+
+### swap_sort_order 함수
+
+두 항목의 sort_order 값을 원자적으로 교환합니다:
+
+```sql
+swap_sort_order(
+  p_table_name TEXT,   -- 테이블명
+  p_id1 UUID,          -- 첫 번째 항목 ID
+  p_order1 INTEGER,    -- 첫 번째 항목의 현재 sort_order
+  p_id2 UUID,          -- 두 번째 항목 ID
+  p_order2 INTEGER     -- 두 번째 항목의 현재 sort_order
+)
+```
+
+**사용 예:**
+```typescript
+await supabase.rpc('swap_sort_order', {
+  p_table_name: 'faqs',
+  p_id1: 'uuid-1',
+  p_order1: 3,
+  p_id2: 'uuid-2',
+  p_order2: 2,
+});
+```
+
+### sort_order 컬럼 (순서 변경 기능)
+
+순서 변경 기능을 사용하려면 테이블에 다음 컬럼과 인덱스가 필요합니다:
+
+```sql
+sort_order INTEGER NOT NULL DEFAULT 0,
+
+CREATE INDEX idx_[table]_sort_order ON public.[table](sort_order);
+```
+
+자세한 사용법: [manage-modules.md](manage-modules.md#순서-변경-기능-enablereorder)
 
 ---
 

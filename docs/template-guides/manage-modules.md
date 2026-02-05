@@ -35,6 +35,7 @@ faqs/                    # 또는 다른 모듈명
 │   ├── get-item.ts
 │   ├── get-list.ts
 │   ├── get-export-data.ts
+│   ├── swap-order.ts       # 순서 변경 (enableReorder 사용 시)
 │   ├── update-item.ts
 │   └── index.ts
 ├── addons.tsx           # 헤더 추가 요소 (카테고리 필터 등)
@@ -275,7 +276,12 @@ cp -r src/features/manage-modules/notices src/features/manage-modules/products
 **config.ts:**
 ```typescript
 export const CONFIG = {
+  title: '상품 관리',
+  moduleName: '상품',
   tableName: 'products',
+  searchFields: ['name', 'description'],  // 검색 대상 필드
+  enableBulkAction: true,
+  enableReorder: true,                     // 순서 변경 기능 (선택)
   categoryOptions: [
     { label: '전자제품', value: 'electronics' },
     { label: '의류', value: 'clothing' },
@@ -301,25 +307,23 @@ export type ItemDTO = BaseItemDTO<typeof CONFIG.tableName>;
 
 ### 3. Server Actions 수정
 
-팩토리 함수를 사용하여 간단하게 설정합니다.
+팩토리 함수를 사용하여 간단하게 설정합니다. **CONFIG 객체를 직접 전달**하는 것이 권장 패턴입니다.
 
 ```typescript
 // actions/get-list.ts
 import { createGetListAction } from '../../_base/actions/get-list-factory';
 import { CONFIG, type ItemDTO } from '../config';
 
-export const getList = createGetListAction<ItemDTO>({
-  tableName: CONFIG.tableName,
-  searchFields: ['name', 'description'],  // 검색 대상 필드
-});
+export const getList = createGetListAction<ItemDTO>(CONFIG);
 ```
 
-**팩토리 옵션:**
+**팩토리 옵션 (config.ts에서 정의):**
 - `tableName`: 테이블명 (필수)
 - `searchFields`: 검색 필드 (기본: ['name', 'email'])
+- `enableReorder`: 순서 변경 기능 (true 또는 { direction: 'asc' | 'desc' })
 - `auth`: 인증 설정 (기본: true, 예: { requireSuper: true })
 - `selectColumns`: SELECT 컬럼 (기본: '*')
-- `orderBy`: 정렬 설정 (기본: created_at desc)
+- `orderBy`: 정렬 설정 (기본: created_at desc, enableReorder 시 sort_order)
 - `softDelete`: deleted 필터 (기본: true)
 - `categoryField`: 카테고리 필드명 (기본: 'category')
 
@@ -444,6 +448,76 @@ await createItem({ values, path: pathname });
 ```typescript
 .eq('deleted', false)
 ```
+
+## 순서 변경 기능 (enableReorder)
+
+테이블 항목의 순서를 수동으로 변경할 수 있는 기능입니다.
+
+### 설정 옵션
+
+| 설정 | 정렬 방향 | 설명 |
+|------|----------|------|
+| `enableReorder: true` | DESC | 기본값, 최신 항목이 맨 위 |
+| `enableReorder: { direction: 'asc' }` | ASC | 오래된 항목이 맨 위 |
+| 미설정 | - | 순서 변경 비활성화 |
+
+### 사용 조건
+
+1. **DB**: 테이블에 `sort_order INTEGER NOT NULL DEFAULT 0` 컬럼 필수
+2. **DB**: `core.sql`의 `swap_sort_order()` 함수 필요
+3. **config.ts**: `enableReorder` 설정
+
+### 구현 예시 (4단계)
+
+**1단계: DB 마이그레이션**
+```sql
+CREATE TABLE public.products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,  -- 필수
+  -- ...
+);
+
+CREATE INDEX idx_products_sort_order ON public.products(sort_order);
+```
+
+**2단계: config.ts**
+```typescript
+export const CONFIG = {
+  tableName: 'products',
+  searchFields: ['name'],
+  enableReorder: true,
+} as const;
+```
+
+**3단계: actions/get-list.ts**
+```typescript
+export const getList = createGetListAction<ItemDTO>(CONFIG);
+// enableReorder 설정 시 자동으로 sort_order 정렬 적용
+```
+
+**4단계: list.tsx**
+```typescript
+<ManageList
+  data={data}
+  config={CONFIG}  // enableReorder 자동 처리
+  // ...
+/>
+```
+
+### 동작 방식
+
+- **ManageList**: enableReorder 설정 시 "순서" 컬럼 자동 추가
+- **ReorderButtons**: Up/Down 버튼 제공
+- **swapOrder**: 인접 항목과 sort_order 값 교환 (원자적)
+- **createItem**: 신규 생성 시 max(sort_order) + 1 자동 할당
+
+### 주의사항
+
+- 검색 중에는 순서 버튼이 숨겨짐 (의도적)
+- 카테고리 필터 활성화 시 해당 카테고리 내에서만 순서 변경
+
+---
 
 ## 파일 업로드
 
