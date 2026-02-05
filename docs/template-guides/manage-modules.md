@@ -307,17 +307,23 @@ export type ItemDTO = BaseItemDTO<typeof CONFIG.tableName>;
 
 ### 3. Server Actions 수정
 
-팩토리 함수를 사용하여 간단하게 설정합니다. **CONFIG 객체를 직접 전달**하는 것이 권장 패턴입니다.
+base 함수를 래핑하여 간단하게 설정합니다. **CONFIG 객체를 직접 전달**하는 것이 권장 패턴입니다.
 
 ```typescript
 // actions/get-list.ts
-import { createGetListAction } from '../../_base/actions/get-list-factory';
-import { CONFIG, type ItemDTO } from '../config';
+'use server';
 
-export const getList = createGetListAction<ItemDTO>(CONFIG);
+import { getList as baseGetList } from '../../_base/actions/get-list';
+import { CONFIG, type ItemDTO } from '../config';
+import type { GetListParams, ListProps } from '../../_base/types';
+import type { ActionResult } from '@/shared/types/results';
+
+export async function getList(params: GetListParams): Promise<ActionResult<ListProps<ItemDTO>>> {
+  return baseGetList<ItemDTO>(CONFIG, params);
+}
 ```
 
-**팩토리 옵션 (config.ts에서 정의):**
+**config 옵션 (config.ts에서 정의):**
 - `tableName`: 테이블명 (필수)
 - `searchFields`: 검색 필드 (기본: ['name', 'email'])
 - `enableReorder`: 순서 변경 기능 (true 또는 { direction: 'asc' | 'desc' })
@@ -492,7 +498,9 @@ export const CONFIG = {
 
 **3단계: actions/get-list.ts**
 ```typescript
-export const getList = createGetListAction<ItemDTO>(CONFIG);
+export async function getList(params: GetListParams): Promise<ActionResult<ListProps<ItemDTO>>> {
+  return baseGetList<ItemDTO>(CONFIG, params);
+}
 // enableReorder 설정 시 자동으로 sort_order 정렬 적용
 ```
 
