@@ -5,6 +5,7 @@ export const CONFIG = {
   title: '',
   moduleName: '팝업',
   tableName: 'popups',
+  searchFields: ['title'],
   enableBulkAction: true,
 } as const;
 

@@ -5,6 +5,7 @@ export const CONFIG = {
   title: '',
   moduleName: '뉴스',
   tableName: 'news',
+  searchFields: ['title', 'content'],
   enableBulkAction: true,
 } as const;
 

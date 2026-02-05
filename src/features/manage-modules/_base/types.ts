@@ -54,3 +54,13 @@ export interface GetExportDataParams {
  * enableReorder: { direction: 'desc' }
  */
 export type ReorderConfig = true | { direction?: 'asc' | 'desc' };
+
+/**
+ * 모듈 기본 설정 (actions에서 사용)
+ * 각 모듈의 config.ts에서 이 속성들을 포함하면 actions에서 자동 적용
+ */
+export interface ModuleBaseConfig {
+  tableName: TableName;
+  searchFields?: string[];
+  enableReorder?: ReorderConfig;
+}

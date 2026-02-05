@@ -5,6 +5,7 @@ export const CONFIG = {
   title: '',
   moduleName: '공지사항',
   tableName: 'notices',
+  searchFields: ['title', 'author'],
   enableBulkAction: true,
   categoryOptions: [
     { label: '공지', value: 'notice' },

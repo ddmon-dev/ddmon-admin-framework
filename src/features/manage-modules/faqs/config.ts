@@ -5,6 +5,7 @@ export const CONFIG = {
   title: '',
   moduleName: 'FAQ',
   tableName: 'faqs',
+  searchFields: ['question', 'answer'],
   enableBulkAction: true,
   categoryOptions: [
     { label: '일반', value: 'general' },

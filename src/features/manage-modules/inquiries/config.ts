@@ -5,6 +5,7 @@ export const CONFIG = {
   title: '',
   moduleName: '문의',
   tableName: 'inquiries',
+  searchFields: ['name', 'email', 'company'],
   replyTableName: 'inquiry_replies',
   enableBulkAction: true,
   statusOptions: [

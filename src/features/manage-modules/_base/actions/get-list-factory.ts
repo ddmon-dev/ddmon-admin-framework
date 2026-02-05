@@ -14,7 +14,7 @@ interface OrderByConfig {
 /** 팩토리 설정 인터페이스 */
 interface GetListFactoryConfig {
   tableName: TableName;
-  searchFields?: string[];
+  searchFields?: readonly string[] | string[];
   auth?: boolean | { requireSuper?: boolean };
   selectColumns?: string;
   orderBy?: OrderByConfig[];
@@ -23,6 +23,8 @@ interface GetListFactoryConfig {
   additionalFilters?: (query: any, ctx: any) => any;
   /** enableReorder 설정 시 자동으로 sort_order 기준 정렬 적용 */
   enableReorder?: ReorderConfig;
+  // CONFIG 전체 전달 시 무시되는 속성들 (타입 호환성)
+  [key: string]: unknown;
 }
 
 const DEFAULT_ORDER_BY: OrderByConfig[] = [

@@ -6,6 +6,9 @@ export const CONFIG = {
   title: '',
   moduleName: '관리자 계정',
   tableName: APP_CONFIG.AUTH.ADMIN_TABLE_NAME,
+  searchFields: ['name', 'id'],
+  selectColumns: 'id, name, email, super_admin, created_at, updated_at, deleted',
+  auth: { requireSuper: true },
   enableBulkAction: false,
 } as const;
 

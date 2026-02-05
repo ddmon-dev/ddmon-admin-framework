@@ -3,5 +3,5 @@ import { type ActionResult } from '@/shared/types/results';
 import { CONFIG, type ItemDTO } from '../config';
 
 export async function getExportData(): Promise<ActionResult<ItemDTO[]>> {
-  return await baseGetExportData({ tableName: CONFIG.tableName });
+  return await baseGetExportData(CONFIG);
 }
