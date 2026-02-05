@@ -71,6 +71,7 @@ export type Database = {
         Row: {
           answer: string
           author: string | null
+          category: string
           created_at: string
           deleted: boolean
           id: string
@@ -82,6 +83,7 @@ export type Database = {
         Insert: {
           answer: string
           author?: string | null
+          category?: string
           created_at?: string
           deleted?: boolean
           id?: string
@@ -93,6 +95,7 @@ export type Database = {
         Update: {
           answer?: string
           author?: string | null
+          category?: string
           created_at?: string
           deleted?: boolean
           id?: string

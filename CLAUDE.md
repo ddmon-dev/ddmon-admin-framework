@@ -50,8 +50,8 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 ### 새 CRUD 모듈 추가
 
 ```bash
-# 1. 템플릿 복사
-cp -r src/features/manage-modules/_templates/_sample src/features/manage-modules/products
+# 1. 기존 모듈 복사 (faqs: 기본 CRUD, notices: 카테고리+파일)
+cp -r src/features/manage-modules/faqs src/features/manage-modules/products
 
 # 2. config.ts 수정
 export const CONFIG = {
@@ -59,8 +59,7 @@ export const CONFIG = {
   ...
 };
 
-# 3. types.ts 수정
-export type RowData = BaseRowData<'products'>;
+# 3. types.ts는 config.ts에 통합되어 있음
 
 # 4. Server Actions 수정 (tableName 변경)
 # 5. 컴포넌트 수정 (list-columns, write-form, addons)

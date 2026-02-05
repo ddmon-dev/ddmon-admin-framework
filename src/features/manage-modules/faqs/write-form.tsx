@@ -8,9 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import { FieldGroup } from '@/shared/ui/field';
-import { FormTextInput, FormTextarea, FormDatePicker } from '@/shared/ui/form';
+import { FormRadioGroup, FormTextInput, FormTextarea } from '@/shared/ui/form';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
-import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 
 import {
   useManageSheet,
@@ -18,17 +18,17 @@ import {
   ManageFormSubmit,
   ManageSheetClose,
 } from '../_base/ui';
-import { type ItemDTO } from './config';
+import { CONFIG, type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 
 const formSchema = z.object({
-  created_at: z.date().nullish(),
+  category: z.string().min(1, '카테고리를 선택해주세요.'),
   question: z.string().min(1, '질문을 입력해주세요.'),
   answer: z.string().min(1, '답변을 입력해주세요.'),
 });
 
 const formDefaultValues = {
-  created_at: new Date(),
+  category: CONFIG.categoryOptions[0].value,
   question: '',
   answer: '',
 };
@@ -90,13 +90,11 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       {/* 기본 정보 */}
       <FieldGroup>
-        <FormDatePicker
+        <FormRadioGroup
           control={form.control}
-          name="created_at"
-          label="작성일"
-          mode="single"
-          presets
-          optional
+          name="category"
+          label="카테고리"
+          options={[...CONFIG.categoryOptions]}
         />
 
         <FormTextInput

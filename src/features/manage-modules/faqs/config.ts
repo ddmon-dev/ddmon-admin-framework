@@ -6,6 +6,11 @@ export const CONFIG = {
   moduleName: 'FAQ',
   tableName: 'faqs',
   enableBulkAction: true,
+  categoryOptions: [
+    { label: '일반', value: 'general' },
+    { label: '서비스', value: 'service' },
+    { label: '결제', value: 'payment' },
+  ],
 } as const;
 
 export type RowData = BaseRowData<typeof CONFIG.tableName>;

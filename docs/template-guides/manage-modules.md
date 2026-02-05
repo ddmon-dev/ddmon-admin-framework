@@ -13,18 +13,23 @@ manage-modules/
 │   ├── actions/         # 공통 Server Actions (softDelete, hardDelete)
 │   ├── hooks/           # 커스텀 훅 (useManageItemData)
 │   └── utils/           # 유틸리티
-├── _templates/          # 템플릿 (복사해서 사용)
-│   ├── _sample/         # 기본 템플릿
-│   ├── faq/             # FAQ 템플릿
-│   ├── news/            # 뉴스 템플릿
-│   └── notice/          # 공지사항 템플릿 (파일 업로드 포함)
-└── admins/              # 관리자 관리 모듈
+├── admins/              # 관리자 관리 모듈
+├── faqs/                # FAQ 모듈 (카테고리 필터)
+├── inquiries/           # 문의 모듈 (답변 기능)
+├── news/                # 뉴스 모듈 (파일 업로드)
+├── notices/             # 공지사항 모듈 (카테고리, 파일 업로드)
+└── popups/              # 팝업 모듈
 ```
+
+**새 모듈 추가 시**: 기존 모듈 중 유사한 것을 복사하여 사용
+- 기본 CRUD: `faqs/` 복사
+- 카테고리 + 파일: `notices/` 복사
+- 상태 관리: `inquiries/` 복사
 
 ### 모듈 파일 구조
 
 ```
-_templates/_sample/
+faqs/                    # 또는 다른 모듈명
 ├── actions/
 │   ├── create-item.ts
 │   ├── get-item.ts
@@ -32,8 +37,8 @@ _templates/_sample/
 │   ├── get-export-data.ts
 │   ├── update-item.ts
 │   └── index.ts
-├── addons.tsx           # 헤더 추가 요소
-├── config.ts            # 모듈 설정 및 타입
+├── addons.tsx           # 헤더 추가 요소 (카테고리 필터 등)
+├── config.ts            # 모듈 설정 및 타입 (RowData, ItemDTO 포함)
 ├── detail-view.tsx      # 상세 보기 (읽기 전용)
 ├── export-data-button.tsx
 ├── export-data-columns.ts
@@ -255,10 +260,14 @@ import { NewlineText } from '@/shared/ui/newline-text';
 
 ## 새로운 모듈 추가
 
-### 1. 템플릿 복사 (권장)
+### 1. 기존 모듈 복사 (권장)
 
 ```bash
-cp -r src/features/manage-modules/_templates/_sample src/features/manage-modules/products
+# 기본 CRUD (카테고리 포함)
+cp -r src/features/manage-modules/faqs src/features/manage-modules/products
+
+# 또는 카테고리 + 파일 업로드
+cp -r src/features/manage-modules/notices src/features/manage-modules/products
 ```
 
 ### 2. 설정 파일 수정

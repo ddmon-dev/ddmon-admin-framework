@@ -553,14 +553,16 @@ import type { MenuData } from '@/features/ui/app-sidebar/types';
 
 #### 템플릿 복제용 (CRUD 모듈)
 
-manage-modules/notice를 복제하세요.
+기존 모듈 중 유사한 것을 복제하세요.
 
 ```bash
-# 1. notice 폴더 복제
-cp -r src/features/manage-modules/notice src/features/manage-modules/products
+# 기본 CRUD (카테고리 포함)
+cp -r src/features/manage-modules/faqs src/features/manage-modules/products
 
-# 2. 파일명은 그대로 (types.ts, config.ts 등)
-# 3. 내용만 products에 맞게 수정
+# 또는 카테고리 + 파일 업로드
+cp -r src/features/manage-modules/notices src/features/manage-modules/products
+
+# 파일명은 그대로, 내용만 products에 맞게 수정
 ```
 
 **파일명**: 프리픽스 없음 유지

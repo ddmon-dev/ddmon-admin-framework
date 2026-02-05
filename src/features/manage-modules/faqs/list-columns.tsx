@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
+import { Badge } from '@/shared/ui/badge';
 import { Separator } from '@/shared/ui/separator';
 import { ModifyButton, SoftDeleteButton } from '../_base/ui';
 
@@ -7,6 +8,19 @@ import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
+  {
+    accessorKey: 'category',
+    header: '카테고리',
+    size: 100,
+    cell: ({ row }) => {
+      const { category } = row.original;
+      const categoryLabel = CONFIG.categoryOptions.find(
+        option => option.value === category
+      )?.label;
+
+      return <Badge variant="secondary">{categoryLabel}</Badge>;
+    },
+  },
   {
     accessorKey: 'question',
     header: '질문',
