@@ -17,7 +17,7 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 
 | 분야          | 기술                           |
 | ------------- | ------------------------------ |
-| **Framework** | Next.js 16.0.7 (App Router)    |
+| **Framework** | Next.js 16.1.6 (App Router)    |
 | **React**     | 19.2.1 (React Compiler 활성화) |
 | **Language**  | TypeScript (Strict Mode)       |
 | **Database**  | Supabase                       |
