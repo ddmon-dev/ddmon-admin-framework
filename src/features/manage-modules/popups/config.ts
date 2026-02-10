@@ -1,5 +1,6 @@
 import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
 import { ItemDTO as BaseItemDTO } from '../_base/types';
+import { writeSchema } from './schema';
 
 export const CONFIG = {
   title: '',
@@ -7,6 +8,7 @@ export const CONFIG = {
   tableName: 'popups',
   searchFields: ['title'],
   enableBulkAction: true,
+  schema: writeSchema,
 } as const;
 
 export type RowData = BaseRowData<typeof CONFIG.tableName>;

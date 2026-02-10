@@ -30,13 +30,9 @@ import {
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
+import { writeSchema } from './schema';
 
-const formSchema = z.object({
-  category: z.string().min(1, '카테고리를 선택해주세요.'),
-  created_at: z.date().nullish(),
-  view_count: schemaPresets.numberRange(),
-  title: z.string().min(1, '제목을 입력해주세요.'),
-  content: z.string().min(1, '내용을 입력해주세요.'),
+const formSchema = writeSchema.extend({
   files: schemaPresets.files({ thumbnail: 0, attachments: 0 }),
 });
 

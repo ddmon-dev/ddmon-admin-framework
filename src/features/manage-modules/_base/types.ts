@@ -1,3 +1,4 @@
+import type { ZodType } from 'zod';
 import { WithFiles } from '@/shared/lib/file-system';
 import { RowData, TableName } from '@/shared/lib/supabase/db-helpers';
 
@@ -63,4 +64,5 @@ export interface ModuleBaseConfig {
   tableName: TableName;
   searchFields?: string[];
   enableReorder?: ReorderConfig;
+  schema?: ZodType;
 }

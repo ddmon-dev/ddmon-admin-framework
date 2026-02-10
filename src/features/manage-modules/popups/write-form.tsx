@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { addDays, format } from 'date-fns';
+import { addDays } from 'date-fns';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -25,22 +25,12 @@ import {
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
+import { writeSchema } from './schema';
 
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 
-const formSchema = z.object({
-  title: z.string().min(1, '제목을 입력해주세요.'),
-  content: z.string().min(1, '내용을 입력해주세요.'),
-  position_top: z.number().min(0).int(),
-  position_left: z.number().min(0).int(),
-  width: z.number().min(1).int(),
-  is_active: z.boolean(),
-  is_always: z.boolean(),
-  start_date: z.date().nullish(),
-  end_date: z.date().nullish(),
-  z_index: z.number().min(0).int(),
-});
+const formSchema = writeSchema;
 
 const formDefaultValues = {
   title: '',
@@ -77,25 +67,14 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      // DATE 타입 컬럼에 맞게 날짜를 YYYY-MM-DD 문자열로 변환
-      const normalizedValues = {
-        ...values,
-        start_date: values.start_date
-          ? format(values.start_date, 'yyyy-MM-dd')
-          : null,
-        end_date: values.end_date
-          ? format(values.end_date, 'yyyy-MM-dd')
-          : null,
-      };
-
       const { success, error } = id
         ? await updateItem({
             id,
-            values: normalizedValues as Partial<ItemDTO>,
+            values: values as Partial<ItemDTO>,
             pathname,
           })
         : await createItem({
-            values: normalizedValues as Partial<ItemDTO>,
+            values: values as Partial<ItemDTO>,
             pathname,
           });
 

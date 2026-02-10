@@ -12,11 +12,20 @@ import type { ActionResult } from '@/shared/types/results';
 
 import { requireAuth } from '../utils/server';
 import { hashPassword, verifyPassword } from '../utils/password';
+import { updateProfileSchema } from '../schema';
 import type { UpdateProfileValues } from '../types';
 
 export async function updateProfile(values: UpdateProfileValues): Promise<ActionResult<void>> {
+  // 스키마 검증 (화이트리스트: confirmPassword 자동 제거)
+  const parsed = updateProfileSchema.safeParse(values);
+  if (!parsed.success) {
+    console.error('[updateProfile] Validation failed:', parsed.error.flatten());
+    return Result.error(VALIDATION_ERRORS.INVALID_INPUT);
+  }
+  const validatedValues = parsed.data;
+
   // 새 비밀번호가 있으면 현재 비밀번호도 필수
-  if (values.newPassword && !values.currentPassword) {
+  if (validatedValues.newPassword && !validatedValues.currentPassword) {
     return Result.error(VALIDATION_ERRORS.REQUIRED_FIELD('현재 비밀번호'));
   }
 
@@ -26,7 +35,7 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Action
     const supabase = createServerClient();
 
     // 비밀번호 변경 시 현재 비밀번호 검증
-    if (values.newPassword) {
+    if (validatedValues.newPassword) {
       // DB에서 현재 해시된 비밀번호 가져오기
       const { data: adminData, error: fetchError } = await supabase
         .from(APP_CONFIG.AUTH.ADMIN_TABLE_NAME)
@@ -40,7 +49,7 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Action
 
       // 현재 비밀번호 검증
       const isValid = await verifyPassword(
-        values.currentPassword!,
+        validatedValues.currentPassword!,
         adminData.password
       );
 
@@ -51,13 +60,13 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Action
 
     // 업데이트 데이터 준비
     const updateData: Record<string, string> = {
-      name: values.name,
-      email: values.email,
+      name: validatedValues.name,
+      email: validatedValues.email,
     };
 
     // 새 비밀번호가 있으면 해시 후 추가
-    if (values.newPassword) {
-      updateData.password = await hashPassword(values.newPassword);
+    if (validatedValues.newPassword) {
+      updateData.password = await hashPassword(validatedValues.newPassword);
     }
 
     // DB 업데이트 (본인만)

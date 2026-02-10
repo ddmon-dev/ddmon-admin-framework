@@ -18,6 +18,7 @@ export const AUTH_ERRORS = {
 // ============================================================
 export const VALIDATION_ERRORS = {
   NO_ID: 'ID값이 없습니다.',
+  INVALID_INPUT: '입력값이 올바르지 않습니다.',
   REQUIRED_FIELD: (fieldName: string) => `${josa(fieldName, '은/는')} 필수 입력값입니다.`,
   INVALID_FORMAT: (fieldName: string) => `${fieldName}의 형식이 올바르지 않습니다.`,
   TOO_LONG: (fieldName: string, maxLength: number) =>

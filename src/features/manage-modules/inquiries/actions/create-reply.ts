@@ -1,13 +1,20 @@
 'use server';
 
+import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { getUserSession } from '@/features/auth/utils/server';
 import { sendEmail } from '@/shared/lib/email/send-email';
 import { getReplyEmailSubject, getReplyEmailHtml } from '../reply-email';
 import { type ActionResult } from '@/shared/types/results';
-import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS, CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 import { CONFIG, type ReplyRowData } from '../config';
+
+const replySchema = z.object({
+  inquiryId: z.string().min(1),
+  content: z.string().min(1),
+  pathname: z.string().min(1),
+});
 
 interface CreateReplyParams {
   inquiryId: string;
@@ -15,11 +22,15 @@ interface CreateReplyParams {
   pathname: string;
 }
 
-export async function createReply({
-  inquiryId,
-  content,
-  pathname,
-}: CreateReplyParams): Promise<ActionResult<ReplyRowData>> {
+export async function createReply(params: CreateReplyParams): Promise<ActionResult<ReplyRowData>> {
+  const parsed = replySchema.safeParse(params);
+  if (!parsed.success) {
+    console.error('[createReply] Validation failed:', parsed.error.flatten());
+    return { success: false, error: VALIDATION_ERRORS.INVALID_INPUT };
+  }
+
+  const { inquiryId, content, pathname } = parsed.data;
+
   try {
     const user = await getUserSession();
     if (!user) {

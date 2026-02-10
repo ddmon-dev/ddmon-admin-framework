@@ -130,6 +130,7 @@ import { AppSidebar } from '@/features/ui/app-sidebar/sidebar';
 | **설정 파일 (도메인)** | config.ts      | \`config.ts\`                                |
 | **설정 파일 (루트)**   | *.config.ts    | \`app.config.ts\`, \`next.config.ts\`        |
 | **타입 파일**      | types.ts       | \`types.ts\`                                 |
+| **스키마 파일**    | schema.ts      | \`schema.ts\`                                |
 | **상수 파일**      | constants.ts   | \`constants.ts\`                             |
 | **유틸리티**       | utils.ts       | \`utils.ts\`                                 |
 
@@ -233,7 +234,7 @@ manage-modules/notice/
 │   └── ...
 ├── list.tsx           ← 나머지는 루트에 플랫
 ├── write-form.tsx
-├── types.ts
+├── schema.ts          ← Zod 스키마 (검증 SSOT)
 ├── config.ts
 └── index.tsx
 ```
@@ -257,6 +258,7 @@ auth/
 │   ├── sign-in.ts
 │   └── sign-out.ts
 ├── config.ts          ← 루트에 설정 파일들
+├── schema.ts          ← Zod 스키마
 ├── types.ts
 ├── constants.ts
 └── utils.ts

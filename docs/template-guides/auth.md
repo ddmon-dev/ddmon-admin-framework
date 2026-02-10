@@ -18,6 +18,7 @@ features/auth/
 │   ├── server.ts            # requireAuth, getUserSession
 │   └── password.ts          # 비밀번호 해싱
 ├── config.ts                # NextAuth 설정 (default export)
+├── schema.ts                # Zod 스키마 (updateProfileSchema)
 ├── next-auth.ts             # NextAuth 핸들러
 ├── types.ts                 # 타입 정의
 ├── use-auth.ts              # Client 훅 (useAuth, useRequireAuth)

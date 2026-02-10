@@ -53,18 +53,25 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 # 1. 기존 모듈 복사 (faqs: 기본 CRUD, notices: 카테고리+파일)
 cp -r src/features/manage-modules/faqs src/features/manage-modules/products
 
-# 2. config.ts 수정
+# 2. schema.ts 수정 (DB 필드 검증 — SSOT)
+export const writeSchema = z.object({
+  name: z.string().min(1, '이름을 입력해주세요.'),
+  description: z.string().min(1, '설명을 입력해주세요.'),
+});
+
+# 3. config.ts 수정
 export const CONFIG = {
   tableName: 'products',
   searchFields: ['name', 'description'],  # 검색 대상 필드
+  schema: writeSchema,                     # 서버 액션 자동 검증
   enableReorder: true,                     # 순서 변경 (선택)
   ...
 };
 
-# 3. Server Actions는 CONFIG 직접 전달
+# 4. Server Actions는 CONFIG 직접 전달
 export const getList = createGetListAction<ItemDTO>(CONFIG);
 
-# 4. 컴포넌트 수정 (list-columns, write-form, addons)
+# 5. 컴포넌트 수정 (list-columns, write-form, addons)
 ```
 
 📄 자세한 내용: [manage-modules.md](docs/template-guides/manage-modules.md#새로운-모듈-추가)

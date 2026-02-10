@@ -23,23 +23,14 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 import { schemaPresets } from '@/shared/schemas';
 
 import { signOut, useAuth, updateProfile, type UpdateProfileValues } from '@/features/auth';
+import { updateProfileSchema } from '@/features/auth/schema';
 
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
-import { GENERAL_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 import { useDialog } from '@/shared/ui/app-dialog';
 
-const formSchema = z
-  .object({
-    name: z.string().min(3, VALIDATION_ERRORS.TOO_SHORT('이름', 3)),
-    email: schemaPresets.email(),
-    currentPassword: schemaPresets.password({
-      optional: true,
-      strength: 'minimum',
-    }),
-    newPassword: schemaPresets.password({
-      optional: true,
-      strength: 'minimum',
-    }),
+const formSchema = updateProfileSchema
+  .extend({
     confirmPassword: schemaPresets.password({
       optional: true,
       strength: 'minimum',

@@ -1,5 +1,6 @@
 import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
 import { ItemDTO as BaseItemDTO } from '../_base/types';
+import { writeSchema } from './schema';
 
 export const CONFIG = {
   title: '',
@@ -11,6 +12,7 @@ export const CONFIG = {
     { label: '공지', value: 'notice' },
     { label: '일반', value: 'normal' },
   ],
+  schema: writeSchema,
 } as const;
 
 export type RowData = BaseRowData<typeof CONFIG.tableName>;

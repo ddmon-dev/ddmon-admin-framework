@@ -1,5 +1,6 @@
 import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
 import { ItemDTO as BaseItemDTO } from '../_base/types';
+import { writeSchema } from './schema';
 
 export const CONFIG = {
   title: '',
@@ -13,6 +14,7 @@ export const CONFIG = {
     { label: '결제', value: 'payment' },
   ],
   enableReorder: true,
+  schema: writeSchema,
 } as const;
 
 export type RowData = BaseRowData<typeof CONFIG.tableName>;

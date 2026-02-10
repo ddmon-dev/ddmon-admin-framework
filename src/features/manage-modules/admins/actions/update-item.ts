@@ -1,15 +1,14 @@
 'use server';
 
-import { APP_CONFIG } from '@/app.config';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { schemaPresets } from '@/shared/schemas';
 import { hashPassword, requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
 import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import type { ActionResult } from '@/shared/types/results';
 import type { UpdateItemParams } from '../../_base/types';
 import { CONFIG, type ItemDTO } from '../config';
+import { updateSchema } from '../schema';
 
 export async function updateItem(params: UpdateItemParams<ItemDTO>): Promise<ActionResult<ItemDTO>> {
   const { id, values, pathname } = params;
@@ -21,40 +20,27 @@ export async function updateItem(params: UpdateItemParams<ItemDTO>): Promise<Act
   await requireAuth(CONFIG.auth);
 
   try {
-    // 아이디는 수정 불가
-    // 비밀번호 확인은 제거
-    // 삭제는 업데이트 액션에서 처리하지 않음
-    'id' in values && delete values.id;
-    'confirmPassword' in values && delete values.confirmPassword;
-    'deleted' in values && delete values.deleted;
-
-    // 비밀번호가 있으면 검증 후 해시, 빈 값이면 제거
-    if (values.password) {
-      const validatePassword = schemaPresets
-        .password({
-          strength: APP_CONFIG.AUTH.PASSWORD_STRENGTH,
-        })
-        .safeParse(values.password);
-
-      if (!validatePassword.success) {
-        return Result.error(validatePassword.error.message);
-      }
-
-      values.password = await hashPassword(validatePassword.data);
-    } else {
-      delete values.password;
+    // 스키마 검증 (화이트리스트: id, confirmPassword, deleted, super_admin 등 자동 제거)
+    const parsed = updateSchema.safeParse(values);
+    if (!parsed.success) {
+      console.error('[admins/updateItem] Validation failed:', parsed.error.flatten());
+      return Result.error(VALIDATION_ERRORS.INVALID_INPUT);
     }
 
-    // 최고관리자 설정은 할 수 없음
-    if ('super_admin' in values) {
-      return Result.error(`${APP_CONFIG.AUTH.ADMIN_LABELS.SUPER_ADMIN} 설정은 할 수 없습니다.`);
+    const validatedValues: Record<string, any> = { ...parsed.data };
+
+    // 비밀번호가 있으면 해시, 빈 값이면 제거
+    if (validatedValues.password) {
+      validatedValues.password = await hashPassword(validatedValues.password);
+    } else {
+      delete validatedValues.password;
     }
 
     const supabase = createServerClient();
 
     const { data, error } = await supabase
       .from(CONFIG.tableName)
-      .update(values as any)
+      .update(validatedValues as any)
       .eq('id', id)
       .select()
       .single();

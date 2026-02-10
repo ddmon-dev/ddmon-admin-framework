@@ -40,6 +40,7 @@ faqs/                    # 또는 다른 모듈명
 │   └── index.ts
 ├── addons.tsx           # 헤더 추가 요소 (카테고리 필터 등)
 ├── config.ts            # 모듈 설정 및 타입 (RowData, ItemDTO 포함)
+├── schema.ts            # Zod 스키마 (writeSchema — 서버/클라이언트 검증 SSOT)
 ├── detail-view.tsx      # 상세 보기 (읽기 전용)
 ├── export-data-button.tsx
 ├── export-data-columns.ts
@@ -127,6 +128,48 @@ if (!success) {
 **자동 처리:**
 - revalidatePath(path)
 - 타입 안전성
+- Zod 스키마 검증 (config.schema 설정 시)
+
+**스키마 검증 (Server Action 자동 적용):**
+
+`config.ts`에 `schema`를 설정하면, `_base`의 `createItem`/`updateItem`이 자동으로 `safeParse` 검증을 수행합니다.
+
+```
+schema.ts (SSOT)          config.ts              _base actions
+─────────────────       ─────────────────       ─────────────────
+writeSchema          →  CONFIG.schema         →  safeParse(values) 자동 검증
+  (DB 필드만)                                    updateItem은 .partial() 적용
+```
+
+- **createItem**: `schema.safeParse(values)` — 전체 필드 검증
+- **updateItem**: `schema.partial().safeParse(values)` — 부분 업데이트 허용
+- **delete/bulkDelete/swapOrder**: 사용자 콘텐츠를 DB에 쓰지 않으므로 검증 불필요
+
+```typescript
+// schema.ts — DB 필드만 정의 (SSOT)
+export const writeSchema = z.object({
+  title: z.string().min(1, '제목을 입력해주세요.'),
+  content: z.string().min(1, '내용을 입력해주세요.'),
+});
+
+// config.ts — schema 연결
+import { writeSchema } from './schema';
+export const CONFIG = {
+  tableName: 'faqs',
+  schema: writeSchema,  // _base actions에서 자동 검증
+} as const;
+
+// write-form.tsx — 클라이언트 검증 (zodResolver)
+import { writeSchema } from './schema';
+
+// 파일 없는 모듈: 그대로 사용
+const formSchema = writeSchema;
+
+// 파일 있는 모듈: UI 전용 필드 확장
+const formSchema = writeSchema.extend({
+  files: schemaPresets.files({ thumbnail: 0, attachments: 0 }),
+});
+```
 
 **author/updated_by 자동 주입:**
 
@@ -271,10 +314,24 @@ cp -r src/features/manage-modules/faqs src/features/manage-modules/products
 cp -r src/features/manage-modules/notices src/features/manage-modules/products
 ```
 
-### 2. 설정 파일 수정
+### 2. 스키마 & 설정 파일 수정
+
+**schema.ts (DB 필드 검증 — SSOT):**
+```typescript
+import { z } from 'zod';
+
+export const writeSchema = z.object({
+  name: z.string().min(1, '이름을 입력해주세요.'),
+  description: z.string().min(1, '설명을 입력해주세요.'),
+});
+```
 
 **config.ts:**
 ```typescript
+import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
+import { ItemDTO as BaseItemDTO } from '../../_base/types';
+import { writeSchema } from './schema';
+
 export const CONFIG = {
   title: '상품 관리',
   moduleName: '상품',
@@ -282,23 +339,11 @@ export const CONFIG = {
   searchFields: ['name', 'description'],  // 검색 대상 필드
   enableBulkAction: true,
   enableReorder: true,                     // 순서 변경 기능 (선택)
+  schema: writeSchema,                     // 서버 액션 자동 검증
   categoryOptions: [
     { label: '전자제품', value: 'electronics' },
     { label: '의류', value: 'clothing' },
   ],
-} as const;
-```
-
-**config.ts (타입 포함):**
-```typescript
-import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
-import { ItemDTO as BaseItemDTO } from '../../_base/types';
-
-export const CONFIG = {
-  title: '상품 관리',
-  moduleName: '상품',
-  tableName: 'products',
-  enableBulkAction: true,
 } as const;
 
 export type RowData = BaseRowData<typeof CONFIG.tableName>;
@@ -325,6 +370,7 @@ export async function getList(params: GetListParams): Promise<ActionResult<ListP
 
 **config 옵션 (config.ts에서 정의):**
 - `tableName`: 테이블명 (필수)
+- `schema`: Zod 스키마 (서버 액션 자동 검증, schema.ts에서 import)
 - `searchFields`: 검색 필드 (기본: ['name', 'email'])
 - `enableReorder`: 순서 변경 기능 (true 또는 { direction: 'asc' | 'desc' })
 - `auth`: 인증 설정 (기본: true, 예: { requireSuper: true })
@@ -408,7 +454,8 @@ export default function ManageModule({ searchParams }: Props) {
 
 ### 타입 안전성
 - Supabase 자동 생성 타입 활용
-- Zod 스키마로 런타임 검증
+- Zod 스키마로 서버/클라이언트 양쪽 런타임 검증
+- `schema.ts`가 SSOT — config.ts와 write-form.tsx 양쪽에서 참조
 
 ### 코드 재사용
 - `_base` 컴포넌트/actions/hooks 활용

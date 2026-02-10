@@ -26,34 +26,35 @@ import {
 } from '../_base/ui';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
+import { createSchema, updateSchema } from './schema';
 
 const createFormSchema = (isEdit: boolean) => {
-  return z
-    .object({
-      id: schemaPresets.id(),
-      name: z.string().min(3, '이름은 3자 이상 입력해주세요.'),
-      password: schemaPresets.password({
-        optional: isEdit,
-        strength: APP_CONFIG.AUTH.PASSWORD_STRENGTH,
-      }),
-      confirmPassword: schemaPresets.password({
-        optional: isEdit,
-        strength: APP_CONFIG.AUTH.PASSWORD_STRENGTH,
-      }),
-      email: schemaPresets.email(),
-    })
-    .refine(
-      data => {
-        if (data.password && data.password !== data.confirmPassword) {
-          return false;
-        }
-        return true;
-      },
-      {
-        message: '비밀번호가 일치하지 않습니다.',
-        path: ['confirmPassword'],
+  const baseSchema = isEdit
+    ? updateSchema.extend({
+        id: z.string(),
+        confirmPassword: schemaPresets.password({
+          optional: true,
+          strength: APP_CONFIG.AUTH.PASSWORD_STRENGTH,
+        }),
+      })
+    : createSchema.extend({
+        confirmPassword: schemaPresets.password({
+          strength: APP_CONFIG.AUTH.PASSWORD_STRENGTH,
+        }),
+      });
+
+  return baseSchema.refine(
+    data => {
+      if (data.password && data.password !== data.confirmPassword) {
+        return false;
       }
-    );
+      return true;
+    },
+    {
+      message: '비밀번호가 일치하지 않습니다.',
+      path: ['confirmPassword'],
+    }
+  );
 };
 
 const formDefaultValues = {

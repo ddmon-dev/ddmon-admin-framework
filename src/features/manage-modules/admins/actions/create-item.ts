@@ -1,15 +1,14 @@
 'use server';
 
-import { APP_CONFIG } from '@/app.config';
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { schemaPresets } from '@/shared/schemas';
 import { hashPassword, requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
 import { GENERAL_ERRORS, CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 import type { ActionResult } from '@/shared/types/results';
 import type { CreateItemParams } from '../../_base/types';
 import { CONFIG, type ItemDTO } from '../config';
+import { createSchema } from '../schema';
 
 export async function createItem(params: CreateItemParams<ItemDTO>): Promise<ActionResult<ItemDTO>> {
   const { values, pathname } = params;
@@ -17,33 +16,23 @@ export async function createItem(params: CreateItemParams<ItemDTO>): Promise<Act
   await requireAuth(CONFIG.auth);
 
   try {
-    // confirmPassword 제거
-    // super_admin은 항상 false (최고관리자는 1명만 / 어플리케이션 단에서 생성 불가)
-    'confirmPassword' in values && delete values.confirmPassword;
-    'super_admin' in values && delete values.super_admin;
-
-    // 비밀번호 검증 및 해시
-    if (!values.password) {
-      return Result.error(VALIDATION_ERRORS.REQUIRED_FIELD('비밀번호'));
+    // 스키마 검증 (화이트리스트: confirmPassword, super_admin 등 자동 제거)
+    const parsed = createSchema.safeParse(values);
+    if (!parsed.success) {
+      console.error('[admins/createItem] Validation failed:', parsed.error.flatten());
+      return Result.error(VALIDATION_ERRORS.INVALID_INPUT);
     }
 
-    const validatePassword = schemaPresets
-      .password({
-        strength: APP_CONFIG.AUTH.PASSWORD_STRENGTH,
-      })
-      .safeParse(values.password);
+    const validatedValues = { ...parsed.data };
 
-    if (!validatePassword.success) {
-      return Result.error(validatePassword.error.message);
-    }
-
-    values.password = await hashPassword(validatePassword.data);
+    // 비밀번호 해시
+    validatedValues.password = await hashPassword(validatedValues.password);
 
     const supabase = createServerClient();
 
     const { data, error } = await supabase
       .from(CONFIG.tableName)
-      .insert(values as any)
+      .insert(validatedValues as any)
       .select()
       .single();
 
