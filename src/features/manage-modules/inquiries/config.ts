@@ -32,6 +32,7 @@ export interface ReplyRowData {
   inquiry_id: string;
   content: string;
   author: string;
+  author_id: string | null;
   sent_at: string | null;
   created_at: string;
   updated_at: string;

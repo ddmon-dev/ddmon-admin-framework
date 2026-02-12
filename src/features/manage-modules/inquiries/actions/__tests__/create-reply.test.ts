@@ -58,6 +58,7 @@ const mockReplyData = {
   inquiry_id: 'inq-1',
   content: '답변 내용입니다.',
   author: '관리자',
+  author_id: 'admin1',
   sent_at: expect.any(String),
   created_at: '2026-01-01T00:00:00Z',
   updated_at: '2026-01-01T00:00:00Z',

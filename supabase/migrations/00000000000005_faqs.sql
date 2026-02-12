@@ -8,7 +8,9 @@ CREATE TABLE IF NOT EXISTS public.faqs (
   question TEXT NOT NULL,
   answer TEXT NOT NULL,
   author TEXT,                          -- 작성자
+  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   updated_by TEXT,                      -- 수정자
+  updated_by_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   category TEXT NOT NULL DEFAULT 'general',
   sort_order INTEGER NOT NULL DEFAULT 0,
   deleted BOOLEAN NOT NULL DEFAULT false,

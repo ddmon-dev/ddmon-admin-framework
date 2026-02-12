@@ -4,7 +4,9 @@ CREATE TABLE public.popups (
   title TEXT NOT NULL,
   content TEXT NOT NULL,                     -- 에디터 HTML (필수)
   author TEXT,                               -- 작성자
+  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   updated_by TEXT,                           -- 수정자
+  updated_by_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   position_top INTEGER NOT NULL DEFAULT 100, -- 상단 px
   position_left INTEGER NOT NULL DEFAULT 100,-- 좌측 px
   width INTEGER NOT NULL DEFAULT 400,        -- 팝업 너비 px

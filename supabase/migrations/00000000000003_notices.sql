@@ -8,7 +8,9 @@ CREATE TABLE public.notices (
   title TEXT NOT NULL,
   content TEXT,
   author TEXT NOT NULL,
+  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   updated_by TEXT,                      -- 수정자
+  updated_by_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   category TEXT NOT NULL DEFAULT 'normal',
   view_count INTEGER NOT NULL DEFAULT 0,
 

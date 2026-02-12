@@ -45,6 +45,7 @@ export async function createItem<TData>(
     const insertValues: Record<string, any> = {
       ...values,
       author: user?.name ?? null,
+      author_id: user?.id ?? null,
     };
 
     // enableReorder 자동 처리: 전체 테이블에서 최대 sort_order + 1

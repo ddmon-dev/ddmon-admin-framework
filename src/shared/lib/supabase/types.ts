@@ -71,6 +71,7 @@ export type Database = {
         Row: {
           answer: string
           author: string | null
+          author_id: string | null
           category: string
           created_at: string
           deleted: boolean
@@ -79,10 +80,12 @@ export type Database = {
           sort_order: number
           updated_at: string
           updated_by: string | null
+          updated_by_id: string | null
         }
         Insert: {
           answer: string
           author?: string | null
+          author_id?: string | null
           category?: string
           created_at?: string
           deleted?: boolean
@@ -91,10 +94,12 @@ export type Database = {
           sort_order?: number
           updated_at?: string
           updated_by?: string | null
+          updated_by_id?: string | null
         }
         Update: {
           answer?: string
           author?: string | null
+          author_id?: string | null
           category?: string
           created_at?: string
           deleted?: boolean
@@ -103,8 +108,24 @@ export type Database = {
           sort_order?: number
           updated_at?: string
           updated_by?: string | null
+          updated_by_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "faqs_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "faqs_updated_by_id_fkey"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       inquiries: {
         Row: {
@@ -151,6 +172,7 @@ export type Database = {
       inquiry_replies: {
         Row: {
           author: string
+          author_id: string | null
           content: string
           created_at: string
           id: string
@@ -160,6 +182,7 @@ export type Database = {
         }
         Insert: {
           author: string
+          author_id?: string | null
           content: string
           created_at?: string
           id?: string
@@ -169,6 +192,7 @@ export type Database = {
         }
         Update: {
           author?: string
+          author_id?: string | null
           content?: string
           created_at?: string
           id?: string
@@ -177,6 +201,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "inquiry_replies_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inquiry_replies_inquiry_id_fkey"
             columns: ["inquiry_id"]
@@ -189,6 +220,7 @@ export type Database = {
       news: {
         Row: {
           author: string | null
+          author_id: string | null
           content: string | null
           created_at: string
           deleted: boolean
@@ -197,10 +229,12 @@ export type Database = {
           title: string
           updated_at: string
           updated_by: string | null
+          updated_by_id: string | null
           view_count: number
         }
         Insert: {
           author?: string | null
+          author_id?: string | null
           content?: string | null
           created_at?: string
           deleted?: boolean
@@ -209,10 +243,12 @@ export type Database = {
           title: string
           updated_at?: string
           updated_by?: string | null
+          updated_by_id?: string | null
           view_count?: number
         }
         Update: {
           author?: string | null
+          author_id?: string | null
           content?: string | null
           created_at?: string
           deleted?: boolean
@@ -221,58 +257,93 @@ export type Database = {
           title?: string
           updated_at?: string
           updated_by?: string | null
+          updated_by_id?: string | null
           view_count?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "news_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "news_updated_by_id_fkey"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notices: {
         Row: {
           author: string
+          author_id: string | null
           category: string
           content: string | null
           created_at: string
           deleted: boolean
           files: Json | null
           id: string
-          sort_order: number
           title: string
           updated_at: string
           updated_by: string | null
+          updated_by_id: string | null
           view_count: number
         }
         Insert: {
           author: string
+          author_id?: string | null
           category?: string
           content?: string | null
           created_at?: string
           deleted?: boolean
           files?: Json | null
           id?: string
-          sort_order?: number
           title: string
           updated_at?: string
           updated_by?: string | null
+          updated_by_id?: string | null
           view_count?: number
         }
         Update: {
           author?: string
+          author_id?: string | null
           category?: string
           content?: string | null
           created_at?: string
           deleted?: boolean
           files?: Json | null
           id?: string
-          sort_order?: number
           title?: string
           updated_at?: string
           updated_by?: string | null
+          updated_by_id?: string | null
           view_count?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notices_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notices_updated_by_id_fkey"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       popups: {
         Row: {
           author: string | null
+          author_id: string | null
           content: string
           created_at: string
           deleted: boolean
@@ -286,11 +357,13 @@ export type Database = {
           title: string
           updated_at: string
           updated_by: string | null
+          updated_by_id: string | null
           width: number
           z_index: number
         }
         Insert: {
           author?: string | null
+          author_id?: string | null
           content: string
           created_at?: string
           deleted?: boolean
@@ -304,11 +377,13 @@ export type Database = {
           title: string
           updated_at?: string
           updated_by?: string | null
+          updated_by_id?: string | null
           width?: number
           z_index?: number
         }
         Update: {
           author?: string | null
+          author_id?: string | null
           content?: string
           created_at?: string
           deleted?: boolean
@@ -322,10 +397,26 @@ export type Database = {
           title?: string
           updated_at?: string
           updated_by?: string | null
+          updated_by_id?: string | null
           width?: number
           z_index?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "popups_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "popups_updated_by_id_fkey"
+            columns: ["updated_by_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -481,4 +572,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-
