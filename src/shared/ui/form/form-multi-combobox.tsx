@@ -2,24 +2,16 @@
 
 import { ReactElement } from 'react';
 import { type FieldPath, type FieldValues } from 'react-hook-form';
-import { MultiCombobox } from '@/shared/ui/multi-combobox';
+import { MultiCombobox, type MultiComboboxProps } from '@/shared/ui/multi-combobox';
 import { FormField } from './form-field';
 import type { FormBaseProps } from './types';
+
+type ExcludedMultiComboboxProps = 'value' | 'onValueChange' | 'aria-invalid' | 'ref';
 
 export type FormMultiComboboxProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = FormBaseProps<V, N> & {
-  options: {
-    label: string;
-    value: string;
-  }[];
-  placeholder?: string;
-  searchPlaceholder?: string;
-  emptyMessage?: string;
-  className?: string;
-  disabled?: boolean;
-};
+> = FormBaseProps<V, N> & Omit<MultiComboboxProps, ExcludedMultiComboboxProps>;
 
 export const FormMultiCombobox = <
   V extends FieldValues = FieldValues,
@@ -31,12 +23,7 @@ export const FormMultiCombobox = <
   description,
   orientation,
   optional,
-  options,
-  placeholder,
-  searchPlaceholder,
-  emptyMessage,
-  className,
-  disabled = false,
+  ...multiComboboxProps
 }: FormMultiComboboxProps<V, N>): ReactElement => {
   return (
     <FormField
@@ -52,13 +39,8 @@ export const FormMultiCombobox = <
           ref={field.ref}
           value={field.value}
           onValueChange={onChange}
-          options={options}
-          placeholder={placeholder}
-          searchPlaceholder={searchPlaceholder}
-          emptyMessage={emptyMessage}
-          className={className}
           aria-invalid={fieldState.invalid}
-          disabled={disabled}
+          {...multiComboboxProps}
         />
       )}
     </FormField>

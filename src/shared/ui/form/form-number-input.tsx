@@ -2,36 +2,32 @@
 
 import { ReactElement } from 'react';
 import { type FieldPath, type FieldValues } from 'react-hook-form';
-import { NumericFormat } from 'react-number-format';
+import { NumericFormat, type NumericFormatProps } from 'react-number-format';
 import { Input } from '@/shared/ui/input';
 import { FormField } from './form-field';
 import type { FormBaseProps } from './types';
 
+type ExcludedNumericProps =
+  | 'value'
+  | 'defaultValue'
+  | 'onValueChange'
+  | 'getInputRef'
+  | 'customInput'
+  | 'aria-invalid'
+  | 'inputMode'
+  | 'decimalScale'
+  | 'fixedDecimalScale';
+
 export type FormNumberInputProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = FormBaseProps<V, N> & {
-  /** 천 단위 구분자 (기본: false) */
-  thousandSeparator?: boolean | string;
-  /** 접두사 (예: '₩', '$') */
-  prefix?: string;
-  /** 접미사 (예: '원', '개') */
-  suffix?: string;
-  /** 소수점 허용 여부 (기본: false) */
-  allowDecimal?: boolean;
-  /** 소수점 자릿수 (allowDecimal=true일 때만) */
-  decimalScale?: number;
-  /** 음수 허용 여부 (기본: false) */
-  allowNegative?: boolean;
-  /** placeholder */
-  placeholder?: string;
-  /** 비활성화 */
-  disabled?: boolean;
-  /** 읽기 전용 */
-  readOnly?: boolean;
-  /** 추가 className */
-  className?: string;
-};
+> = FormBaseProps<V, N> &
+  Omit<NumericFormatProps, ExcludedNumericProps | keyof FormBaseProps<V, N>> & {
+    /** 소수점 허용 여부 (기본: false) */
+    allowDecimal?: boolean;
+    /** 소수점 자릿수 (allowDecimal=true일 때만) */
+    decimalScale?: number;
+  };
 
 /**
  * 숫자 입력 전용 컴포넌트 (react-number-format 기반)
@@ -82,16 +78,9 @@ export const FormNumberInput = <
   description,
   orientation,
   optional,
-  thousandSeparator = false,
-  prefix,
-  suffix,
   allowDecimal = false,
   decimalScale,
-  allowNegative = false,
-  placeholder,
-  disabled = false,
-  readOnly = false,
-  className,
+  ...numericProps
 }: FormNumberInputProps<V, N>): ReactElement => {
   return (
     <FormField
@@ -110,18 +99,11 @@ export const FormNumberInput = <
           onValueChange={values => {
             onChange(values.floatValue ?? null);
           }}
-          thousandSeparator={thousandSeparator}
-          prefix={prefix}
-          suffix={suffix}
-          allowNegative={allowNegative}
           decimalScale={allowDecimal ? decimalScale : 0}
           fixedDecimalScale={allowDecimal && decimalScale !== undefined}
-          placeholder={placeholder}
-          disabled={disabled}
-          readOnly={readOnly}
-          className={className}
           aria-invalid={fieldState.invalid}
           inputMode={allowDecimal ? 'decimal' : 'numeric'}
+          {...numericProps}
         />
       )}
     </FormField>

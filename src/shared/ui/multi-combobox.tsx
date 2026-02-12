@@ -16,7 +16,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { RemovableBadgeGroup } from '@/shared/ui/removable-badge-group';
 
-type MultiComboboxProps = {
+export type MultiComboboxProps = {
   value: string[];
   onValueChange: (value: string[]) => void;
   options: { value: string; label: string }[];

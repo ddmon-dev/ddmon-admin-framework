@@ -65,7 +65,7 @@ export function normalizeAccept(accept: string): string {
     .join(',');
 }
 
-interface MultiFileUploadProps {
+export interface MultiFileUploadProps {
   value?: FormFileValue[];
   onValueChange?: (value: FormFileValue[]) => void;
   onError?: (message: string | null) => void;

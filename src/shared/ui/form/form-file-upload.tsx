@@ -4,7 +4,7 @@ import { ReactElement, useState } from 'react';
 import { Controller, type FieldPath, type FieldValues } from 'react-hook-form';
 import {
   type FormFileValue,
-  type FileAcceptPreset,
+  type MultiFileUploadProps,
   fileAcceptPresets,
   MultiFileUpload,
 } from '@/shared/ui/file-upload';
@@ -12,20 +12,15 @@ import { mbToBytes, formatFileSize } from '@/shared/utils/formats';
 import { FieldSet, FieldLegend, FieldContent, FieldDescription, FieldError } from '../field';
 import type { FormBaseProps } from './types';
 
+type ExcludedFileUploadProps = 'value' | 'onValueChange' | 'onError' | 'aria-invalid' | 'ref';
+
 export type FormFileUploadProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = Omit<FormBaseProps<V, N>, 'orientation'> & {
-  max?: number;
-  accept?: string;
-  acceptPreset?: FileAcceptPreset;
-  /** 최대 파일 크기 (MB 단위) */
-  maxSize?: number;
-  placeholder?: string;
-  hideConstraints?: boolean;
-  /** 비활성화 */
-  disabled?: boolean;
-};
+> = Omit<FormBaseProps<V, N>, 'orientation'> &
+  Omit<MultiFileUploadProps, ExcludedFileUploadProps> & {
+    hideConstraints?: boolean;
+  };
 
 const generateFileConstraintsText = (
   accept?: string,
@@ -83,9 +78,8 @@ export const FormFileUpload = <
   accept,
   acceptPreset,
   maxSize,
-  placeholder,
   hideConstraints = false,
-  disabled = false,
+  ...fileUploadProps
 }: FormFileUploadProps<V, N>): ReactElement => {
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -126,9 +120,8 @@ export const FormFileUpload = <
             acceptPreset={acceptPreset}
             maxSize={maxSize}
             max={max}
-            placeholder={placeholder}
-            disabled={disabled}
             aria-invalid={fieldState.invalid || !!validationError}
+            {...fileUploadProps}
           />
           {(fieldState.error || validationError) && (
             <FieldError>{validationError || fieldState.error?.message}</FieldError>

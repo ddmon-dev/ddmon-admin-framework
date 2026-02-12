@@ -2,21 +2,25 @@
 
 import { ReactElement } from 'react';
 import { type FieldPath, type FieldValues } from 'react-hook-form';
+import * as SelectPrimitive from '@radix-ui/react-select';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { FormField } from './form-field';
 import type { FormBaseProps } from './types';
 
+type SelectRootProps = React.ComponentProps<typeof SelectPrimitive.Root>;
+type ExcludedSelectProps = 'value' | 'onValueChange' | 'defaultValue' | 'name';
+
 export type FormSelectProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = FormBaseProps<V, N> & {
-  options: {
-    label: string;
-    value: string;
-  }[];
-  placeholder?: string;
-  disabled?: boolean;
-};
+> = FormBaseProps<V, N> &
+  Omit<SelectRootProps, ExcludedSelectProps | keyof FormBaseProps<V, N>> & {
+    options: {
+      label: string;
+      value: string;
+    }[];
+    placeholder?: string;
+  };
 
 export const FormSelect = <
   V extends FieldValues = FieldValues,
@@ -30,7 +34,7 @@ export const FormSelect = <
   optional,
   options,
   placeholder = 'Select',
-  disabled = false,
+  ...selectProps
 }: FormSelectProps<V, N>): ReactElement => {
   return (
     <FormField
@@ -46,7 +50,7 @@ export const FormSelect = <
           name={field.name}
           value={field.value}
           onValueChange={onChange}
-          disabled={disabled}
+          {...selectProps}
         >
           <SelectTrigger
             ref={field.ref}

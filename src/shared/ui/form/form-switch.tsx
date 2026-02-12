@@ -6,12 +6,22 @@ import { Switch } from '@/shared/ui/switch';
 import { Field, FieldLabel, FieldError } from '../field';
 import type { FormBaseProps } from './types';
 
+type SwitchProps = React.ComponentProps<typeof Switch>;
+type ExcludedSwitchProps =
+  | 'checked'
+  | 'onCheckedChange'
+  | 'defaultChecked'
+  | 'id'
+  | 'name'
+  | 'ref'
+  | 'value'
+  | 'aria-invalid';
+
 export type FormSwitchProps<
   V extends FieldValues = FieldValues,
   N extends FieldPath<V> = FieldPath<V>
-> = Omit<FormBaseProps<V, N>, 'description' | 'orientation'> & {
-  disabled?: boolean;
-};
+> = Omit<FormBaseProps<V, N>, 'description' | 'orientation' | 'optional'> &
+  Omit<SwitchProps, ExcludedSwitchProps>;
 
 export const FormSwitch = <
   V extends FieldValues = FieldValues,
@@ -20,7 +30,7 @@ export const FormSwitch = <
   control,
   name,
   label,
-  disabled = false,
+  ...switchProps
 }: FormSwitchProps<V, N>): ReactElement => {
   return (
     <Controller
@@ -38,7 +48,7 @@ export const FormSwitch = <
               checked={field.value}
               onCheckedChange={field.onChange}
               aria-invalid={fieldState.invalid}
-              disabled={disabled}
+              {...switchProps}
             />
             <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
           </Field>

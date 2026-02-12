@@ -15,7 +15,7 @@ import {
 } from '@/shared/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 
-type ComboboxProps = {
+export type ComboboxProps = {
   value: string;
   onValueChange: (value: string) => void;
   options: { value: string; label: string }[];
