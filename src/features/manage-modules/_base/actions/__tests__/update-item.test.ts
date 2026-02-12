@@ -48,7 +48,7 @@ describe('updateItem', () => {
   });
 
   it('schema 있을 때 유효한 데이터 → DB update 성공, updated_by 자동 주입', async () => {
-    const mockData = { id: '1', title: '수정됨', content: '내용', updated_by: '관리자' };
+    const mockData = { id: '1', title: '수정됨', content: '내용', updated_by: '관리자', updated_by_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     const result = await updateItem(
@@ -58,7 +58,7 @@ describe('updateItem', () => {
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockUpdate).toHaveBeenCalledWith(
-      expect.objectContaining({ title: '수정됨', content: '내용', updated_by: '관리자' })
+      expect.objectContaining({ title: '수정됨', content: '내용', updated_by: '관리자', updated_by_id: 'admin1' })
     );
   });
 
@@ -73,7 +73,7 @@ describe('updateItem', () => {
   });
 
   it('schema 있을 때 부분 필드 → partial()로 성공', async () => {
-    const mockData = { id: '1', title: '부분 수정', updated_by: '관리자' };
+    const mockData = { id: '1', title: '부분 수정', updated_by: '관리자', updated_by_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     const result = await updateItem(
@@ -83,12 +83,12 @@ describe('updateItem', () => {
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockUpdate).toHaveBeenCalledWith(
-      expect.objectContaining({ title: '부분 수정', updated_by: '관리자' })
+      expect.objectContaining({ title: '부분 수정', updated_by: '관리자', updated_by_id: 'admin1' })
     );
   });
 
   it('schema 없을 때 → 검증 스킵, DB update 진행', async () => {
-    const mockData = { id: '2', title: '아무값', updated_by: '관리자' };
+    const mockData = { id: '2', title: '아무값', updated_by: '관리자', updated_by_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     const result = await updateItem(
@@ -98,12 +98,12 @@ describe('updateItem', () => {
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockUpdate).toHaveBeenCalledWith(
-      expect.objectContaining({ title: '아무값', updated_by: '관리자' })
+      expect.objectContaining({ title: '아무값', updated_by: '관리자', updated_by_id: 'admin1' })
     );
   });
 
   it('pathname 있을 때 → revalidatePath 호출', async () => {
-    const mockData = { id: '3', title: '경로', updated_by: '관리자' };
+    const mockData = { id: '3', title: '경로', updated_by: '관리자', updated_by_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     await updateItem(
@@ -129,7 +129,7 @@ describe('updateItem', () => {
   });
 
   it('cleanupDeletedFiles 호출 확인', async () => {
-    const mockData = { id: '4', title: '파일 정리', updated_by: '관리자' };
+    const mockData = { id: '4', title: '파일 정리', updated_by: '관리자', updated_by_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     await updateItem(

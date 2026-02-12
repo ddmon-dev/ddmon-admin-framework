@@ -41,6 +41,7 @@ CREATE TABLE public.inquiry_replies (
   content TEXT NOT NULL,
   sent_at TIMESTAMPTZ,                       -- 이메일 발송 시각 (null이면 미발송)
   author TEXT NOT NULL,                      -- 답변 작성 관리자 이름
+  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

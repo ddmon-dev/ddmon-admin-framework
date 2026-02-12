@@ -75,9 +75,10 @@ export async function createReply(params: CreateReplyParams): Promise<ActionResu
         inquiry_id: inquiryId,
         content,
         author: user.name ?? user.id,
+        author_id: user.id,
         sent_at: sentAt,
       })
-      .select('id, inquiry_id, content, author, sent_at, created_at, updated_at')
+      .select('id, inquiry_id, content, author, author_id, sent_at, created_at, updated_at')
       .single();
 
     if (replyError || !replyData) {

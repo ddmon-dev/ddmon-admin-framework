@@ -57,6 +57,7 @@ export async function updateItem<TData>(
     const updateValues = {
       ...values,
       updated_by: user?.name ?? null,
+      updated_by_id: user?.id ?? null,
     };
 
     const { data, error } = await supabase

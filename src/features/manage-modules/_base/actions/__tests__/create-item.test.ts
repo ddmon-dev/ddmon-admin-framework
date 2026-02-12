@@ -35,7 +35,7 @@ describe('createItem', () => {
   });
 
   it('schema 있을 때 유효한 데이터 → DB insert 성공, author 자동 주입', async () => {
-    const mockData = { id: '1', title: '테스트', content: '내용', author: '관리자' };
+    const mockData = { id: '1', title: '테스트', content: '내용', author: '관리자', author_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     const result = await createItem(
@@ -45,7 +45,7 @@ describe('createItem', () => {
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockInsert).toHaveBeenCalledWith(
-      expect.objectContaining({ title: '테스트', content: '내용', author: '관리자' })
+      expect.objectContaining({ title: '테스트', content: '내용', author: '관리자', author_id: 'admin1' })
     );
   });
 
@@ -60,7 +60,7 @@ describe('createItem', () => {
   });
 
   it('schema 없을 때 → 검증 스킵, DB insert 진행', async () => {
-    const mockData = { id: '2', title: '아무값', author: '관리자' };
+    const mockData = { id: '2', title: '아무값', author: '관리자', author_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     const result = await createItem(
@@ -70,7 +70,7 @@ describe('createItem', () => {
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockInsert).toHaveBeenCalledWith(
-      expect.objectContaining({ title: '아무값', author: '관리자' })
+      expect.objectContaining({ title: '아무값', author: '관리자', author_id: 'admin1' })
     );
   });
 
@@ -79,7 +79,7 @@ describe('createItem', () => {
     mockLimit.mockReturnValue({
       single: vi.fn().mockResolvedValue({ data: { sort_order: 5 } }),
     });
-    const mockData = { id: '3', title: '순서 테스트', sort_order: 6, author: '관리자' };
+    const mockData = { id: '3', title: '순서 테스트', sort_order: 6, author: '관리자', author_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     const result = await createItem(
@@ -89,12 +89,12 @@ describe('createItem', () => {
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockInsert).toHaveBeenCalledWith(
-      expect.objectContaining({ sort_order: 6, author: '관리자' })
+      expect.objectContaining({ sort_order: 6, author: '관리자', author_id: 'admin1' })
     );
   });
 
   it('pathname 있을 때 → revalidatePath 호출', async () => {
-    const mockData = { id: '4', title: '경로 테스트', author: '관리자' };
+    const mockData = { id: '4', title: '경로 테스트', author: '관리자', author_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     await createItem(
