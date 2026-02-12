@@ -174,23 +174,28 @@ const formSchema = writeSchema.extend({
 **author/updated_by 자동 주입:**
 
 create/update 시 현재 로그인 사용자 정보가 자동 주입됩니다.
+이름(표시용 캐시)과 ID(FK 참조 무결성)를 병행 저장합니다.
 
 | 액션 | 필드 | 값 |
 |------|------|-----|
 | `createItem` | `author` | 현재 사용자 이름 |
+| `createItem` | `author_id` | 현재 사용자 ID (FK) |
 | `updateItem` | `updated_by` | 현재 사용자 이름 |
+| `updateItem` | `updated_by_id` | 현재 사용자 ID (FK) |
 
 ```typescript
 // create-item.ts 내부 (자동 처리됨)
 const insertValues = {
   ...values,
-  author: user?.name ?? null,  // 자동 주입
+  author: user?.name ?? null,     // 표시용 캐시
+  author_id: user?.id ?? null,    // FK (admins.id 참조)
 };
 
 // update-item.ts 내부 (자동 처리됨)
 const updateValues = {
   ...values,
-  updated_by: user?.name ?? null,  // 자동 주입
+  updated_by: user?.name ?? null,     // 표시용 캐시
+  updated_by_id: user?.id ?? null,    // FK (admins.id 참조)
 };
 ```
 
@@ -199,8 +204,10 @@ const updateValues = {
 ```sql
 CREATE TABLE my_table (
   -- ... 기타 컬럼
-  author TEXT,        -- Create 시 작성자
-  updated_by TEXT,    -- Update 시 수정자
+  author TEXT,                                                      -- 작성자 이름 (캐시)
+  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,    -- 작성자 FK
+  updated_by TEXT,                                                   -- 수정자 이름 (캐시)
+  updated_by_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,-- 수정자 FK
 );
 ```
 
