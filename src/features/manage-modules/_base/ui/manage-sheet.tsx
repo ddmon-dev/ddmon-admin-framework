@@ -1,6 +1,7 @@
 'use client';
 
-import { use, createContext, useState } from 'react';
+import { use, createContext, useRef, useState } from 'react';
+import { useDialog } from '@/shared/ui/app-dialog';
 import {
   Sheet,
   SheetContent,
@@ -27,12 +28,16 @@ interface ManageSheetContextType {
   manageSheetData: ManageSheetData | null;
   openManageSheet: (data: ManageSheetData) => void;
   closeManageSheet: () => void;
+  requestCloseManageSheet: () => void;
+  setCloseGuard: (guard: (() => boolean) | null) => void;
 }
 
 const ManageSheetContext = createContext<ManageSheetContextType>({
   manageSheetData: null,
   openManageSheet: () => {},
   closeManageSheet: () => {},
+  requestCloseManageSheet: () => {},
+  setCloseGuard: () => {},
 });
 
 export function ManageSheetProvider({
@@ -42,13 +47,36 @@ export function ManageSheetProvider({
 }) {
   const [manageSheetData, setManageSheetData] =
     useState<ManageSheetData | null>(null);
+  const closeGuardRef = useRef<(() => boolean) | null>(null);
+  const dialog = useDialog();
 
   const openManageSheet = (data: ManageSheetData) => {
     setManageSheetData(data);
   };
 
   const closeManageSheet = () => {
+    closeGuardRef.current = null;
     setManageSheetData(null);
+  };
+
+  const requestCloseManageSheet = async () => {
+    if (!closeGuardRef.current || !closeGuardRef.current()) {
+      closeManageSheet();
+      return;
+    }
+
+    await dialog.confirm({
+      title: '변경사항이 있습니다',
+      description: '저장하지 않은 변경사항이 있습니다. 정말 닫으시겠습니까?',
+      confirmText: '닫기',
+      cancelText: '취소',
+      variant: 'destructive',
+      onConfirm: () => closeManageSheet(),
+    });
+  };
+
+  const setCloseGuard = (guard: (() => boolean) | null) => {
+    closeGuardRef.current = guard;
   };
 
   return (
@@ -57,6 +85,8 @@ export function ManageSheetProvider({
         manageSheetData,
         openManageSheet,
         closeManageSheet,
+        requestCloseManageSheet,
+        setCloseGuard,
       }}
     >
       {children}
@@ -70,6 +100,8 @@ export function useManageSheet() {
     data: context.manageSheetData,
     open: context.openManageSheet,
     close: context.closeManageSheet,
+    requestClose: context.requestCloseManageSheet,
+    setCloseGuard: context.setCloseGuard,
   };
 }
 
@@ -168,7 +200,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={open => !open && manageSheet.close()}>
+    <Sheet open={isOpen} onOpenChange={open => !open && manageSheet.requestClose()}>
       <SheetContent
         className={cn(
           SIZES[size],

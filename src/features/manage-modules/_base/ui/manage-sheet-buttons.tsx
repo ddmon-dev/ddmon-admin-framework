@@ -41,7 +41,7 @@ export function ManageSheetClose({
     <Button
       type="button"
       variant="secondary"
-      onClick={() => manageSheet.close()}
+      onClick={() => manageSheet.requestClose()}
       className={cn('font-semibold', className)}
     >
       {children}

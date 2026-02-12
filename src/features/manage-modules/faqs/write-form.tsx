@@ -18,6 +18,7 @@ import {
   ManageFormSubmit,
   ManageSheetClose,
 } from '../_base/ui';
+import { useFormGuard } from '../_base/hooks';
 import { CONFIG, type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 import { writeSchema } from './schema';
@@ -44,6 +45,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
       typeof formSchema
     >,
   });
+  useFormGuard(form);
 
   useEffect(() => {
     form.reset((prevValues ?? formDefaultValues) as z.infer<typeof formSchema>);
