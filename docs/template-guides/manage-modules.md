@@ -89,21 +89,62 @@ refetch();
 - 어디서든 시트 열기/닫기 가능
 - 시트 상태 변경과 데이터 변경이 서로 불필요한 리렌더링을 유발하지 않음
 
-### 2. Delete 이원화
+### 2. RowActions (행 액션 통합)
+
+테이블 행의 액션 버튼(수정, 삭제, 상세보기 등)을 선언적으로 구성합니다.
+
+```typescript
+// list-columns.tsx — 기본 사용
+import { RowActions } from '../_base/ui';
+
+<RowActions
+  type="buttons"              // 'buttons' | 'menu' (DropdownMenu)
+  id={id}
+  tableName={CONFIG.tableName}
+  actions={['modify', 'delete']}
+/>
+
+// 커스텀 라벨
+<RowActions
+  type="buttons"
+  id={id}
+  tableName={CONFIG.tableName}
+  actions={[{ action: 'view', label: '자세히보기' }, 'delete']}
+/>
+```
+
+**사용 가능한 액션:** `'view'` | `'modify'` | `'clone'` | `'delete'`
+
+**커스텀 onClick:**
+
+```typescript
+// 커스텀 삭제 로직이 필요한 경우 (예: admins)
+import { RowActions, confirmDelete } from '../_base/ui';
+
+<RowActions
+  type="buttons"
+  id={id}
+  tableName={CONFIG.tableName}
+  actions={[
+    'modify',
+    {
+      action: 'delete',
+      onClick: () => confirmDelete(dialog, {
+        deleteFn: () => customDeleteAction({ id, pathname }),
+      }),
+    },
+  ]}
+/>
+```
+
+**Delete 이원화:**
 
 Soft Delete(복구 가능)와 Hard Delete(완전 삭제)를 분리합니다.
 
-```typescript
-// _base/ui/delete-button.tsx
-import { SoftDeleteButton, HardDeleteButton } from '@/features/manage-modules/_base/ui';
-
-<SoftDeleteButton onDelete={handleSoftDelete} />
-<HardDeleteButton onDelete={handleHardDelete} />
-```
-
-**Base Actions:**
-- `softDelete()`: deleted = true 업데이트
-- `hardDelete()`: DB + Storage 완전 삭제
+- `SoftDeleteButton` / `HardDeleteButton`: 독립 버튼 컴포넌트 (RowActions 외 사용)
+- `confirmDelete(dialog, options)`: 삭제 확인 다이얼로그 유틸 함수
+- `softDelete()`: deleted = true 업데이트 (Base Action)
+- `hardDelete()`: DB + Storage 완전 삭제 (Base Action)
 
 ### 3. useManageItemData 훅
 
@@ -403,7 +444,7 @@ export async function getList(params: GetListParams): Promise<ActionResult<ListP
 
 ### 4. 컴포넌트 수정
 
-- `list-columns.tsx`: 테이블 컬럼 정의
+- `list-columns.tsx`: 테이블 컬럼 정의 (행 액션은 `RowActions` 사용)
 - `write-form.tsx`: 폼 스키마 및 필드
 - `addons.tsx`: 헤더 추가 요소 (필터, 검색 등)
 

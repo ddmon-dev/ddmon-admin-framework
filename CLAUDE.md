@@ -71,7 +71,7 @@ export const CONFIG = {
 # 4. Server Actions는 CONFIG 직접 전달
 export const getList = createGetListAction<ItemDTO>(CONFIG);
 
-# 5. 컴포넌트 수정 (list-columns, write-form, addons)
+# 5. 컴포넌트 수정 (list-columns에서 RowActions 사용, write-form, addons)
 ```
 
 📄 자세한 내용: [manage-modules.md](docs/template-guides/manage-modules.md#새로운-모듈-추가)

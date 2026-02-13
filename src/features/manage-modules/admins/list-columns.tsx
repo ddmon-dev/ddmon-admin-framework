@@ -1,11 +1,9 @@
 import { APP_CONFIG } from '@/app.config';
 import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
-import { Separator } from '@/shared/ui/separator';
-import { ModifyButton } from '../_base/ui';
 
 import { type ItemDTO } from './config';
-import { DeleteAdminButton } from './delete-button';
+import { AdminRowActions } from './admin-row-actions';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
   {
@@ -49,19 +47,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     },
     cell: ({ row }) => {
       const { id, super_admin } = row.original;
-      return (
-        <nav className='flex items-center justify-end gap-2'>
-          <ModifyButton id={id}>정보수정</ModifyButton>
-          <Separator
-            orientation='vertical'
-            className='data-[orientation=vertical]:h-6'
-          />
-          <DeleteAdminButton
-            id={id}
-            disabled={super_admin}
-          />
-        </nav>
-      );
+      return <AdminRowActions id={id} isSuperAdmin={super_admin} />;
     },
   },
 ];

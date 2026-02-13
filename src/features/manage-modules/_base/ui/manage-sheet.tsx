@@ -269,32 +269,32 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
           'w-[440px] max-w-full md:w-full md:rounded-l-xl'
         )}
       >
-        {!error && (
-          <SheetHeader className="border-b md:p-8 md:pb-4 gap-0.5">
-            {mode && (
-              <>
-                <SheetTitle className="text-lg">
-                  {customVariant?.[mode]?.title?.(moduleName) ??
-                    VARIANTS[mode].title(moduleName)}
-                </SheetTitle>
-                <SheetDescription className="text-sm">
-                  {customVariant?.[mode]?.description ??
-                    VARIANTS[mode].description}
-                </SheetDescription>
-              </>
-            )}
-          </SheetHeader>
-        )}
-        <SheetBody
-          className={cn(
-            'md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 min-h-0 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col [&_form]:min-h-0 [&_form]:space-y-6',
-            error && 'pt-0 md:pt-0'
+        <ManageSheetDataContext.Provider value={dataContextValue}>
+          {!error && (
+            <SheetHeader className="border-b md:p-8 md:pb-4 gap-0.5">
+              {mode && (
+                <>
+                  <SheetTitle className="text-lg">
+                    {customVariant?.[mode]?.title?.(moduleName) ??
+                      VARIANTS[mode].title(moduleName)}
+                  </SheetTitle>
+                  <SheetDescription className="text-sm">
+                    {customVariant?.[mode]?.description ??
+                      VARIANTS[mode].description}
+                  </SheetDescription>
+                </>
+              )}
+            </SheetHeader>
           )}
-        >
-          <ManageSheetDataContext.Provider value={dataContextValue}>
+          <SheetBody
+            className={cn(
+              'md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 min-h-0 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col [&_form]:min-h-0 [&_form]:space-y-6',
+              error && 'pt-0 md:pt-0'
+            )}
+          >
             {renderContent()}
-          </ManageSheetDataContext.Provider>
-        </SheetBody>
+          </SheetBody>
+        </ManageSheetDataContext.Provider>
       </SheetContent>
     </Sheet>
   );

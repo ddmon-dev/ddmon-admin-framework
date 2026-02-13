@@ -1,7 +1,6 @@
 import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
-import { Separator } from '@/shared/ui/separator';
-import { ViewButton, SoftDeleteButton } from '../_base/ui';
+import { RowActions } from '../_base/ui';
 import { CONFIG, type ItemDTO } from './config';
 import { StatusBadge } from './status-badge';
 
@@ -48,20 +47,14 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     },
     size: 200,
     cell: ({ row }) => {
-      const { id, name } = row.original;
+      const { id } = row.original;
       return (
-        <nav className="flex items-center justify-end gap-2">
-          <ViewButton id={id}>자세히보기</ViewButton>
-          <Separator
-            orientation="vertical"
-            className="data-[orientation=vertical]:h-6"
-          />
-          <SoftDeleteButton
-            tableName={CONFIG.tableName}
-            id={id}
-            dataLabel={name}
-          />
-        </nav>
+        <RowActions
+          type="buttons"
+          id={id}
+          tableName={CONFIG.tableName}
+          actions={[{ action: 'view', label: '자세히보기' }, 'delete']}
+        />
       );
     },
   },

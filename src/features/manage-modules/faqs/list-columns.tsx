@@ -1,8 +1,7 @@
 import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/shared/ui/badge';
-import { Separator } from '@/shared/ui/separator';
-import { ModifyButton, SoftDeleteButton } from '../_base/ui';
+import { RowActions } from '../_base/ui';
 
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
@@ -53,14 +52,12 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     cell: ({ row }) => {
       const { id } = row.original;
       return (
-        <nav className="flex items-center justify-end gap-2">
-          <ModifyButton id={id} />
-          <Separator
-            orientation="vertical"
-            className="data-[orientation=vertical]:h-6"
-          />
-          <SoftDeleteButton tableName={CONFIG.tableName} id={id} />
-        </nav>
+        <RowActions
+          type="buttons"
+          id={id}
+          tableName={CONFIG.tableName}
+          actions={['modify', 'delete']}
+        />
       );
     },
   },
