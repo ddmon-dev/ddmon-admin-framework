@@ -34,7 +34,7 @@ export function ManageSheetClose({ children = '닫기', className }: ManageSheet
     <Button
       type="button"
       variant="secondary"
-      onClick={() => manageSheet.close()}
+      onClick={() => manageSheet.closeWithGuard()}
       className={cn('font-semibold', className)}
     >
       {children}
@@ -65,7 +65,7 @@ export function ManageSheetModeChange({
   const manageSheet = useManageSheet();
 
   const handleClick = () => {
-    manageSheet.setMode(mode);
+    manageSheet.setModeWithGuard(mode);
   };
 
   return (

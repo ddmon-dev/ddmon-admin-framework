@@ -9,7 +9,9 @@ vi.mock('../../ui/manage-sheet', () => ({
     data: null,
     open: vi.fn(),
     close: vi.fn(),
-    requestClose: vi.fn(),
+    closeWithGuard: vi.fn(),
+    setMode: vi.fn(),
+    setModeWithGuard: vi.fn(),
     setCloseGuard: mockSetCloseGuard,
   })),
 }));

@@ -63,9 +63,10 @@ faqs/                    # 또는 다른 모듈명
 const sheet = useManageSheet();
 
 sheet.open({ id: '123', mode: 'modify' }); // 시트 열기
-sheet.close();                              // 시트 닫기
-sheet.setMode('view');                      // 모드 변경 (id 유지)
-sheet.requestClose();                       // closeGuard 확인 후 닫기
+sheet.close();                              // 즉시 닫기 (guard 무시)
+sheet.closeWithGuard();                     // guard 확인 후 닫기
+sheet.setMode('view');                      // 즉시 모드 변경 (guard 무시)
+sheet.setModeWithGuard('view');             // guard 확인 후 모드 변경
 sheet.setCloseGuard(() => form.isDirty);    // 변경사항 보호
 
 const { id, mode } = sheet.data ?? {};

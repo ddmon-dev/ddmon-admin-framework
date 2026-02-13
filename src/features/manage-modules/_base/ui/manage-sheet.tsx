@@ -29,7 +29,8 @@ interface ManageSheetContextType {
   openManageSheet: (data: ManageSheetData) => void;
   setMode: (mode: ManageSheetMode) => void;
   closeManageSheet: () => void;
-  requestCloseManageSheet: () => void;
+  closeWithGuard: () => void;
+  setModeWithGuard: (mode: ManageSheetMode) => void;
   setCloseGuard: (guard: (() => boolean) | null) => void;
 }
 
@@ -38,7 +39,8 @@ const ManageSheetContext = createContext<ManageSheetContextType>({
   openManageSheet: () => {},
   setMode: () => {},
   closeManageSheet: () => {},
-  requestCloseManageSheet: () => {},
+  closeWithGuard: () => {},
+  setModeWithGuard: () => {},
   setCloseGuard: () => {},
 });
 
@@ -60,21 +62,24 @@ export function ManageSheetProvider({ children }: { children: React.ReactNode })
     setManageSheetData(null);
   };
 
-  const requestCloseManageSheet = async () => {
+  const runWithGuard = async (action: () => void) => {
     if (!closeGuardRef.current || !closeGuardRef.current()) {
-      closeManageSheet();
+      action();
       return;
     }
 
     await dialog.confirm({
       title: '변경사항이 있습니다',
-      description: '저장하지 않은 변경사항이 있습니다. 정말 닫으시겠습니까?',
-      confirmText: '닫기',
+      description: '저장하지 않은 변경사항이 있습니다. 계속하시겠습니까?',
+      confirmText: '확인',
       cancelText: '취소',
       variant: 'destructive',
-      onConfirm: () => closeManageSheet(),
+      onConfirm: action,
     });
   };
+
+  const closeWithGuard = () => runWithGuard(closeManageSheet);
+  const setModeWithGuard = (mode: ManageSheetMode) => runWithGuard(() => setMode(mode));
 
   const setCloseGuard = (guard: (() => boolean) | null) => {
     closeGuardRef.current = guard;
@@ -87,7 +92,8 @@ export function ManageSheetProvider({ children }: { children: React.ReactNode })
         openManageSheet,
         setMode,
         closeManageSheet,
-        requestCloseManageSheet,
+        closeWithGuard,
+        setModeWithGuard,
         setCloseGuard,
       }}
     >
@@ -103,7 +109,8 @@ export function useManageSheet() {
     open: context.openManageSheet,
     setMode: context.setMode,
     close: context.closeManageSheet,
-    requestClose: context.requestCloseManageSheet,
+    closeWithGuard: context.closeWithGuard,
+    setModeWithGuard: context.setModeWithGuard,
     setCloseGuard: context.setCloseGuard,
   };
 }
@@ -248,7 +255,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && manageSheet.requestClose()}>
+    <Sheet open={isOpen} onOpenChange={(open) => !open && manageSheet.closeWithGuard()}>
       <SheetContent className={cn(SIZES[size], 'w-[440px] max-w-full md:w-full md:rounded-l-xl')}>
         <ManageSheetDataContext.Provider value={dataContextValue}>
           {!error && (
