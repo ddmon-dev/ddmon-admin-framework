@@ -8,7 +8,6 @@ import { type InquiryWithReplies, type ReplyRowData } from './config';
 
 interface InquiryDetailViewProps {
   data: InquiryWithReplies;
-  onRefetch?: () => void;
 }
 
 export function InquiryDetailView({ data }: InquiryDetailViewProps) {

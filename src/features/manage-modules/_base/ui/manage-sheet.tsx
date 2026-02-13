@@ -27,6 +27,7 @@ interface ManageSheetData {
 interface ManageSheetContextType {
   manageSheetData: ManageSheetData | null;
   openManageSheet: (data: ManageSheetData) => void;
+  setMode: (mode: ManageSheetMode) => void;
   closeManageSheet: () => void;
   requestCloseManageSheet: () => void;
   setCloseGuard: (guard: (() => boolean) | null) => void;
@@ -35,6 +36,7 @@ interface ManageSheetContextType {
 const ManageSheetContext = createContext<ManageSheetContextType>({
   manageSheetData: null,
   openManageSheet: () => {},
+  setMode: () => {},
   closeManageSheet: () => {},
   requestCloseManageSheet: () => {},
   setCloseGuard: () => {},
@@ -52,6 +54,10 @@ export function ManageSheetProvider({
 
   const openManageSheet = (data: ManageSheetData) => {
     setManageSheetData(data);
+  };
+
+  const setMode = (mode: ManageSheetMode) => {
+    setManageSheetData(prev => (prev ? { ...prev, mode } : null));
   };
 
   const closeManageSheet = () => {
@@ -84,6 +90,7 @@ export function ManageSheetProvider({
       value={{
         manageSheetData,
         openManageSheet,
+        setMode,
         closeManageSheet,
         requestCloseManageSheet,
         setCloseGuard,
@@ -99,9 +106,36 @@ export function useManageSheet() {
   return {
     data: context.manageSheetData,
     open: context.openManageSheet,
+    setMode: context.setMode,
     close: context.closeManageSheet,
     requestClose: context.requestCloseManageSheet,
     setCloseGuard: context.setCloseGuard,
+  };
+}
+
+// ── ManageSheet 데이터 Context ──────────────────────────────
+
+interface ManageSheetDataContextType {
+  prevValues: unknown;
+  isLoading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+const ManageSheetDataContext = createContext<ManageSheetDataContextType | null>(
+  null
+);
+
+export function useManageSheetData<T>() {
+  const context = use(ManageSheetDataContext);
+  if (!context) {
+    throw new Error(
+      'useManageSheetData는 ManageSheet 내부에서만 사용할 수 있습니다.'
+    );
+  }
+  return {
+    ...context,
+    prevValues: context.prevValues as T | null,
   };
 }
 
@@ -110,7 +144,7 @@ interface ManageSheetProps<T extends { files?: DbFilesJSONB }> {
   additionalDateFields?: string[];
   formComponent?: React.ComponentType<{ id?: string; prevValues: T | null }>;
   viewComponent?: React.ComponentType<{ data: T }>;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
   moduleName?: string;
   customVariant?: {
     create?: {
@@ -122,6 +156,10 @@ interface ManageSheetProps<T extends { files?: DbFilesJSONB }> {
       description: string;
     };
     view?: {
+      title: (moduleName?: string) => string;
+      description: string;
+    };
+    clone?: {
       title: (moduleName?: string) => string;
       description: string;
     };
@@ -141,12 +179,19 @@ const VARIANTS = {
     title: (moduleName?: string) => `${moduleName ?? '데이터'} 상세 보기`,
     description: `해당 데이터의 상세 내용입니다.`,
   },
+  clone: {
+    title: (moduleName?: string) => `${moduleName ?? '데이터'} 복제하기`,
+    description: `복제된 내용을 확인하고 저장하세요.`,
+  },
 };
 
 const SIZES = {
   sm: 'md:max-w-lg',
   md: 'md:max-w-xl',
   lg: 'md:max-w-2xl',
+  xl: 'md:max-w-3xl',
+  '2xl': 'md:max-w-5xl',
+  full: 'md:max-w-[92vw]',
 };
 
 export function ManageSheet<T extends { files?: DbFilesJSONB }>({
@@ -163,9 +208,16 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   const isOpen = manageSheet.data !== null;
 
   // 데이터 페칭 (useManageItemData 내부에서 id 없으면 자동 skip)
-  const { prevValues, isLoading, error } = useManageItemData(fetchFn, {
+  const { prevValues, isLoading, error, refetch } = useManageItemData(fetchFn, {
     additionalDateFields,
   });
+
+  const dataContextValue: ManageSheetDataContextType = {
+    prevValues,
+    isLoading,
+    error,
+    refetch,
+  };
 
   // 렌더링 로직
   const renderContent = () => {
@@ -191,6 +243,13 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
       ) : null;
     }
 
+    // clone 모드: 원본 데이터를 가져와서 id 없이 생성 폼에 주입
+    if (mode === 'clone') {
+      return FormComponent ? (
+        <FormComponent id={undefined} prevValues={prevValues ?? null} />
+      ) : null;
+    }
+
     // view 모드: 뷰 표시
     if (mode === 'view' && ViewComponent && prevValues) {
       return <ViewComponent data={prevValues} />;
@@ -200,7 +259,10 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={open => !open && manageSheet.requestClose()}>
+    <Sheet
+      open={isOpen}
+      onOpenChange={open => !open && manageSheet.requestClose()}
+    >
       <SheetContent
         className={cn(
           SIZES[size],
@@ -225,11 +287,13 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
         )}
         <SheetBody
           className={cn(
-            'md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col [&_form]:space-y-6',
+            'md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 min-h-0 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col [&_form]:min-h-0 [&_form]:space-y-6',
             error && 'pt-0 md:pt-0'
           )}
         >
-          {renderContent()}
+          <ManageSheetDataContext.Provider value={dataContextValue}>
+            {renderContent()}
+          </ManageSheetDataContext.Provider>
         </SheetBody>
       </SheetContent>
     </Sheet>

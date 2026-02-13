@@ -55,25 +55,39 @@ faqs/                    # 또는 다른 모듈명
 
 ### 1. Context 기반 상태 관리
 
-`ManageSheetContext`로 시트 상태를 전역 관리합니다.
+시트 상태와 데이터를 두 개의 Context로 분리 관리합니다.
+
+**시트 상태 Context** (`useManageSheet`):
 
 ```typescript
-// _base/ui/manage-sheet.tsx
 const sheet = useManageSheet();
 
-// 시트 열기
-sheet.open({ id: '123', mode: 'modify' });
+sheet.open({ id: '123', mode: 'modify' }); // 시트 열기
+sheet.close();                              // 시트 닫기
+sheet.setMode('view');                      // 모드 변경 (id 유지)
+sheet.requestClose();                       // closeGuard 확인 후 닫기
+sheet.setCloseGuard(() => form.isDirty);    // 변경사항 보호
 
-// 시트 닫기
-sheet.close();
-
-// 현재 데이터 접근
 const { id, mode } = sheet.data ?? {};
 ```
 
+**데이터 Context** (`useManageSheetData`):
+
+ManageSheet 내부의 자식 컴포넌트에서 데이터에 직접 접근할 수 있습니다.
+
+```typescript
+// viewComponent, formComponent 등 ManageSheet 자식 컴포넌트에서 사용
+const { prevValues, isLoading, error, refetch } = useManageSheetData<ItemDTO>();
+
+// 예: 답변 등록 후 데이터 재페칭
+await createReply(values);
+refetch();
+```
+
 **장점:**
-- Props Drilling 제거
+- Props Drilling 제거 (onMutate, refetch 등을 prop으로 전달할 필요 없음)
 - 어디서든 시트 열기/닫기 가능
+- 시트 상태 변경과 데이터 변경이 서로 불필요한 리렌더링을 유발하지 않음
 
 ### 2. Delete 이원화
 
@@ -94,18 +108,19 @@ import { SoftDeleteButton, HardDeleteButton } from '@/features/manage-modules/_b
 ### 3. useManageItemData 훅
 
 항목 데이터 페칭, 파일 변환, 에러 처리를 통합합니다.
+ManageSheet 내부에서 자동 호출되며, 결과는 `useManageSheetData()`로도 접근 가능합니다.
 
 ```typescript
-// item-sheet.tsx
-import { useManageItemData } from '@/features/manage-modules/_base/hooks';
-
-const { prevValues, isLoading, error } = useManageItemData(getItem);
+// ManageSheet 내부에서 자동 호출 (직접 호출 불필요)
+// 자식 컴포넌트에서는 useManageSheetData<T>()로 접근
+const { prevValues, isLoading, error, refetch } = useManageSheetData<ItemDTO>();
 ```
 
 **자동 처리:**
 - id 기반 데이터 조회
 - 파일 메타데이터 → 폼 형태 변환
 - 로딩/에러 상태 관리
+- `refetch()` 함수로 데이터 재페칭
 
 ### 4. Server Actions 패턴
 

@@ -41,7 +41,7 @@ export function ManageSheetClose({
     <Button
       type="button"
       variant="secondary"
-      onClick={() => manageSheet.requestClose()}
+      onClick={() => manageSheet.close()}
       className={cn('font-semibold', className)}
     >
       {children}
@@ -60,6 +60,7 @@ const MODE_CHANGE_LABELS = {
   view: '상세 보기',
   modify: '수정하기',
   create: '생성하기',
+  clone: '복제하기',
 };
 
 export function ManageSheetModeChange({
@@ -69,10 +70,9 @@ export function ManageSheetModeChange({
   mode,
 }: ManageSheetModeChangeProps) {
   const manageSheet = useManageSheet();
-  const { id } = manageSheet.data ?? {};
 
   const handleClick = () => {
-    manageSheet.open({ id, mode });
+    manageSheet.setMode(mode);
   };
 
   return (

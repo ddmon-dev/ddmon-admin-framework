@@ -8,7 +8,7 @@ export interface ListProps<T> {
   totalCount: number;
 }
 
-export type ManageSheetMode = 'view' | 'modify' | 'create';
+export type ManageSheetMode = 'view' | 'modify' | 'create' | 'clone';
 
 export type ItemDTO<T extends TableName> = WithFiles<RowData<T>>;
 
