@@ -34,7 +34,7 @@ interface ManageSheetContextType {
   setCloseGuard: (guard: (() => boolean) | null) => void;
 }
 
-const ManageSheetContext = createContext<ManageSheetContextType>({
+export const ManageSheetContext = createContext<ManageSheetContextType>({
   manageSheetData: null,
   openManageSheet: () => {},
   setMode: () => {},
