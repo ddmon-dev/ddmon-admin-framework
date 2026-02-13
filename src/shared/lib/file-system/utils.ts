@@ -11,7 +11,7 @@ export function extractFilePathFromUrl(url: string): string {
   try {
     const urlObj = new URL(url);
     const pathSegments = urlObj.pathname.split('/');
-    const bucketIndex = pathSegments.findIndex(segment => segment === BUCKET_NAME);
+    const bucketIndex = pathSegments.findIndex((segment) => segment === BUCKET_NAME);
 
     if (bucketIndex === -1) {
       throw new Error('유효하지 않은 Storage URL입니다.');
@@ -79,7 +79,7 @@ export function extractAllFileUrls(files?: Record<string, DbFileMetadata[]>): st
 
   for (const fileList of Object.values(files)) {
     if (Array.isArray(fileList)) {
-      urls.push(...fileList.map(file => file.url));
+      urls.push(...fileList.map((file) => file.url));
     }
   }
 
@@ -111,7 +111,7 @@ export function transformFilesToUploadValues(
   return Object.fromEntries(
     Object.entries(files).map(([category, fileList]) => [
       category,
-      fileList.map(file => ({
+      fileList.map((file) => ({
         type: 'existing' as const,
         ...file,
       })),

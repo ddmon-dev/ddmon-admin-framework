@@ -40,5 +40,16 @@ export function useDataList({ totalCount, defaultPageSize = 15, options }: UseDa
   const pageCount = Math.ceil(totalCount / pageSize);
   const page = Math.min(Math.max(1, rawPage), Math.max(1, pageCount));
 
-  return { page, pageSize, sort, search, category, pageCount, setPage, setSort, setSearch, setCategory };
+  return {
+    page,
+    pageSize,
+    sort,
+    search,
+    category,
+    pageCount,
+    setPage,
+    setSort,
+    setSearch,
+    setCategory,
+  };
 }

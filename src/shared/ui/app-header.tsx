@@ -17,17 +17,17 @@ export function AppHeader({ title, children, className }: AppHeaderProps) {
         className
       )}
     >
-      <Container className='px-1.5 md:px-4'>
-        <div className='flex items-center gap-2'>
+      <Container className="px-1.5 md:px-4">
+        <div className="flex items-center gap-2">
           <SidebarTrigger />
           {title && (
             <Separator
-              orientation='vertical'
-              className='data-[orientation=vertical]:h-4 mx-2 hidden md:block'
+              orientation="vertical"
+              className="data-[orientation=vertical]:h-4 mx-2 hidden md:block"
             />
           )}
-          {title && <h1 className='text-xl font-semibold hidden md:block'>{title}</h1>}
-          {children && <div className='ml-auto'>{children}</div>}
+          {title && <h1 className="text-xl font-semibold hidden md:block">{title}</h1>}
+          {children && <div className="ml-auto">{children}</div>}
         </div>
       </Container>
     </header>

@@ -4,11 +4,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { APP_CONFIG } from '@/app.config';
 import { type ColumnDef } from '@tanstack/react-table';
-import {
-  DataList,
-  useDataList,
-  createSelectionColumn,
-} from '@/shared/ui/data-list';
+import { DataList, useDataList, createSelectionColumn } from '@/shared/ui/data-list';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 import type { ManageSheetMode, ReorderConfig } from '../types';
 import { useManageSheet } from './manage-sheet';
@@ -54,7 +50,7 @@ export function ManageList<TData extends { id?: string }>({
     return !searchValue || searchValue === '';
   }, [enableReorder, searchParams]);
 
-  const sortDirection = enableReorder === true ? 'desc' : enableReorder?.direction ?? 'desc';
+  const sortDirection = enableReorder === true ? 'desc' : (enableReorder?.direction ?? 'desc');
 
   // 컬럼 처리
   const processedColumns = useMemo(() => {
@@ -112,7 +108,7 @@ export function ManageList<TData extends { id?: string }>({
 
     if (enableBulkAction && selectedRows.length > 0) {
       setSelectedRows([]);
-      setSelectionKey(prev => prev + 1);
+      setSelectionKey((prev) => prev + 1);
     }
   }, [data, enableBulkAction]);
 
@@ -135,7 +131,7 @@ export function ManageList<TData extends { id?: string }>({
 
   const handleClearSelection = useCallback(() => {
     setSelectedRows([]);
-    setSelectionKey(prev => prev + 1);
+    setSelectionKey((prev) => prev + 1);
   }, []);
 
   return (

@@ -16,7 +16,7 @@ type ExcludedFileUploadProps = 'value' | 'onValueChange' | 'onError' | 'aria-inv
 
 export type FormFileUploadProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = Omit<FormBaseProps<V, N>, 'orientation'> &
   Omit<MultiFileUploadProps, ExcludedFileUploadProps> & {
     hideConstraints?: boolean;
@@ -32,8 +32,8 @@ const generateFileConstraintsText = (
   if (accept) {
     const extensions = accept
       .split(',')
-      .map(t => t.trim())
-      .map(t => {
+      .map((t) => t.trim())
+      .map((t) => {
         if (t.startsWith('.')) {
           return t.slice(1);
         } else if (t.endsWith('/*')) {
@@ -67,7 +67,7 @@ const generateFileConstraintsText = (
 
 export const FormFileUpload = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,
@@ -95,18 +95,12 @@ export const FormFileUpload = <
       name={name}
       control={control}
       render={({ field, fieldState }) => (
-        <FieldSet
-          data-invalid={fieldState.invalid || !!validationError}
-          className='gap-2'
-        >
+        <FieldSet data-invalid={fieldState.invalid || !!validationError} className="gap-2">
           <FieldContent>
             {label && (
-              <FieldLegend
-                variant='label'
-                className='flex mb-0'
-              >
+              <FieldLegend variant="label" className="flex mb-0">
                 {label}{' '}
-                {optional && <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>}
+                {optional && <span className="ml-auto text-muted-foreground text-xs">(선택)</span>}
               </FieldLegend>
             )}
             {displayDescription && <FieldDescription>{displayDescription}</FieldDescription>}

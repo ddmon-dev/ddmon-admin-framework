@@ -35,7 +35,13 @@ describe('createItem', () => {
   });
 
   it('schema 있을 때 유효한 데이터 → DB insert 성공, author 자동 주입', async () => {
-    const mockData = { id: '1', title: '테스트', content: '내용', author: '관리자', author_id: 'admin1' };
+    const mockData = {
+      id: '1',
+      title: '테스트',
+      content: '내용',
+      author: '관리자',
+      author_id: 'admin1',
+    };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     const result = await createItem(
@@ -45,7 +51,12 @@ describe('createItem', () => {
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockInsert).toHaveBeenCalledWith(
-      expect.objectContaining({ title: '테스트', content: '내용', author: '관리자', author_id: 'admin1' })
+      expect.objectContaining({
+        title: '테스트',
+        content: '내용',
+        author: '관리자',
+        author_id: 'admin1',
+      })
     );
   });
 
@@ -63,10 +74,7 @@ describe('createItem', () => {
     const mockData = { id: '2', title: '아무값', author: '관리자', author_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
-    const result = await createItem(
-      { tableName: 'faqs' },
-      { values: { title: '아무값' } }
-    );
+    const result = await createItem({ tableName: 'faqs' }, { values: { title: '아무값' } });
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockInsert).toHaveBeenCalledWith(
@@ -79,7 +87,13 @@ describe('createItem', () => {
     mockLimit.mockReturnValue({
       single: vi.fn().mockResolvedValue({ data: { sort_order: 5 } }),
     });
-    const mockData = { id: '3', title: '순서 테스트', sort_order: 6, author: '관리자', author_id: 'admin1' };
+    const mockData = {
+      id: '3',
+      title: '순서 테스트',
+      sort_order: 6,
+      author: '관리자',
+      author_id: 'admin1',
+    };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     const result = await createItem(
@@ -108,10 +122,7 @@ describe('createItem', () => {
   it('DB 에러 시 → CRUD_ERRORS.CREATE_FAILED() 반환', async () => {
     mockSingle.mockResolvedValue({ data: null, error: { message: 'DB error' } });
 
-    const result = await createItem(
-      { tableName: 'faqs' },
-      { values: { title: '에러 테스트' } }
-    );
+    const result = await createItem({ tableName: 'faqs' }, { values: { title: '에러 테스트' } });
 
     expect(result).toEqual({
       success: false,

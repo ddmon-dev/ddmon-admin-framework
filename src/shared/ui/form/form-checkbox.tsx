@@ -19,13 +19,13 @@ type ExcludedCheckboxProps =
 
 export type FormCheckboxProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = Omit<FormBaseProps<V, N>, 'description' | 'orientation' | 'optional'> &
   Omit<CheckboxProps, ExcludedCheckboxProps>;
 
 export const FormCheckbox = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,
@@ -38,11 +38,7 @@ export const FormCheckbox = <
       name={name}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
-          <Field
-            orientation='horizontal'
-            data-invalid={fieldState.invalid}
-            className='gap-0'
-          >
+          <Field orientation="horizontal" data-invalid={fieldState.invalid} className="gap-0">
             <Checkbox
               ref={field.ref}
               id={field.name}
@@ -51,10 +47,7 @@ export const FormCheckbox = <
               aria-invalid={fieldState.invalid}
               {...checkboxProps}
             />
-            <FieldLabel
-              htmlFor={field.name}
-              className='pl-2 cursor-pointer pt-[0.08rem]'
-            >
+            <FieldLabel htmlFor={field.name} className="pl-2 cursor-pointer pt-[0.08rem]">
               {label}
             </FieldLabel>
           </Field>

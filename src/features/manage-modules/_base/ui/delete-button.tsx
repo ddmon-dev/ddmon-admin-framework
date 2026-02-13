@@ -159,12 +159,7 @@ export function HardDeleteButton({
   };
 
   return (
-    <LoadingButton
-      size="icon-sm"
-      variant="destructive"
-      onClick={handleClick}
-      isLoading={isLoading}
-    >
+    <LoadingButton size="icon-sm" variant="destructive" onClick={handleClick} isLoading={isLoading}>
       {children ?? <Trash2 />}
     </LoadingButton>
   );

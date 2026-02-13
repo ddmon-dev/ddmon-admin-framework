@@ -10,7 +10,9 @@ import type { UpdateItemParams } from '../../_base/types';
 import { CONFIG, type ItemDTO } from '../config';
 import { updateSchema } from '../schema';
 
-export async function updateItem(params: UpdateItemParams<ItemDTO>): Promise<ActionResult<ItemDTO>> {
+export async function updateItem(
+  params: UpdateItemParams<ItemDTO>
+): Promise<ActionResult<ItemDTO>> {
   const { id, values, pathname } = params;
 
   if (!id) {

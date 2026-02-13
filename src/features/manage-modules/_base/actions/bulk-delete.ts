@@ -17,7 +17,9 @@ interface BulkDeleteParams {
 /**
  * Bulk soft delete: 여러 항목의 deleted 컬럼을 true로 설정
  */
-export async function bulkSoftDelete(params: BulkDeleteParams): Promise<ActionResult<{ count: number }>> {
+export async function bulkSoftDelete(
+  params: BulkDeleteParams
+): Promise<ActionResult<{ count: number }>> {
   const { tableName, ids, pathname } = params;
 
   if (!ids || ids.length === 0) {

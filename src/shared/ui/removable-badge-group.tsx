@@ -18,20 +18,16 @@ export function RemovableBadgeGroup({
   if (items.length === 0) return null;
 
   return (
-    <div className='flex flex-wrap gap-1'>
+    <div className="flex flex-wrap gap-1">
       {items.map((item, index) => (
-        <Badge
-          key={`${item.key}-${index}`}
-          variant={variant}
-          className='gap-1 pr-1'
-        >
+        <Badge key={`${item.key}-${index}`} variant={variant} className="gap-1 pr-1">
           {item.label}
           <button
-            type='button'
+            type="button"
             onClick={() => onRemove(item.key)}
-            className='ml-1 rounded-full p-0.5 hover:bg-muted-foreground/20 hover:text-destructive'
+            className="ml-1 rounded-full p-0.5 hover:bg-muted-foreground/20 hover:text-destructive"
           >
-            <X className='h-3 w-3' />
+            <X className="h-3 w-3" />
           </button>
         </Badge>
       ))}

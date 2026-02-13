@@ -6,11 +6,5 @@ import { WriteForm } from './write-form';
 import { getItem } from './actions/get-item';
 
 export function ItemSheet() {
-  return (
-    <ManageSheet
-      fetchFn={getItem}
-      formComponent={WriteForm}
-      moduleName={CONFIG.moduleName}
-    />
-  );
+  return <ManageSheet fetchFn={getItem} formComponent={WriteForm} moduleName={CONFIG.moduleName} />;
 }

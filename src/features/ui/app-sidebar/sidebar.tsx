@@ -11,18 +11,14 @@ import { navigationConfig } from '@/features/ui/app-sidebar/config';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar
-      collapsible='offcanvas'
-      variant={APP_CONFIG.UI.SIDEBAR.VARIANT}
-      {...props}
-    >
+    <Sidebar collapsible="offcanvas" variant={APP_CONFIG.UI.SIDEBAR.VARIANT} {...props}>
       <SidebarHeader>
         <AppSidebarIdentity />
       </SidebarHeader>
       <SidebarContent>
         <NavMenu data={navigationConfig.navMain} />
       </SidebarContent>
-      <SidebarFooter className='gap-2 pt-6'>
+      <SidebarFooter className="gap-2 pt-6">
         <NavUser />
         <ThemeToggle />
       </SidebarFooter>

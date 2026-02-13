@@ -16,7 +16,7 @@ import type { FormBaseProps } from './types';
 
 export type FormRadioGroupProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = Omit<FormBaseProps<V, N>, 'orientation'> & {
   options: {
     label: string;
@@ -28,7 +28,7 @@ export type FormRadioGroupProps<
 
 export const FormRadioGroup = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   label,
@@ -46,12 +46,9 @@ export const FormRadioGroup = <
       render={({ field, fieldState }) => (
         <FieldSet data-invalid={fieldState.invalid}>
           <FieldContent>
-            <FieldLegend
-              variant='label'
-              className='flex mb-0'
-            >
+            <FieldLegend variant="label" className="flex mb-0">
               {label}{' '}
-              {optional && <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>}
+              {optional && <span className="ml-auto text-muted-foreground text-xs">(선택)</span>}
             </FieldLegend>
             {description && <FieldDescription>{description}</FieldDescription>}
           </FieldContent>
@@ -68,9 +65,9 @@ export const FormRadioGroup = <
             {options.map((option, index) => (
               <Field
                 key={index}
-                orientation='horizontal'
+                orientation="horizontal"
                 data-invalid={fieldState.invalid}
-                className='gap-0'
+                className="gap-0"
               >
                 <RadioGroupItem
                   ref={index === 0 ? field.ref : undefined}
@@ -80,7 +77,7 @@ export const FormRadioGroup = <
                 />
                 <FieldLabel
                   htmlFor={`${field.name}-${index}`}
-                  className='pl-2 cursor-pointer pt-[0.05rem]'
+                  className="pl-2 cursor-pointer pt-[0.05rem]"
                 >
                   {option.label}
                 </FieldLabel>

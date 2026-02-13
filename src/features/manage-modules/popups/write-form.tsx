@@ -16,12 +16,7 @@ import {
   FormEditor,
 } from '@/shared/ui/form';
 
-import {
-  useManageSheet,
-  ManageSheetFooter,
-  ManageFormSubmit,
-  ManageSheetClose,
-} from '../_base/ui';
+import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { useFormGuard } from '../_base/hooks';
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
@@ -56,9 +51,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   const pathname = usePathname();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: (prevValues ?? formDefaultValues) as z.infer<
-      typeof formSchema
-    >,
+    defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof formSchema>,
   });
   useFormGuard(form);
 
@@ -85,11 +78,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
         return;
       }
 
-      toast.success(
-        id
-          ? SUCCESS_MESSAGES.UPDATE_SUCCESS()
-          : SUCCESS_MESSAGES.CREATE_SUCCESS()
-      );
+      toast.success(id ? SUCCESS_MESSAGES.UPDATE_SUCCESS() : SUCCESS_MESSAGES.CREATE_SUCCESS());
       sheet.close();
     } catch (error) {
       console.error(error);
@@ -111,25 +100,11 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
       </FieldGroup>
 
       <FieldGroup>
-        <FormSwitch
-          control={form.control}
-          name="is_always"
-          label="항시노출 (기간 무시)"
-        />
+        <FormSwitch control={form.control} name="is_always" label="항시노출 (기간 무시)" />
 
-        <FormDatePicker
-          control={form.control}
-          name="start_date"
-          label="시작일"
-          optional
-        />
+        <FormDatePicker control={form.control} name="start_date" label="시작일" optional />
 
-        <FormDatePicker
-          control={form.control}
-          name="end_date"
-          label="종료일"
-          optional
-        />
+        <FormDatePicker control={form.control} name="end_date" label="종료일" optional />
       </FieldGroup>
 
       <FieldGroup>
@@ -147,12 +122,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
           suffix="px"
         />
 
-        <FormNumberInput
-          control={form.control}
-          name="width"
-          label="팝업 너비 (px)"
-          suffix="px"
-        />
+        <FormNumberInput control={form.control} name="width" label="팝업 너비 (px)" suffix="px" />
 
         <FormNumberInput
           control={form.control}

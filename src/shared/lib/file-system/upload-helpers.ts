@@ -135,7 +135,7 @@ export async function uploadFilesWithPresignedUrl(
 
   await Promise.all(
     uploads.map((upload, index) =>
-      uploadSingleFileWithPresignedUrl(upload.file, upload.uploadUrl, progress => {
+      uploadSingleFileWithPresignedUrl(upload.file, upload.uploadUrl, (progress) => {
         progressMap.set(index, progress);
         updateOverallProgress();
       })
@@ -161,7 +161,7 @@ async function uploadSingleFileWithPresignedUrl(
 
     // 진행 상태 추적
     if (onProgress) {
-      xhr.upload.addEventListener('progress', e => {
+      xhr.upload.addEventListener('progress', (e) => {
         if (e.lengthComputable) {
           const progress = Math.round((e.loaded / e.total) * 100);
           onProgress(progress);

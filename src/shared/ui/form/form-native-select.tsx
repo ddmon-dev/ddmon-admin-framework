@@ -11,7 +11,7 @@ type ExcludedNativeSelectProps = ExcludedFormProps | 'size';
 
 export type FormNativeSelectProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormBaseProps<V, N> &
   Omit<NativeSelectProps, ExcludedNativeSelectProps> & {
     options: {
@@ -24,7 +24,7 @@ export type FormNativeSelectProps<
 
 export const FormNativeSelect = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,
@@ -50,17 +50,17 @@ export const FormNativeSelect = <
         <NativeSelect
           {...field}
           value={field.value ?? ''}
-          onChange={e => onChange(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           aria-invalid={fieldState.invalid}
           size={size}
           {...selectProps}
         >
           {placeholder && (
-            <NativeSelectOption value='' disabled>
+            <NativeSelectOption value="" disabled>
               {placeholder}
             </NativeSelectOption>
           )}
-          {options.map(option => (
+          {options.map((option) => (
             <NativeSelectOption key={option.value} value={option.value}>
               {option.label}
             </NativeSelectOption>

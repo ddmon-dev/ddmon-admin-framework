@@ -14,20 +14,11 @@ interface Props {
 
 export default function ManageModule({ searchParams }: Props) {
   return (
-    <ManageContainer
-      title={CONFIG.title}
-      moduleName={CONFIG.moduleName}
-    >
-      <ManageListFetcher<ItemDTO>
-        searchParams={searchParams}
-        getList={getList}
-      >
+    <ManageContainer title={CONFIG.title} moduleName={CONFIG.moduleName}>
+      <ManageListFetcher<ItemDTO> searchParams={searchParams} getList={getList}>
         {({ data, totalCount }) => (
           <>
-            <List
-              data={data}
-              totalCount={totalCount}
-            />
+            <List data={data} totalCount={totalCount} />
             <ItemSheet />
           </>
         )}

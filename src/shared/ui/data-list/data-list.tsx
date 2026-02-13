@@ -81,7 +81,7 @@ export function DataList<TData>({
 
   // enableSorting이 true인 컬럼에 자동으로 SortingButton 적용
   const processedColumns = React.useMemo(() => {
-    return columns.map(col => {
+    return columns.map((col) => {
       if (col.enableSorting && typeof col.header === 'string' && 'accessorKey' in col) {
         const columnKey = col.accessorKey as string;
         const headerText = col.header;
@@ -119,7 +119,7 @@ export function DataList<TData>({
   // 선택된 행이 변경될 때 콜백 호출
   React.useEffect(() => {
     if (onSelectionChange) {
-      const selectedRows = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+      const selectedRows = table.getFilteredSelectedRowModel().rows.map((row) => row.original);
       onSelectionChange(selectedRows);
     }
   }, [rowSelection, table, onSelectionChange]);
@@ -143,20 +143,17 @@ export function DataList<TData>({
   };
 
   return (
-    <div className='flex flex-col flex-1'>
-      <div className='flex items-center justify-between mb-2 pl-2 md:pl-4'>
-        <span className='text-sm text-muted-foreground font-semibold'>Total ({totalCount})</span>
+    <div className="flex flex-col flex-1">
+      <div className="flex items-center justify-between mb-2 pl-2 md:pl-4">
+        <span className="text-sm text-muted-foreground font-semibold">Total ({totalCount})</span>
       </div>
 
-      <div className='overflow-hidden rounded-md border'>
+      <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map(headerGroup => (
-              <TableRow
-                key={headerGroup.id}
-                className='bg-background-secondary!'
-              >
-                {headerGroup.headers.map(header => {
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="bg-background-secondary!">
+                {headerGroup.headers.map((header) => {
                   const size = header.column.columnDef.size;
                   const meta = header.column.columnDef.meta;
 
@@ -183,20 +180,20 @@ export function DataList<TData>({
             {isLoading ? (
               <TableRow>
                 <TableCell colSpan={columns.length}>
-                  <div className='flex items-center justify-center h-[200px]'>
+                  <div className="flex items-center justify-center h-[200px]">
                     <Spinner />
                   </div>
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map(row => (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  onClick={event => handleRowClick(event, row.original)}
-                  className='hover:bg-background-secondary/70! hover:[&_td]:text-primary'
+                  onClick={(event) => handleRowClick(event, row.original)}
+                  className="hover:bg-background-secondary/70! hover:[&_td]:text-primary"
                 >
-                  {row.getVisibleCells().map(cell => {
+                  {row.getVisibleCells().map((cell) => {
                     const size = cell.column.columnDef.size;
                     const meta = cell.column.columnDef.meta;
                     const cellContent = flexRender(cell.column.columnDef.cell, cell.getContext());
@@ -207,7 +204,7 @@ export function DataList<TData>({
                         className={cn('text-center', meta?.className, meta?.cellClassName)}
                       >
                         {meta?.truncate ? (
-                          <div className='truncate w-[90%]'>{cellContent}</div>
+                          <div className="truncate w-[90%]">{cellContent}</div>
                         ) : (
                           cellContent
                         )}
@@ -217,7 +214,7 @@ export function DataList<TData>({
                 </TableRow>
               ))
             ) : (
-              <TableRow className='bg-background!'>
+              <TableRow className="bg-background!">
                 <TableCell colSpan={columns.length}>
                   <ListEmpty />
                 </TableCell>
@@ -227,9 +224,9 @@ export function DataList<TData>({
         </Table>
       </div>
 
-      <div className='my-2' />
+      <div className="my-2" />
 
-      <div className='sticky bottom-0 bg-background flex items-center justify-center border-t p-4 -mx-4 rounded-b-lg md:justify-between mt-auto'>
+      <div className="sticky bottom-0 bg-background flex items-center justify-center border-t p-4 -mx-4 rounded-b-lg md:justify-between mt-auto">
         <DataListPagination
           pageCount={pageCount}
           currentPage={currentPage}
@@ -237,7 +234,7 @@ export function DataList<TData>({
           mobileMaxVisible={mobileMaxVisible}
           onPageChange={onPageChange}
         />
-        <div className='ml-auto hidden md:block'>
+        <div className="ml-auto hidden md:block">
           <PageSizeSelect />
         </div>
       </div>
@@ -310,7 +307,7 @@ function DataListPagination({
   const pageNumbers = getPageNumbers();
 
   return (
-    <Pagination className='justify-center md:justify-start'>
+    <Pagination className="justify-center md:justify-start">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
@@ -329,7 +326,7 @@ function DataListPagination({
               <PaginationLink
                 onClick={() => onPageChange?.(page)}
                 isActive={page === currentPage}
-                className='cursor-pointer'
+                className="cursor-pointer"
               >
                 {page}
               </PaginationLink>

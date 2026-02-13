@@ -14,7 +14,7 @@ import { CONFIG, type ItemDTO } from './config';
 
 export function DetailView({ data }: { data: ItemDTO }) {
   const categoryLabel = CONFIG.categoryOptions.find(
-    option => option.value === data.category
+    (option) => option.value === data.category
   )?.label;
 
   return (
@@ -25,9 +25,7 @@ export function DetailView({ data }: { data: ItemDTO }) {
             label="카테고리"
             labelClassName="items-center"
             value={
-              <Badge
-                variant={data.category === 'notice' ? 'default' : 'secondary'}
-              >
+              <Badge variant={data.category === 'notice' ? 'default' : 'secondary'}>
                 {categoryLabel}
               </Badge>
             }
@@ -41,26 +39,17 @@ export function DetailView({ data }: { data: ItemDTO }) {
               value={data.view_count?.toLocaleString()}
             />
           </DetailRow>
-          <DetailField
-            label="작성일"
-            value={format(data.created_at, 'yyyy-MM-dd HH:mm:ss')}
-          />
-          <DetailField
-            label="수정일"
-            value={format(data.updated_at, 'yyyy-MM-dd HH:mm:ss')}
-          />
+          <DetailField label="작성일" value={format(data.created_at, 'yyyy-MM-dd HH:mm:ss')} />
+          <DetailField label="수정일" value={format(data.updated_at, 'yyyy-MM-dd HH:mm:ss')} />
 
-          <DetailField
-            label="내용"
-            value={<RichTextContent>{data.content}</RichTextContent>}
-          />
+          <DetailField label="내용" value={<RichTextContent>{data.content}</RichTextContent>} />
           <DetailField
             label="첨부 파일"
-            value={data.files?.attachments?.map(file => file.url).join(', ')}
+            value={data.files?.attachments?.map((file) => file.url).join(', ')}
           />
           <DetailField
             label="썸네일"
-            value={data.files?.thumbnail?.map(file => file.url).join(', ')}
+            value={data.files?.thumbnail?.map((file) => file.url).join(', ')}
           />
         </DetailGroup>
       </DetailContainer>

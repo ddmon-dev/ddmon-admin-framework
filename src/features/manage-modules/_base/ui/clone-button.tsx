@@ -13,11 +13,7 @@ export function CloneButton({ id, children }: CloneButtonProps) {
   const manageSheet = useManageSheet();
 
   return (
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={() => manageSheet.open({ id, mode: 'clone' })}
-    >
+    <Button size="sm" variant="outline" onClick={() => manageSheet.open({ id, mode: 'clone' })}>
       <Copy className="size-3.5" />
       {children ?? '복제'}
     </Button>

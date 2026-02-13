@@ -64,8 +64,8 @@ export function RequireAuth({
     if (!showLoading) return null;
     return (
       loadingComponent ?? (
-        <div className='flex items-center justify-center min-h-[200px]'>
-          <Spinner className='size-8' />
+        <div className="flex items-center justify-center min-h-[200px]">
+          <Spinner className="size-8" />
         </div>
       )
     );

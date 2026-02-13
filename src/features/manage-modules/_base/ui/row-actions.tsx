@@ -44,8 +44,7 @@ export function RowActions({ type, id, tableName, actions }: RowActionsProps) {
   const pathname = usePathname();
 
   const items: RowActionItem[] = actions.map((action) => {
-    const config: ActionConfig =
-      typeof action === 'string' ? { action } : action;
+    const config: ActionConfig = typeof action === 'string' ? { action } : action;
     const defaults = DEFAULTS[config.action];
 
     const onClick =

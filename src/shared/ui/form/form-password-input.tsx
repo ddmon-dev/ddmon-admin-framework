@@ -14,7 +14,7 @@ import type { FormBaseProps, ExcludedFormProps } from './types';
 
 export type FormPasswordInputProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormBaseProps<V, N> &
   Omit<React.InputHTMLAttributes<HTMLInputElement>, ExcludedFormProps | 'type'> & {
     /** 비밀번호 표시/숨김 토글 버튼 표시 여부 (기본: true) */
@@ -46,7 +46,7 @@ export type FormPasswordInputProps<
  */
 export const FormPasswordInput = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,
@@ -76,13 +76,13 @@ export const FormPasswordInput = <
               {...inputProps}
               type={showPassword ? 'text' : 'password'}
               aria-invalid={fieldState.invalid}
-              autoComplete='off'
-              data-lpignore='true'
-              data-form-type='other'
+              autoComplete="off"
+              data-lpignore="true"
+              data-form-type="other"
             />
-            <InputGroupAddon align='inline-end'>
+            <InputGroupAddon align="inline-end">
               <InputGroupButton
-                size='icon-xs'
+                size="icon-xs"
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex={-1}
               >
@@ -94,11 +94,11 @@ export const FormPasswordInput = <
           <InputGroupInput
             {...field}
             {...inputProps}
-            type='password'
+            type="password"
             aria-invalid={fieldState.invalid}
-            autoComplete='off'
-            data-lpignore='true'
-            data-form-type='other'
+            autoComplete="off"
+            data-lpignore="true"
+            data-form-type="other"
           />
         )
       }

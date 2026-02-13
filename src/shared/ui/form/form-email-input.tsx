@@ -7,7 +7,7 @@ import type { FormTextInputProps } from './form-text-input';
 
 export type FormEmailInputProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = Omit<FormTextInputProps<V, N>, 'inputMode'>;
 
 /**
@@ -29,14 +29,9 @@ export type FormEmailInputProps<
  */
 export const FormEmailInput = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >(
   props: FormEmailInputProps<V, N>
 ): ReactElement => {
-  return (
-    <FormTextInput
-      {...props}
-      inputMode='email'
-    />
-  );
+  return <FormTextInput {...props} inputMode="email" />;
 };

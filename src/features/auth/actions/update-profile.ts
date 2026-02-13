@@ -3,11 +3,7 @@
 import { APP_CONFIG } from '@/app.config';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { Result } from '@/shared/utils/results';
-import {
-  GENERAL_ERRORS,
-  CRUD_ERRORS,
-  VALIDATION_ERRORS,
-} from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS, CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
 import type { ActionResult } from '@/shared/types/results';
 
 import { requireAuth } from '../utils/server';
@@ -48,10 +44,7 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Action
       }
 
       // 현재 비밀번호 검증
-      const isValid = await verifyPassword(
-        validatedValues.currentPassword!,
-        adminData.password
-      );
+      const isValid = await verifyPassword(validatedValues.currentPassword!, adminData.password);
 
       if (!isValid) {
         return Result.error('현재 비밀번호가 일치하지 않습니다.');

@@ -13,7 +13,7 @@ import type { FormBaseProps } from './types';
 
 export type FormFieldProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormBaseProps<V, N> & {
   children: (
     field: ControllerRenderProps<V, N> & {
@@ -45,7 +45,7 @@ export type FormFieldProps<
  */
 export const FormField = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,
@@ -60,20 +60,14 @@ export const FormField = <
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <Field
-          data-invalid={fieldState.invalid}
-          orientation={orientation}
-        >
+        <Field data-invalid={fieldState.invalid} orientation={orientation}>
           {(label || description) && (
             <FieldContent>
               {label && (
-                <FieldLabel
-                  htmlFor={field.name}
-                  className={optional ? 'w-full' : ''}
-                >
+                <FieldLabel htmlFor={field.name} className={optional ? 'w-full' : ''}>
                   {label}{' '}
                   {optional && (
-                    <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>
+                    <span className="ml-auto text-muted-foreground text-xs">(선택)</span>
                   )}
                 </FieldLabel>
               )}

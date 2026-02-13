@@ -10,8 +10,8 @@ interface NotFoundStatusProps {
 export function NotFoundStatus({ fullScreen, size = 'lg' }: NotFoundStatusProps) {
   return (
     <StatusLayout
-      code='404'
-      title='페이지를 찾을 수 없습니다'
+      code="404"
+      title="페이지를 찾을 수 없습니다"
       description={
         <>
           요청하신 페이지가 존재하지 않거나
@@ -20,12 +20,8 @@ export function NotFoundStatus({ fullScreen, size = 'lg' }: NotFoundStatusProps)
         </>
       }
       actions={
-        <Button
-          asChild
-          size='lg'
-          variant='default'
-        >
-          <Link href='/'>홈으로</Link>
+        <Button asChild size="lg" variant="default">
+          <Link href="/">홈으로</Link>
         </Button>
       }
       fullScreen={fullScreen}

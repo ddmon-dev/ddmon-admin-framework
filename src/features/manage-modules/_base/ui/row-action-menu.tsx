@@ -23,8 +23,8 @@ interface RowActionMenuProps {
 }
 
 export function RowActionMenu({ items }: RowActionMenuProps) {
-  const normalItems = items.filter(item => item.variant !== 'destructive');
-  const destructiveItems = items.filter(item => item.variant === 'destructive');
+  const normalItems = items.filter((item) => item.variant !== 'destructive');
+  const destructiveItems = items.filter((item) => item.variant === 'destructive');
 
   return (
     <DropdownMenu modal={false}>
@@ -35,14 +35,14 @@ export function RowActionMenu({ items }: RowActionMenuProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {normalItems.map(item => (
+        {normalItems.map((item) => (
           <DropdownMenuItem key={item.label} onSelect={item.onClick} disabled={item.disabled}>
             {item.icon}
             {item.label}
           </DropdownMenuItem>
         ))}
         {destructiveItems.length > 0 && <DropdownMenuSeparator />}
-        {destructiveItems.map(item => (
+        {destructiveItems.map((item) => (
           <DropdownMenuItem
             key={item.label}
             variant="destructive"

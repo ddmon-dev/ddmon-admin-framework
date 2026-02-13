@@ -13,7 +13,7 @@ import type { FormBaseProps, ExcludedFormProps } from './types';
 
 export type FormTextInputProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormBaseProps<V, N> &
   Omit<React.InputHTMLAttributes<HTMLInputElement>, ExcludedFormProps | 'type'> & {
     customFilter?: (value: string) => string;
@@ -76,7 +76,7 @@ const TextInputField = ({
 
 export const FormTextInput = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,

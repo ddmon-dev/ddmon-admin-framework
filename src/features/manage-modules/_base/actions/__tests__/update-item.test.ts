@@ -38,17 +38,20 @@ describe('updateItem', () => {
   });
 
   it('id 누락 → VALIDATION_ERRORS.NO_ID 반환', async () => {
-    const result = await updateItem(
-      { tableName: 'faqs' },
-      { id: '', values: { title: '테스트' } }
-    );
+    const result = await updateItem({ tableName: 'faqs' }, { id: '', values: { title: '테스트' } });
 
     expect(result).toEqual({ success: false, error: 'ID값이 없습니다.' });
     expect(mockFrom).not.toHaveBeenCalled();
   });
 
   it('schema 있을 때 유효한 데이터 → DB update 성공, updated_by 자동 주입', async () => {
-    const mockData = { id: '1', title: '수정됨', content: '내용', updated_by: '관리자', updated_by_id: 'admin1' };
+    const mockData = {
+      id: '1',
+      title: '수정됨',
+      content: '내용',
+      updated_by: '관리자',
+      updated_by_id: 'admin1',
+    };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     const result = await updateItem(
@@ -58,7 +61,12 @@ describe('updateItem', () => {
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockUpdate).toHaveBeenCalledWith(
-      expect.objectContaining({ title: '수정됨', content: '내용', updated_by: '관리자', updated_by_id: 'admin1' })
+      expect.objectContaining({
+        title: '수정됨',
+        content: '내용',
+        updated_by: '관리자',
+        updated_by_id: 'admin1',
+      })
     );
   });
 
@@ -132,10 +140,7 @@ describe('updateItem', () => {
     const mockData = { id: '4', title: '파일 정리', updated_by: '관리자', updated_by_id: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
-    await updateItem(
-      { tableName: 'faqs' },
-      { id: '4', values: { title: '파일 정리' } }
-    );
+    await updateItem({ tableName: 'faqs' }, { id: '4', values: { title: '파일 정리' } });
 
     expect(cleanupDeletedFiles).toHaveBeenCalled();
   });

@@ -7,7 +7,7 @@ import type { FormTextInputProps } from './form-text-input';
 
 export type FormUrlInputProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = Omit<FormTextInputProps<V, N>, 'inputMode'>;
 
 /**
@@ -29,14 +29,9 @@ export type FormUrlInputProps<
  */
 export const FormUrlInput = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >(
   props: FormUrlInputProps<V, N>
 ): ReactElement => {
-  return (
-    <FormTextInput
-      {...props}
-      inputMode='url'
-    />
-  );
+  return <FormTextInput {...props} inputMode="url" />;
 };

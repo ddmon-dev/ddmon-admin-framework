@@ -88,7 +88,7 @@ export function IdleLogoutProvider({
     };
 
     // 이벤트 리스너 등록
-    events.forEach(event => {
+    events.forEach((event) => {
       document.addEventListener(event, handleActivity, { passive: true });
     });
 
@@ -103,7 +103,7 @@ export function IdleLogoutProvider({
       if (logoutTimerRef.current) {
         clearTimeout(logoutTimerRef.current);
       }
-      events.forEach(event => {
+      events.forEach((event) => {
         document.removeEventListener(event, handleActivity);
       });
     };

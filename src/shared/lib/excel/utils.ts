@@ -8,11 +8,11 @@ export function exportToExcel<TData = any>(options: ExcelOptions<TData>): void {
   const { data, columns, sheetName = 'Sheet1', fileName = 'export.xlsx' } = options;
 
   // 1. 헤더 생성
-  const headers = columns.map(col => col.header);
+  const headers = columns.map((col) => col.header);
 
   // 2. 데이터 변환
-  const rows = data.map(row =>
-    columns.map(col => {
+  const rows = data.map((row) =>
+    columns.map((col) => {
       if (col.accessorFn) {
         return col.accessorFn(row);
       }
@@ -27,7 +27,7 @@ export function exportToExcel<TData = any>(options: ExcelOptions<TData>): void {
   const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
 
   // 4. 컬럼 너비 설정
-  ws['!cols'] = columns.map(col => ({ wch: col.width || 15 }));
+  ws['!cols'] = columns.map((col) => ({ wch: col.width || 15 }));
 
   // 5. 기본 스타일 적용
   applyDefaultStyles(ws, headers.length, rows.length);

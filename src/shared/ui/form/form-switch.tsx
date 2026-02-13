@@ -19,13 +19,13 @@ type ExcludedSwitchProps =
 
 export type FormSwitchProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = Omit<FormBaseProps<V, N>, 'description' | 'orientation' | 'optional'> &
   Omit<SwitchProps, ExcludedSwitchProps>;
 
 export const FormSwitch = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,
@@ -38,10 +38,7 @@ export const FormSwitch = <
       name={name}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
-          <Field
-            orientation='horizontal'
-            data-invalid={fieldState.invalid}
-          >
+          <Field orientation="horizontal" data-invalid={fieldState.invalid}>
             <Switch
               ref={field.ref}
               id={field.name}

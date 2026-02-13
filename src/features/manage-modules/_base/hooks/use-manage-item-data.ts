@@ -9,9 +9,7 @@ import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { atLeast } from '@/shared/utils/delays';
 import { APP_CONFIG } from '@/app.config';
 
-export type GetItemAction<T> = (params: {
-  id: string;
-}) => Promise<ActionResult<T>>;
+export type GetItemAction<T> = (params: { id: string }) => Promise<ActionResult<T>>;
 
 /**
  * 공통 날짜 필드 목록 (자동으로 Date 객체로 변환됨)
@@ -51,29 +49,19 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
 
   async function fetchItem(targetId: string) {
     try {
-      const {
-        success,
-        data,
-        error: fetchError,
-      } = await getItemAction({ id: targetId });
+      const { success, data, error: fetchError } = await getItemAction({ id: targetId });
 
       if (!success) {
         setError(fetchError || CRUD_ERRORS.READ_FAILED());
         return;
       }
 
-      const dateFields = [
-        ...DEFAULT_DATE_FIELDS,
-        ...(options?.additionalDateFields || []),
-      ];
+      const dateFields = [...DEFAULT_DATE_FIELDS, ...(options?.additionalDateFields || [])];
 
       const convertedDateFields = Object.fromEntries(
         dateFields
-          .filter(field => data[field as keyof typeof data] != null)
-          .map(field => [
-            field,
-            new Date(data[field as keyof typeof data] as string),
-          ])
+          .filter((field) => data[field as keyof typeof data] != null)
+          .map((field) => [field, new Date(data[field as keyof typeof data] as string)])
       );
 
       const transformedData = {
@@ -84,9 +72,7 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
 
       setPrevValues(transformedData);
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : GENERAL_ERRORS.UNEXPECTED
-      );
+      setError(error instanceof Error ? error.message : GENERAL_ERRORS.UNEXPECTED);
       console.error(error);
     }
   }

@@ -49,7 +49,7 @@ export const email = <T extends { message?: string; optional?: boolean } | undef
  * })
  */
 export const phone = <
-  T extends { message?: string; optional?: boolean; pattern?: RegExp } | undefined = undefined
+  T extends { message?: string; optional?: boolean; pattern?: RegExp } | undefined = undefined,
 >(
   options?: T
 ): PresetSchema<T> => {
@@ -178,7 +178,7 @@ export const fieldArray = (itemSchema: z.ZodSchema, options?: { optional?: boole
 
   if (options?.optional) {
     schema = schema.refine(
-      data => data.some(item => item.value !== null && item.value !== undefined),
+      (data) => data.some((item) => item.value !== null && item.value !== undefined),
       {
         message: 'VLT 옵션은 최소 1개 이상 입력해주세요.',
         path: ['root'],

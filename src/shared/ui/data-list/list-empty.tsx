@@ -36,7 +36,7 @@ export function ListEmpty() {
   return (
     <Empty>
       <EmptyHeader>
-        <EmptyMedia variant='icon'>{message.icon}</EmptyMedia>
+        <EmptyMedia variant="icon">{message.icon}</EmptyMedia>
         <EmptyTitle>{message.title}</EmptyTitle>
         <EmptyDescription>{message.description}</EmptyDescription>
       </EmptyHeader>

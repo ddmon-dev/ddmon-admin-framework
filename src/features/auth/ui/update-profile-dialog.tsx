@@ -37,7 +37,7 @@ const formSchema = updateProfileSchema
     }),
   })
   .refine(
-    data => {
+    (data) => {
       // newPassword 입력 시 currentPassword 필수
       if (data.newPassword && !data.currentPassword) {
         return false;
@@ -50,7 +50,7 @@ const formSchema = updateProfileSchema
     }
   )
   .refine(
-    data => {
+    (data) => {
       // newPassword와 confirmPassword 일치
       if (data.newPassword && data.newPassword !== data.confirmPassword) {
         return false;
@@ -160,67 +160,61 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={setOpen}
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className='sm:max-w-[500px]'>
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>내 정보 수정</DialogTitle>
           <DialogDescription>본인의 정보를 수정할 수 있습니다.</DialogDescription>
         </DialogHeader>
 
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-6'
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FieldGroup>
             <FormTextInput
               control={form.control}
-              name='name'
-              label='이름'
-              placeholder='이름을 입력하세요'
+              name="name"
+              label="이름"
+              placeholder="이름을 입력하세요"
             />
 
             <FormEmailInput
               control={form.control}
-              name='email'
-              label='이메일'
-              placeholder='이메일을 입력하세요'
+              name="email"
+              label="이메일"
+              placeholder="이메일을 입력하세요"
             />
           </FieldGroup>
 
-          <div className='border-t pt-4'>
-            <p className='text-sm text-muted-foreground mb-3'>
+          <div className="border-t pt-4">
+            <p className="text-sm text-muted-foreground mb-3">
               비밀번호를 변경하려면 아래 필드를 입력하세요.
             </p>
 
             <FieldGroup>
               <FormPasswordInput
                 control={form.control}
-                name='currentPassword'
-                label='현재 비밀번호'
-                placeholder='현재 비밀번호'
-                autoComplete='current-password'
+                name="currentPassword"
+                label="현재 비밀번호"
+                placeholder="현재 비밀번호"
+                autoComplete="current-password"
                 optional
               />
 
               <FormPasswordInput
                 control={form.control}
-                name='newPassword'
-                label='새 비밀번호'
-                placeholder='새 비밀번호 (최소 6자)'
-                autoComplete='new-password'
+                name="newPassword"
+                label="새 비밀번호"
+                placeholder="새 비밀번호 (최소 6자)"
+                autoComplete="new-password"
                 optional
               />
 
               <FormPasswordInput
                 control={form.control}
-                name='confirmPassword'
-                label='비밀번호 확인'
-                placeholder='비밀번호 확인'
-                autoComplete='new-password'
+                name="confirmPassword"
+                label="비밀번호 확인"
+                placeholder="비밀번호 확인"
+                autoComplete="new-password"
                 optional
               />
             </FieldGroup>
@@ -231,17 +225,10 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
           )}
 
           <DialogFooter>
-            <Button
-              type='button'
-              variant='outline'
-              onClick={() => setOpen(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               취소
             </Button>
-            <LoadingButton
-              type='submit'
-              isLoading={form.formState.isSubmitting}
-            >
+            <LoadingButton type="submit" isLoading={form.formState.isSubmitting}>
               수정
             </LoadingButton>
           </DialogFooter>

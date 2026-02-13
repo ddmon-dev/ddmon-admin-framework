@@ -79,7 +79,7 @@ export async function cleanupDeletedFiles(params: {
     // 삭제된 파일 찾기
     const oldUrls = extractAllFileUrls(oldFiles);
     const newUrls = extractAllFileUrls(newFiles);
-    const deletedUrls = oldUrls.filter(url => !newUrls.includes(url));
+    const deletedUrls = oldUrls.filter((url) => !newUrls.includes(url));
 
     // Storage에서 제거
     if (deletedUrls.length > 0) {

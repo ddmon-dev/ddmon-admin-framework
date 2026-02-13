@@ -20,16 +20,16 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className='pt-4 px-4 md:px-0 mb-8 md:pt-6 md:mb-0 text-center md:text-left font-secondary'>
-      <h1 className='text-[28px] md:text-[42px] font-thin tracking-tighter leading-[1.2] text-secondary-foreground/70'>
+    <section className="pt-4 px-4 md:px-0 mb-8 md:pt-6 md:mb-0 text-center md:text-left font-secondary">
+      <h1 className="text-[28px] md:text-[42px] font-thin tracking-tighter leading-[1.2] text-secondary-foreground/70">
         안녕하세요
         <br />
-        <span className='bg-linear-to-r from-primary via-primary/60 to-primary bg-clip-text text-transparent font-normal animate-shimmer animation-duration-5000!'>
+        <span className="bg-linear-to-r from-primary via-primary/60 to-primary bg-clip-text text-transparent font-normal animate-shimmer animation-duration-5000!">
           {userName}
         </span>
         님
       </h1>
-      <p className='min-h-[34px] md:min-h-[48px] text-[28px] md:text-[40px] font-thin text-secondary-foreground/70 tracking-tighter leading-[1.2]'>
+      <p className="min-h-[34px] md:min-h-[48px] text-[28px] md:text-[40px] font-thin text-secondary-foreground/70 tracking-tighter leading-[1.2]">
         {greeting}
       </p>
     </section>

@@ -15,10 +15,7 @@ export const CONFIG = {
 } as const;
 
 // 상태 뱃지 설정
-export const STATUS_CONFIG: Record<
-  string,
-  { label: string; variant: 'default' | 'secondary' }
-> = {
+export const STATUS_CONFIG: Record<string, { label: string; variant: 'default' | 'secondary' }> = {
   pending: { label: '대기', variant: 'secondary' },
   answered: { label: '답변완료', variant: 'default' },
 };

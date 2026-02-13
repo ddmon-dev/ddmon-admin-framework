@@ -30,7 +30,7 @@ function ToggleGroup({
   }) {
   return (
     <ToggleGroupPrimitive.Root
-      data-slot='toggle-group'
+      data-slot="toggle-group"
       data-variant={variant}
       data-size={size}
       data-spacing={spacing}
@@ -59,7 +59,7 @@ function ToggleGroupItem({
 
   return (
     <ToggleGroupPrimitive.Item
-      data-slot='toggle-group-item'
+      data-slot="toggle-group-item"
       data-variant={context.variant || variant}
       data-size={context.size || size}
       data-spacing={context.spacing}

@@ -42,7 +42,7 @@ export async function uploadFormFiles({
   // 파일 유무 체크
   const hasFormFiles =
     formFiles &&
-    Object.values(formFiles).some(fileList => Array.isArray(fileList) && fileList.length > 0);
+    Object.values(formFiles).some((fileList) => Array.isArray(fileList) && fileList.length > 0);
 
   if (!hasFormFiles) return;
 

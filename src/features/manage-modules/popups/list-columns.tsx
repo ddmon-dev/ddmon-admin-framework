@@ -36,9 +36,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
       const { is_always, start_date, end_date } = row.original;
       if (is_always) return <Badge variant="outline">항시노출</Badge>;
       if (!start_date && !end_date) return '-';
-      const start = start_date
-        ? format(start_date, 'yyyy-MM-dd')
-        : '시작일 없음';
+      const start = start_date ? format(start_date, 'yyyy-MM-dd') : '시작일 없음';
       const end = end_date ? format(end_date, 'yyyy-MM-dd') : '종료일 없음';
       return `${start} ~ ${end}`;
     },

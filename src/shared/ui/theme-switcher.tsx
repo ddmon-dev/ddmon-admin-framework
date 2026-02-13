@@ -36,25 +36,18 @@ export function ThemeDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant='ghost'
-          size='icon'
-          className='h-10 w-10'
-        >
-          <Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
-          <Moon className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
-          <span className='sr-only'>테마 전환</span>
+        <Button variant="ghost" size="icon" className="h-10 w-10">
+          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">테마 전환</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
+      <DropdownMenuContent align="end">
         {THEMES.map(({ name, value, icon: Icon }) => (
-          <DropdownMenuItem
-            key={value}
-            onClick={() => setTheme(value)}
-          >
-            <Icon className='mr-2 h-4 w-4' />
+          <DropdownMenuItem key={value} onClick={() => setTheme(value)}>
+            <Icon className="mr-2 h-4 w-4" />
             <span>{name}</span>
-            {value === theme && <span className='ml-auto text-xs'>✓</span>}
+            {value === theme && <span className="ml-auto text-xs">✓</span>}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
@@ -75,19 +68,19 @@ export function ThemeToggle() {
 
   return (
     <ToggleGroup
-      type='single'
+      type="single"
       value={currentTheme}
-      className='flex items-center gap-0 w-full divide-x bg-background shadow-md dark:bg-sidebar-accent transition-colors'
+      className="flex items-center gap-0 w-full divide-x bg-background shadow-md dark:bg-sidebar-accent transition-colors"
     >
       {THEMES.map(({ name, value, icon: Icon }) => (
         <ToggleGroupItem
           key={value}
           value={value}
-          size='sm'
+          size="sm"
           onClick={() => setTheme(value)}
-          className='w-full shrink hover:text-primary data-[state=on]:text-primary bg-transparent! transition-colors'
+          className="w-full shrink hover:text-primary data-[state=on]:text-primary bg-transparent! transition-colors"
         >
-          <span className='sr-only'>{name}</span>
+          <span className="sr-only">{name}</span>
           <Icon />
         </ToggleGroupItem>
       ))}

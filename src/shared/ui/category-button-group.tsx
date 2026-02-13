@@ -48,19 +48,16 @@ export function CategoryButtonGroup({
 
   return (
     <ToggleGroup
-      type='single'
+      type="single"
       value={value}
-      variant='outline'
+      variant="outline"
       size={size}
       onValueChange={handleValueChange}
       className={className}
     >
-      {showAllOption && <ToggleGroupItem value='all'>{allOptionLabel}</ToggleGroupItem>}
-      {options.map(option => (
-        <ToggleGroupItem
-          key={option.value}
-          value={option.value}
-        >
+      {showAllOption && <ToggleGroupItem value="all">{allOptionLabel}</ToggleGroupItem>}
+      {options.map((option) => (
+        <ToggleGroupItem key={option.value} value={option.value}>
           {option.label}
         </ToggleGroupItem>
       ))}

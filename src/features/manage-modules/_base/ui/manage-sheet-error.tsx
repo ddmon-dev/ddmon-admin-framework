@@ -19,10 +19,5 @@ export function ManageSheetError({ onRetry }: ManageSheetErrorProps) {
     }
   };
 
-  return (
-    <ErrorStatus
-      actions={<Button onClick={handleRetry}>닫기</Button>}
-      size='md'
-    />
-  );
+  return <ErrorStatus actions={<Button onClick={handleRetry}>닫기</Button>} size="md" />;
 }

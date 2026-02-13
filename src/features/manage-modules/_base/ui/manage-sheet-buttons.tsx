@@ -17,11 +17,7 @@ export function ManageFormSubmit({
   children = '저장하기',
 }: ManageFormSubmitProps) {
   return (
-    <LoadingButton
-      type="submit"
-      isLoading={isLoading}
-      className={cn('font-semibold', className)}
-    >
+    <LoadingButton type="submit" isLoading={isLoading} className={cn('font-semibold', className)}>
       {children}
     </LoadingButton>
   );
@@ -32,10 +28,7 @@ interface ManageSheetCloseProps {
   className?: string;
 }
 
-export function ManageSheetClose({
-  children = '닫기',
-  className,
-}: ManageSheetCloseProps) {
+export function ManageSheetClose({ children = '닫기', className }: ManageSheetCloseProps) {
   const manageSheet = useManageSheet();
   return (
     <Button

@@ -106,7 +106,7 @@ export async function deleteFilesFromStorage(urls: string[]): Promise<FileDelete
     const supabase = createServerClient();
 
     // URL에서 파일 경로 추출
-    const filePaths = urls.map(url => extractFilePathFromUrl(url)).filter(Boolean);
+    const filePaths = urls.map((url) => extractFilePathFromUrl(url)).filter(Boolean);
 
     if (filePaths.length === 0) {
       return Result.ok();
@@ -150,7 +150,7 @@ export async function deleteFolderFromStorage(folderPath: string): Promise<FileD
     }
 
     // 모든 파일 경로 생성
-    const filePaths = fileList.map(file => `${folderPath}/${file.name}`);
+    const filePaths = fileList.map((file) => `${folderPath}/${file.name}`);
 
     // 모든 파일 삭제
     const { error: removeError } = await supabase.storage.from(BUCKET_NAME).remove(filePaths);

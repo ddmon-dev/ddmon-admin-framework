@@ -23,14 +23,7 @@ interface OrderedItem {
 }
 
 export async function swapOrder(params: SwapOrderParams): Promise<ActionResult<boolean>> {
-  const {
-    tableName,
-    id,
-    direction,
-    pathname,
-    filters = {},
-    sortDirection = 'asc',
-  } = params;
+  const { tableName, id, direction, pathname, filters = {}, sortDirection = 'asc' } = params;
 
   await requireAuth();
 
@@ -71,18 +64,12 @@ export async function swapOrder(params: SwapOrderParams): Promise<ActionResult<b
 
     // 정렬 방향에 따른 인접 항목 검색
     if (findSmaller) {
-      query = query
-        .lt('sort_order', current.sort_order)
-        .order('sort_order', { ascending: false });
+      query = query.lt('sort_order', current.sort_order).order('sort_order', { ascending: false });
     } else {
-      query = query
-        .gt('sort_order', current.sort_order)
-        .order('sort_order', { ascending: true });
+      query = query.gt('sort_order', current.sort_order).order('sort_order', { ascending: true });
     }
 
-    const { data: adjacentItem, error: adjacentError } = await query
-      .limit(1)
-      .single();
+    const { data: adjacentItem, error: adjacentError } = await query.limit(1).single();
 
     if (adjacentError || !adjacentItem) {
       return Result.error('No adjacent item');

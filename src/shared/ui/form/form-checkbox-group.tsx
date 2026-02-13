@@ -17,7 +17,7 @@ import type { FormBaseProps } from './types';
 
 export type FormCheckboxGroupProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = Omit<FormBaseProps<V, N>, 'orientation'> & {
   options: {
     label: string;
@@ -30,7 +30,7 @@ export type FormCheckboxGroupProps<
 
 export const FormCheckboxGroup = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   label,
@@ -48,17 +48,14 @@ export const FormCheckboxGroup = <
       render={({ field, fieldState }) => (
         <FieldSet data-invalid={fieldState.invalid}>
           <FieldContent>
-            <FieldLegend
-              variant='label'
-              className='flex mb-0'
-            >
+            <FieldLegend variant="label" className="flex mb-0">
               {label}{' '}
-              {optional && <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>}
+              {optional && <span className="ml-auto text-muted-foreground text-xs">(선택)</span>}
             </FieldLegend>
             {description && <FieldDescription>{description}</FieldDescription>}
           </FieldContent>
           <FieldGroup
-            data-slot='checkbox-group'
+            data-slot="checkbox-group"
             className={
               vertical
                 ? ''
@@ -68,9 +65,9 @@ export const FormCheckboxGroup = <
             {options.map((option, index) => (
               <Field
                 key={index}
-                orientation='horizontal'
+                orientation="horizontal"
                 data-invalid={fieldState.invalid}
-                className='gap-0'
+                className="gap-0"
               >
                 <Checkbox
                   ref={index === 0 ? field.ref : undefined}
@@ -79,7 +76,7 @@ export const FormCheckboxGroup = <
                   disabled={disabled}
                   aria-invalid={fieldState.invalid}
                   checked={field.value.includes(option.value)}
-                  onCheckedChange={checked => {
+                  onCheckedChange={(checked) => {
                     const newValue = checked
                       ? [...field.value, option.value]
                       : field.value.filter((value: string | number) => value !== option.value);
@@ -88,7 +85,7 @@ export const FormCheckboxGroup = <
                 />
                 <FieldLabel
                   htmlFor={`${field.name}-${index}`}
-                  className='pl-2 cursor-pointer pt-[0.05rem]'
+                  className="pl-2 cursor-pointer pt-[0.05rem]"
                 >
                   {option.label}
                 </FieldLabel>

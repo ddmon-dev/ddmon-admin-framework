@@ -43,23 +43,16 @@ export default async function RootLayout({
 
   return (
     <html
-      lang='ko'
+      lang="ko"
       className={cn(primaryFont.variable, secondaryFont.variable, tertiaryFont.variable)}
       suppressHydrationWarning
     >
       <body className={cn('antialiased')}>
-        <ThemeProvider
-          attribute='class'
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" enableSystem disableTransitionOnChange>
           <SessionProvider session={session}>
             <DialogProvider>
               {children}
-              <Toaster
-                richColors
-                position='top-center'
-              />
+              <Toaster richColors position="top-center" />
             </DialogProvider>
           </SessionProvider>
         </ThemeProvider>

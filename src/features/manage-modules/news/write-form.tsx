@@ -20,12 +20,7 @@ import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 
-import {
-  useManageSheet,
-  ManageSheetFooter,
-  ManageFormSubmit,
-  ManageSheetClose,
-} from '../_base/ui';
+import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { useFormGuard } from '../_base/hooks';
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
@@ -54,9 +49,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   const pathname = usePathname();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: (prevValues ?? formDefaultValues) as z.infer<
-      typeof formSchema
-    >,
+    defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof formSchema>,
   });
   useFormGuard(form);
 
@@ -95,11 +88,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
         updateAction: updateItem,
       });
 
-      toast.success(
-        id
-          ? SUCCESS_MESSAGES.UPDATE_SUCCESS()
-          : SUCCESS_MESSAGES.CREATE_SUCCESS()
-      );
+      toast.success(id ? SUCCESS_MESSAGES.UPDATE_SUCCESS() : SUCCESS_MESSAGES.CREATE_SUCCESS());
       sheet.close();
     } catch (error) {
       console.error(error);
@@ -125,12 +114,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
           thousandSeparator
         />
         <FormTextInput control={form.control} name="title" label="제목" />
-        <FormEditor
-          control={form.control}
-          name="content"
-          label="내용"
-          entity={CONFIG.tableName}
-        />
+        <FormEditor control={form.control} name="content" label="내용" entity={CONFIG.tableName} />
         <FormFileUpload
           control={form.control}
           name="files.thumbnail"

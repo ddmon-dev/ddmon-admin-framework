@@ -1,5 +1,13 @@
 import { type MenuData } from './types';
-import { FileText, Users, AlertCircle, ServerCrash, ShieldX, MessageSquare, AppWindow } from 'lucide-react';
+import {
+  FileText,
+  Users,
+  AlertCircle,
+  ServerCrash,
+  ShieldX,
+  MessageSquare,
+  AppWindow,
+} from 'lucide-react';
 
 interface MenuConfig {
   navMain: MenuData[];

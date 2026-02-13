@@ -14,11 +14,11 @@ export function ModifyButton({ id, children }: ModifyButtonProps) {
 
   return (
     <Button
-      size='sm'
-      variant='outline'
+      size="sm"
+      variant="outline"
       onClick={() => manageSheet.open({ id: id, mode: 'modify' })}
     >
-      <SquarePen className='size-3.5' />
+      <SquarePen className="size-3.5" />
       {children ?? '수정'}
     </Button>
   );

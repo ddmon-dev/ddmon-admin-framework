@@ -13,10 +13,5 @@ export default function Error({ error, reset }: ErrorProps) {
     console.error(error);
   }, [error]);
 
-  return (
-    <ErrorStatus
-      onRetry={reset}
-      fullScreen
-    />
-  );
+  return <ErrorStatus onRetry={reset} fullScreen />;
 }

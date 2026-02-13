@@ -18,7 +18,7 @@ export function InquiryDetailView({ data }: InquiryDetailViewProps) {
   };
 
   return (
-    <div className='space-y-6 pb-6'>
+    <div className="space-y-6 pb-6">
       <InquiryInfo data={data} />
       <ReplyForm inquiryId={data.id} onReplyCreated={handleReplyCreated} />
       <ReplyList replies={replies} />

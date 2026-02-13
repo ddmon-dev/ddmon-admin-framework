@@ -12,12 +12,7 @@ import { FormRadioGroup, FormTextInput, FormTextarea } from '@/shared/ui/form';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 
-import {
-  useManageSheet,
-  ManageSheetFooter,
-  ManageFormSubmit,
-  ManageSheetClose,
-} from '../_base/ui';
+import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { useFormGuard } from '../_base/hooks';
 import { CONFIG, type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
@@ -41,9 +36,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   const pathname = usePathname();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: (prevValues ?? formDefaultValues) as z.infer<
-      typeof formSchema
-    >,
+    defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof formSchema>,
   });
   useFormGuard(form);
 
@@ -73,11 +66,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
         return;
       }
 
-      toast.success(
-        id
-          ? SUCCESS_MESSAGES.UPDATE_SUCCESS()
-          : SUCCESS_MESSAGES.CREATE_SUCCESS()
-      );
+      toast.success(id ? SUCCESS_MESSAGES.UPDATE_SUCCESS() : SUCCESS_MESSAGES.CREATE_SUCCESS());
       sheet.close();
     } catch (error) {
       console.error(error);

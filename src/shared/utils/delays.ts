@@ -1,6 +1,6 @@
 import { APP_CONFIG } from '@/app.config';
 
-export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * 비동기 작업에 최소 실행 시간을 보장합니다.

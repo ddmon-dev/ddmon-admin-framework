@@ -70,11 +70,7 @@ export function ReorderButtons({
         onClick={() => handleMove('up')}
         disabled={disabled || isFirst}
       >
-        {disabled ? (
-          <Spinner className="size-[12px]!" />
-        ) : (
-          <ChevronUp className="size-[12px]!" />
-        )}
+        {disabled ? <Spinner className="size-[12px]!" /> : <ChevronUp className="size-[12px]!" />}
       </Button>
       <Button
         variant="outline"
@@ -83,11 +79,7 @@ export function ReorderButtons({
         onClick={() => handleMove('down')}
         disabled={disabled || isLast}
       >
-        {disabled ? (
-          <Spinner className="size-[12px]!" />
-        ) : (
-          <ChevronDown className="size-[12px]!" />
-        )}
+        {disabled ? <Spinner className="size-[12px]!" /> : <ChevronDown className="size-[12px]!" />}
       </Button>
     </div>
   );

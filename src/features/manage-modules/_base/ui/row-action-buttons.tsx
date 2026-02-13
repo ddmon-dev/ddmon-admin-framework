@@ -9,12 +9,12 @@ interface RowActionButtonsProps {
 }
 
 export function RowActionButtons({ items }: RowActionButtonsProps) {
-  const normalItems = items.filter(item => item.variant !== 'destructive');
-  const destructiveItems = items.filter(item => item.variant === 'destructive');
+  const normalItems = items.filter((item) => item.variant !== 'destructive');
+  const destructiveItems = items.filter((item) => item.variant === 'destructive');
 
   return (
     <nav className="flex items-center justify-end gap-2">
-      {normalItems.map(item => (
+      {normalItems.map((item) => (
         <Button
           key={item.label}
           size="sm"
@@ -27,12 +27,9 @@ export function RowActionButtons({ items }: RowActionButtonsProps) {
         </Button>
       ))}
       {destructiveItems.length > 0 && (
-        <Separator
-          orientation="vertical"
-          className="data-[orientation=vertical]:h-6"
-        />
+        <Separator orientation="vertical" className="data-[orientation=vertical]:h-6" />
       )}
-      {destructiveItems.map(item => (
+      {destructiveItems.map((item) => (
         <Button
           key={item.label}
           size="sm"

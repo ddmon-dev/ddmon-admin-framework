@@ -61,31 +61,28 @@ export function ConfirmDialogComponent({ data, onConfirm, onCancel }: ConfirmDia
   };
 
   return (
-    <AlertDialog
-      open
-      onOpenChange={open => !open && !isLoading && handleCancel()}
-    >
+    <AlertDialog open onOpenChange={(open) => !open && !isLoading && handleCancel()}>
       <AlertDialogContent
         className={cn(SIZE_CLASSES[size], 'gap-6', layout === 'vertical' ? 'py-10' : '')}
       >
         {layout === 'vertical' ? (
-          <AlertDialogHeader className='gap-2 text-center'>
-            <AlertDialogTitle className='text-center'>{title}</AlertDialogTitle>
+          <AlertDialogHeader className="gap-2 text-center">
+            <AlertDialogTitle className="text-center">{title}</AlertDialogTitle>
             {description && (
-              <AlertDialogDescription className='text-center'>{description}</AlertDialogDescription>
+              <AlertDialogDescription className="text-center">{description}</AlertDialogDescription>
             )}
           </AlertDialogHeader>
         ) : (
-          <AlertDialogHeader className='gap-1'>
+          <AlertDialogHeader className="gap-1">
             <AlertDialogTitle>{title}</AlertDialogTitle>
             {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
           </AlertDialogHeader>
         )}
         <AlertDialogFooter className={layout === 'vertical' ? 'sm:justify-center' : ''}>
           <Button
-            variant='outline'
+            variant="outline"
             onClick={handleCancel}
-            className='min-w-18'
+            className="min-w-18"
             disabled={isLoading}
           >
             {cancelText}
@@ -94,7 +91,7 @@ export function ConfirmDialogComponent({ data, onConfirm, onCancel }: ConfirmDia
             variant={variant === 'destructive' ? 'destructive' : 'default'}
             onClick={handleConfirm}
             isLoading={isLoading}
-            className='min-w-18'
+            className="min-w-18"
           >
             {confirmText}
           </LoadingButton>
@@ -171,24 +168,21 @@ export function AlertDialogComponent({ data, onClose }: AlertDialogComponentProp
   );
 
   return (
-    <Dialog
-      open
-      onOpenChange={open => !open && !isLoading && handleClose()}
-    >
+    <Dialog open onOpenChange={(open) => !open && !isLoading && handleClose()}>
       <DialogContent className={cn(SIZE_CLASSES[size], layout === 'vertical' ? 'py-10 gap-8' : '')}>
         {layout === 'vertical' ? (
-          <DialogHeader className='flex flex-col items-center gap-5 text-center'>
+          <DialogHeader className="flex flex-col items-center gap-5 text-center">
             <Icon />
-            <div className='space-y-2'>
-              <DialogTitle className='text-center'>{title || variantConfig.title}</DialogTitle>
+            <div className="space-y-2">
+              <DialogTitle className="text-center">{title || variantConfig.title}</DialogTitle>
               {description && (
-                <DialogDescription className='text-center'>{description}</DialogDescription>
+                <DialogDescription className="text-center">{description}</DialogDescription>
               )}
             </div>
           </DialogHeader>
         ) : (
           <DialogHeader>
-            <DialogTitle className='flex items-center gap-2'>
+            <DialogTitle className="flex items-center gap-2">
               <Icon />
               <span>{title}</span>
             </DialogTitle>

@@ -17,7 +17,12 @@ export type FormFieldArrayProps = {
   defaultValue?: any;
   /** 비활성화 */
   disabled?: boolean;
-  children: (props: { index: number; name: string; control: Control<any>; disabled?: boolean }) => ReactNode;
+  children: (props: {
+    index: number;
+    name: string;
+    control: Control<any>;
+    disabled?: boolean;
+  }) => ReactNode;
 };
 
 /**
@@ -121,28 +126,25 @@ export const FormFieldArray = ({
       control={control}
       name={name}
       render={({ field: { ref } }) => (
-        <FieldSet className='gap-3'>
+        <FieldSet className="gap-3">
           <FieldContent>
-            <FieldLegend
-              variant='label'
-              className='flex mb-0'
-            >
+            <FieldLegend variant="label" className="flex mb-0">
               {label}
             </FieldLegend>
             {description && <FieldDescription>{description}</FieldDescription>}
           </FieldContent>
 
           {/* Field Array */}
-          <div className='space-y-2'>
+          <div className="space-y-2">
             {fields.map((field, index) => (
               <div
                 key={field.id}
-                className='flex items-start gap-1'
+                className="flex items-start gap-1"
                 ref={index === 0 ? ref : undefined}
                 tabIndex={index === 0 ? -1 : undefined}
               >
                 {/* 필드 콘텐츠 */}
-                <div className='flex-1'>
+                <div className="flex-1">
                   {children({
                     index,
                     name: `${name}.${index}`,
@@ -153,12 +155,12 @@ export const FormFieldArray = ({
 
                 {/* 제거 버튼 */}
                 <Button
-                  type='button'
-                  variant='secondary'
-                  size='icon'
+                  type="button"
+                  variant="secondary"
+                  size="icon"
                   onClick={() => handleRemove(index)}
                   disabled={disabled || !canRemove}
-                  className='shrink-0'
+                  className="shrink-0"
                 >
                   <Trash2 />
                 </Button>
@@ -170,11 +172,11 @@ export const FormFieldArray = ({
 
           {/* Add Button */}
           <Button
-            type='button'
-            variant='black'
+            type="button"
+            variant="black"
             onClick={handleAdd}
             disabled={disabled || !canAdd}
-            className='w-full'
+            className="w-full"
           >
             <Plus />
             {addButtonText}

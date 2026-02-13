@@ -132,9 +132,9 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
       const { value, onValueChange } = props as SingleDatePickerProps;
       return (
         <Calendar
-          mode='single'
+          mode="single"
           selected={value ?? undefined}
-          onSelect={date => {
+          onSelect={(date) => {
             onValueChange(date);
             setOpen(false);
           }}
@@ -155,7 +155,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
       const { value, onValueChange, min, max } = props as MultipleDatePickerProps;
       return (
         <Calendar
-          mode='multiple'
+          mode="multiple"
           selected={value ?? undefined}
           onSelect={onValueChange}
           disabled={disabled}
@@ -177,7 +177,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
       const { value, onValueChange, numberOfMonths = 2, min, max } = props as RangeDatePickerProps;
       return (
         <Calendar
-          mode='range'
+          mode="range"
           selected={value ?? undefined}
           onSelect={onValueChange}
           disabled={disabled}
@@ -209,12 +209,12 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
     if (actualPresets.length === 0) return null;
 
     return (
-      <div className='flex flex-wrap gap-1.5'>
+      <div className="flex flex-wrap gap-1.5">
         {actualPresets.map((preset, index) => (
           <Button
             key={index}
-            variant='outline'
-            size='sm'
+            variant="outline"
+            size="sm"
             onClick={() => {
               onValueChange(preset.date);
               setOpen(false);
@@ -250,29 +250,26 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
 
     return (
       <RemovableBadgeGroup
-        items={value.map(date => ({
+        items={value.map((date) => ({
           key: date.toISOString(),
           label: format(date, 'PPP', { locale: ko }),
         }))}
-        onRemove={key => {
+        onRemove={(key) => {
           const dateToRemove = new Date(key);
-          onValueChange(value.filter(d => d.getTime() !== dateToRemove.getTime()));
+          onValueChange(value.filter((d) => d.getTime() !== dateToRemove.getTime()));
         }}
       />
     );
   };
 
   return (
-    <div className='space-y-2'>
-      <Popover
-        open={open}
-        onOpenChange={setOpen}
-      >
-        <div className='relative'>
+    <div className="space-y-2">
+      <Popover open={open} onOpenChange={setOpen}>
+        <div className="relative">
           <PopoverTrigger asChild>
             <Button
               ref={ref}
-              variant='outline'
+              variant="outline"
               aria-invalid={ariaInvalid}
               data-placeholder={!hasValue()}
               className={cn(
@@ -282,27 +279,27 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
                 className
               )}
             >
-              <CalendarIcon className='opacity-50' />
-              <span className='flex-1 text-left'>{renderButtonText()}</span>
+              <CalendarIcon className="opacity-50" />
+              <span className="flex-1 text-left">{renderButtonText()}</span>
             </Button>
           </PopoverTrigger>
           {hasValue() && (
             <button
-              type='button'
+              type="button"
               onClick={handleClear}
-              className='absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded-sm hover:bg-muted'
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded-sm hover:bg-muted"
             >
-              <X className='size-4 opacity-50 hover:opacity-100' />
+              <X className="size-4 opacity-50 hover:opacity-100" />
             </button>
           )}
         </div>
         <PopoverContent
           className={cn('w-auto p-0', hasPresets && 'flex flex-col space-y-2 p-2')}
-          align='start'
+          align="start"
         >
           {renderPresets()}
           {hasPresets ? (
-            <div className='rounded-md border'>{renderCalendar()}</div>
+            <div className="rounded-md border">{renderCalendar()}</div>
           ) : (
             renderCalendar()
           )}

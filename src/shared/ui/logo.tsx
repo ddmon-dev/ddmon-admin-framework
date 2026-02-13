@@ -33,10 +33,7 @@ function Wrapper({
 }) {
   if (linkToHome) {
     return (
-      <Link
-        href='/'
-        className={cn(className)}
-      >
+      <Link href="/" className={cn(className)}>
         {children}
       </Link>
     );

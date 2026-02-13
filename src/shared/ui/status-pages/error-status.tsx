@@ -14,8 +14,8 @@ interface ErrorStatusProps {
 export function ErrorStatus({ onRetry, actions, fullScreen, size = 'lg' }: ErrorStatusProps) {
   return (
     <StatusLayout
-      code='ERROR'
-      title='어플리케이션에 문제가 발생했습니다'
+      code="ERROR"
+      title="어플리케이션에 문제가 발생했습니다"
       description={
         <>
           예기치 않은 오류가 발생했습니다.
@@ -24,23 +24,14 @@ export function ErrorStatus({ onRetry, actions, fullScreen, size = 'lg' }: Error
         </>
       }
       actions={
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           {actions ?? (
             <>
-              <Button
-                size='lg'
-                onClick={onRetry}
-                className='w-32'
-                variant='default'
-              >
+              <Button size="lg" onClick={onRetry} className="w-32" variant="default">
                 다시 시도
               </Button>
-              <Button
-                asChild
-                variant='black'
-                size='lg'
-              >
-                <Link href='/'>홈으로</Link>
+              <Button asChild variant="black" size="lg">
+                <Link href="/">홈으로</Link>
               </Button>
             </>
           )}

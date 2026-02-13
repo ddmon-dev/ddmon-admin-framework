@@ -18,11 +18,10 @@ export function createSelectionColumn<TData>(): ColumnDef<TData> {
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
+          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='전체 선택'
+        aria-label="전체 선택"
         onClick={(e) => e.stopPropagation()}
       />
     ),
@@ -30,7 +29,7 @@ export function createSelectionColumn<TData>(): ColumnDef<TData> {
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='행 선택'
+        aria-label="행 선택"
         onClick={(e) => e.stopPropagation()}
       />
     ),

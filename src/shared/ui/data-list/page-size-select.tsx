@@ -24,19 +24,13 @@ export function PageSizeSelect({
   };
 
   return (
-    <Select
-      value={pageSize}
-      onValueChange={handlePageSizeChange}
-    >
+    <Select value={pageSize} onValueChange={handlePageSizeChange}>
       <SelectTrigger className={cn('w-32', className)}>
-        <SelectValue placeholder='페이지 크기' />
+        <SelectValue placeholder="페이지 크기" />
       </SelectTrigger>
       <SelectContent>
-        {options.map(value => (
-          <SelectItem
-            key={value}
-            value={value.toString()}
-          >
+        {options.map((value) => (
+          <SelectItem key={value} value={value.toString()}>
             {value} 개씩 보기
           </SelectItem>
         ))}

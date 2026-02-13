@@ -45,27 +45,24 @@ export function MultiCombobox({
 
   const handleSelect = (selectedValue: string) => {
     if (value.includes(selectedValue)) {
-      onValueChange(value.filter(v => v !== selectedValue));
+      onValueChange(value.filter((v) => v !== selectedValue));
     } else {
       onValueChange([...value, selectedValue]);
     }
   };
 
   const handleRemove = (valueToRemove: string) => {
-    onValueChange(value.filter(v => v !== valueToRemove));
+    onValueChange(value.filter((v) => v !== valueToRemove));
   };
 
   return (
-    <div className='space-y-2 w-full'>
-      <Popover
-        open={open}
-        onOpenChange={setOpen}
-      >
+    <div className="space-y-2 w-full">
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             ref={ref}
-            variant='outline'
-            role='combobox'
+            variant="outline"
+            role="combobox"
             aria-expanded={open}
             aria-invalid={ariaInvalid}
             data-placeholder={value?.length === 0}
@@ -77,19 +74,16 @@ export function MultiCombobox({
             )}
           >
             {value.length > 0 ? `${value.length}개 선택됨` : placeholder}
-            <ChevronsUpDown className='opacity-50' />
+            <ChevronsUpDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className='p-0'>
+        <PopoverContent className="p-0">
           <Command>
-            <CommandInput
-              placeholder={searchPlaceholder}
-              className='h-9'
-            />
+            <CommandInput placeholder={searchPlaceholder} className="h-9" />
             <CommandList>
               <CommandEmpty>{emptyMessage}</CommandEmpty>
               <CommandGroup>
-                {options.map(option => (
+                {options.map((option) => (
                   <CommandItem
                     key={option.value}
                     value={option.value}
@@ -111,9 +105,9 @@ export function MultiCombobox({
       </Popover>
 
       <RemovableBadgeGroup
-        items={value.map(v => ({
+        items={value.map((v) => ({
           key: v,
-          label: options.find(o => o.value === v)?.label ?? v,
+          label: options.find((o) => o.value === v)?.label ?? v,
         }))}
         onRemove={handleRemove}
       />

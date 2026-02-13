@@ -43,15 +43,12 @@ export function Combobox({
   const [open, setOpen] = React.useState(false);
 
   return (
-    <Popover
-      open={open}
-      onOpenChange={setOpen}
-    >
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           ref={ref}
-          variant='outline'
-          role='combobox'
+          variant="outline"
+          role="combobox"
           aria-expanded={open}
           aria-invalid={ariaInvalid}
           data-placeholder={!value}
@@ -62,24 +59,21 @@ export function Combobox({
             className
           )}
         >
-          {value ? options.find(option => option.value === value)?.label : placeholder}
-          <ChevronsUpDown className='opacity-50' />
+          {value ? options.find((option) => option.value === value)?.label : placeholder}
+          <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='p-0'>
+      <PopoverContent className="p-0">
         <Command>
-          <CommandInput
-            placeholder={searchPlaceholder}
-            className='h-9'
-          />
+          <CommandInput placeholder={searchPlaceholder} className="h-9" />
           <CommandList>
             <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup>
-              {options.map(option => (
+              {options.map((option) => (
                 <CommandItem
                   key={option.value}
                   value={option.value}
-                  onSelect={currentValue => {
+                  onSelect={(currentValue) => {
                     setOpen(false);
                     onValueChange(currentValue);
                   }}

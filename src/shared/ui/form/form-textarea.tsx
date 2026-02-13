@@ -8,13 +8,13 @@ import type { FormBaseProps, ExcludedFormProps } from './types';
 
 export type FormTextareaProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormBaseProps<V, N> &
   Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, ExcludedFormProps>;
 
 export const FormTextarea = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,
@@ -34,11 +34,7 @@ export const FormTextarea = <
       optional={optional}
     >
       {({ fieldState, ...field }) => (
-        <Textarea
-          {...field}
-          {...textareaProps}
-          aria-invalid={fieldState.invalid}
-        />
+        <Textarea {...field} {...textareaProps} aria-invalid={fieldState.invalid} />
       )}
     </FormField>
   );

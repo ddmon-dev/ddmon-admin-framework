@@ -46,7 +46,7 @@ export function BulkActionBar<TData extends { id?: string }>({
       confirmText: '삭제',
       onConfirm: async () => {
         try {
-          const ids = selectedRows.map(row => row.id).filter((id): id is string => !!id);
+          const ids = selectedRows.map((row) => row.id).filter((id): id is string => !!id);
 
           const result = await bulkSoftDelete({ tableName, ids, pathname });
 
@@ -82,30 +82,30 @@ export function BulkActionBar<TData extends { id?: string }>({
           : 'pointer-events-none translate-y-4 opacity-0'
       )}
     >
-      <span className='text-sm font-medium'>
-        {selectedCount}개 <span className='hidden md:inline'>선택됨</span>
+      <span className="text-sm font-medium">
+        {selectedCount}개 <span className="hidden md:inline">선택됨</span>
       </span>
 
-      <div className='h-4 w-px bg-border' />
+      <div className="h-4 w-px bg-border" />
 
       <LoadingButton
-        size='sm'
-        variant='destructive'
+        size="sm"
+        variant="destructive"
         onClick={handleBulkDelete}
         isLoading={isLoading}
-        icon={<Trash2 className='size-4' />}
+        icon={<Trash2 className="size-4" />}
       >
         삭제
       </LoadingButton>
 
       <Button
-        size='icon-sm'
-        variant='secondary'
+        size="icon-sm"
+        variant="secondary"
         onClick={onClearSelection}
-        aria-label='선택 해제'
-        className='ml-auto'
+        aria-label="선택 해제"
+        className="ml-auto"
       >
-        <X className='size-4' />
+        <X className="size-4" />
       </Button>
     </div>
   );

@@ -162,17 +162,14 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
   };
 
   return (
-    <Field
-      data-invalid={hasError}
-      orientation={orientation}
-    >
+    <Field data-invalid={hasError} orientation={orientation}>
       {/* Label & Description */}
       {(label || description) && (
         <FieldContent>
           {label && (
             <FieldLabel className={optional ? 'w-full' : ''}>
               {label}{' '}
-              {optional && <span className='ml-auto text-muted-foreground text-xs'>(선택)</span>}
+              {optional && <span className="ml-auto text-muted-foreground text-xs">(선택)</span>}
             </FieldLabel>
           )}
           {description && <FieldDescription>{description}</FieldDescription>}
@@ -180,43 +177,40 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
       )}
 
       {/* Input Fields */}
-      <FieldGroup className='gap-y-2'>
+      <FieldGroup className="gap-y-2">
         {/* 주소찾기 버튼 + 우편번호 + 주소 */}
-        <div className='flex gap-1.5 flex-col sm:flex-row'>
-          <InputGroup className='w-auto shrink-0'>
-            <InputGroupAddon
-              align='inline-start'
-              className='-ml-2!'
-            >
+        <div className="flex gap-1.5 flex-col sm:flex-row">
+          <InputGroup className="w-auto shrink-0">
+            <InputGroupAddon align="inline-start" className="-ml-2!">
               <InputGroupButton
                 ref={setZipCodeRef}
-                size='xs'
+                size="xs"
                 onClick={handleSearch}
-                variant='secondary'
-                type='button'
+                variant="secondary"
+                type="button"
                 disabled={disabled}
               >
-                <MapPin className='h-4 w-4' />
-                <span className='text-xs'>주소찾기</span>
+                <MapPin className="h-4 w-4" />
+                <span className="text-xs">주소찾기</span>
               </InputGroupButton>
             </InputGroupAddon>
             <InputGroupInput
               {...inputProps}
               value={zipCodeValue}
-              placeholder='우편번호'
+              placeholder="우편번호"
               readOnly
               disabled={disabled}
               aria-invalid={hasError}
-              className='w-20 pl-3!'
+              className="w-20 pl-3!"
             />
           </InputGroup>
           <Input
             value={addressValue}
-            placeholder='주소'
+            placeholder="주소"
             readOnly
             disabled={disabled}
             aria-invalid={hasError}
-            className='sm:flex-1'
+            className="sm:flex-1"
           />
         </div>
 
@@ -224,8 +218,8 @@ export const FormAddressInput = <V extends FieldValues = FieldValues>(
         <Input
           ref={addressDetail.field.ref}
           value={addressDetailValue}
-          onChange={e => addressDetail.field.onChange(e.target.value)}
-          placeholder='상세주소를 입력하세요'
+          onChange={(e) => addressDetail.field.onChange(e.target.value)}
+          placeholder="상세주소를 입력하세요"
           disabled={disabled}
           aria-invalid={hasError}
         />

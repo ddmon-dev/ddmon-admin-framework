@@ -11,11 +11,6 @@ interface ListProps {
 
 export function List({ data, totalCount }: ListProps) {
   return (
-    <ManageList
-      data={data}
-      totalCount={totalCount}
-      listColumns={listColumns}
-      config={CONFIG}
-    />
+    <ManageList data={data} totalCount={totalCount} listColumns={listColumns} config={CONFIG} />
   );
 }

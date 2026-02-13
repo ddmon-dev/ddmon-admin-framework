@@ -10,12 +10,12 @@ type ExcludedComboboxProps = 'value' | 'onValueChange' | 'aria-invalid' | 'ref';
 
 export type FormComboboxProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormBaseProps<V, N> & Omit<ComboboxProps, ExcludedComboboxProps>;
 
 export const FormCombobox = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,

@@ -8,11 +8,7 @@ export function getReplyEmailSubject() {
   return '[ADMIN] Your Inquiry Has Been Answered';
 }
 
-export function getReplyEmailHtml({
-  name,
-  inquiryContent,
-  replyContent,
-}: ReplyEmailParams) {
+export function getReplyEmailHtml({ name, inquiryContent, replyContent }: ReplyEmailParams) {
   return `
 <!DOCTYPE html>
 <html lang="en">

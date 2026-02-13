@@ -53,8 +53,8 @@ export type FileAcceptPreset = keyof typeof fileAcceptPresets;
 export function normalizeAccept(accept: string): string {
   return accept
     .split(',')
-    .map(t => t.trim())
-    .map(t => {
+    .map((t) => t.trim())
+    .map((t) => {
       // MIME 타입이거나 이미 .으로 시작하면 그대로
       if (t.includes('/') || t.startsWith('.')) {
         return t;
@@ -102,13 +102,13 @@ export function MultiFileUpload({
   const accept = rawAccept ? normalizeAccept(rawAccept) : undefined;
   const maxSize = maxSizeMB ? mbToBytes(maxSizeMB) : undefined;
 
-  const validFiles = value.filter(f => f && !(f.type === 'existing' && f.markedForDeletion));
+  const validFiles = value.filter((f) => f && !(f.type === 'existing' && f.markedForDeletion));
   const canAddMore = !max || validFiles.length < max;
 
   const validateFile = (file: File): boolean => {
     if (accept) {
-      const acceptedTypes = accept.split(',').map(t => t.trim());
-      const isValid = acceptedTypes.some(type => {
+      const acceptedTypes = accept.split(',').map((t) => t.trim());
+      const isValid = acceptedTypes.some((type) => {
         if (type.startsWith('.')) {
           return file.name.toLowerCase().endsWith(type.toLowerCase());
         } else if (type.endsWith('/*')) {
@@ -234,19 +234,14 @@ export function MultiFileUpload({
   };
 
   return (
-    <div
-      ref={ref}
-      className={cn('w-full', className)}
-      data-slot='multi-file-upload'
-      tabIndex={-1}
-    >
+    <div ref={ref} className={cn('w-full', className)} data-slot="multi-file-upload" tabIndex={-1}>
       <input
         ref={inputRef}
-        type='file'
+        type="file"
         accept={accept}
         disabled={disabled}
         onChange={handleInputChange}
-        className='sr-only'
+        className="sr-only"
         aria-invalid={ariaInvalid}
         multiple
       />
@@ -263,16 +258,13 @@ export function MultiFileUpload({
           !canAddMore && 'opacity-50'
         )}
       >
-        <InputGroupAddon
-          align='inline-start'
-          className='pl-1.5'
-        >
-          <div className='flex size-8 md:size-7 items-center justify-center rounded-full bg-secondary'>
-            <FileIcon className='h-3.5 w-3.5' />
+        <InputGroupAddon align="inline-start" className="pl-1.5">
+          <div className="flex size-8 md:size-7 items-center justify-center rounded-full bg-secondary">
+            <FileIcon className="h-3.5 w-3.5" />
           </div>
         </InputGroupAddon>
         <InputGroupInput
-          value=''
+          value=""
           placeholder={canAddMore ? placeholder : '최대 파일 개수에 도달했습니다'}
           readOnly
           onClick={canAddMore ? handleBrowseClick : undefined}
@@ -280,21 +272,21 @@ export function MultiFileUpload({
           aria-invalid={ariaInvalid}
           disabled={disabled || !canAddMore}
         />
-        <InputGroupAddon align='inline-end'>
+        <InputGroupAddon align="inline-end">
           <InputGroupButton
-            size='icon-xs'
-            variant='black'
+            size="icon-xs"
+            variant="black"
             onClick={handleBrowseClick}
             disabled={disabled || !canAddMore}
-            className='rounded-full'
+            className="rounded-full"
           >
-            <Plus className='size-4' />
+            <Plus className="size-4" />
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>
 
       {value.length > 0 && (
-        <ul className='mt-2 space-y-1'>
+        <ul className="mt-2 space-y-1">
           {value.map((file, index) => {
             if (!file) return null;
 
@@ -307,12 +299,12 @@ export function MultiFileUpload({
 
             const Comp = () => (
               <>
-                {isExisting && <span className='mr-1'>(기존)</span>}
+                {isExisting && <span className="mr-1">(기존)</span>}
                 <span className={isDeleted ? 'line-through text-destructive/70' : 'truncate'}>
                   {fileName}
                 </span>
-                {fileSize && <span className='ml-1 text-muted-foreground'>({fileSize})</span>}
-                {isDeleted && <span className='ml-1 text-destructive'>(삭제)</span>}
+                {fileSize && <span className="ml-1 text-muted-foreground">({fileSize})</span>}
+                {isDeleted && <span className="ml-1 text-destructive">(삭제)</span>}
               </>
             );
 
@@ -327,21 +319,21 @@ export function MultiFileUpload({
                 {isExisting ? (
                   <button
                     onClick={() => handleFileDownload(file.url, file.originalName)}
-                    className='truncate hover:underline cursor-pointer text-left'
-                    type='button'
+                    className="truncate hover:underline cursor-pointer text-left"
+                    type="button"
                   >
                     <Comp />
                   </button>
                 ) : (
-                  <span className='truncate'>
+                  <span className="truncate">
                     <Comp />
                   </span>
                 )}
-                <div className='flex gap-0.5 ml-2'>
+                <div className="flex gap-0.5 ml-2">
                   {isDeleted ? (
                     <InputGroupButton
-                      size='icon-xs'
-                      variant='ghost'
+                      size="icon-xs"
+                      variant="ghost"
                       onClick={() => handleRestoreFile(index)}
                       disabled={disabled}
                     >
@@ -349,8 +341,8 @@ export function MultiFileUpload({
                     </InputGroupButton>
                   ) : (
                     <InputGroupButton
-                      size='icon-xs'
-                      variant='ghost'
+                      size="icon-xs"
+                      variant="ghost"
                       onClick={() => handleRemoveFile(index)}
                       disabled={disabled}
                     >

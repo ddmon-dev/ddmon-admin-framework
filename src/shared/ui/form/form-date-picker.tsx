@@ -9,12 +9,12 @@ import type { FormBaseProps } from './types';
 
 type FormDatePickerBaseProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormBaseProps<V, N> & Omit<DatePickerBaseProps, 'aria-invalid' | 'className'>;
 
 type FormSingleDatePickerProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormDatePickerBaseProps<V, N> & {
   mode?: 'single';
   presets?: boolean | { label: string; date: Date }[];
@@ -22,7 +22,7 @@ type FormSingleDatePickerProps<
 
 type FormMultipleDatePickerProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormDatePickerBaseProps<V, N> & {
   mode: 'multiple';
   min?: number;
@@ -31,7 +31,7 @@ type FormMultipleDatePickerProps<
 
 type FormRangeDatePickerProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormDatePickerBaseProps<V, N> & {
   mode: 'range';
   numberOfMonths?: number;
@@ -41,7 +41,7 @@ type FormRangeDatePickerProps<
 
 export type FormDatePickerProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > =
   | FormSingleDatePickerProps<V, N>
   | FormMultipleDatePickerProps<V, N>
@@ -49,7 +49,7 @@ export type FormDatePickerProps<
 
 export const FormDatePicker = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >(
   props: FormDatePickerProps<V, N>
 ): ReactElement => {
@@ -88,9 +88,9 @@ export const FormDatePicker = <
           return (
             <DatePicker
               ref={field.ref}
-              mode='single'
+              mode="single"
               value={field.value as Date | null | undefined}
-              onValueChange={date => onChange(date ?? null)}
+              onValueChange={(date) => onChange(date ?? null)}
               placeholder={placeholder}
               disabled={disabled}
               fromDate={fromDate}
@@ -110,9 +110,9 @@ export const FormDatePicker = <
           return (
             <DatePicker
               ref={field.ref}
-              mode='multiple'
+              mode="multiple"
               value={field.value as Date[] | null | undefined}
-              onValueChange={dates => onChange(dates ?? null)}
+              onValueChange={(dates) => onChange(dates ?? null)}
               placeholder={placeholder}
               disabled={disabled}
               fromDate={fromDate}
@@ -133,9 +133,9 @@ export const FormDatePicker = <
           return (
             <DatePicker
               ref={field.ref}
-              mode='range'
+              mode="range"
               value={field.value as DateRange | null | undefined}
-              onValueChange={range => onChange(range ?? null)}
+              onValueChange={(range) => onChange(range ?? null)}
               placeholder={placeholder}
               disabled={disabled}
               fromDate={fromDate}

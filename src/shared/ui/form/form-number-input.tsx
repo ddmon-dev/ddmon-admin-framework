@@ -20,7 +20,7 @@ type ExcludedNumericProps =
 
 export type FormNumberInputProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormBaseProps<V, N> &
   Omit<NumericFormatProps, ExcludedNumericProps | keyof FormBaseProps<V, N>> & {
     /** 소수점 허용 여부 (기본: false) */
@@ -70,7 +70,7 @@ export type FormNumberInputProps<
  */
 export const FormNumberInput = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,
@@ -96,7 +96,7 @@ export const FormNumberInput = <
           customInput={Input}
           getInputRef={field.ref}
           value={field.value}
-          onValueChange={values => {
+          onValueChange={(values) => {
             onChange(values.floatValue ?? null);
           }}
           decimalScale={allowDecimal ? decimalScale : 0}

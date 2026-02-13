@@ -21,7 +21,7 @@ export function CreateButton({ children, className }: CreateButtonProps) {
       size={isMobile ? 'icon-sm' : 'default'}
       variant={isMobile ? 'ghost' : 'default'}
     >
-      {isMobile ? <Plus className='size-6' /> : children ?? '생성'}
+      {isMobile ? <Plus className="size-6" /> : (children ?? '생성')}
     </Button>
   );
 }

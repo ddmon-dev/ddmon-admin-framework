@@ -50,9 +50,7 @@ export function ManageContainer({
 
 interface ManageListFetcherProps<TData> {
   searchParams: SearchParams;
-  getList: (
-    params: Record<string, unknown>
-  ) => Promise<ActionResult<ListProps<TData>>>;
+  getList: (params: Record<string, unknown>) => Promise<ActionResult<ListProps<TData>>>;
   children: (props: { data: TData[]; totalCount: number }) => React.ReactNode;
 }
 

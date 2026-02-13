@@ -22,7 +22,8 @@ export async function getItem(params: GetItemParams): Promise<ActionResult<Inqui
 
     const { data, error } = await supabase
       .from(CONFIG.tableName)
-      .select(`
+      .select(
+        `
         *,
         replies:${CONFIG.replyTableName}(
           id,
@@ -31,7 +32,8 @@ export async function getItem(params: GetItemParams): Promise<ActionResult<Inqui
           sent_at,
           created_at
         )
-      `)
+      `
+      )
       .eq('id', id)
       .order('created_at', { referencedTable: CONFIG.replyTableName, ascending: false })
       .single();

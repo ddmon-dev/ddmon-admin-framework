@@ -14,7 +14,7 @@ export const listColumns: ColumnDef<ItemDTO>[] = [
     cell: ({ row }) => {
       const { category } = row.original;
       const categoryLabel = CONFIG.categoryOptions.find(
-        option => option.value === category
+        (option) => option.value === category
       )?.label;
 
       return <Badge variant="secondary">{categoryLabel}</Badge>;

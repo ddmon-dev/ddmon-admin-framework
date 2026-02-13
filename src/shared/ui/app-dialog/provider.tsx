@@ -22,14 +22,14 @@ export function DialogProvider({ children }: DialogProviderProps) {
   const resolveRef = useRef<((value: any) => void) | null>(null);
 
   const confirm = useCallback((data: ConfirmDialogData): Promise<void> => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       resolveRef.current = resolve;
       setDialogState({ type: 'confirm', data });
     });
   }, []);
 
   const alert = useCallback((data: AlertDialogData): Promise<void> => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       resolveRef.current = resolve;
       setDialogState({ type: 'alert', data });
     });
@@ -113,10 +113,7 @@ export function DialogProvider({ children }: DialogProviderProps) {
       )}
 
       {dialogState?.type === 'alert' && (
-        <AlertDialogComponent
-          data={dialogState.data}
-          onClose={handleAlertClose}
-        />
+        <AlertDialogComponent data={dialogState.data} onClose={handleAlertClose} />
       )}
     </DialogContext.Provider>
   );

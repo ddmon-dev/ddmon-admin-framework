@@ -35,20 +35,14 @@ export function ManageModuleHeader({
   hideCreateButton,
 }: ManageModuleHeaderProps) {
   return (
-    <header
-      className={cn(
-        'border-b sticky top-0 z-10 bg-background rounded-t-xl py-1.5 md:py-4'
-      )}
-    >
+    <header className={cn('border-b sticky top-0 z-10 bg-background rounded-t-xl py-1.5 md:py-4')}>
       <Container className={cn('grid gap-3 px-1.5 md:px-4')}>
         <div className="flex items-center gap-2">
           <SidebarTrigger />
 
           <Separator
             orientation="vertical"
-            className={cn(
-              'data-[orientation=vertical]:h-4 mx-2 hidden md:block'
-            )}
+            className={cn('data-[orientation=vertical]:h-4 mx-2 hidden md:block')}
           />
 
           <h1 className="text-xl font-semibold hidden md:block">
@@ -56,19 +50,14 @@ export function ManageModuleHeader({
           </h1>
           <div className="flex items-center gap-1 ml-auto">
             {/* 모바일: 필터 다이얼로그 버튼 */}
-            <FilterDialog
-              headerAddons={headerAddons}
-              headerSearchBar={headerSearchBar}
-            />
+            <FilterDialog headerAddons={headerAddons} headerSearchBar={headerSearchBar} />
             {!headerAddons && !headerSearchBar && (
               <div className="hidden md:block">
                 <SearchBar />
               </div>
             )}
             {!hideCreateButton && (
-              <CreateButton>
-                {createButtonLabel ?? `${moduleName} 생성`}
-              </CreateButton>
+              <CreateButton>{createButtonLabel ?? `${moduleName} 생성`}</CreateButton>
             )}
           </div>
         </div>

@@ -9,21 +9,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import { FieldGroup } from '@/shared/ui/field';
-import {
-  FormTextInput,
-  FormPasswordInput,
-  FormEmailInput,
-} from '@/shared/ui/form';
+import { FormTextInput, FormPasswordInput, FormEmailInput } from '@/shared/ui/form';
 import { schemaPresets } from '@/shared/schemas';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 
-import {
-  useManageSheet,
-  ManageSheetFooter,
-  ManageFormSubmit,
-  ManageSheetClose,
-} from '../_base/ui';
+import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { useFormGuard } from '../_base/hooks';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
@@ -45,7 +36,7 @@ const createFormSchema = (isEdit: boolean) => {
       });
 
   return baseSchema.refine(
-    data => {
+    (data) => {
       if (data.password && data.password !== data.confirmPassword) {
         return false;
       }
@@ -87,17 +78,14 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   const formSchema = createFormSchema(!!id);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: (validatePrevValues(prevValues) ??
-      formDefaultValues) as z.infer<typeof formSchema>,
+    defaultValues: (validatePrevValues(prevValues) ?? formDefaultValues) as z.infer<
+      typeof formSchema
+    >,
   });
   useFormGuard(form);
 
   useEffect(() => {
-    form.reset(
-      (validatePrevValues(prevValues) ?? formDefaultValues) as z.infer<
-        typeof formSchema
-      >
-    );
+    form.reset((validatePrevValues(prevValues) ?? formDefaultValues) as z.infer<typeof formSchema>);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevValues]);
 
@@ -115,11 +103,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
         return;
       }
 
-      toast.success(
-        id
-          ? SUCCESS_MESSAGES.UPDATE_SUCCESS()
-          : SUCCESS_MESSAGES.CREATE_SUCCESS()
-      );
+      toast.success(id ? SUCCESS_MESSAGES.UPDATE_SUCCESS() : SUCCESS_MESSAGES.CREATE_SUCCESS());
       sheet.close();
     } catch (error) {
       console.error(error);

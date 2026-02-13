@@ -25,10 +25,7 @@ export function InquiryInfo({ data }: InquiryInfoProps) {
           </div>
         }
       />
-      <DetailField
-        label="문의 내용"
-        value={<NewlineText>{data.content}</NewlineText>}
-      />
+      <DetailField label="문의 내용" value={<NewlineText>{data.content}</NewlineText>} />
     </DetailGroup>
   );
 }

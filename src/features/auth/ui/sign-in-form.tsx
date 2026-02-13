@@ -54,29 +54,26 @@ export function SignInForm() {
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <FieldGroup className='gap-y-6'>
-        <FieldGroup className='gap-y-4'>
+      <FieldGroup className="gap-y-6">
+        <FieldGroup className="gap-y-4">
           <FormTextInput
-            name='id'
-            label='아이디'
+            name="id"
+            label="아이디"
             control={form.control}
-            placeholder='아이디를 입력하세요'
+            placeholder="아이디를 입력하세요"
             autoFocus
           />
           <FormPasswordInput
-            name='password'
-            label='비밀번호'
+            name="password"
+            label="비밀번호"
             control={form.control}
-            placeholder='비밀번호를 입력하세요'
+            placeholder="비밀번호를 입력하세요"
           />
         </FieldGroup>
 
         {error && <FormRootError>{error}</FormRootError>}
 
-        <LoadingButton
-          type='submit'
-          isLoading={form.formState.isSubmitting}
-        >
+        <LoadingButton type="submit" isLoading={form.formState.isSubmitting}>
           로그인
         </LoadingButton>
       </FieldGroup>

@@ -8,7 +8,10 @@ import { useRef, useCallback, useEffect } from 'react';
  * @param delay 쓰로틀 딜레이 (밀리초)
  * @returns 쓰로틀된 콜백 함수
  */
-export function useThrottle<Args extends unknown[]>(callback: (...args: Args) => void, delay: number): (...args: Args) => void {
+export function useThrottle<Args extends unknown[]>(
+  callback: (...args: Args) => void,
+  delay: number
+): (...args: Args) => void {
   const throttleRef = useRef<NodeJS.Timeout | null>(null);
   const lastRunRef = useRef<number>(0);
   const callbackRef = useRef(callback);

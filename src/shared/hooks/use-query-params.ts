@@ -52,7 +52,7 @@ export function useQueryParams(): UseQueryStringReturn {
     }
 
     const result: Record<string, string | null> = {};
-    keys.forEach(key => {
+    keys.forEach((key) => {
       result[key] = params.get(key);
     });
     return result;
@@ -86,7 +86,7 @@ export function useQueryParams(): UseQueryStringReturn {
     if (typeof keys === 'string') {
       params.delete(keys);
     } else if (Array.isArray(keys)) {
-      keys.forEach(key => {
+      keys.forEach((key) => {
         params.delete(key);
       });
     }

@@ -26,7 +26,7 @@ interface GetListConfig {
   additionalFilters?: (query: any, ctx: any) => any;
   enableReorder?: ReorderConfig;
   // CONFIG 전체 전달 시 무시되는 속성들 (타입 호환성)
-  [key: string]: unknown; 
+  [key: string]: unknown;
 }
 
 const DEFAULT_ORDER_BY: OrderByConfig[] = [
@@ -59,14 +59,14 @@ export async function getList<TData>(
 
   try {
     // enableReorder 설정 시 자동 정렬, 그렇지 않으면 커스텀 또는 기본 정렬
-    const direction = enableReorder === true ? 'desc' : enableReorder?.direction ?? 'desc';
+    const direction = enableReorder === true ? 'desc' : (enableReorder?.direction ?? 'desc');
     const orderBy = enableReorder
       ? [{ column: 'sort_order', ascending: direction !== 'desc' }]
-      : customOrderBy ?? DEFAULT_ORDER_BY;
+      : (customOrderBy ?? DEFAULT_ORDER_BY);
 
     // 검색 쿼리 문자열 생성
     const buildSearchFilter = (search: string) => {
-      return searchFields.map(field => `${field}.ilike.%${search}%`).join(',');
+      return searchFields.map((field) => `${field}.ilike.%${search}%`).join(',');
     };
 
     // 공통 필터 적용 함수

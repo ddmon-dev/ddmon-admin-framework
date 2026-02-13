@@ -51,14 +51,11 @@ const actions: QuickAction[] = [
 
 export function QuickActions() {
   return (
-    <Card className='gap-2 px-6 lg:px-8 border-none bg-secondary/50 shadow-lg/6 lg:-mx-7'>
-      <h2 className='text-lg uppercase tracking-[0.15em] text-muted-foreground'>Quick Actions</h2>
-      <div className='-mx-4 grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-6 divide-y divide-secondary-foreground/10 lg:divide-none lg:gap-2'>
-        {actions.map(action => (
-          <RequireAuth
-            key={action.href}
-            requireSuper={action.requireSuperAdmin}
-          >
+    <Card className="gap-2 px-6 lg:px-8 border-none bg-secondary/50 shadow-lg/6 lg:-mx-7">
+      <h2 className="text-lg uppercase tracking-[0.15em] text-muted-foreground">Quick Actions</h2>
+      <div className="-mx-4 grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-6 divide-y divide-secondary-foreground/10 lg:divide-none lg:gap-2">
+        {actions.map((action) => (
+          <RequireAuth key={action.href} requireSuper={action.requireSuperAdmin}>
             <Link
               href={action.href}
               target={action.external ? '_blank' : undefined}
@@ -70,13 +67,13 @@ export function QuickActions() {
                 'rounded-none lg:rounded-lg break-keep'
               )}
             >
-              <div className='shrink-0 size-10 flex items-center justify-center rounded-lg bg-muted/90 group-hover:bg-primary/10 transition-colors'>
-                <action.icon className='size-5 text-muted-foreground group-hover:text-primary transition-colors' />
+              <div className="shrink-0 size-10 flex items-center justify-center rounded-lg bg-muted/90 group-hover:bg-primary/10 transition-colors">
+                <action.icon className="size-5 text-muted-foreground group-hover:text-primary transition-colors" />
               </div>
-              <div className='flex-1 min-w-0'>
-                <p className='text-sm font-medium text-foreground'>{action.title}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground">{action.title}</p>
                 {action.description && (
-                  <p className='text-xs text-muted-foreground'>{action.description}</p>
+                  <p className="text-xs text-muted-foreground">{action.description}</p>
                 )}
               </div>
               {action.external ? (

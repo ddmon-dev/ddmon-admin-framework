@@ -13,11 +13,7 @@ export function ViewButton({ id, children }: ViewButtonProps) {
   const manageSheet = useManageSheet();
 
   return (
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={() => manageSheet.open({ id: id, mode: 'view' })}
-    >
+    <Button size="sm" variant="outline" onClick={() => manageSheet.open({ id: id, mode: 'view' })}>
       <Eye className="size-3.5" />
       {children ?? '상세보기'}
     </Button>

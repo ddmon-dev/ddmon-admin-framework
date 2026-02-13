@@ -10,12 +10,12 @@ type ExcludedEditorProps = 'content' | 'onChange' | 'ref';
 
 export type FormEditorProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
-> = FormBaseProps<V, N> & Omit<TiptapEditorProps, ExcludedEditorProps>;
+  N extends FieldPath<V> = FieldPath<V>,
+> = FormBaseProps<V, N> & Omit<EditorProps, ExcludedEditorProps>;
 
 export const FormEditor = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,

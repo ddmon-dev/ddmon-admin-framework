@@ -12,7 +12,7 @@ type ExcludedSelectProps = 'value' | 'onValueChange' | 'defaultValue' | 'name';
 
 export type FormSelectProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormBaseProps<V, N> &
   Omit<SelectRootProps, ExcludedSelectProps | keyof FormBaseProps<V, N>> & {
     options: {
@@ -24,7 +24,7 @@ export type FormSelectProps<
 
 export const FormSelect = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,
@@ -46,25 +46,13 @@ export const FormSelect = <
       optional={optional}
     >
       {({ onChange, fieldState, ...field }) => (
-        <Select
-          name={field.name}
-          value={field.value}
-          onValueChange={onChange}
-          {...selectProps}
-        >
-          <SelectTrigger
-            ref={field.ref}
-            id={field.name}
-            aria-invalid={fieldState.invalid}
-          >
+        <Select name={field.name} value={field.value} onValueChange={onChange} {...selectProps}>
+          <SelectTrigger ref={field.ref} id={field.name} aria-invalid={fieldState.invalid}>
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>
-            {options.map(option => (
-              <SelectItem
-                key={option.value}
-                value={option.value}
-              >
+            {options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>
             ))}

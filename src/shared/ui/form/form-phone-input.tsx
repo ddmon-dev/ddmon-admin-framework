@@ -8,7 +8,7 @@ import type { FormTextInputProps } from './form-text-input';
 
 export type FormPhoneInputProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = Omit<FormTextInputProps<V, N>, 'customFilter' | 'valueTransform'>;
 
 /**
@@ -35,7 +35,7 @@ export type FormPhoneInputProps<
  */
 export const FormPhoneInput = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >(
   props: FormPhoneInputProps<V, N>
 ): ReactElement => {
@@ -43,8 +43,8 @@ export const FormPhoneInput = <
     <FormTextInput
       {...props}
       customFilter={formatPhoneNumber}
-      valueTransform={value => value.replace(/\D/g, '')}
-      inputMode='tel'
+      valueTransform={(value) => value.replace(/\D/g, '')}
+      inputMode="tel"
     />
   );
 };

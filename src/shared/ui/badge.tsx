@@ -56,11 +56,7 @@ function Badge({
   const Comp = asChild ? Slot : 'span';
 
   return (
-    <Comp
-      data-slot='badge'
-      className={cn(badgeVariants({ variant }), className)}
-      {...props}
-    />
+    <Comp data-slot="badge" className={cn(badgeVariants({ variant }), className)} {...props} />
   );
 }
 

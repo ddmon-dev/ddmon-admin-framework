@@ -6,14 +6,6 @@ interface NewlineTextProps {
   as?: 'p' | 'span' | 'div';
 }
 
-export function NewlineText({
-  children,
-  className,
-  as: Component = 'span',
-}: NewlineTextProps) {
-  return (
-    <Component className={cn('whitespace-pre-line', className)}>
-      {children}
-    </Component>
-  );
+export function NewlineText({ children, className, as: Component = 'span' }: NewlineTextProps) {
+  return <Component className={cn('whitespace-pre-line', className)}>{children}</Component>;
 }

@@ -31,25 +31,25 @@ export function NavUser() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              size='lg'
-              className='data-[state=open]:bg-sidebar-accent/70 data-[state=open]:text-sidebar-accent-foreground data-[state=open]:shadow-sm'
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent/70 data-[state=open]:text-sidebar-accent-foreground data-[state=open]:shadow-sm"
             >
               <UserInfo user={user} />
-              <ChevronsUpDown className='ml-auto size-4 group-data-[state=open]:text-primary transition-colors' />
+              <ChevronsUpDown className="ml-auto size-4 group-data-[state=open]:text-primary transition-colors" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? 'bottom' : 'right'}
-            align='end'
+            align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className='p-0 pl-2 font-normal'>
+            <DropdownMenuLabel className="p-0 pl-2 font-normal">
               <UserInfo user={user} />
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <UpdateProfileDialog>
-              <DropdownMenuItem onSelect={e => e.preventDefault()}>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                 <Pencil />내 정보수정
               </DropdownMenuItem>
             </UpdateProfileDialog>
@@ -67,7 +67,7 @@ export function NavUser() {
 function UserInfo({ user }: { user: User | undefined }) {
   const initials = user?.id
     .split(' ')
-    .map(n => n[0])
+    .map((n) => n[0])
     .join('')
     .toUpperCase()
     .slice(0, 2);
@@ -78,23 +78,23 @@ function UserInfo({ user }: { user: User | undefined }) {
       : APP_CONFIG.AUTH.ADMIN_LABELS.ADMIN;
 
   return (
-    <div className='flex items-center gap-2 py-1.5 text-left text-sm'>
-      <Avatar className='h-8 w-8 rounded-lg'>
-        <AvatarFallback className='rounded-lg bg-primary text-primary-foreground dark:bg-primary-light dark:text-primary-light-foreground font-semibold text-lg transition-colors'>
+    <div className="flex items-center gap-2 py-1.5 text-left text-sm">
+      <Avatar className="h-8 w-8 rounded-lg">
+        <AvatarFallback className="rounded-lg bg-primary text-primary-foreground dark:bg-primary-light dark:text-primary-light-foreground font-semibold text-lg transition-colors">
           {initials}
         </AvatarFallback>
       </Avatar>
-      <div className='grid gap-1 flex-1 text-left text-sm leading-tight'>
-        <span className='truncate font-medium'>
-          {!user ? <Skeleton className='h-4 w-32' /> : `${user?.name} (${user?.id})`}
+      <div className="grid gap-1 flex-1 text-left text-sm leading-tight">
+        <span className="truncate font-medium">
+          {!user ? <Skeleton className="h-4 w-32" /> : `${user?.name} (${user?.id})`}
         </span>
-        <span className='flex items-center gap-1 truncate text-xs text-muted-foreground'>
+        <span className="flex items-center gap-1 truncate text-xs text-muted-foreground">
           {!user ? (
-            <Skeleton className='h-2.5 w-42' />
+            <Skeleton className="h-2.5 w-42" />
           ) : (
             <>
-              <Shield className='size-3' />
-              <span className='text-xs truncate leading-[1em]'>{role}</span>
+              <Shield className="size-3" />
+              <span className="text-xs truncate leading-[1em]">{role}</span>
             </>
           )}
         </span>

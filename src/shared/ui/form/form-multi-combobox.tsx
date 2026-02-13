@@ -10,12 +10,12 @@ type ExcludedMultiComboboxProps = 'value' | 'onValueChange' | 'aria-invalid' | '
 
 export type FormMultiComboboxProps<
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 > = FormBaseProps<V, N> & Omit<MultiComboboxProps, ExcludedMultiComboboxProps>;
 
 export const FormMultiCombobox = <
   V extends FieldValues = FieldValues,
-  N extends FieldPath<V> = FieldPath<V>
+  N extends FieldPath<V> = FieldPath<V>,
 >({
   control,
   name,

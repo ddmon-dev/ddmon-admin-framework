@@ -86,12 +86,8 @@ describe('popups writeSchema', () => {
     });
 
     it('문자열 → 실패', () => {
-      expect(
-        writeSchema.safeParse({ ...validData, start_date: '2024-01-01' }).success
-      ).toBe(false);
-      expect(
-        writeSchema.safeParse({ ...validData, end_date: '2024-12-31' }).success
-      ).toBe(false);
+      expect(writeSchema.safeParse({ ...validData, start_date: '2024-01-01' }).success).toBe(false);
+      expect(writeSchema.safeParse({ ...validData, end_date: '2024-12-31' }).success).toBe(false);
     });
   });
 

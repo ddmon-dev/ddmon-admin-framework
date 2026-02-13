@@ -10,7 +10,9 @@ import type { CreateItemParams } from '../../_base/types';
 import { CONFIG, type ItemDTO } from '../config';
 import { createSchema } from '../schema';
 
-export async function createItem(params: CreateItemParams<ItemDTO>): Promise<ActionResult<ItemDTO>> {
+export async function createItem(
+  params: CreateItemParams<ItemDTO>
+): Promise<ActionResult<ItemDTO>> {
   const { values, pathname } = params;
 
   await requireAuth(CONFIG.auth);

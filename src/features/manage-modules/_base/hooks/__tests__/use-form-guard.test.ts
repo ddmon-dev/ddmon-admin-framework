@@ -37,10 +37,9 @@ describe('useFormGuard', () => {
   });
 
   it('isDirty가 변경되면 guard 함수가 최신 값을 반환한다', () => {
-    const { rerender } = renderHook(
-      ({ isDirty }) => useFormGuard(createMockForm(isDirty)),
-      { initialProps: { isDirty: false } },
-    );
+    const { rerender } = renderHook(({ isDirty }) => useFormGuard(createMockForm(isDirty)), {
+      initialProps: { isDirty: false },
+    });
 
     const guardFn = mockSetCloseGuard.mock.calls[0][0];
     expect(guardFn()).toBe(false);

@@ -62,25 +62,21 @@ export function SearchBar({
 
   return (
     <InputGroup className={cn('w-auto min-w-64', className)}>
-      <InputGroupAddon align='inline-start'>
-        <Search className='size-4' />
+      <InputGroupAddon align="inline-start">
+        <Search className="size-4" />
       </InputGroupAddon>
       <InputGroupInput
         ref={inputRef}
         value={value}
-        onChange={e => setValue(e.target.value)}
+        onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         autoFocus={autoFocus}
       />
       {value && (
-        <InputGroupAddon align='inline-end'>
-          <InputGroupButton
-            size='icon-xs'
-            onClick={handleClear}
-            aria-label='검색어 지우기'
-          >
-            <X className='size-3' />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton size="icon-xs" onClick={handleClear} aria-label="검색어 지우기">
+            <X className="size-3" />
           </InputGroupButton>
         </InputGroupAddon>
       )}
