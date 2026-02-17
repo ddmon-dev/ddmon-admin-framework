@@ -308,32 +308,35 @@ import {
   DetailField,
   DetailGroup,
   DetailRow,
-  ManageSheetFooter,
   ManageSheetClose,
   ManageSheetModeChange,
 } from '../../_base/ui';
+import { SheetBody, SheetContainer, SheetFooter } from '@/shared/ui/sheet';
 
 export function DetailView({ data }: { data: ItemDTO }) {
   return (
-    <>
-      <DetailContainer>
-        <DetailGroup>
-          <DetailField label="제목" value={data.title} />
-          <DetailRow>
-            <DetailField label="작성자" value={data.author} />
-            <DetailField label="조회수" value={data.view_count?.toLocaleString()} />
-          </DetailRow>
-          <DetailField
-            label="내용"
-            value={<RichTextContent>{data.content}</RichTextContent>}
-          />
-        </DetailGroup>
-      </DetailContainer>
-      <ManageSheetFooter>
+    <SheetBody>
+      <SheetContainer>
+        <DetailContainer>
+          <DetailGroup>
+            <DetailField label="제목" value={data.title} />
+            <DetailRow>
+              <DetailField label="작성자" value={data.author} />
+              <DetailField label="조회수" value={data.view_count?.toLocaleString()} />
+            </DetailRow>
+            <DetailField
+              label="내용"
+              value={<RichTextContent>{data.content}</RichTextContent>}
+            />
+          </DetailGroup>
+        </DetailContainer>
+      </SheetContainer>
+
+      <SheetFooter>
         <ManageSheetClose />
         <ManageSheetModeChange mode="modify" />
-      </ManageSheetFooter>
-    </>
+      </SheetFooter>
+    </SheetBody>
   );
 }
 ```
@@ -635,6 +638,66 @@ export async function getList(params: GetListParams): Promise<ActionResult<ListP
 
 - 검색 중에는 순서 버튼이 숨겨짐 (의도적)
 - 카테고리 필터 활성화 시 해당 카테고리 내에서만 순서 변경
+
+---
+
+## Sheet 레이아웃
+
+write-form과 detail-view에서 일관된 시트 레이아웃을 위해 `@/shared/ui/sheet`의 레이아웃 컴포넌트를 사용합니다.
+
+| 컴포넌트 | 역할 |
+|---------|------|
+| `SheetBody` | 시트 내부 flex 컨테이너 (스크롤 영역 + footer 분리) |
+| `SheetContainer` | 콘텐츠 패딩 및 스크롤 관리 |
+| `SheetFooter` | sticky footer (하단 고정, 반응형 버튼 크기) |
+
+**write-form 패턴:**
+
+```typescript
+import { SheetBody, SheetContainer, SheetFooter } from '@/shared/ui/sheet';
+import { ManageFormSubmit, ManageSheetClose } from '../_base/ui';
+
+return (
+  <SheetBody>
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <SheetContainer>
+        <FieldGroup>
+          {/* 폼 필드 */}
+        </FieldGroup>
+      </SheetContainer>
+
+      <SheetFooter>
+        <ManageSheetClose />
+        <ManageFormSubmit isLoading={form.formState.isSubmitting} />
+      </SheetFooter>
+    </form>
+  </SheetBody>
+);
+```
+
+**detail-view 패턴:**
+
+```typescript
+import { SheetBody, SheetContainer, SheetFooter } from '@/shared/ui/sheet';
+import { ManageSheetClose, ManageSheetModeChange } from '../_base/ui';
+
+return (
+  <SheetBody>
+    <SheetContainer>
+      <DetailContainer>
+        {/* 상세 내용 */}
+      </DetailContainer>
+    </SheetContainer>
+
+    <SheetFooter>
+      <ManageSheetClose />
+      <ManageSheetModeChange mode="modify" />
+    </SheetFooter>
+  </SheetBody>
+);
+```
+
+> **참고**: `ManageSheetFooter`는 deprecated 상태입니다. 모든 새 코드에서 `SheetFooter`를 사용하세요.
 
 ---
 

@@ -18,7 +18,7 @@ supabase/
 │   ├── 00000000000005_faqs.sql      # 선택: FAQ (sort_order 포함)
 │   ├── 00000000000006_inquiries.sql # 선택: 문의
 │   └── 00000000000007_popups.sql    # 선택: 팝업
-├── seed.sql                         # 개발용 목 데이터
+├── seed.sql                         # 개발용 목 데이터 (notices, news, faqs, inquiries, popups)
 ├── templates/                       # 새 테이블 추가 시 참고
 └── config.toml
 ```
@@ -71,6 +71,8 @@ rm supabase/migrations/*_popups.sql
 ```
 
 ### 3. 시드 데이터 정리
+
+seed.sql에는 notices, news, faqs, inquiries, popups 테이블의 개발용 목 데이터가 포함되어 있습니다.
 
 ```bash
 # 시드 전체 삭제 (프로덕션용)
