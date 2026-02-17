@@ -15,12 +15,13 @@ import {
   FormFileUpload,
   FormDatePicker,
 } from '@/shared/ui/form';
+import { SheetFooter, SheetBody, SheetContainer } from '@/shared/ui/sheet';
 import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
-import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 
-import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
+import { useManageSheet, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { useFormGuard } from '../_base/hooks';
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
@@ -97,47 +98,56 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      <FieldGroup>
-        <FormDatePicker
-          control={form.control}
-          name="created_at"
-          label="작성일"
-          mode="single"
-          presets
-          optional
-        />
-        <FormNumberInput
-          control={form.control}
-          name="view_count"
-          label="조회수"
-          thousandSeparator
-        />
-        <FormTextInput control={form.control} name="title" label="제목" />
-        <FormEditor control={form.control} name="content" label="내용" entity={CONFIG.tableName} />
-        <FormFileUpload
-          control={form.control}
-          name="files.thumbnail"
-          label="썸네일"
-          acceptPreset="images"
-          maxSize={5}
-          max={1}
-        />
-        <FormFileUpload
-          control={form.control}
-          name="files.attachments"
-          label="첨부 파일"
-          acceptPreset="documents"
-          maxSize={10}
-          max={5}
-          optional
-        />
-      </FieldGroup>
+    <SheetBody>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <SheetContainer>
+          <FieldGroup>
+            <FormDatePicker
+              control={form.control}
+              name="created_at"
+              label="작성일"
+              mode="single"
+              presets
+              optional
+            />
+            <FormNumberInput
+              control={form.control}
+              name="view_count"
+              label="조회수"
+              thousandSeparator
+            />
+            <FormTextInput control={form.control} name="title" label="제목" />
+            <FormEditor
+              control={form.control}
+              name="content"
+              label="내용"
+              entity={CONFIG.tableName}
+            />
+            <FormFileUpload
+              control={form.control}
+              name="files.thumbnail"
+              label="썸네일"
+              acceptPreset="images"
+              maxSize={5}
+              max={1}
+            />
+            <FormFileUpload
+              control={form.control}
+              name="files.attachments"
+              label="첨부 파일"
+              acceptPreset="documents"
+              maxSize={10}
+              max={5}
+              optional
+            />
+          </FieldGroup>
+        </SheetContainer>
 
-      <ManageSheetFooter>
-        <ManageSheetClose />
-        <ManageFormSubmit isLoading={form.formState.isSubmitting} />
-      </ManageSheetFooter>
-    </form>
+        <SheetFooter>
+          <ManageSheetClose />
+          <ManageFormSubmit isLoading={form.formState.isSubmitting} />
+        </SheetFooter>
+      </form>
+    </SheetBody>
   );
 }

@@ -9,10 +9,11 @@ import { toast } from 'sonner';
 
 import { FieldGroup } from '@/shared/ui/field';
 import { FormRadioGroup, FormTextInput, FormTextarea } from '@/shared/ui/form';
+import { SheetFooter, SheetBody, SheetContainer } from '@/shared/ui/sheet';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 
-import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
+import { useManageSheet, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { useFormGuard } from '../_base/hooks';
 import { CONFIG, type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
@@ -75,35 +76,38 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-      {/* 기본 정보 */}
-      <FieldGroup>
-        <FormRadioGroup
-          control={form.control}
-          name="category"
-          label="카테고리"
-          options={[...CONFIG.categoryOptions]}
-        />
+    <SheetBody>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <SheetContainer>
+          <FieldGroup>
+            <FormRadioGroup
+              control={form.control}
+              name="category"
+              label="카테고리"
+              options={[...CONFIG.categoryOptions]}
+            />
 
-        <FormTextInput
-          control={form.control}
-          name="question"
-          label="질문"
-          placeholder="질문을 입력해주세요."
-        />
+            <FormTextInput
+              control={form.control}
+              name="question"
+              label="질문"
+              placeholder="질문을 입력해주세요."
+            />
 
-        <FormTextarea
-          control={form.control}
-          name="answer"
-          label="답변"
-          placeholder="답변을 입력해주세요."
-        />
-      </FieldGroup>
+            <FormTextarea
+              control={form.control}
+              name="answer"
+              label="답변"
+              placeholder="답변을 입력해주세요."
+            />
+          </FieldGroup>
+        </SheetContainer>
 
-      <ManageSheetFooter>
-        <ManageSheetClose />
-        <ManageFormSubmit isLoading={form.formState.isSubmitting} />
-      </ManageSheetFooter>
-    </form>
+        <SheetFooter>
+          <ManageSheetClose />
+          <ManageFormSubmit isLoading={form.formState.isSubmitting} />
+        </SheetFooter>
+      </form>
+    </SheetBody>
   );
 }

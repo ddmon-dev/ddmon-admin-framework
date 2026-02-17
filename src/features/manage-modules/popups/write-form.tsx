@@ -15,8 +15,9 @@ import {
   FormDatePicker,
   FormEditor,
 } from '@/shared/ui/form';
+import { SheetFooter, SheetBody, SheetContainer } from '@/shared/ui/sheet';
 
-import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
+import { useManageSheet, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { useFormGuard } from '../_base/hooks';
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
@@ -87,65 +88,78 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      <FieldGroup>
-        <FormTextInput
-          control={form.control}
-          name="title"
-          label="제목"
-          placeholder="팝업 제목을 입력하세요"
-        />
+    <SheetBody>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <SheetContainer>
+          <FieldGroup>
+            <FormTextInput
+              control={form.control}
+              name="title"
+              label="제목"
+              placeholder="팝업 제목을 입력하세요"
+            />
 
-        <FormSwitch control={form.control} name="is_active" label="노출 여부" />
-      </FieldGroup>
+            <FormSwitch control={form.control} name="is_active" label="노출 여부" />
+          </FieldGroup>
+        </SheetContainer>
 
-      <FieldGroup>
-        <FormSwitch control={form.control} name="is_always" label="항시노출 (기간 무시)" />
+        <SheetContainer>
+          <FieldGroup>
+            <FormSwitch control={form.control} name="is_always" label="항시노출 (기간 무시)" />
 
-        <FormDatePicker control={form.control} name="start_date" label="시작일" optional />
+            <FormDatePicker control={form.control} name="start_date" label="시작일" optional />
 
-        <FormDatePicker control={form.control} name="end_date" label="종료일" optional />
-      </FieldGroup>
+            <FormDatePicker control={form.control} name="end_date" label="종료일" optional />
+          </FieldGroup>
+        </SheetContainer>
+        <SheetContainer>
+          <FieldGroup>
+            <FormNumberInput
+              control={form.control}
+              name="position_top"
+              label="상단 위치 (px)"
+              suffix="px"
+            />
 
-      <FieldGroup>
-        <FormNumberInput
-          control={form.control}
-          name="position_top"
-          label="상단 위치 (px)"
-          suffix="px"
-        />
+            <FormNumberInput
+              control={form.control}
+              name="position_left"
+              label="좌측 위치 (px)"
+              suffix="px"
+            />
 
-        <FormNumberInput
-          control={form.control}
-          name="position_left"
-          label="좌측 위치 (px)"
-          suffix="px"
-        />
+            <FormNumberInput
+              control={form.control}
+              name="width"
+              label="팝업 너비 (px)"
+              suffix="px"
+            />
 
-        <FormNumberInput control={form.control} name="width" label="팝업 너비 (px)" suffix="px" />
+            <FormNumberInput
+              control={form.control}
+              name="z_index"
+              label="팝업레이어 순서"
+              description="작은 숫자일수록 다른 팝업보다 위에 표시됩니다."
+            />
+          </FieldGroup>
+        </SheetContainer>
 
-        <FormNumberInput
-          control={form.control}
-          name="z_index"
-          label="팝업레이어 순서"
-          description="작은 숫자일수록 다른 팝업보다 위에 표시됩니다."
-        />
-      </FieldGroup>
+        <SheetContainer>
+          <FieldGroup>
+            <FormEditor
+              control={form.control}
+              name="content"
+              label="팝업 내용"
+              entity={CONFIG.tableName}
+            />
+          </FieldGroup>
+        </SheetContainer>
 
-      <FieldGroup>
-        <FormEditor
-          control={form.control}
-          name="content"
-          label="팝업 내용"
-          entity={CONFIG.tableName}
-        />
-      </FieldGroup>
-
-      {/* 제출 버튼 */}
-      <ManageSheetFooter>
-        <ManageSheetClose />
-        <ManageFormSubmit isLoading={form.formState.isSubmitting} />
-      </ManageSheetFooter>
-    </form>
+        <SheetFooter>
+          <ManageSheetClose />
+          <ManageFormSubmit isLoading={form.formState.isSubmitting} />
+        </SheetFooter>
+      </form>
+    </SheetBody>
   );
 }

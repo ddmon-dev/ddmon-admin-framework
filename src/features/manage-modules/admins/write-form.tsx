@@ -10,11 +10,12 @@ import { toast } from 'sonner';
 
 import { FieldGroup } from '@/shared/ui/field';
 import { FormTextInput, FormPasswordInput, FormEmailInput } from '@/shared/ui/form';
+import { SheetFooter, SheetBody, SheetContainer } from '@/shared/ui/sheet';
 import { schemaPresets } from '@/shared/schemas';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 
-import { useManageSheet, ManageSheetFooter, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
+import { useManageSheet, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { useFormGuard } from '../_base/hooks';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
@@ -112,56 +113,59 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-      {/* 기본 정보 */}
-      <FieldGroup>
-        <FormTextInput
-          control={form.control}
-          name="id"
-          label="아이디"
-          description={
-            id
-              ? '아이디는 수정할 수 없습니다.'
-              : `아이디는 최소 ${APP_CONFIG.AUTH.ID_MIN_LENGTH}자 이상 입력해주세요.`
-          }
-          disabled={!!id}
-        />
+    <SheetBody>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <SheetContainer>
+          <FieldGroup>
+            <FormTextInput
+              control={form.control}
+              name="id"
+              label="아이디"
+              description={
+                id
+                  ? '아이디는 수정할 수 없습니다.'
+                  : `아이디는 최소 ${APP_CONFIG.AUTH.ID_MIN_LENGTH}자 이상 입력해주세요.`
+              }
+              disabled={!!id}
+            />
 
-        <FormTextInput
-          control={form.control}
-          name="name"
-          label="이름"
-          placeholder="이름을 입력해주세요."
-        />
+            <FormTextInput
+              control={form.control}
+              name="name"
+              label="이름"
+              placeholder="이름을 입력해주세요."
+            />
 
-        <FormEmailInput
-          control={form.control}
-          name="email"
-          label="이메일"
-          placeholder="이메일을 입력해주세요."
-        />
+            <FormEmailInput
+              control={form.control}
+              name="email"
+              label="이메일"
+              placeholder="이메일을 입력해주세요."
+            />
 
-        <FormPasswordInput
-          control={form.control}
-          name="password"
-          label="비밀번호"
-          placeholder="비밀번호를 입력해주세요."
-          optional={!!id}
-        />
+            <FormPasswordInput
+              control={form.control}
+              name="password"
+              label="비밀번호"
+              placeholder="비밀번호를 입력해주세요."
+              optional={!!id}
+            />
 
-        <FormPasswordInput
-          control={form.control}
-          name="confirmPassword"
-          label="비밀번호 확인"
-          placeholder="비밀번호를 다시 입력해주세요."
-          optional={!!id}
-        />
-      </FieldGroup>
+            <FormPasswordInput
+              control={form.control}
+              name="confirmPassword"
+              label="비밀번호 확인"
+              placeholder="비밀번호를 다시 입력해주세요."
+              optional={!!id}
+            />
+          </FieldGroup>
+        </SheetContainer>
 
-      <ManageSheetFooter>
-        <ManageSheetClose />
-        <ManageFormSubmit isLoading={form.formState.isSubmitting} />
-      </ManageSheetFooter>
-    </form>
+        <SheetFooter>
+          <ManageSheetClose />
+          <ManageFormSubmit isLoading={form.formState.isSubmitting} />
+        </SheetFooter>
+      </form>
+    </SheetBody>
   );
 }

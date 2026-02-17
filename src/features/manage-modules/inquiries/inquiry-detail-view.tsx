@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { SheetBody, SheetContainer, SheetFooter } from '@/shared/ui/sheet';
+import { ManageSheetClose } from '../_base/ui';
 import { InquiryInfo } from './inquiry-info';
 import { ReplyForm } from './reply-form';
 import { ReplyList } from './reply-list';
@@ -18,10 +20,17 @@ export function InquiryDetailView({ data }: InquiryDetailViewProps) {
   };
 
   return (
-    <div className="space-y-6 pb-6">
-      <InquiryInfo data={data} />
-      <ReplyForm inquiryId={data.id} onReplyCreated={handleReplyCreated} />
-      <ReplyList replies={replies} />
-    </div>
+    <>
+      <SheetBody>
+        <SheetContainer className="space-y-8">
+          <InquiryInfo data={data} />
+          <ReplyForm inquiryId={data.id} onReplyCreated={handleReplyCreated} />
+          <ReplyList replies={replies} />
+        </SheetContainer>
+      </SheetBody>
+      <SheetFooter>
+        <ManageSheetClose />
+      </SheetFooter>
+    </>
   );
 }
