@@ -8,7 +8,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-  SheetFooter,
+  SheetContainer,
   SheetBody,
 } from '@/shared/ui/sheet';
 import { FormSkeleton } from '@/shared/ui/skeletons';
@@ -34,7 +34,7 @@ interface ManageSheetContextType {
   setCloseGuard: (guard: (() => boolean) | null) => void;
 }
 
-export const ManageSheetContext = createContext<ManageSheetContextType>({
+const ManageSheetContext = createContext<ManageSheetContextType>({
   manageSheetData: null,
   openManageSheet: () => {},
   setMode: () => {},
@@ -124,7 +124,7 @@ interface ManageSheetDataContextType {
   refetch: () => void;
 }
 
-const ManageSheetDataContext = createContext<ManageSheetDataContextType | null>(null);
+export const ManageSheetDataContext = createContext<ManageSheetDataContextType | null>(null);
 
 export function useManageSheetData<T>() {
   const context = use(ManageSheetDataContext);
@@ -137,12 +137,15 @@ export function useManageSheetData<T>() {
   };
 }
 
+type SizeKey = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
+
 interface ManageSheetProps<T extends { files?: DbFilesJSONB }> {
   fetchFn: GetItemAction<T>;
   additionalDateFields?: string[];
   formComponent?: React.ComponentType<{ id?: string; prevValues: T | null }>;
   viewComponent?: React.ComponentType<{ data: T }>;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
+  size?: SizeKey | Partial<Record<ManageSheetMode, SizeKey>>;
+  viewHeader?: React.ComponentType;
   moduleName?: string;
   customVariant?: {
     create?: {
@@ -199,6 +202,7 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
   viewComponent: ViewComponent,
   moduleName,
   size = 'md',
+  viewHeader: ViewHeader,
   customVariant,
 }: ManageSheetProps<T>) {
   const manageSheet = useManageSheet();
@@ -226,12 +230,24 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
 
     // 로딩 중
     if (isLoading) {
-      return <FormSkeleton />;
+      return (
+        <SheetBody>
+          <SheetContainer className="flex flex-col">
+            <FormSkeleton />
+          </SheetContainer>
+        </SheetBody>
+      );
     }
 
     // 에러
     if (error) {
-      return <ManageSheetError />;
+      return (
+        <SheetBody>
+          <SheetContainer className="flex flex-col justify-center">
+            <ManageSheetError />
+          </SheetContainer>
+        </SheetBody>
+      );
     }
 
     // modify 모드: FormComponent가 있을 때만 렌더링
@@ -256,11 +272,25 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && manageSheet.closeWithGuard()}>
-      <SheetContent className={cn(SIZES[size], 'w-[440px] max-w-full md:w-full md:rounded-l-xl')}>
+      <SheetContent
+        className={cn(
+          SIZES[typeof size === 'string' ? size : (mode && size?.[mode]) ?? 'md'],
+          'w-[440px] max-w-full md:w-full',
+          'md:transition-[max-width] md:duration-300 md:ease-in-out'
+        )}
+      >
         <ManageSheetDataContext.Provider value={dataContextValue}>
           {!error && (
-            <SheetHeader className="border-b md:p-8 md:pb-4 gap-0.5">
-              {mode && (
+            <SheetHeader>
+              {mode === 'view' && ViewHeader && prevValues ? (
+                <>
+                  <SheetTitle className="sr-only">{VARIANTS.view.title(moduleName)}</SheetTitle>
+                  <SheetDescription className="sr-only">
+                    {VARIANTS.view.description}
+                  </SheetDescription>
+                  <ViewHeader />
+                </>
+              ) : mode ? (
                 <>
                   <SheetTitle className="text-lg">
                     {customVariant?.[mode]?.title?.(moduleName) ?? VARIANTS[mode].title(moduleName)}
@@ -269,41 +299,16 @@ export function ManageSheet<T extends { files?: DbFilesJSONB }>({
                     {customVariant?.[mode]?.description ?? VARIANTS[mode].description}
                   </SheetDescription>
                 </>
-              )}
+              ) : null}
             </SheetHeader>
           )}
-          <SheetBody
-            className={cn(
-              'md:px-8 md:pt-8 [&_.manage-sheet-footer]:md:-mx-8 [&_.manage-sheet-footer]:-mx-4 flex flex-col flex-1 min-h-0 [&_form]:flex-1 [&_form]:flex [&_form]:flex-col [&_form]:min-h-0 [&_form]:space-y-6',
-              error && 'pt-0 md:pt-0'
-            )}
-          >
-            {renderContent()}
-          </SheetBody>
+          {renderContent()}
         </ManageSheetDataContext.Provider>
       </SheetContent>
     </Sheet>
   );
 }
 
-export function ManageSheetFooter({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <SheetFooter
-      className={cn(
-        'manage-sheet-footer border-t py-4 md:px-8 sticky bottom-0 bg-background md:rounded-b-xl z-99999 mt-auto',
-        'flex-row justify-end md:gap-1',
-        '[&_button]:w-full [&_button]:flex-1',
-        '[&_button]:md:max-w-28',
-        className
-      )}
-    >
-      {children}
-    </SheetFooter>
-  );
+export function ManageSheetFooter() {
+  return null;
 }

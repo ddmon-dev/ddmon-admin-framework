@@ -56,6 +56,16 @@ const MODE_CHANGE_LABELS = {
   clone: '복제하기',
 };
 
+const MODE_CHANGE_VARIANTS: Record<
+  ManageSheetMode,
+  VariantProps<typeof buttonVariants>['variant']
+> = {
+  view: 'outline',
+  modify: 'black',
+  create: 'black',
+  clone: 'black',
+};
+
 export function ManageSheetModeChange({
   children,
   className,
@@ -71,7 +81,7 @@ export function ManageSheetModeChange({
   return (
     <Button
       type="button"
-      variant={variant}
+      variant={variant ?? MODE_CHANGE_VARIANTS[mode]}
       onClick={handleClick}
       className={cn('font-semibold', className)}
     >

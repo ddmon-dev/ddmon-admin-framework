@@ -1,4 +1,7 @@
 import { format } from 'date-fns';
+import { Badge } from '@/shared/ui/badge';
+import { RichTextContent } from '@/shared/ui/editor/rich-text-content';
+import { SheetFooter, SheetBody, SheetContainer } from '@/shared/ui/sheet';
 import {
   DetailContainer,
   DetailField,
@@ -8,8 +11,6 @@ import {
   ManageSheetClose,
   ManageSheetModeChange,
 } from '../_base/ui';
-import { Badge } from '@/shared/ui/badge';
-import { RichTextContent } from '@/shared/ui/editor/rich-text-content';
 import { CONFIG, type ItemDTO } from './config';
 
 export function DetailView({ data }: { data: ItemDTO }) {
@@ -19,44 +20,46 @@ export function DetailView({ data }: { data: ItemDTO }) {
 
   return (
     <>
-      <DetailContainer>
-        <DetailGroup>
-          <DetailField
-            label="카테고리"
-            labelClassName="items-center"
-            value={
-              <Badge variant={data.category === 'notice' ? 'default' : 'secondary'}>
-                {categoryLabel}
-              </Badge>
-            }
-          />
-          <DetailField label="제목" value={data.title} />
-          <DetailRow>
-            <DetailField label="작성자" value={data.author} />
+      <SheetBody>
+        <SheetContainer>
+          <DetailGroup>
             <DetailField
-              label="조회수"
+              label="카테고리"
               labelClassName="items-center"
-              value={data.view_count?.toLocaleString()}
+              value={
+                <Badge variant={data.category === 'notice' ? 'default' : 'secondary'}>
+                  {categoryLabel}
+                </Badge>
+              }
             />
-          </DetailRow>
-          <DetailField label="작성일" value={format(data.created_at, 'yyyy-MM-dd HH:mm:ss')} />
-          <DetailField label="수정일" value={format(data.updated_at, 'yyyy-MM-dd HH:mm:ss')} />
+            <DetailField label="제목" value={data.title} />
+            <DetailRow>
+              <DetailField label="작성자" value={data.author} />
+              <DetailField
+                label="조회수"
+                labelClassName="items-center"
+                value={data.view_count?.toLocaleString()}
+              />
+            </DetailRow>
+            <DetailField label="작성일" value={format(data.created_at, 'yyyy-MM-dd HH:mm:ss')} />
+            <DetailField label="수정일" value={format(data.updated_at, 'yyyy-MM-dd HH:mm:ss')} />
 
-          <DetailField label="내용" value={<RichTextContent>{data.content}</RichTextContent>} />
-          <DetailField
-            label="첨부 파일"
-            value={data.files?.attachments?.map((file) => file.url).join(', ')}
-          />
-          <DetailField
-            label="썸네일"
-            value={data.files?.thumbnail?.map((file) => file.url).join(', ')}
-          />
-        </DetailGroup>
-      </DetailContainer>
-      <ManageSheetFooter>
+            <DetailField label="내용" value={<RichTextContent>{data.content}</RichTextContent>} />
+            <DetailField
+              label="첨부 파일"
+              value={data.files?.attachments?.map((file) => file.url).join(', ')}
+            />
+            <DetailField
+              label="썸네일"
+              value={data.files?.thumbnail?.map((file) => file.url).join(', ')}
+            />
+          </DetailGroup>
+        </SheetContainer>
+      </SheetBody>
+      <SheetFooter>
         <ManageSheetClose />
         <ManageSheetModeChange mode="modify" />
-      </ManageSheetFooter>
+      </SheetFooter>
     </>
   );
 }

@@ -342,6 +342,10 @@
       background-position: -200% 0;
     }
   }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Sonner Toast */
