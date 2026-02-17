@@ -41,10 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# supabase - migrations만 추적
+# supabase
 /supabase/.temp/
 /supabase/.branches/
-/supabase/seed.sql
 
 # ide
 .vscode/
