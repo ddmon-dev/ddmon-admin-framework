@@ -133,6 +133,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
       return (
         <Calendar
           mode="single"
+          defaultMonth={value ?? undefined}
           selected={value ?? undefined}
           onSelect={(date) => {
             onValueChange(date);
@@ -156,6 +157,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
       return (
         <Calendar
           mode="multiple"
+          defaultMonth={value?.[0] ?? undefined}
           selected={value ?? undefined}
           onSelect={onValueChange}
           disabled={disabled}
@@ -178,6 +180,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
       return (
         <Calendar
           mode="range"
+          defaultMonth={value?.from ?? undefined}
           selected={value ?? undefined}
           onSelect={onValueChange}
           disabled={disabled}
