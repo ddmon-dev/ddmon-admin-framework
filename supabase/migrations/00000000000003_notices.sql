@@ -7,10 +7,8 @@ CREATE TABLE public.notices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT,
-  author TEXT NOT NULL,
-  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
-  updated_by TEXT,                      -- 수정자
-  updated_by_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
+  author TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
+  updated_by TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   category TEXT NOT NULL DEFAULT 'normal',
   view_count INTEGER NOT NULL DEFAULT 0,
 

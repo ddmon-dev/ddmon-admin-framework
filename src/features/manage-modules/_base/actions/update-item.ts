@@ -53,11 +53,10 @@ export async function updateItem<TData>(
       values,
     });
 
-    // updated_by 자동 주입
+    // updated_by 자동 주입 (관리자 ID 저장)
     const updateValues = {
       ...values,
-      updated_by: user?.name ?? null,
-      updated_by_id: user?.id ?? null,
+      updated_by: user?.id ?? null,
     };
 
     const { data, error } = await supabase

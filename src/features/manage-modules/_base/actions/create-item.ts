@@ -41,11 +41,10 @@ export async function createItem<TData>(
   try {
     const supabase = createServerClient();
 
-    // author 자동 주입
+    // author 자동 주입 (관리자 ID 저장)
     const insertValues: Record<string, any> = {
       ...values,
-      author: user?.name ?? null,
-      author_id: user?.id ?? null,
+      author: user?.id ?? null,
     };
 
     // enableReorder 자동 처리: 전체 테이블에서 최대 sort_order + 1

@@ -7,10 +7,8 @@ CREATE TABLE public.news (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT,
-  author TEXT,                          -- 작성자
-  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
-  updated_by TEXT,                      -- 수정자
-  updated_by_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
+  author TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
+  updated_by TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   view_count INTEGER NOT NULL DEFAULT 0,
 
   -- 파일 메타데이터 저장용 JSONB 컬럼
