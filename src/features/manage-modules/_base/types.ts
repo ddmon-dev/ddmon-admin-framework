@@ -17,6 +17,7 @@ export interface GetListParams {
   page?: string;
   search?: string;
   category?: string;
+  lang?: string;
   pageSize?: number;
 }
 

@@ -10,11 +10,12 @@ interface CategoryOption {
   label: string;
 }
 
-interface CategoryButtonGroupProps {
+export interface CategoryButtonGroupProps {
   options: CategoryOption[];
   paramKey?: string;
   showAllOption?: boolean;
   allOptionLabel?: string;
+  defaultValue?: string;
   className?: string;
   size?: 'default' | 'sm' | 'lg';
 }
@@ -24,16 +25,17 @@ export function CategoryButtonGroup({
   paramKey = 'category',
   showAllOption = true,
   allOptionLabel = '전체',
+  defaultValue = 'all',
   className,
   size = 'default',
 }: CategoryButtonGroupProps) {
   const { get, set } = useQueryParams();
-  const [value, setValue] = React.useState(get(paramKey) || 'all');
+  const [value, setValue] = React.useState(get(paramKey) || defaultValue);
 
   React.useEffect(() => {
     const categoryValue = get(paramKey);
-    setValue(categoryValue || 'all');
-  }, [get, paramKey]);
+    setValue(categoryValue || defaultValue);
+  }, [get, paramKey, defaultValue]);
 
   const handleValueChange = (newValue: string) => {
     if (!newValue) return;

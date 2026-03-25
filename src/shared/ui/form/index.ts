@@ -45,6 +45,10 @@ export type { FormRadioGroupProps } from './form-radio-group';
 export { FormSelect } from './form-select';
 export type { FormSelectProps } from './form-select';
 
+// FormLangSelect
+export { FormLangSelect } from './form-lang-select';
+export type { FormLangSelectProps } from './form-lang-select';
+
 // FormNativeSelect
 export { FormNativeSelect } from './form-native-select';
 export type { FormNativeSelectProps } from './form-native-select';

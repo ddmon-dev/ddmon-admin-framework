@@ -20,6 +20,7 @@ export default function ManageModule({ searchParams }: Props) {
       moduleName={CONFIG.moduleName}
       headerAddons={<HeaderAddons />}
       hideCreateButton
+      showLangFilter={false}
     >
       <ManageListFetcher<ItemDTO> searchParams={searchParams} getList={getList}>
         {({ data, totalCount }) => (

@@ -10,6 +10,7 @@ export const CONFIG = {
   selectColumns: 'id, name, email, super_admin, created_at, updated_at, deleted',
   auth: { requireSuper: true },
   enableBulkAction: false,
+  useLangFilter: false,
 } as const;
 
 export type RowData = BaseRowData<typeof CONFIG.tableName>;

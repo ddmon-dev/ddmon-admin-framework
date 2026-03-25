@@ -50,4 +50,15 @@ export const APP_CONFIG = {
   FILE: {
     UPLOAD_TIMEOUT_MS: 30000, // 파일 업로드 시 타임아웃 (30초)
   },
+  LANG: {
+    CODES: ['ko', 'en', 'ja'] as const,
+    LABELS: {
+      ko: '한국어',
+      en: '영어',
+      ja: '일본어',
+    } as const,
+    DEFAULT: 'ko',
+  },
 } as const;
+
+export type LangCode = (typeof APP_CONFIG.LANG.CODES)[number];

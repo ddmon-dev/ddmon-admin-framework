@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS public.faqs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   question TEXT NOT NULL,
   answer TEXT NOT NULL,
+  lang TEXT NOT NULL DEFAULT 'ko',
   author TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   updated_by TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   category TEXT NOT NULL DEFAULT 'general',
@@ -17,6 +18,7 @@ CREATE TABLE IF NOT EXISTS public.faqs (
 );
 
 -- 인덱스
+CREATE INDEX IF NOT EXISTS idx_faqs_lang ON public.faqs(lang);
 CREATE INDEX IF NOT EXISTS idx_faqs_deleted ON public.faqs(deleted);
 CREATE INDEX IF NOT EXISTS idx_faqs_sort_order ON public.faqs(sort_order);
 CREATE INDEX IF NOT EXISTS idx_faqs_created_at ON public.faqs(created_at);

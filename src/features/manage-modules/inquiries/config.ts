@@ -8,6 +8,7 @@ export const CONFIG = {
   searchFields: ['name', 'email', 'company'],
   replyTableName: 'inquiry_replies',
   enableBulkAction: true,
+  useLangFilter: false,
   statusOptions: [
     { value: 'pending', label: '대기' },
     { value: 'answered', label: '답변완료' },

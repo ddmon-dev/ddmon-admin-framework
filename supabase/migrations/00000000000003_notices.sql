@@ -7,6 +7,7 @@ CREATE TABLE public.notices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT,
+  lang TEXT NOT NULL DEFAULT 'ko',
   author TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   updated_by TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   category TEXT NOT NULL DEFAULT 'normal',
@@ -23,6 +24,7 @@ CREATE TABLE public.notices (
 );
 
 -- 인덱스
+CREATE INDEX idx_notices_lang ON public.notices(lang);
 CREATE INDEX idx_notices_files_gin ON public.notices USING gin(files);
 CREATE INDEX idx_notices_deleted_created ON public.notices(deleted, created_at DESC);
 

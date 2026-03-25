@@ -7,6 +7,7 @@ CREATE TABLE public.news (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT,
+  lang TEXT NOT NULL DEFAULT 'ko',
   author TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   updated_by TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   view_count INTEGER NOT NULL DEFAULT 0,
@@ -22,6 +23,7 @@ CREATE TABLE public.news (
 );
 
 -- 인덱스
+CREATE INDEX idx_news_lang ON public.news(lang);
 CREATE INDEX idx_news_files_gin ON public.news USING gin(files);
 CREATE INDEX idx_news_deleted_created ON public.news(deleted, created_at DESC);
 

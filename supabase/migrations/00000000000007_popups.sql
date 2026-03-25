@@ -7,6 +7,7 @@ CREATE TABLE public.popups (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT NOT NULL,                     -- 에디터 HTML (필수)
+  lang TEXT NOT NULL DEFAULT 'ko',
   author TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   updated_by TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   position_top INTEGER NOT NULL DEFAULT 100, -- 상단 px
@@ -23,6 +24,7 @@ CREATE TABLE public.popups (
 );
 
 -- 인덱스
+CREATE INDEX idx_popups_lang ON public.popups(lang);
 CREATE INDEX idx_popups_active ON public.popups (is_active, deleted);
 CREATE INDEX idx_popups_date ON public.popups (start_date, end_date);
 

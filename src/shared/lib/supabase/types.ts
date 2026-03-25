@@ -75,6 +75,7 @@ export type Database = {
           created_at: string
           deleted: boolean
           id: string
+          lang: string
           question: string
           sort_order: number
           updated_at: string
@@ -87,6 +88,7 @@ export type Database = {
           created_at?: string
           deleted?: boolean
           id?: string
+          lang?: string
           question: string
           sort_order?: number
           updated_at?: string
@@ -99,6 +101,7 @@ export type Database = {
           created_at?: string
           deleted?: boolean
           id?: string
+          lang?: string
           question?: string
           sort_order?: number
           updated_at?: string
@@ -216,6 +219,7 @@ export type Database = {
           deleted: boolean
           files: Json | null
           id: string
+          lang: string
           title: string
           updated_at: string
           updated_by: string | null
@@ -228,6 +232,7 @@ export type Database = {
           deleted?: boolean
           files?: Json | null
           id?: string
+          lang?: string
           title: string
           updated_at?: string
           updated_by?: string | null
@@ -240,6 +245,7 @@ export type Database = {
           deleted?: boolean
           files?: Json | null
           id?: string
+          lang?: string
           title?: string
           updated_at?: string
           updated_by?: string | null
@@ -271,6 +277,7 @@ export type Database = {
           deleted: boolean
           files: Json | null
           id: string
+          lang: string
           title: string
           updated_at: string
           updated_by: string | null
@@ -284,6 +291,7 @@ export type Database = {
           deleted?: boolean
           files?: Json | null
           id?: string
+          lang?: string
           title: string
           updated_at?: string
           updated_by?: string | null
@@ -297,6 +305,7 @@ export type Database = {
           deleted?: boolean
           files?: Json | null
           id?: string
+          lang?: string
           title?: string
           updated_at?: string
           updated_by?: string | null
@@ -329,6 +338,7 @@ export type Database = {
           id: string
           is_active: boolean
           is_always: boolean
+          lang: string
           position_left: number
           position_top: number
           start_date: string | null
@@ -347,6 +357,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_always?: boolean
+          lang?: string
           position_left?: number
           position_top?: number
           start_date?: string | null
@@ -365,6 +376,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_always?: boolean
+          lang?: string
           position_left?: number
           position_top?: number
           start_date?: string | null
@@ -545,3 +557,4 @@ export const Constants = {
     Enums: {},
   },
 } as const
+

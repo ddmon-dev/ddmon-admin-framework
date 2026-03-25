@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,6 +19,7 @@ import {
 import { SheetFooter, SheetBody, SheetContainer } from '@/shared/ui/sheet';
 import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
+import { APP_CONFIG } from '@/app.config';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 
@@ -56,6 +57,8 @@ interface WriteFormProps {
 export function WriteForm({ id, prevValues }: WriteFormProps) {
   const sheet = useManageSheet();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentLang = searchParams.get('lang') || APP_CONFIG.LANG.DEFAULT;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof formSchema>,
@@ -71,15 +74,21 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
     try {
       const { files: formFiles, ...restValues } = values;
 
+      // 언어: 수정 시 기존값 유지, 생성 시 URL 파라미터 사용
+      const submitValues = {
+        ...restValues,
+        lang: prevValues?.lang ?? currentLang,
+      } as Partial<ItemDTO>;
+
       // 데이터 DB 저장
       const { success, data, error } = id
         ? await updateItem({
             id,
-            values: restValues as Partial<ItemDTO>,
+            values: submitValues,
             pathname,
           })
         : await createItem({
-            values: restValues as Partial<ItemDTO>,
+            values: submitValues,
             pathname,
           });
 

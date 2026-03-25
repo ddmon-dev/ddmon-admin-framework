@@ -1,12 +1,22 @@
 import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/shared/ui/badge';
+import { APP_CONFIG, type LangCode } from '@/app.config';
 import { RowActions } from '../_base/ui';
 
 import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 
 export const listColumns: ColumnDef<ItemDTO>[] = [
+  {
+    accessorKey: 'lang',
+    header: '언어',
+    size: 80,
+    cell: ({ row }) => {
+      const lang = row.original.lang as LangCode;
+      return <Badge variant="outline">{APP_CONFIG.LANG.LABELS[lang] ?? lang}</Badge>;
+    },
+  },
   {
     accessorKey: 'category',
     header: '카테고리',

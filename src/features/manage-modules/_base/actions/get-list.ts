@@ -25,6 +25,8 @@ interface GetListConfig {
   categoryField?: string;
   additionalFilters?: (query: any, ctx: any) => any;
   enableReorder?: ReorderConfig;
+  /** 언어 필터 사용 여부 (기본: true, lang 컬럼이 없는 테이블은 false로 설정) */
+  useLangFilter?: boolean;
   // CONFIG 전체 전달 시 무시되는 속성들 (타입 호환성)
   [key: string]: unknown;
 }
@@ -48,6 +50,7 @@ export async function getList<TData>(
     categoryField = 'category',
     additionalFilters,
     enableReorder,
+    useLangFilter = true,
   } = config;
 
   // 1. 인증 확인
@@ -70,7 +73,7 @@ export async function getList<TData>(
     };
 
     // 공통 필터 적용 함수
-    const applyFilters = (query: any, search: string, category: string) => {
+    const applyFilters = (query: any, search: string, category: string, lang: string) => {
       // soft delete 필터
       if (softDelete) {
         query = query.eq('deleted', false);
@@ -86,6 +89,11 @@ export async function getList<TData>(
         query = query.eq(categoryField, category);
       }
 
+      // 언어 필터 (useLangFilter가 true일 때만 적용)
+      if (useLangFilter) {
+        query = query.eq('lang', lang || APP_CONFIG.LANG.DEFAULT);
+      }
+
       // 추가 필터
       if (additionalFilters) {
         query = additionalFilters(query, ctx);
@@ -98,6 +106,7 @@ export async function getList<TData>(
       page: rawPage = '1',
       search = '',
       category = '',
+      lang = '',
       pageSize = APP_CONFIG.UI.PAGINATION.PAGE_SIZE_OPTIONS[0],
     } = params;
 
@@ -105,7 +114,7 @@ export async function getList<TData>(
 
     // 1. count 먼저 쿼리
     let countQuery = supabase.from(tableName).select('*', { count: 'exact', head: true });
-    countQuery = applyFilters(countQuery, search, category);
+    countQuery = applyFilters(countQuery, search, category, lang);
 
     const { count, error: countError } = await countQuery;
 
@@ -123,7 +132,7 @@ export async function getList<TData>(
 
     // 3. 보정된 page로 data 쿼리
     let dataQuery = supabase.from(tableName).select(selectColumns);
-    dataQuery = applyFilters(dataQuery, search, category);
+    dataQuery = applyFilters(dataQuery, search, category, lang);
 
     // 정렬 적용
     for (const order of orderBy) {

@@ -14,6 +14,7 @@ interface ManageContainerProps {
   headerSearchBar?: React.ReactNode;
   createButtonLabel?: string;
   hideCreateButton?: boolean;
+  showLangFilter?: boolean;
   children: React.ReactNode;
 }
 
@@ -24,6 +25,7 @@ export function ManageContainer({
   headerSearchBar,
   createButtonLabel,
   hideCreateButton,
+  showLangFilter,
   children,
 }: ManageContainerProps) {
   return (
@@ -36,6 +38,7 @@ export function ManageContainer({
           headerSearchBar={headerSearchBar}
           createButtonLabel={createButtonLabel}
           hideCreateButton={hideCreateButton}
+          showLangFilter={showLangFilter}
         />
         <Container className="flex flex-col gap-8 md:gap-4 flex-1 mt-8 md:mt-4">
           <h1 className="text-2xl font-bold block md:hidden text-center md:text-left">
