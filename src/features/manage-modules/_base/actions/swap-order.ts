@@ -58,6 +58,9 @@ export async function swapOrder(params: SwapOrderParams): Promise<ActionResult<b
       .neq('id', id); // 자기 자신 제외
 
     // 필터 조건 적용
+    if (filters.lang) {
+      query = query.eq('lang', filters.lang);
+    }
     if (filters.category) {
       query = query.eq('category', filters.category);
     }

@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';
+import { APP_CONFIG } from '@/app.config';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 import { Button } from '@/shared/ui/button';
 import { Spinner } from '@/shared/ui/spinner';
@@ -37,7 +38,9 @@ export function ReorderButtons({
   const searchParams = useSearchParams();
 
   // 현재 필터 조건 추출
-  const filters: Record<string, string> = {};
+  const filters: Record<string, string> = {
+    lang: searchParams.get('lang') || APP_CONFIG.LANG.DEFAULT,
+  };
   const category = searchParams.get('category');
 
   if (category) filters.category = category;
