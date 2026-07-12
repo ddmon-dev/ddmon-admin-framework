@@ -68,8 +68,10 @@ export const CONFIG = {
   ...
 };
 
-# 4. Server Actions는 CONFIG 직접 전달
-export const getList = createGetListAction<ItemDTO>(CONFIG);
+# 4. Server Actions는 _base 액션에 CONFIG를 넘기는 얇은 함수
+export async function getList(params: GetListParams) {
+  return baseGetList<ItemDTO>(CONFIG, params);
+}
 
 # 5. 컴포넌트 수정 (list-columns에서 RowActions 사용, write-form, addons)
 ```
