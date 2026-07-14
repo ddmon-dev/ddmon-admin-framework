@@ -152,7 +152,8 @@ export function AlertDialogComponent({ data, onClose }: AlertDialogComponentProp
     setIsLoading(false);
   };
 
-  const Icon = () => (
+  // 렌더 내부 컴포넌트 정의(매 렌더 새 타입 → 재마운트)를 피해 JSX 요소로 재사용
+  const icon = (
     <span
       className={cn(
         'flex items-center justify-center bg-secondary rounded-full',
@@ -172,7 +173,7 @@ export function AlertDialogComponent({ data, onClose }: AlertDialogComponentProp
       <DialogContent className={cn(SIZE_CLASSES[size], layout === 'vertical' ? 'py-10 gap-8' : '')}>
         {layout === 'vertical' ? (
           <DialogHeader className="flex flex-col items-center gap-5 text-center">
-            <Icon />
+            {icon}
             <div className="space-y-2">
               <DialogTitle className="text-center">{title || variantConfig.title}</DialogTitle>
               {description && (
@@ -183,7 +184,7 @@ export function AlertDialogComponent({ data, onClose }: AlertDialogComponentProp
         ) : (
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Icon />
+              {icon}
               <span>{title}</span>
             </DialogTitle>
             {description && <DialogDescription>{description}</DialogDescription>}

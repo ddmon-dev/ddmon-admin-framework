@@ -297,7 +297,8 @@ export function MultiFileUpload({
               : truncateFileName(file.file.name, 30);
             const fileSize = isExisting ? null : formatFileSize(file.file.size);
 
-            const Comp = () => (
+            // 렌더 내부 컴포넌트 정의(매 렌더 새 타입 → 재마운트)를 피해 JSX 요소로 재사용
+            const fileLabel = (
               <>
                 {isExisting && <span className="mr-1">(기존)</span>}
                 <span className={isDeleted ? 'line-through text-destructive/70' : 'truncate'}>
@@ -322,12 +323,10 @@ export function MultiFileUpload({
                     className="truncate hover:underline cursor-pointer text-left"
                     type="button"
                   >
-                    <Comp />
+                    {fileLabel}
                   </button>
                 ) : (
-                  <span className="truncate">
-                    <Comp />
-                  </span>
+                  <span className="truncate">{fileLabel}</span>
                 )}
                 <div className="flex gap-0.5 ml-2">
                   {isDeleted ? (
