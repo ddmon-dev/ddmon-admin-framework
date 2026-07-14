@@ -12,7 +12,8 @@ CREATE TABLE public.inquiries (
   company TEXT,                              -- 회사명
   position TEXT,                             -- 직책
   content TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending',    -- pending, answered
+  status TEXT NOT NULL DEFAULT 'pending'
+    CHECK (status IN ('pending', 'answered')),
   deleted BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
