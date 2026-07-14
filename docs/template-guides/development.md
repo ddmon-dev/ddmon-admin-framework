@@ -44,17 +44,19 @@ NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
 
 ```typescript
 const nextConfig: NextConfig = {
-  distDir: process.env.IS_CLAUDE ? '.next-claude' : undefined,
   experimental: {
-    reactCompiler: true, // React Compiler 활성화
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
+  async headers() { ... }, // 보안 헤더 (X-Frame-Options 등)
 };
 ```
 
 **주요 설정:**
 
-- React Compiler: 활성화 (불필요한 useMemo, useCallback 지양)
-- distDir: Claude Code 전용 빌드 디렉토리
+- serverActions.bodySizeLimit: 서버 액션 요청 body 한도 상향
+- React Compiler: 비활성화 (사유는 하단 참고사항 참조)
 
 ### tsconfig.json
 
@@ -147,7 +149,7 @@ const nextConfig: NextConfig = {
 ### Core
 
 - **Framework**: Next.js 16.0.7 (App Router)
-- **React**: 19.2.1 (React Compiler 활성화)
+- **React**: 19.2.1
 - **Language**: TypeScript (Strict Mode)
 - **Node.js**: 24.3.0
 - **Package Manager**: npm run
@@ -176,17 +178,15 @@ const nextConfig: NextConfig = {
 
 ## 참고사항
 
-### React Compiler
+### React Compiler (비활성화)
 
-React Compiler가 활성화되어 있으므로 불필요한 `useMemo`, `useCallback` 사용을 지양합니다.
+React Compiler는 **의도적으로 비활성화** 상태입니다.
 
-```typescript
-// ❌ 불필요
-const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+**사유**: 프로덕션 빌드에서 컴파일러 버그가 재현됩니다 (2026-07-14, Next.js 16.1.6 + babel-plugin-react-compiler 1.0.0 실측).
 
-// ✅ React Compiler가 자동 최적화
-const value = computeExpensiveValue(a, b);
-```
+- 증상: `CategoryButtonGroup`(카테고리/언어 필터) 클릭 시 `TypeError: P is not a function` — `useQueryParams()`에서 구조분해한 오버로드 함수 `set`이 컴파일러의 자동 메모이제이션 캐시를 거치며 함수가 아닌 값으로 변질
+- 개발 모드에서는 정상, **프로덕션 빌드에서만** 발생 (동일 조작을 컴파일러 OFF로 재빌드하면 정상 — 대조 실험으로 인과 확인)
+- 재활성화 조건: 트리거 패턴(오버로드 함수 구조분해 캡처) 제거 후 프로덕션 런타임 재검증 통과 시
 
 ### Tailwind V4
 

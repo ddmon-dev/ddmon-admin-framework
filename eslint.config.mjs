@@ -14,6 +14,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
   ]),
   // React Compiler 비활성화 상태에서 관련 ESLint 규칙 끄기
+  // (비활성화 사유: 프로덕션 빌드에서 컴파일러 버그 재현 — docs/template-guides/development.md 참조)
   {
     rules: {
       "react-compiler/react-compiler": "off",

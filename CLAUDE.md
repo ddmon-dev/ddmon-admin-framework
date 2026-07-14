@@ -18,7 +18,7 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 | 분야          | 기술                           |
 | ------------- | ------------------------------ |
 | **Framework** | Next.js 16.1.6 (App Router)    |
-| **React**     | 19.2.1 (React Compiler 활성화) |
+| **React**     | 19.2.1                         |
 | **Language**  | TypeScript (Strict Mode)       |
 | **Database**  | Supabase                       |
 | **CSS**       | Tailwind CSS V4                |
@@ -309,7 +309,7 @@ grep -r "변경전키워드" docs/template-guides/ CLAUDE.md
 
 - **우직실 원칙**: 우아함, 직관성, 실용성 (프로젝트 내부 용어)
 - **Path Alias**: `@/*` = `./src/*`
-- **React Compiler**: 활성화 (불필요한 useMemo/useCallback 지양)
+- **React Compiler**: 비활성화 — 프로덕션 빌드에서 컴파일러 버그 재현 확인 (상세: [development.md](docs/template-guides/development.md#react-compiler-비활성화))
 - **Tailwind V4**: PostCSS 플러그인 방식
 
 ---
