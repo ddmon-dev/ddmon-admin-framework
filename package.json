@@ -1,7 +1,13 @@
 {
-  "name": "admin-template",
+  "name": "ddmon-admin-framework",
   "version": "0.1.0",
   "private": true,
+  "description": "Next.js 16 기반 관리자 대시보드 프레임워크",
+  "author": "ddmon-dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ddmon-dev/ddmon-admin-framework.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -103,7 +109,6 @@
     "@types/nodemailer": "^7.0.9",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "@types/xlsx": "^0.0.36",
     "@vitejs/plugin-react": "^5.1.4",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
