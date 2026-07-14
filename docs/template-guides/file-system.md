@@ -2,7 +2,7 @@
 
 프로젝트에는 두 가지 파일 업로드 시스템이 있습니다.
 
-| 구분 | FormFileUpload | 에디터 이미지 업로드 |
+| 구분 | FormFileUpload | 에디터(Tiptap) 이미지 업로드 |
 |------|---------------|----------------------|
 | **용도** | 폼 첨부파일 | 에디터 내 이미지 |
 | **Storage 경로** | `{테이블명}/{엔티티ID}/` | `editor/{엔티티}/{날짜}/` |
@@ -199,9 +199,11 @@ import { downloadFileFromStorage } from '@/shared/lib/file-system';
 await downloadFileFromStorage(file.url, file.originalName);
 ```
 
+> 내부적으로 공개 URL을 `fetch`로 받아 Blob으로 저장합니다. Supabase SDK나 anon key에 의존하지 않으므로 클라이언트가 Supabase에 직접 접근하지 않습니다.
+
 ---
 
-## 에디터 이미지 업로드
+## 에디터 이미지 업로드 (Tiptap)
 
 ### 핵심 개념
 
@@ -214,10 +216,10 @@ Server Action: Presigned URL 발급
   ↓
 클라이언트: Storage에 직접 업로드
   ↓
-Tiptap: 공개 URL을 HTML에 삽입
+에디터: 공개 URL을 HTML에 삽입
 ```
 
-**보안**: 서버에서 URL 발급, 토큰 만료 (60초)
+**보안**: 서버에서 presigned URL 발급 (토큰 만료 1시간)
 **성능**: 서버를 거치지 않고 Storage 직접 업로드
 
 **2. 자동 경로 생성**
@@ -232,17 +234,19 @@ entity prop 전달 시 자동으로 경로 생성
 
 **3. 경로 우선순위**
 
+> 폼에서 실제로 사용하는 컴포넌트는 `FormEditor`입니다(내부적으로 `Editor` → dynamic `TiptapEditor`로 연결). `uploadFolder`·`entity` prop이 아래 우선순위로 업로드 경로를 결정합니다.
+
 ```typescript
 // 1순위: 명시적 uploadFolder (커스텀)
-<TiptapEditor uploadFolder="custom/path" entity="notices" />
+<FormEditor uploadFolder="custom/path" entity="notices" />
 // → "custom/path"
 
 // 2순위: entity 기반 자동 생성 (권장)
-<TiptapEditor entity="notices" />
+<FormEditor entity="notices" />
 // → "editor/notices/20250124"
 
 // 3순위: 기본값
-<TiptapEditor />
+<FormEditor />
 // → "editor"
 ```
 
@@ -273,16 +277,21 @@ import { CONFIG } from './config';
 />
 ```
 
-### 환경변수
+### 설정값
 
-**NEXT_PUBLIC_EDITOR_UPLOAD_ROOT**
+에디터 업로드 루트 폴더·이미지 제한은 환경변수가 아니라 `src/app.config.ts`의 `APP_CONFIG.EDITOR`에서 관리합니다.
 
-```bash
-# .env.local
-NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
+```typescript
+// src/app.config.ts
+EDITOR: {
+  UPLOAD_ROOT: 'editor',        // 이미지 업로드 루트 폴더 (기본값)
+  IMAGE_MAX_SIZE_MB: 2,         // 기본 최대 이미지 용량 (MB)
+  IMAGE_ACCEPTED_FORMATS: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
+},
 ```
 
-기본값: `'editor'`
+개별 에디터에서는 `<FormEditor maxImageSizeMB={5} acceptedImageFormats={[...]} />` prop으로 덮어쓸 수 있습니다.
+Storage **버킷명**만 환경변수 `NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_NAME`으로 지정합니다([supabase.md](supabase.md#스토리지-버킷) 참고).
 
 ### 주의사항
 
@@ -295,9 +304,9 @@ NEXT_PUBLIC_EDITOR_UPLOAD_ROOT=editor
 - 주기적으로 사용하지 않는 파일 정리
 - 날짜별 폴더 분석하여 오래된 파일 삭제
 
-### Tiptap 콘텐츠 렌더링
+### 에디터 콘텐츠 렌더링
 
-Tiptap로 작성한 HTML 콘텐츠를 상세보기에서 렌더링할 때 `RichTextContent` 컴포넌트를 사용합니다.
+에디터로 작성한 HTML 콘텐츠를 상세보기에서 렌더링할 때 `RichTextContent` 컴포넌트를 사용합니다.
 
 **기본 사용:**
 
@@ -328,7 +337,7 @@ import { RichTextContent } from '@/shared/ui/editor/rich-text-content';
 - 삭제 시 Storage도 자동 삭제
 - 파일 관리 완전 제어
 
-### Tiptap
+### 에디터 (Tiptap)
 - HTML에 URL만 임베딩
 - 자동 삭제 없음
 - 가볍고 빠름
@@ -339,7 +348,7 @@ import { RichTextContent } from '@/shared/ui/editor/rich-text-content';
 <form>
   <FormInput name='title' />
 
-  {/* Tiptap: 본문 이미지 */}
+  {/* 에디터: 본문 이미지 */}
   <FormEditor name='content' entity='notices' />
 
   {/* FormFileUpload: 첨부파일 */}
@@ -361,5 +370,5 @@ import { RichTextContent } from '@/shared/ui/editor/rich-text-content';
 }
 ```
 
-- Tiptap 이미지: HTML에 URL만
+- 에디터 이미지: HTML에 URL만
 - 첨부파일: DB JSONB에 메타데이터 완전 저장

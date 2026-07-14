@@ -208,18 +208,22 @@ export default {
     }),
   ],
   pages: {
-    signIn: '/auth/sign-in',
+    signIn: APP_CONFIG.AUTH.PATHS.SIGN_IN, // '/auth/sign-in'
+    signOut: APP_CONFIG.AUTH.PATHS.SIGN_IN,
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       // JWT 토큰에 사용자 정보 저장
       if (user) {
         token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
         token.super_admin = user.super_admin;
       }
-      // updateSession() 호출 시 토큰 업데이트
+      // updateSession() 호출 시 토큰 업데이트 (프로필 수정 반영)
       if (trigger === 'update' && session) {
         token.name = session.name ?? token.name;
+        token.email = session.email ?? token.email;
       }
       return token;
     },
@@ -297,6 +301,47 @@ const auth = useRequireAuth({ requireSuper: true });
 await signIn('credentials', { id, password, redirect: false });
 await signOut({ callbackUrl: '/auth/sign-in' });
 ```
+
+## 자동 로그아웃 (유휴 세션)
+
+일정 시간 활동이 없으면 자동으로 로그아웃합니다. `(protected)/layout.tsx`에서 `IdleLogoutProvider`가 감싸며, 시간 설정은 `APP_CONFIG.AUTH`에서 관리합니다.
+
+```typescript
+// src/app.config.ts
+AUTH: {
+  IDLE_TIMEOUT_MINUTES: 60, // 유휴 60분 후 자동 로그아웃
+  IDLE_WARNING_MINUTES: 5,  // 로그아웃 5분 전 경고 표시
+},
+```
+
+- 세션 JWT의 `maxAge`도 `IDLE_TIMEOUT_MINUTES`와 동일하게 설정됩니다(`next-auth.ts`).
+- 마우스/키보드 활동을 감지해 타이머를 리셋하고, 경고 시간에 도달하면 알림을 띄웁니다.
+
+## 조건부 렌더링 가드 (`RequireAuth`)
+
+훅(`useRequireAuth`)이 페이지 단위 리다이렉트 가드라면, `RequireAuth` 컴포넌트는 UI 일부만 조건부로 렌더링할 때 사용합니다.
+
+```typescript
+import { RequireAuth } from '@/features/auth';
+
+// 슈퍼 관리자에게만 노출
+<RequireAuth requireSuper>
+  <DangerZone />
+</RequireAuth>
+```
+
+## 프로필 수정
+
+로그인 사용자가 이름·이메일·비밀번호를 변경합니다. `update-profile-dialog.tsx`(UI) + `update-profile.ts`(Server Action) + `updateProfileSchema`(검증)로 구성됩니다.
+
+```typescript
+// 흐름
+1. UpdateProfileDialog에서 updateProfileSchema로 클라이언트 검증
+2. updateProfile 서버 액션 호출 (현재 비밀번호 확인 후 변경)
+3. 성공 시 useAuth의 세션 update() 트리거 → jwt 콜백이 token.name/email 갱신
+```
+
+`UpdateProfileValues`는 `name`, `email`과 선택적 비밀번호 변경 필드(`currentPassword`, `newPassword`, `confirmPassword`)를 포함합니다.
 
 ## 참고
 

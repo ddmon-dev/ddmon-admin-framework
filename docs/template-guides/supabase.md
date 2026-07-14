@@ -18,7 +18,7 @@ supabase/
 │   ├── 00000000000005_faqs.sql      # 선택: FAQ (sort_order 포함)
 │   ├── 00000000000006_inquiries.sql # 선택: 문의
 │   └── 00000000000007_popups.sql    # 선택: 팝업
-├── seed.sql                         # 개발용 목 데이터 (notices, news, faqs, inquiries, popups)
+├── seed.sql                         # 개발용 목 데이터 (notices, news, faqs, inquiries, inquiry_replies, popups)
 ├── templates/                       # 새 테이블 추가 시 참고
 └── config.toml
 ```
@@ -72,7 +72,7 @@ rm supabase/migrations/*_popups.sql
 
 ### 3. 시드 데이터 정리
 
-seed.sql에는 notices, news, faqs, inquiries, popups 테이블의 개발용 목 데이터가 포함되어 있습니다.
+seed.sql에는 notices, news, faqs, inquiries, inquiry_replies, popups 테이블의 개발용 목 데이터가 포함되어 있습니다(한국어 `ko` + 일부 영어 `en` 로우로 다국어 데모 포함).
 
 ```bash
 # 시드 전체 삭제 (프로덕션용)
@@ -111,6 +111,8 @@ npm run db:push
 # 6. 타입 재생성
 npm run db:types
 ```
+
+> **Postgres 메이저 버전 정렬**: `config.toml`의 `[db] major_version`은 원격 DB와 같아야 합니다(현재 `17`). 원격 버전은 콘솔 또는 `SHOW server_version;`으로 확인하세요. 다르면 `db:reset`/`db:pull` 시 오류가 납니다.
 
 ---
 
@@ -291,12 +293,17 @@ await supabase.rpc('swap_sort_order', {
 
 ### sort_order 컬럼 (순서 변경 기능)
 
-순서 변경 기능을 사용하려면 테이블에 다음 컬럼과 인덱스가 필요합니다:
+순서 변경 기능을 사용하려면 테이블에 `sort_order` 컬럼이 필요합니다:
 
 ```sql
 sort_order INTEGER NOT NULL DEFAULT 0,
+```
 
-CREATE INDEX idx_[table]_sort_order ON public.[table](sort_order);
+인덱스는 실제 목록 쿼리(`deleted = false AND lang = ? [AND category = ?] ORDER BY sort_order`)에 맞춰 **복합 인덱스**로 만드는 것을 권장합니다. 등가 조건 컬럼을 앞에, 정렬 컬럼을 뒤에 둡니다:
+
+```sql
+-- 실제 faqs 마이그레이션 예시
+CREATE INDEX idx_faqs_deleted_lang_sort ON public.faqs(deleted, lang, sort_order);
 ```
 
 자세한 사용법: [manage-modules.md](manage-modules.md#순서-변경-기능-enablereorder)
