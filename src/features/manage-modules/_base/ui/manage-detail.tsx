@@ -21,7 +21,8 @@ export function DetailField({
   labelClassName,
   valueClassName,
 }: DetailFieldProps) {
-  const displayValue = value || emptyText;
+  // 0 같은 의미 있는 falsy는 표시하고, null/undefined/빈 문자열만 빈 값 취급
+  const displayValue = value == null || value === '' ? emptyText : value;
 
   return (
     <div className={cn('grid grid-cols-[6rem_1fr]', className)}>
