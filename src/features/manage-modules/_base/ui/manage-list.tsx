@@ -52,6 +52,11 @@ export function ManageList<TData extends { id?: string }>({
 
   const sortDirection = enableReorder === true ? 'desc' : (enableReorder?.direction ?? 'desc');
 
+  const { page, pageSize, setPage, pageCount } = useDataList({
+    totalCount,
+    defaultPageSize: APP_CONFIG.UI.PAGINATION.PAGE_SIZE_OPTIONS[0],
+  });
+
   // 컬럼 처리
   const processedColumns = useMemo(() => {
     let columns: ColumnDef<TData>[] = [...listColumns];
@@ -63,9 +68,10 @@ export function ManageList<TData extends { id?: string }>({
         size: 80,
         cell: ({ row }) => {
           const item = row.original;
-          const index = row.index;
-          const isFirst = index === 0;
-          const isLast = index === data.length - 1;
+          // row.index는 페이지 로컬 인덱스 — 전역 좌표로 변환해 경계 판정
+          const globalIndex = (page - 1) * pageSize + row.index;
+          const isFirst = globalIndex === 0;
+          const isLast = globalIndex === totalCount - 1;
 
           return (
             <ReorderButtons
@@ -94,7 +100,9 @@ export function ManageList<TData extends { id?: string }>({
     enableBulkAction,
     shouldShowReorder,
     tableName,
-    data.length,
+    page,
+    pageSize,
+    totalCount,
     sortDirection,
     isSorting,
   ]);
@@ -113,11 +121,6 @@ export function ManageList<TData extends { id?: string }>({
     // data 변경 시에만 선택 초기화; selectedRows는 조건 확인용이라 의존성 제외
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, enableBulkAction]);
-
-  const { page, setPage, pageCount } = useDataList({
-    totalCount,
-    defaultPageSize: APP_CONFIG.UI.PAGINATION.PAGE_SIZE_OPTIONS[0],
-  });
 
   const handleRowClick = (row: TData) => {
     if (onRowClick) {
