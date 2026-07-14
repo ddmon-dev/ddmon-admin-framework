@@ -39,8 +39,7 @@ describe('createItem', () => {
       id: '1',
       title: '테스트',
       content: '내용',
-      author: '관리자',
-      author_id: 'admin1',
+      author: 'admin1',
     };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
@@ -54,8 +53,7 @@ describe('createItem', () => {
       expect.objectContaining({
         title: '테스트',
         content: '내용',
-        author: '관리자',
-        author_id: 'admin1',
+        author: 'admin1',
       })
     );
   });
@@ -71,14 +69,14 @@ describe('createItem', () => {
   });
 
   it('schema 없을 때 → 검증 스킵, DB insert 진행', async () => {
-    const mockData = { id: '2', title: '아무값', author: '관리자', author_id: 'admin1' };
+    const mockData = { id: '2', title: '아무값', author: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     const result = await createItem({ tableName: 'faqs' }, { values: { title: '아무값' } });
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockInsert).toHaveBeenCalledWith(
-      expect.objectContaining({ title: '아무값', author: '관리자', author_id: 'admin1' })
+      expect.objectContaining({ title: '아무값', author: 'admin1' })
     );
   });
 
@@ -91,8 +89,7 @@ describe('createItem', () => {
       id: '3',
       title: '순서 테스트',
       sort_order: 6,
-      author: '관리자',
-      author_id: 'admin1',
+      author: 'admin1',
     };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
@@ -103,12 +100,12 @@ describe('createItem', () => {
 
     expect(result).toEqual({ success: true, data: mockData });
     expect(mockInsert).toHaveBeenCalledWith(
-      expect.objectContaining({ sort_order: 6, author: '관리자', author_id: 'admin1' })
+      expect.objectContaining({ sort_order: 6, author: 'admin1' })
     );
   });
 
   it('pathname 있을 때 → revalidatePath 호출', async () => {
-    const mockData = { id: '4', title: '경로 테스트', author: '관리자', author_id: 'admin1' };
+    const mockData = { id: '4', title: '경로 테스트', author: 'admin1' };
     mockSingle.mockResolvedValue({ data: mockData, error: null });
 
     await createItem(
