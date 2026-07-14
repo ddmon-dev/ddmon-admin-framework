@@ -51,8 +51,25 @@ export async function createReply(params: CreateReplyParams): Promise<ActionResu
       return { success: false, error: CRUD_ERRORS.READ_FAILED('문의') };
     }
 
-    // 1. 이메일 발송 (먼저 수행 - 실패 시 DB 저장하지 않음)
-    const sentAt = new Date().toISOString();
+    // 1. 답변 저장 (sent_at: null — 발송 전. 이메일보다 먼저 저장해야 발송 후 실패 시 고객에게 중복 메일이 가는 상황을 막음)
+    const { data: replyData, error: replyError } = await supabase
+      .from(CONFIG.replyTableName)
+      .insert({
+        inquiry_id: inquiryId,
+        content,
+        author: user.id,
+      })
+      .select('id, inquiry_id, content, author, sent_at, created_at, updated_at')
+      .single();
+
+    if (replyError || !replyData) {
+      console.error('Create reply error:', replyError);
+      return { success: false, error: CRUD_ERRORS.CREATE_FAILED('답변') };
+    }
+
+    const reply = replyData as ReplyRowData;
+
+    // 2. 이메일 발송 — 실패 시 미발송 답변을 보상 삭제
     try {
       await sendEmail({
         to: inquiry.email,
@@ -65,27 +82,28 @@ export async function createReply(params: CreateReplyParams): Promise<ActionResu
       });
     } catch (emailError) {
       console.error('Email send error:', emailError);
+      // 보상 삭제 실패 시 레코드는 "미발송" 배지로 노출되므로 로그만 남김
+      const { error: deleteError } = await supabase
+        .from(CONFIG.replyTableName)
+        .delete()
+        .eq('id', reply.id);
+      if (deleteError) {
+        console.error('Reply compensation delete error:', deleteError);
+      }
       return { success: false, error: '이메일 발송에 실패했습니다. 답변이 저장되지 않았습니다.' };
     }
 
-    // 2. 답변 테이블에 저장 (이메일 발송 성공 후)
-    const { data: replyData, error: replyError } = await supabase
+    // 3. 발송 시각 기록 — 발송은 이미 완료됐으므로 실패해도 에러로 처리하지 않음 (미발송 배지로 남음)
+    const sentAt = new Date().toISOString();
+    const { error: sentAtError } = await supabase
       .from(CONFIG.replyTableName)
-      .insert({
-        inquiry_id: inquiryId,
-        content,
-        author: user.id,
-        sent_at: sentAt,
-      })
-      .select('id, inquiry_id, content, author, sent_at, created_at, updated_at')
-      .single();
-
-    if (replyError || !replyData) {
-      console.error('Create reply error:', replyError);
-      return { success: false, error: CRUD_ERRORS.CREATE_FAILED('답변') };
+      .update({ sent_at: sentAt })
+      .eq('id', reply.id);
+    if (sentAtError) {
+      console.error('Update sent_at error:', sentAtError);
     }
 
-    // 3. inquiries 상태를 answered로 변경
+    // 4. inquiries 상태를 answered로 변경
     const { error: updateError } = await supabase
       .from(CONFIG.tableName)
       .update({ status: 'answered' })
@@ -98,7 +116,7 @@ export async function createReply(params: CreateReplyParams): Promise<ActionResu
 
     revalidatePath(pathname);
 
-    return { success: true, data: replyData as ReplyRowData };
+    return { success: true, data: { ...reply, sent_at: sentAtError ? null : sentAt } };
   } catch (error) {
     console.error('Create reply error:', error);
     return { success: false, error: GENERAL_ERRORS.UNEXPECTED };
