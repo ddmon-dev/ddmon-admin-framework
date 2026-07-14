@@ -173,11 +173,11 @@ npm run db:types:local
 ### 로컬 환경
 
 Supabase CLI가 생성하는 고정 키를 사용합니다. `.env.local.example`에 기본값이 포함되어 있습니다.
+클라이언트는 Storage/DB에 직접 접근하지 않으므로 anon(publishable) key는 사용하지 않습니다.
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SECRET_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SECRET_KEY=sb_secret_...
 ```
 
 ### 클라우드 환경
@@ -186,7 +186,6 @@ Supabase 콘솔 > Settings > API에서 확인합니다.
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<anon-key>
 SUPABASE_SECRET_KEY=<service-role-key>
 ```
 
@@ -234,18 +233,21 @@ VALUES (
 
 ### 클라이언트 구분
 
-| 클라이언트     | 키          | RLS  | 용도                  |
-| -------------- | ----------- | ---- | --------------------- |
-| Browser Client | ANON KEY    | 적용 | 클라이언트 컴포넌트   |
-| Server Client  | SERVICE KEY | 우회 | 서버 액션, API 라우트 |
+이 프로젝트는 **서버 클라이언트(service role) 하나로 모든 DB/Storage 접근을 처리**합니다.
+클라이언트 컴포넌트는 서버 액션만 호출하고 Supabase에 직접 접근하지 않으므로 브라우저 클라이언트가 없습니다.
+파일 업로드는 presigned URL(서버 발급), 다운로드는 공개 URL `fetch`로 처리합니다.
+
+| 클라이언트    | 키          | RLS  | 용도                  |
+| ------------- | ----------- | ---- | --------------------- |
+| Server Client | SERVICE KEY | 우회 | 서버 액션, API 라우트 |
 
 ### 파일 구조
 
 ```
 src/shared/lib/supabase/
-├── client.ts      # 브라우저 클라이언트
-├── server.ts      # 서버 클라이언트
+├── server.ts      # 서버 클라이언트 (service role)
 ├── storage.ts     # Presigned URL 발급, 파일 삭제
+├── constants.ts   # 버킷명 상수
 ├── types.ts       # 자동 생성 DB 타입
 └── db-helpers.ts  # 타입 헬퍼
 ```

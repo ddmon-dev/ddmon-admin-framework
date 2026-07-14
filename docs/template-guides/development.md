@@ -21,9 +21,8 @@ npm run lint
 ### 필수 환경변수
 
 ```bash
-# Supabase
+# Supabase (클라이언트는 서버 액션만 사용 → anon key 불필요)
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 SUPABASE_SECRET_KEY=
 
 # NextAuth
