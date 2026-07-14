@@ -180,7 +180,7 @@ export const fieldArray = (itemSchema: z.ZodSchema, options?: { optional?: boole
     schema = schema.refine(
       (data) => data.some((item) => item.value !== null && item.value !== undefined),
       {
-        message: 'VLT 옵션은 최소 1개 이상 입력해주세요.',
+        message: '최소 1개 이상 입력해주세요.',
         path: ['root'],
       }
     );
