@@ -7,10 +7,13 @@
 ```typescript
 const dialog = useDialog();
 
-// 확인/취소 다이얼로그
-const confirmed = await dialog.confirm({
+// 확인/취소 다이얼로그 (콜백 기반 — confirm은 boolean이 아니라 void를 반환)
+await dialog.confirm({
   title: '정말 삭제하시겠습니까?',
-  variant: 'destructive'
+  variant: 'destructive',
+  onConfirm: async () => {
+    await deleteItem(id);
+  },
 });
 
 // 알림 다이얼로그
@@ -59,18 +62,17 @@ function MyComponent() {
 
 ```typescript
 const handleDelete = async (id: string) => {
-  const confirmed = await dialog.confirm({
+  await dialog.confirm({
     title: '공지사항 삭제',
     description: '정말 이 공지사항을 삭제하시겠습니까?',
     confirmText: '삭제',
     cancelText: '취소',
-    variant: 'destructive'
+    variant: 'destructive',
+    onConfirm: async () => {   // 확인 시에만 실행 (취소 시 호출되지 않음)
+      await deleteNotice(id);
+      toast.success('삭제되었습니다');
+    },
   });
-
-  if (!confirmed) return; // 취소하면 false 반환
-
-  await deleteNotice(id);
-  toast.success('삭제되었습니다');
 };
 ```
 
@@ -393,13 +395,18 @@ async function handleCriticalError() {
 
 ## 패턴
 
-### 1. Early Return 패턴
+### 1. 콜백 패턴 (확인 후 실행)
+
+`confirm`은 boolean을 반환하지 않습니다. 확인 시 실행할 동작은 `onConfirm`에 넣습니다.
 
 ```typescript
-const confirmed = await dialog.confirm({ title: '삭제' });
-if (!confirmed) return; // 취소 시 조기 종료
-
-await deleteItem(id);
+await dialog.confirm({
+  title: '삭제',
+  variant: 'destructive',
+  onConfirm: async () => {
+    await deleteItem(id); // 확인 시에만 실행
+  },
+});
 ```
 
 ### 2. 결과 기반 Variant
@@ -415,16 +422,18 @@ await dialog.alert({
 ### 3. 연속 다이얼로그
 
 ```typescript
-// 1단계: 확인
-if (!await dialog.confirm({ title: '정말?' })) return;
+await dialog.confirm({
+  title: '정말?',
+  onConfirm: async () => {
+    // 1단계 확인 → 2단계 처리
+    const result = await process();
 
-// 2단계: 처리
-const result = await process();
-
-// 3단계: 결과
-await dialog.alert({
-  title: '완료',
-  variant: 'success'
+    // 3단계: 결과 알림
+    await dialog.alert({
+      title: result.success ? '완료' : '실패',
+      variant: result.success ? 'success' : 'error',
+    });
+  },
 });
 ```
 
