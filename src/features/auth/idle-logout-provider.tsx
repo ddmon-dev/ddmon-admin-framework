@@ -107,6 +107,8 @@ export function IdleLogoutProvider({
         document.removeEventListener(event, handleActivity);
       });
     };
+    // dialog는 context 안정 API, idle 시점에만 사용 — 타이머 재설정 방지 위해 제외
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeout, warningTime, onWarning, onIdle, updateSession]);
 
   return <>{children}</>;

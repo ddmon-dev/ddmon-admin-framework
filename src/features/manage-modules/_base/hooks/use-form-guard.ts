@@ -19,6 +19,8 @@ export function useFormGuard<T extends FieldValues>(form: UseFormReturn<T>, enab
     return () => {
       sheet.setCloseGuard(null);
     };
+    // sheet는 context 안정 API, 최신값은 isDirtyRef로 참조 — enabled 변경 시에만 재등록
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
 
   // 브라우저 탭 닫기/새로고침 시 경고

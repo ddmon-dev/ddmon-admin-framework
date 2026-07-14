@@ -9,7 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { useDialog } from '@/shared/ui/app-dialog';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
-import { CRUD_ERRORS, GENERAL_ERRORS } from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 import { bulkSoftDelete } from '../actions/bulk-delete';
 
 interface BulkActionBarProps<TData extends { id?: string }> {

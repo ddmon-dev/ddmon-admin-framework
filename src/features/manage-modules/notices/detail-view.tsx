@@ -3,11 +3,9 @@ import { Badge } from '@/shared/ui/badge';
 import { RichTextContent } from '@/shared/ui/editor/rich-text-content';
 import { SheetFooter, SheetBody, SheetContainer } from '@/shared/ui/sheet';
 import {
-  DetailContainer,
   DetailField,
   DetailGroup,
   DetailRow,
-  ManageSheetFooter,
   ManageSheetClose,
   ManageSheetModeChange,
 } from '../_base/ui';

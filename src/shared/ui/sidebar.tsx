@@ -98,6 +98,8 @@ function SidebarProvider({
     if (isMobile) {
       setOpenMobile(false);
     }
+    // 경로 변경 시에만 모바일 사이드바 닫기; isMobile은 리사이즈 재실행 불필요
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   // We add a state so that we can do data-state="expanded" or "collapsed".

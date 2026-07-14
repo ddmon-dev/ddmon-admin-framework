@@ -39,6 +39,8 @@ export function useScrollDirection(threshold: number = 50, throttleDelay: number
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
+    // 마운트 시 1회 리스너 등록; handleScroll은 throttle로 매 렌더 재생성되나 로직 동일
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
@@ -76,6 +78,8 @@ export function useScrollPosition(position: number = 100, throttleDelay: number 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
+    // 마운트 시 1회 리스너 등록; handleScroll/position은 고정 인자라 재등록 불필요
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

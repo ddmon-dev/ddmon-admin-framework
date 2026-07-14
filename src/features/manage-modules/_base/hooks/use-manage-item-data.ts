@@ -90,6 +90,8 @@ export function useManageItemData<T extends { files?: DbFilesJSONB }>(
     atLeast(() => fetchItem(id), APP_CONFIG.UX.MIN_LOADING_TIME).then(() => {
       setIsLoading(false);
     });
+    // fetchItem은 매 렌더 재생성되므로 제외; 실제 트리거는 id/getItemAction
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, getItemAction]);
 
   function refetch() {

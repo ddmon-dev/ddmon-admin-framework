@@ -51,7 +51,7 @@ export function SearchBar({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSubmit(value);
-      isMobile && inputRef.current?.blur();
+      if (isMobile) inputRef.current?.blur();
     }
   };
 

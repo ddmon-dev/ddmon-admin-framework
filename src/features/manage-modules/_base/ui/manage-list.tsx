@@ -110,6 +110,8 @@ export function ManageList<TData extends { id?: string }>({
       setSelectedRows([]);
       setSelectionKey((prev) => prev + 1);
     }
+    // data 변경 시에만 선택 초기화; selectedRows는 조건 확인용이라 의존성 제외
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, enableBulkAction]);
 
   const { page, setPage, pageCount } = useDataList({

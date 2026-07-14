@@ -8,7 +8,7 @@ import { delay } from '@/shared/utils/delays';
 import { type ActionResult } from '@/shared/types/results';
 
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
-import { GENERAL_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 
 interface ExcelExportButtonProps<TData = any> {
   /** 서버에서 데이터를 가져오는 함수 (필수) */

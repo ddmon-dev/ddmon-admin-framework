@@ -25,7 +25,6 @@ import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 
 import {
   useManageSheet,
-  ManageSheetFooter,
   ManageFormSubmit,
   ManageSheetClose,
   ManageSheetModeChange,
