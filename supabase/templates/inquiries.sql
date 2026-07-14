@@ -1,4 +1,8 @@
--- 문의 테이블
+-- =============================================
+-- 문의 테이블 템플릿
+-- 새 테이블 추가 시 참고 (migrations/00000000000006_inquiries.sql과 동일 스키마)
+-- =============================================
+
 CREATE TABLE public.inquiries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
@@ -17,7 +21,7 @@ CREATE TABLE public.inquiries (
 CREATE INDEX idx_inquiries_status ON public.inquiries (status, deleted);
 CREATE INDEX idx_inquiries_created_at ON public.inquiries (created_at DESC);
 
--- 트리거
+-- updated_at 자동 업데이트 트리거 (core의 기존 함수 사용)
 CREATE TRIGGER trigger_inquiries_updated_at
   BEFORE UPDATE ON public.inquiries
   FOR EACH ROW
@@ -36,8 +40,7 @@ CREATE TABLE public.inquiry_replies (
   inquiry_id UUID NOT NULL REFERENCES public.inquiries(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
   sent_at TIMESTAMPTZ,                       -- 이메일 발송 시각 (null이면 미발송)
-  author TEXT NOT NULL,                      -- 답변 작성 관리자 이름
-  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
+  author TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -46,7 +49,7 @@ CREATE TABLE public.inquiry_replies (
 CREATE INDEX idx_inquiry_replies_inquiry ON public.inquiry_replies (inquiry_id);
 CREATE INDEX idx_inquiry_replies_created_at ON public.inquiry_replies (created_at DESC);
 
--- 트리거
+-- updated_at 자동 업데이트 트리거 (core의 기존 함수 사용)
 CREATE TRIGGER trigger_inquiry_replies_updated_at
   BEFORE UPDATE ON public.inquiry_replies
   FOR EACH ROW

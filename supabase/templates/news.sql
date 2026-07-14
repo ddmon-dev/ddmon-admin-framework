@@ -1,12 +1,15 @@
--- 테이블 생성 (JSONB files 컬럼 포함)
+-- =============================================
+-- 뉴스 테이블 템플릿
+-- 새 테이블 추가 시 참고 (migrations/00000000000004_news.sql과 동일 스키마)
+-- =============================================
+
 CREATE TABLE public.news (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT,
-  author TEXT,
-  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
-  updated_by TEXT,
-  updated_by_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
+  lang TEXT NOT NULL DEFAULT 'ko',
+  author TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
+  updated_by TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   view_count INTEGER NOT NULL DEFAULT 0,
 
   -- 파일 메타데이터 저장용 JSONB 컬럼
@@ -19,16 +22,17 @@ CREATE TABLE public.news (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- GIN 인덱스 생성 (JSONB 쿼리 성능 향상)
+-- 인덱스 (목록 쿼리: deleted = false AND lang = ? ORDER BY created_at DESC)
 CREATE INDEX idx_news_files_gin ON public.news USING gin(files);
+CREATE INDEX idx_news_deleted_lang_created ON public.news(deleted, lang, created_at DESC);
 
--- updated_at 자동 업데이트 트리거 (기존 함수 사용)
+-- updated_at 자동 업데이트 트리거 (core의 기존 함수 사용)
 CREATE TRIGGER trigger_news_updated_at
   BEFORE UPDATE ON public.news
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
--- RLS (Row Level Security) 활성화
+-- RLS 활성화
 ALTER TABLE public.news ENABLE ROW LEVEL SECURITY;
 
 -- 정책: 모든 사용자가 조회 가능 (deleted = false인 항목만)
@@ -40,7 +44,10 @@ CREATE POLICY "News are viewable by everyone"
 -- 생성/수정/삭제는 서버에서 Service Role Key로만 처리
 -- (정책 없음 = 일반 사용자 접근 불가, service_role은 RLS 우회)
 
--- 목 데이터 20개 삽입
+-- ============================================================
+-- 샘플 데이터 (lang은 DEFAULT 'ko' 적용)
+-- ============================================================
+
 INSERT INTO public.news (title, content, view_count) VALUES
   ('2024년 신년 특별 이벤트 진행', '새해를 맞아 다양한 특별 이벤트를 준비했습니다. 많은 참여 부탁드립니다.', 3421),
   ('서비스 업데이트 안내', '더 나은 사용자 경험을 위해 서비스가 업데이트되었습니다.', 2156),

@@ -1,12 +1,15 @@
--- 팝업 관리 테이블
+-- =============================================
+-- 팝업 테이블 템플릿
+-- 새 테이블 추가 시 참고 (migrations/00000000000007_popups.sql과 동일 스키마)
+-- =============================================
+
 CREATE TABLE public.popups (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT NOT NULL,                     -- 에디터 HTML (필수)
-  author TEXT,                               -- 작성자
-  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
-  updated_by TEXT,                           -- 수정자
-  updated_by_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
+  lang TEXT NOT NULL DEFAULT 'ko',
+  author TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
+  updated_by TEXT REFERENCES public.admins(id) ON DELETE SET NULL,
   position_top INTEGER NOT NULL DEFAULT 100, -- 상단 px
   position_left INTEGER NOT NULL DEFAULT 100,-- 좌측 px
   width INTEGER NOT NULL DEFAULT 400,        -- 팝업 너비 px
@@ -20,11 +23,12 @@ CREATE TABLE public.popups (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- 인덱스
+-- 인덱스 (어드민 목록: deleted = false AND lang = ? ORDER BY created_at DESC / 공개 조회: is_active + 날짜)
+CREATE INDEX idx_popups_deleted_lang_created ON public.popups (deleted, lang, created_at DESC);
 CREATE INDEX idx_popups_active ON public.popups (is_active, deleted);
 CREATE INDEX idx_popups_date ON public.popups (start_date, end_date);
 
--- 트리거
+-- updated_at 자동 업데이트 트리거 (core의 기존 함수 사용)
 CREATE TRIGGER trigger_popups_updated_at
   BEFORE UPDATE ON public.popups
   FOR EACH ROW
@@ -41,3 +45,6 @@ CREATE POLICY "Active popups are viewable by everyone"
     deleted = false
     AND is_active = true
   );
+
+-- 생성/수정/삭제는 서버에서 Service Role Key로만 처리
+-- (정책 없음 = 일반 사용자 접근 불가, service_role은 RLS 우회)
