@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
-import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
+import { CRUD_ERRORS, GENERAL_ERRORS } from '@/shared/constants/error-messages';
 import type { ActionResult } from '@/shared/types/results';
 import type { TableName } from '@/shared/lib/supabase/db-helpers';
 
@@ -38,7 +38,7 @@ export async function swapOrder(params: SwapOrderParams): Promise<ActionResult<b
       .single();
 
     if (currentError || !currentItem) {
-      return Result.error('Item not found');
+      return Result.error(CRUD_ERRORS.NOT_FOUND('항목'));
     }
 
     // 타입 단언 (sort_order 필드가 있는 테이블에서만 사용)
@@ -75,7 +75,7 @@ export async function swapOrder(params: SwapOrderParams): Promise<ActionResult<b
     const { data: adjacentItem, error: adjacentError } = await query.limit(1).single();
 
     if (adjacentError || !adjacentItem) {
-      return Result.error('No adjacent item');
+      return Result.error(CRUD_ERRORS.NOT_FOUND('인접 항목'));
     }
 
     // 타입 단언
@@ -92,7 +92,7 @@ export async function swapOrder(params: SwapOrderParams): Promise<ActionResult<b
 
     if (swapError) {
       console.error('Swap sort_order error:', swapError);
-      return Result.error('Failed to swap sort_order');
+      return Result.error(CRUD_ERRORS.UPDATE_FAILED('순서'));
     }
 
     revalidatePath(pathname);
