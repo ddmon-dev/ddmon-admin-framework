@@ -31,7 +31,6 @@ app/
 │   ├── (super-admin-only)/  # 슈퍼 관리자 전용
 │   ├── (system)/            # 시스템 페이지 (unauthorized 등)
 │   └── (manage-samples)/    # 관리 모듈 샘플
-├── (preview)/           # 미리보기 페이지
 └── api/                 # API 라우트
 ```
 

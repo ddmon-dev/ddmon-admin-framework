@@ -187,7 +187,6 @@ src/
 ├── app/                     # Next.js App Router (라우팅)
 │   ├── (auth)/             # 인증 페이지 (레이아웃 없음)
 │   ├── (protected)/        # 보호된 페이지 (Sidebar + Header)
-│   ├── (preview)/          # 미리보기 페이지
 │   └── api/                # API 라우트
 ├── features/                # 기능 레이어 (비즈니스 로직)
 │   ├── auth/               # 인증 시스템
