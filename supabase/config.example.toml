@@ -1,5 +1,6 @@
 # Supabase 로컬 설정 예시
 # supabase init 후 생성되는 config.toml에 아래 내용을 참고하여 수정하세요.
+# 이 프로젝트는 인증에 NextAuth를 사용하므로 Supabase Auth([auth]) 설정은 불필요합니다.
 
 [api]
 enabled = true
@@ -10,42 +11,23 @@ max_rows = 1000
 
 [db]
 port = 54322
-major_version = 15
+# 원격(클라우드) DB와 동일한 메이저 버전 사용. 원격에서 `SHOW server_version;`으로 확인.
+major_version = 17
 
 [studio]
 enabled = true
 port = 54323
 
-[inbucket]
-enabled = true
-port = 54324
-
 [storage]
 enabled = true
+file_size_limit = "50MiB"
 
-# 스토리지 버킷 설정
-# 로컬에서 자동 생성됨
-[[storage.buckets]]
-name = "public-assets"
+# 파일 업로드용 버킷 (앱의 NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_NAME과 이름 일치 필요)
+# config.toml에 추가 후 `npm run db:reset` 또는 `npx supabase seed buckets`로 생성됨
+[storage.buckets.public-assets]
 public = true
-file_size_limit = "50MB"
+file_size_limit = "50MiB"
 allowed_mime_types = ["image/*", "application/pdf", "application/zip"]
-
-[auth]
-enabled = true
-site_url = "http://localhost:3000"
-
-[auth.email]
-enable_signup = true
-double_confirm_changes = true
-enable_confirmations = false
-
-# 로컬 개발 시 이메일 확인 비활성화
-[auth.external.apple]
-enabled = false
-
-[auth.external.google]
-enabled = false
 
 [analytics]
 enabled = false

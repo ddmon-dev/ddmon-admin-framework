@@ -196,14 +196,21 @@ SUPABASE_SECRET_KEY=<service-role-key>
 
 ### 로컬
 
-`config.toml`에서 자동 생성됩니다:
+`config.toml`에 버킷을 선언합니다 (버킷 이름은 `.env.local`의 `NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_NAME`과 일치해야 합니다):
 
 ```toml
-[[storage.buckets]]
-name = "public-assets"
+[storage.buckets.public-assets]
 public = true
-file_size_limit = "50MB"
+file_size_limit = "50MiB"
 allowed_mime_types = ["image/*", "application/pdf", "application/zip"]
+```
+
+선언 후 생성 명령 실행 (`supabase start`만으로는 생성되지 않음):
+
+```bash
+npm run db:reset               # 마이그레이션 + 시드 + 버킷 생성
+# 또는 버킷만 생성
+npx supabase seed buckets
 ```
 
 ### 클라우드
