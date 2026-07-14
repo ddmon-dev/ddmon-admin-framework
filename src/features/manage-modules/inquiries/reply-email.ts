@@ -4,11 +4,25 @@ interface ReplyEmailParams {
   replyContent: string;
 }
 
+// name/inquiryContent는 외부 사이트에서 접수된 신뢰할 수 없는 입력 — HTML 인젝션(피싱) 차단
+function escapeHtml(text: string) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export function getReplyEmailSubject() {
   return '[ADMIN] Your Inquiry Has Been Answered';
 }
 
-export function getReplyEmailHtml({ name, inquiryContent, replyContent }: ReplyEmailParams) {
+export function getReplyEmailHtml(params: ReplyEmailParams) {
+  const name = escapeHtml(params.name);
+  const inquiryContent = escapeHtml(params.inquiryContent);
+  const replyContent = escapeHtml(params.replyContent);
+
   return `
 <!DOCTYPE html>
 <html lang="en">
