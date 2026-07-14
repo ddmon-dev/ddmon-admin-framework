@@ -1,6 +1,6 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import { defineConfig, globalIgnores } from 'eslint/config';
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTs from 'eslint-config-next/typescript';
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -8,31 +8,31 @@ const eslintConfig = defineConfig([
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts',
   ]),
   // React Compiler 비활성화 상태에서 관련 ESLint 규칙 끄기
   // (비활성화 사유: 프로덕션 빌드에서 컴파일러 버그 재현 — docs/template-guides/development.md 참조)
   {
     rules: {
-      "react-compiler/react-compiler": "off",
+      'react-compiler/react-compiler': 'off',
       // React Compiler 전용 규칙들 (Compiler 없이는 불필요)
-      "react-hooks/refs": "off",
-      "react-hooks/set-state-in-effect": "off",
-      "react-hooks/purity": "off",
-      "react-hooks/globals": "off",
-      "react-hooks/incompatible-library": "off",
-      "react-hooks/static-components": "off",
+      'react-hooks/refs': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/purity': 'off',
+      'react-hooks/globals': 'off',
+      'react-hooks/incompatible-library': 'off',
+      'react-hooks/static-components': 'off',
     },
   },
   // 미사용 인자/변수는 `_` 접두로 의도 표시 시 허용
   {
     rules: {
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
     },
   },
@@ -44,17 +44,17 @@ const eslintConfig = defineConfig([
   // - shared/ui/form: react-hook-form 제네릭 경계
   {
     files: [
-      "src/features/manage-modules/**/actions/**/*.ts",
-      "src/features/manage-modules/_base/ui/delete-button.tsx",
-      "src/shared/lib/excel/**/*.ts",
-      "src/shared/lib/file-system/**/*.ts",
-      "src/shared/ui/editor/tiptap/**/*.tsx",
-      "src/shared/ui/form/**/*.tsx",
-      "src/shared/ui/app-dialog/**/*.tsx",
-      "src/shared/ui/excel-export-button.tsx",
+      'src/features/manage-modules/**/actions/**/*.ts',
+      'src/features/manage-modules/_base/ui/delete-button.tsx',
+      'src/shared/lib/excel/**/*.ts',
+      'src/shared/lib/file-system/**/*.ts',
+      'src/shared/ui/editor/tiptap/**/*.tsx',
+      'src/shared/ui/form/**/*.tsx',
+      'src/shared/ui/app-dialog/**/*.tsx',
+      'src/shared/ui/excel-export-button.tsx',
     ],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 ]);
