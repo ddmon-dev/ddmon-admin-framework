@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
+import { unstable_rethrow } from 'next/navigation';
 import { toast } from 'sonner';
 
 import {
@@ -144,14 +144,9 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
         confirmPassword: '',
       });
     } catch (error) {
+      // signOut의 redirect는 내부적으로 에러 throw로 구현되어 catch에 걸림 — Next 내부 에러는 다시 던짐
+      unstable_rethrow(error);
       console.error(error);
-      // try catch 내부의 signout은 redirect 에러를 반환하므로 무조건 catch 블록이 실행되게 되어있음.
-      // 그래서 비밀번호 변경시 아래 얼럿이 뜨는 것임.
-      console.error(error);
-
-      if (isRedirectError(error)) {
-        throw error;
-      }
 
       form.setError('root', {
         message: GENERAL_ERRORS.UNEXPECTED,
