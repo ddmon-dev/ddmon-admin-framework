@@ -54,3 +54,6 @@ next-env.d.ts
 /.playwright-mcp/
 /.serena/
 /graphify-out/
+
+# work notes (internal todos, not for public repo)
+/docs/todos/
