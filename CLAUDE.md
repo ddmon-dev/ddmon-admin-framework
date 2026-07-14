@@ -33,10 +33,12 @@ Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다
 
 ### 아키텍처 & 시스템
 
-- **[프로젝트 구조 & 컨벤션](docs/template-guides/conventions.md)** - FSD 아키텍처, 파일명 규칙, lib vs utils 구분
-- **[manage-modules (CRUD 시스템)](docs/template-guides/manage-modules.md)** - 템플릿 기반 CRUD 모듈, 핵심 패턴
+- **[프로젝트 구조 & 컨벤션](docs/template-guides/conventions.md)** - FSD 아키텍처, 파일명 규칙, lib vs utils 구분, APP_CONFIG
+- **[manage-modules (CRUD 시스템)](docs/template-guides/manage-modules.md)** - 템플릿 기반 CRUD 모듈, 핵심 패턴, 엑셀 내보내기
 - **[파일 시스템](docs/template-guides/file-system.md)** - FormFileUpload + 에디터(Tiptap) 이미지 업로드
 - **[인증 시스템](docs/template-guides/auth.md)** - NextAuth 설정, 라우팅, 세션 관리
+- **[다국어(i18n)](docs/template-guides/i18n.md)** - lang 필터, APP_CONFIG.LANG, 언어 전환
+- **[이메일(SMTP)](docs/template-guides/email.md)** - Nodemailer 발송, 문의 답변 연동
 
 ### 개발
 
@@ -192,16 +194,18 @@ src/
 │   ├── auth/               # 인증 시스템
 │   ├── dashboard/          # 대시보드
 │   ├── manage-modules/     # CRUD 모듈 시스템
-│   ├── ui/                 # UI 위젯 (Sidebar, Header, Breadcrumb)
-│   └── utils/              # 유틸리티
-└── shared/                  # 공유 레이어
-    ├── ui/                  # Shadcn UI 컴포넌트
-    ├── lib/                 # 도메인 라이브러리
-    ├── utils/               # 범용 유틸리티
-    ├── hooks/               # 커스텀 훅
-    ├── types/               # 공통 타입
-    ├── schemas/             # Zod 스키마
-    └── constants/           # 공통 상수
+│   └── ui/                 # 복합 UI 위젯 (app-sidebar 등)
+├── shared/                  # 공유 레이어
+│   ├── ui/                  # Shadcn UI + 도메인 UI (form, editor, data-list, app-dialog 등)
+│   ├── lib/                 # 도메인 라이브러리 (supabase, file-system, email, excel)
+│   ├── utils/               # 범용 유틸리티
+│   ├── hooks/               # 커스텀 훅
+│   ├── types/               # 공통 타입
+│   ├── schemas/             # Zod 스키마 (프리셋)
+│   └── constants/           # 공통 상수
+├── fonts/                   # 폰트 정의 (Poppins, Oswald, Pretendard)
+├── types/                   # 전역 타입 확장 (next-auth.d.ts)
+└── app.config.ts            # APP_CONFIG — 앱 전역 설정 SSOT
 ```
 
 📄 자세한 내용: [conventions.md](docs/template-guides/conventions.md#프로젝트-아키텍처)

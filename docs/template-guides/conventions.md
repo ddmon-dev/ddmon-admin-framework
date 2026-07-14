@@ -28,9 +28,10 @@ Next.js App Router로 페이지 구성과 라우팅만 담당합니다.
 app/
 ├── (auth)/              # 인증 페이지 (레이아웃 없음)
 ├── (protected)/         # 보호된 페이지 (Sidebar + Header)
-│   ├── (super-admin-only)/  # 슈퍼 관리자 전용
-│   ├── (system)/            # 시스템 페이지 (unauthorized 등)
-│   └── (manage-samples)/    # 관리 모듈 샘플
+│   ├── (super-admin-only)/  # 슈퍼 관리자 전용 (admins)
+│   ├── (system)/            # 시스템 페이지 (unauthorized, error-test, [...not-found])
+│   ├── faqs/ notices/ ...   # 관리 모듈 페이지 (protected 직속)
+│   └── page.tsx             # 대시보드
 └── api/                 # API 라우트
 ```
 
@@ -42,8 +43,7 @@ features/
 ├── auth/               # 인증 시스템
 ├── dashboard/          # 대시보드
 ├── manage-modules/     # CRUD 모듈 시스템
-├── ui/                 # UI 위젯 (Sidebar, Header, Breadcrumb)
-└── utils/              # 유틸리티
+└── ui/                 # 복합 UI 위젯 (app-sidebar 등)
 ```
 
 **shared/** - 공유 레이어
@@ -84,6 +84,50 @@ import { Button } from '@/shared/ui/button';
 import { auth } from '@/features/auth';
 import { AppSidebar } from '@/features/ui/app-sidebar/sidebar';
 ```
+
+---
+
+## APP_CONFIG 중앙 설정
+
+앱 전역에서 재사용되는 상수는 `src/app.config.ts`의 `APP_CONFIG` 한 곳(SSOT)에서 관리합니다. 환경변수가 아니라 **정적 설정값**이 여기에 모입니다.
+
+```typescript
+// src/app.config.ts (발췌)
+export const APP_CONFIG = {
+  META: { TITLE, DESCRIPTION },            // 문서 메타
+  AUTH: {
+    ADMIN_TABLE_NAME: 'admins',
+    SALT_ROUNDS: 10,
+    IDLE_TIMEOUT_MINUTES: 60,              // 자동 로그아웃
+    PATHS: { SIGN_IN, FORBIDDEN },
+  },
+  UI: { SIDEBAR, PAGINATION },             // 사이드바 크기, 페이지네이션 옵션
+  UX: { MIN_LOADING_TIME },                // 최소 스켈레톤 표시 시간
+  EDITOR: { UPLOAD_ROOT, IMAGE_MAX_SIZE_MB, IMAGE_ACCEPTED_FORMATS },
+  FILE: { UPLOAD_TIMEOUT_MS },
+  LANG: { CODES: ['ko', 'en', 'ja'], LABELS, DEFAULT: 'ko' },  // 다국어
+} as const;
+
+export type LangCode = (typeof APP_CONFIG.LANG.CODES)[number];
+```
+
+**원칙**: "매직 넘버/문자열을 코드에 흩뿌리지 않는다." 로그아웃 시간, 업로드 제한, 지원 언어 등을 바꿀 때 이 파일만 수정하면 됩니다.
+
+- 다국어(`LANG`) 활용: [i18n.md](i18n.md)
+- 에디터(`EDITOR`) 설정: [file-system.md](file-system.md)
+- 인증(`AUTH`) 설정: [auth.md](auth.md)
+
+---
+
+## 주요 공용 UI 프리미티브
+
+`shared/ui`에는 Shadcn 원자 컴포넌트 외에 프로젝트 고유의 조합형 프리미티브가 있습니다.
+
+| 위치 | 역할 |
+| --- | --- |
+| `shared/ui/data-list/` | 목록 화면의 뼈대 — `useDataList`(URL 쿼리 동기화: 검색·페이지·정렬·카테고리) + `DataList` 테이블 + `SearchBar`/`PageSizeSelect`/`SortingButton`/`CategoryButtonGroup`. manage-modules의 `ManageList`가 이 위에 구축됩니다. |
+| `shared/ui/app-dialog/` | 전역 다이얼로그(`useDialog().confirm/alert`). 콜백(`onConfirm`/`onCancel`) 기반. 자세한 API는 해당 폴더의 `README.md` 참조. |
+| `shared/ui/editor/` | Tiptap 에디터(`FormEditor`) + `RichTextContent` 렌더러. |
 
 ---
 
@@ -281,10 +325,6 @@ features/ui/app-sidebar/
 ├── nav-user.tsx
 ├── nav-menu.tsx
 └── identity.tsx
-
-features/ui/app-breadcrumb/
-├── breadcrumb.tsx
-└── config.ts
 ```
 
 **이유**:
@@ -338,7 +378,7 @@ shared/
 
 **예시**:
 ```typescript
-// features/auth/lib/session.ts
+// features/auth/utils/server.ts
 import { auth } from '@/features/auth';
 import { redirect } from 'next/navigation';
 
@@ -377,21 +417,26 @@ export async function hashPassword(password: string) {
 ```
 shared/
 ├── lib/               # 도메인 라이브러리
-│   ├── supabase/      # DB 클라이언트 (도메인)
-│   └── file-system/   # 파일 시스템 (도메인)
-└── utils/             # 범용 유틸리티
-    ├── objects/       # 객체 변환 (범용)
-    └── date/          # 날짜 포맷 (범용)
+│   ├── supabase/      # DB/Storage 클라이언트 (도메인)
+│   ├── file-system/   # 파일 업로드/다운로드 (도메인)
+│   ├── email/         # SMTP 발송 (도메인)
+│   └── excel/         # 엑셀 생성 (도메인)
+└── utils/             # 범용 유틸리티 (플랫)
+    ├── classnames.ts  # cn() (범용)
+    ├── formats.ts     # 포맷 헬퍼 (범용)
+    └── results.ts     # ActionResult 헬퍼 (범용)
 ```
 
 **features 레벨**:
+
+features 스코프는 파일 수가 적어 별도 `lib/` 없이 `utils/`에 헬퍼를 둡니다. auth 예시:
 ```
 features/auth/
-├── lib/               # 인증 도메인 로직
-│   ├── session.ts     # auth()에 의존, redirect 사용
-│   └── assert.ts      # 권한 체크, throw
-└── utils/             # 인증 범용 헬퍼
-    └── password.ts    # bcrypt만 의존, 순수 함수
+├── utils/
+│   ├── server.ts      # requireAuth 등 (auth()·redirect 의존 — 도메인성)
+│   └── password.ts    # 비밀번호 해싱 (bcrypt만 의존 — 순수)
+├── next-auth.ts       # NextAuth 핸들러
+└── config.ts          # NextAuth 설정
 ```
 
 #### 판단 기준
@@ -457,7 +502,7 @@ features/ui/app-sidebar/
 ```
 shared/lib/excel/
 ├── types.ts           ✅
-├── client.ts          ✅
+├── utils.ts           ✅
 
 shared/lib/excel/
 ├── excel.types.ts     ❌ (중복)
@@ -492,7 +537,7 @@ auth/
 │   └── sign-in-form.tsx
 ├── actions/
 │   └── sign-in.ts
-├── handler.ts            ← 프리픽스 제거, 루트 이동
+├── next-auth.ts         ← 프리픽스 제거, 루트 이동
 ├── config.ts
 ├── types.ts
 └── constants.ts
