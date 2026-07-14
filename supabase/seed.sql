@@ -123,3 +123,34 @@ INSERT INTO public.popups (title, content, author, position_top, position_left, 
   ('설문조사 참여 요청', '<div style="padding:20px;"><h3>고객 만족도 설문조사</h3><p style="margin-top:10px;">서비스 개선을 위한 설문조사에 참여해주세요.</p><p style="margin-top:8px;">소요 시간: 약 3분</p><p style="margin-top:12px;color:#3498db;"><strong>참여하신 분들께 스타벅스 기프티콘을 드립니다!</strong></p></div>', 'admin', 100, 50, 380, true, false, '2024-03-01', '2024-03-31', 10),
   ('앱 업데이트 안내', '<div style="padding:20px;text-align:center;"><h3>모바일 앱 v3.0 업데이트</h3><p style="margin-top:10px;">새로워진 기능을 만나보세요!</p><ul style="text-align:left;margin-top:12px;padding-left:20px;"><li>다크 모드 지원</li><li>푸시 알림 개선</li><li>성능 최적화</li></ul></div>', 'admin', 80, 120, 360, false, false, '2024-03-10', '2024-04-10', 10),
   ('채용 공고', '<div style="padding:20px;"><h3 style="color:#2c3e50;">함께 성장할 인재를 찾습니다</h3><p style="margin-top:10px;">프론트엔드 개발자, 백엔드 개발자, 디자이너를 모집합니다.</p><p style="margin-top:12px;">지원 마감: 2024.04.30</p><p style="margin-top:8px;color:#3498db;">자세한 내용은 채용 페이지를 확인해주세요.</p></div>', 'admin', 160, 180, 420, true, false, '2024-02-01', '2024-04-30', 8);
+
+
+-- =============================================
+-- 다국어(en) 데모 데이터
+-- 언어 전환 UI(?lang=en) 검증용. lang을 명시하지 않은 위 데이터는 기본값 'ko'.
+-- =============================================
+
+-- 공지사항 (en)
+INSERT INTO public.notices (title, content, author, category, view_count, lang) VALUES
+  ('[Important] Happy New Year 2024', 'Wishing you a wonderful new year! Thank you for using our service.', 'admin', 'notice', 842, 'en'),
+  ('[Notice] Scheduled System Maintenance', 'Regular system maintenance is scheduled for Jan 15, 2024, 02:00–06:00.', 'admin', 'notice', 531, 'en'),
+  ('Winter Season Special Discount', 'Meet a wide range of products at discounted prices this winter.', 'admin', 'normal', 1120, 'en'),
+  ('Mobile App Update', 'Our mobile app has been updated to version 2.0.', 'admin', 'normal', 976, 'en');
+
+-- 뉴스 (en)
+INSERT INTO public.news (title, content, view_count, lang) VALUES
+  ('New Year Special Event 2024', 'We have prepared various special events to celebrate the new year. Please join us.', 2103, 'en'),
+  ('Mobile App 2.0 Released', 'The completely renewed mobile app 2.0 is now available.', 1487, 'en'),
+  ('New Feature: AI Recommendation', 'An AI-based personalized recommendation system has been introduced.', 998, 'en');
+
+-- FAQ (en) — sort_order는 언어별로 독립적
+INSERT INTO public.faqs (question, answer, category, sort_order, lang) VALUES
+  ('How do I sign up?', 'Click the "Sign up" button at the top right of the homepage and enter the required information.', 'general', 4, 'en'),
+  ('I forgot my password', 'Click "Forgot password" on the login page to receive a reset link by email.', 'general', 3, 'en'),
+  ('What payment methods are available?', 'We support credit/debit cards, bank transfer, and easy-pay (KakaoPay, NaverPay).', 'payment', 2, 'en'),
+  ('How long does delivery take?', 'Standard delivery takes 2–3 days; remote areas take about 3–5 days.', 'service', 1, 'en');
+
+-- 팝업 (en)
+INSERT INTO public.popups (title, content, author, position_top, position_left, width, is_active, is_always, start_date, end_date, z_index, lang) VALUES
+  ('New Year Event', '<div style="text-align:center;padding:20px;"><h2 style="color:#e74c3c;margin-bottom:12px;">2024 New Year Special Event</h2><p>Get a <strong>30% discount coupon</strong> when you sign up!</p><p style="margin-top:16px;color:#666;">Period: 2024.01.01 – 2024.01.31</p></div>', 'admin', 100, 100, 450, true, false, '2024-01-01', '2024-01-31', 10, 'en'),
+  ('Premium Plan', '<div style="padding:24px;text-align:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border-radius:8px;"><h2 style="margin-bottom:8px;">Premium Plan</h2><p>Upgrade now and get 50% off for the first 3 months!</p></div>', 'admin', 200, 300, 500, true, true, NULL, NULL, 5, 'en');
