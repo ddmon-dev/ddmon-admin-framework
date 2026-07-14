@@ -9,16 +9,16 @@
 ```
 manage-modules/
 ├── _base/               # 공통 인프라
-│   ├── ui/              # 공통 UI (Sheet, Buttons, List)
-│   ├── actions/         # 공통 Server Actions (softDelete, hardDelete)
-│   ├── hooks/           # 커스텀 훅 (useManageItemData)
-│   └── utils/           # 유틸리티
-├── admins/              # 관리자 관리 모듈
-├── faqs/                # FAQ 모듈 (카테고리 필터)
-├── inquiries/           # 문의 모듈 (답변 기능)
-├── news/                # 뉴스 모듈 (파일 업로드)
-├── notices/             # 공지사항 모듈 (카테고리, 파일 업로드)
-└── popups/              # 팝업 모듈
+│   ├── ui/              # 공통 UI (Sheet, Buttons, List, Detail)
+│   ├── actions/         # 공통 Server Actions (get-list, create/update, swap-order 등)
+│   ├── hooks/           # 커스텀 훅 (useManageItemData, useFormGuard)
+│   └── types.ts         # 공통 타입 (RowData, ItemDTO, config 옵션)
+├── admins/              # 관리자 관리 모듈 (슈퍼 관리자 전용)
+├── faqs/                # FAQ 모듈 (카테고리 + 순서 변경)
+├── inquiries/           # 문의 모듈 (답변 발송 + 엑셀 내보내기, 읽기 전용)
+├── news/                # 뉴스 모듈 (썸네일 필수)
+├── notices/             # 공지사항 모듈 (카테고리 + 파일 업로드)
+└── popups/              # 팝업 모듈 (노출 기간/위치 설정)
 ```
 
 **새 모듈 추가 시**: 기존 모듈 중 유사한 것을 복사하여 사용
@@ -29,27 +29,28 @@ manage-modules/
 ### 모듈 파일 구조
 
 ```
-faqs/                    # 또는 다른 모듈명
-├── actions/
+faqs/                    # 대표 예시 (모듈마다 구성은 조금씩 다름)
+├── actions/             # base 액션을 CONFIG로 감싸는 얇은 래퍼들
 │   ├── create-item.ts
 │   ├── get-item.ts
 │   ├── get-list.ts
-│   ├── get-export-data.ts
-│   ├── swap-order.ts       # 순서 변경 (enableReorder 사용 시)
+│   ├── get-export-data.ts  # 엑셀 내보내기 데이터 (export 지원 모듈)
 │   ├── update-item.ts
 │   └── index.ts
 ├── addons.tsx           # 헤더 추가 요소 (카테고리 필터 등)
 ├── config.ts            # 모듈 설정 및 타입 (RowData, ItemDTO 포함)
 ├── schema.ts            # Zod 스키마 (writeSchema — 서버/클라이언트 검증 SSOT)
-├── detail-view.tsx      # 상세 보기 (읽기 전용)
-├── export-data-button.tsx
-├── export-data-columns.ts
 ├── index.tsx            # 모듈 진입점
 ├── item-sheet.tsx       # 상세/수정 시트
 ├── list.tsx             # 목록 컴포넌트
 ├── list-columns.tsx     # 테이블 컬럼 정의
 └── write-form.tsx       # 생성/수정 폼
 ```
+
+> **모듈별 추가 파일(선택)** — 필요한 모듈에만 존재합니다.
+> - `detail-view.tsx` — 상세 보기 컴포넌트 (예: `notices`, `inquiries`)
+> - `export-data-button.tsx` / `export-data-columns.ts` — 엑셀 내보내기 UI (예: `inquiries`)
+> - 순서 변경은 모듈에 `swap-order.ts`를 두지 않고 `_base/actions/swap-order.ts`를 직접 사용합니다.
 
 ## 핵심 패턴
 
@@ -230,29 +231,26 @@ const formSchema = writeSchema.extend({
 
 **author/updated_by 자동 주입:**
 
-create/update 시 현재 로그인 사용자 정보가 자동 주입됩니다.
-이름(표시용 캐시)과 ID(FK 참조 무결성)를 병행 저장합니다.
+create/update 시 현재 로그인 사용자의 **관리자 ID**가 자동 주입됩니다.
+`admins.id`는 로그인 아이디(사람이 읽는 TEXT 값, 예: `admin`)이므로 별도 이름 캐시 없이
+단일 컬럼에 ID만 저장해도 그대로 표시·검색에 쓸 수 있습니다. 각 컬럼은 `admins.id`를 참조하는 FK입니다.
 
 | 액션 | 필드 | 값 |
 |------|------|-----|
-| `createItem` | `author` | 현재 사용자 이름 |
-| `createItem` | `author_id` | 현재 사용자 ID (FK) |
-| `updateItem` | `updated_by` | 현재 사용자 이름 |
-| `updateItem` | `updated_by_id` | 현재 사용자 ID (FK) |
+| `createItem` | `author` | 현재 사용자 ID (`admins.id`) |
+| `updateItem` | `updated_by` | 현재 사용자 ID (`admins.id`) |
 
 ```typescript
 // create-item.ts 내부 (자동 처리됨)
 const insertValues = {
   ...values,
-  author: user?.name ?? null,     // 표시용 캐시
-  author_id: user?.id ?? null,    // FK (admins.id 참조)
+  author: user?.id ?? null, // 관리자 ID (admins.id 참조)
 };
 
 // update-item.ts 내부 (자동 처리됨)
 const updateValues = {
   ...values,
-  updated_by: user?.name ?? null,     // 표시용 캐시
-  updated_by_id: user?.id ?? null,    // FK (admins.id 참조)
+  updated_by: user?.id ?? null, // 관리자 ID (admins.id 참조)
 };
 ```
 
@@ -261,12 +259,13 @@ const updateValues = {
 ```sql
 CREATE TABLE my_table (
   -- ... 기타 컬럼
-  author TEXT,                                                      -- 작성자 이름 (캐시)
-  author_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,    -- 작성자 FK
-  updated_by TEXT,                                                   -- 수정자 이름 (캐시)
-  updated_by_id TEXT REFERENCES public.admins(id) ON DELETE SET NULL,-- 수정자 FK
+  author TEXT REFERENCES public.admins(id) ON DELETE SET NULL,     -- 작성자 (admins.id)
+  updated_by TEXT REFERENCES public.admins(id) ON DELETE SET NULL  -- 수정자 (admins.id)
 );
 ```
+
+> 관리자 계정이 삭제되면 `ON DELETE SET NULL`로 `author`/`updated_by`가 NULL이 됩니다.
+> 상세 보기에서는 `value={data.author}`로 저장된 ID를 그대로 표시합니다(로그인 아이디이므로 사람이 읽을 수 있음).
 
 ### 5. 에러 처리
 
@@ -310,7 +309,7 @@ import {
   DetailRow,
   ManageSheetClose,
   ManageSheetModeChange,
-} from '../../_base/ui';
+} from '../_base/ui';
 import { SheetBody, SheetContainer, SheetFooter } from '@/shared/ui/sheet';
 
 export function DetailView({ data }: { data: ItemDTO }) {
@@ -396,7 +395,7 @@ export const writeSchema = z.object({
 **config.ts:**
 ```typescript
 import { RowData as BaseRowData } from '@/shared/lib/supabase/db-helpers';
-import { ItemDTO as BaseItemDTO } from '../../_base/types';
+import { ItemDTO as BaseItemDTO } from '../_base/types';
 import { writeSchema } from './schema';
 
 export const CONFIG = {
@@ -440,11 +439,14 @@ export async function getList(params: GetListParams): Promise<ActionResult<ListP
 - `schema`: Zod 스키마 (서버 액션 자동 검증, schema.ts에서 import)
 - `searchFields`: 검색 필드 (기본: ['name', 'email'])
 - `enableReorder`: 순서 변경 기능 (true 또는 { direction: 'asc' | 'desc' })
+- `enableBulkAction`: 일괄 선택/삭제 활성화 (BulkActionBar + 체크박스 컬럼)
 - `auth`: 인증 설정 (기본: true, 예: { requireSuper: true })
 - `selectColumns`: SELECT 컬럼 (기본: '*')
 - `orderBy`: 정렬 설정 (기본: created_at desc, enableReorder 시 sort_order)
 - `softDelete`: deleted 필터 (기본: true)
 - `categoryField`: 카테고리 필드명 (기본: 'category')
+- `useLangFilter`: 다국어 필터 (기본: **true** — 모든 목록 조회에 `lang` 조건 적용. `lang` 컬럼이 없는 테이블은 반드시 `false`로 설정) → [i18n.md](i18n.md) 참고
+- `additionalFilters`: 커스텀 쿼리 필터 함수 `(query, ctx) => query` (예: 특정 상태만 조회)
 
 ### 4. 컴포넌트 수정
 
@@ -473,7 +475,7 @@ export default function ProductsPage({ searchParams }: Props) {
 ```typescript
 // features/manage-modules/products/index.tsx
 import { type SearchParams } from '@/shared/types/search-params';
-import { ManageContainer, ManageListFetcher } from '../../_base/ui';
+import { ManageContainer, ManageListFetcher } from '../_base/ui';
 import { CONFIG, type ItemDTO } from './config';
 import { HeaderAddons } from './addons';
 import { List } from './list';
@@ -734,3 +736,57 @@ async function onSubmit(values: FormValues) {
 ```
 
 자세한 내용: [파일 시스템 가이드](file-system.md)
+
+---
+
+## 엑셀 내보내기
+
+목록 데이터를 스타일이 적용된 `.xlsx` 파일로 내려받는 기능입니다(예: `inquiries` 모듈). `shared/lib/excel`의 `exportToExcel`과 `_base/ui`의 `ExportDataButton`을 조합합니다.
+
+**구성 3파일 (모듈에 추가):**
+
+```
+products/
+├── actions/get-export-data.ts   # 'use server' — 전체 목록 반환 (base getExportData 래핑)
+├── export-data-columns.ts       # ExcelColumn[] — 헤더·너비·값 매핑
+└── export-data-button.tsx       # 'use client' — BaseExportDataButton 조합
+```
+
+**1. 컬럼 정의 (`export-data-columns.ts`):**
+
+```typescript
+import { type ExcelColumn } from '../_base/ui/export-data-button';
+import { type ItemDTO } from './config';
+
+export const exportDataColumns: ExcelColumn<ItemDTO>[] = [
+  { header: '이름', accessorKey: 'name', width: 15 },
+  { header: '접수일', accessorFn: (row) => new Date(row.created_at).toLocaleDateString(), width: 15 },
+  // accessorKey: 값 직접 매핑 / accessorFn: 가공 후 매핑
+];
+```
+
+**2. 버튼 (`export-data-button.tsx`):**
+
+```typescript
+'use client';
+import { ExportDataButton as BaseExportDataButton } from '../_base/ui/export-data-button';
+import { CONFIG, type ItemDTO } from './config';
+import { exportDataColumns } from './export-data-columns';
+import { getExportData } from './actions/get-export-data';
+
+export function ExportDataButton() {
+  return (
+    <BaseExportDataButton<ItemDTO>
+      fetchDataFn={() => getExportData()}  // 서버에서 전체 목록 조회
+      columns={exportDataColumns}
+      fileName={CONFIG.moduleName}
+    >
+      엑셀로 내보내기
+    </BaseExportDataButton>
+  );
+}
+```
+
+**3. addons.tsx에서 헤더에 배치** → 클릭 시 `getExportData()`로 전체 데이터를 받아 `exportToExcel()`이 헤더 회색 배경·테두리 스타일을 적용한 파일을 다운로드합니다.
+
+> `get-export-data.ts`는 다른 액션과 같은 서버 액션 보안 규칙을 따릅니다 — 반드시 최상단 `'use server'`와 `requireAuth()`를 통해 service_role로만 조회합니다.
