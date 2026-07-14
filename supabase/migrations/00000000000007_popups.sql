@@ -23,8 +23,8 @@ CREATE TABLE public.popups (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- 인덱스
-CREATE INDEX idx_popups_lang ON public.popups(lang);
+-- 인덱스 (어드민 목록: deleted = false AND lang = ? ORDER BY created_at DESC / 공개 조회: is_active + 날짜)
+CREATE INDEX idx_popups_deleted_lang_created ON public.popups (deleted, lang, created_at DESC);
 CREATE INDEX idx_popups_active ON public.popups (is_active, deleted);
 CREATE INDEX idx_popups_date ON public.popups (start_date, end_date);
 

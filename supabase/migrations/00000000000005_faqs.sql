@@ -17,14 +17,8 @@ CREATE TABLE IF NOT EXISTS public.faqs (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- 인덱스
-CREATE INDEX IF NOT EXISTS idx_faqs_lang ON public.faqs(lang);
-CREATE INDEX IF NOT EXISTS idx_faqs_deleted ON public.faqs(deleted);
-CREATE INDEX IF NOT EXISTS idx_faqs_sort_order ON public.faqs(sort_order);
-CREATE INDEX IF NOT EXISTS idx_faqs_created_at ON public.faqs(created_at);
-CREATE INDEX IF NOT EXISTS idx_faqs_category ON public.faqs(category);
-CREATE INDEX IF NOT EXISTS idx_faqs_deleted_category_created
-  ON public.faqs(deleted, category, created_at DESC);
+-- 인덱스 (목록/순서변경 쿼리: deleted = false AND lang = ? [AND category = ?] ORDER BY sort_order)
+CREATE INDEX IF NOT EXISTS idx_faqs_deleted_lang_sort ON public.faqs(deleted, lang, sort_order);
 
 -- 트리거
 CREATE TRIGGER trigger_faqs_updated_at

@@ -23,10 +23,9 @@ CREATE TABLE public.notices (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- 인덱스
-CREATE INDEX idx_notices_lang ON public.notices(lang);
+-- 인덱스 (목록 쿼리: deleted = false AND lang = ? ORDER BY created_at DESC)
 CREATE INDEX idx_notices_files_gin ON public.notices USING gin(files);
-CREATE INDEX idx_notices_deleted_created ON public.notices(deleted, created_at DESC);
+CREATE INDEX idx_notices_deleted_lang_created ON public.notices(deleted, lang, created_at DESC);
 
 -- 트리거
 CREATE TRIGGER trigger_notices_updated_at
