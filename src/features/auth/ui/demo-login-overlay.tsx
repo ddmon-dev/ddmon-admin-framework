@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { signIn } from '@/features/auth';
-import { DEMO_CREDENTIALS } from '@/shared/lib/demo';
 import { DemoOverlay, DemoOverlayMessage } from '@/shared/ui/demo-overlay';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { AUTH_ERRORS } from '@/shared/constants/error-messages';
@@ -23,8 +22,9 @@ export function DemoLoginOverlay() {
     setIsLoading(true);
 
     try {
+      // 자격증명은 서버(authorize)가 주입한다. 클라이언트는 데모 접속 의사만 전달.
       const result = await signIn('credentials', {
-        ...DEMO_CREDENTIALS,
+        demo: 'true',
         redirect: false,
       });
 
