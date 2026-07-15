@@ -14,6 +14,7 @@ import { createReply } from './actions';
 import { type ReplyRowData } from './config';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
+import { IS_DEMO, DEMO_MESSAGES } from '@/shared/lib/demo';
 
 const formSchema = z.object({
   replyContent: z.string().min(1, '답변 내용을 입력해주세요.'),
@@ -52,6 +53,9 @@ export function ReplyForm({ inquiryId, onReplyCreated }: ReplyFormProps) {
       }
 
       toast.success(SUCCESS_MESSAGES.CREATE_SUCCESS('답변'));
+      if (IS_DEMO) {
+        toast.info(DEMO_MESSAGES.EMAIL_STUBBED);
+      }
       form.reset();
       onReplyCreated?.(data);
     } catch (error) {

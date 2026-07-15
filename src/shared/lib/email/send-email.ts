@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { IS_DEMO } from '@/shared/lib/demo';
 
 interface SendEmailParams {
   to: string;
@@ -17,6 +18,12 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function sendEmail({ to, subject, html }: SendEmailParams) {
+  // 데모 모드에서는 실제 발송을 스킵한다 (호출부 흐름은 정상 성공 처리 → '발송됨' 유지)
+  if (IS_DEMO) {
+    console.info('[demo] 이메일 발송 스킵:', { to, subject });
+    return;
+  }
+
   return transporter.sendMail({
     from: process.env.SMTP_FROM,
     to,
