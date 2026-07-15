@@ -43,7 +43,7 @@ export function DemoLoginOverlay() {
   }
 
   return (
-    <DemoOverlay>
+    <DemoOverlay className="-inset-8">
       <p className="text-sm text-foreground">데모 계정으로 자유롭게 둘러보세요</p>
       <LoadingButton
         type="button"
