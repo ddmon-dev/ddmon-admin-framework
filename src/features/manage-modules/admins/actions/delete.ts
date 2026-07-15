@@ -5,6 +5,7 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
 import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { IS_DEMO, DEMO_MESSAGES } from '@/shared/lib/demo';
 import type { ActionResult } from '@/shared/types/results';
 import { CONFIG } from '../config';
 
@@ -17,6 +18,10 @@ interface DeleteAdminParams {
  * Soft delete: deleted 컬럼을 true로 설정
  */
 export async function deleteAdmin(params: DeleteAdminParams): Promise<ActionResult<any>> {
+  if (IS_DEMO) {
+    return Result.error(DEMO_MESSAGES.DELETE_BLOCKED);
+  }
+
   const { id, pathname } = params;
 
   if (!id) {

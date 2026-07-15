@@ -6,6 +6,7 @@ import { deleteFolderFromStorage } from '@/shared/lib/file-system';
 import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
 import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { IS_DEMO, DEMO_MESSAGES } from '@/shared/lib/demo';
 import type { ActionResult } from '@/shared/types/results';
 import type { DeleteItemParams } from '../types';
 
@@ -13,6 +14,10 @@ import type { DeleteItemParams } from '../types';
  * Soft delete: deleted 컬럼을 true로 설정
  */
 export async function softDelete(params: DeleteItemParams): Promise<ActionResult<any>> {
+  if (IS_DEMO) {
+    return Result.error(DEMO_MESSAGES.DELETE_BLOCKED);
+  }
+
   const { tableName, id, pathname } = params;
 
   if (!id) {
@@ -51,6 +56,10 @@ export async function softDelete(params: DeleteItemParams): Promise<ActionResult
  * Hard delete: 실제로 데이터를 삭제
  */
 export async function hardDelete(params: DeleteItemParams): Promise<ActionResult<any>> {
+  if (IS_DEMO) {
+    return Result.error(DEMO_MESSAGES.DELETE_BLOCKED);
+  }
+
   const { tableName, id, pathname } = params;
 
   if (!id) {
