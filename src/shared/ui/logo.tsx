@@ -1,4 +1,3 @@
-import { Radar } from 'lucide-react';
 import { cn } from '../utils/classnames';
 import Link from 'next/link';
 
@@ -17,7 +16,7 @@ export function ProjectSymbol({
       )}
       linkToHome={linkToHome}
     >
-      <Radar className={cn('size-[1.5em]')} />
+      <span className={cn('font-primary text-[1.5em] font-bold leading-none')}>D</span>
     </Wrapper>
   );
 }
