@@ -15,6 +15,7 @@ import { schemaPresets } from '@/shared/schemas';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 import { IS_DEMO, DEMO_MESSAGES } from '@/shared/lib/demo';
+import { DemoOverlay } from '@/shared/ui/demo-overlay';
 
 import { useManageSheet, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { useFormGuard } from '../_base/hooks';
@@ -144,24 +145,33 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
               placeholder="이메일을 입력해주세요."
             />
 
-            <FormPasswordInput
-              control={form.control}
-              name="password"
-              label="비밀번호"
-              placeholder="비밀번호를 입력해주세요."
-              optional={!!id}
-              disabled={IS_DEMO && !!id}
-              description={IS_DEMO && id ? DEMO_MESSAGES.PASSWORD_BLOCKED : undefined}
-            />
+            <div className="relative">
+              <FieldGroup>
+                <FormPasswordInput
+                  control={form.control}
+                  name="password"
+                  label="비밀번호"
+                  placeholder="비밀번호를 입력해주세요."
+                  optional={!!id}
+                />
 
-            <FormPasswordInput
-              control={form.control}
-              name="confirmPassword"
-              label="비밀번호 확인"
-              placeholder="비밀번호를 다시 입력해주세요."
-              optional={!!id}
-              disabled={IS_DEMO && !!id}
-            />
+                <FormPasswordInput
+                  control={form.control}
+                  name="confirmPassword"
+                  label="비밀번호 확인"
+                  placeholder="비밀번호를 다시 입력해주세요."
+                  optional={!!id}
+                />
+              </FieldGroup>
+
+              {IS_DEMO && id && (
+                <DemoOverlay>
+                  <p className="text-sm text-muted-foreground px-4 text-center">
+                    {DEMO_MESSAGES.PASSWORD_BLOCKED}
+                  </p>
+                </DemoOverlay>
+              )}
+            </div>
           </FieldGroup>
         </SheetContainer>
 
