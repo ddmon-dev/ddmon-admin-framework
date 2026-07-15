@@ -81,7 +81,7 @@ shared/
 
 ```typescript
 import { Button } from '@/shared/ui/button';
-import { auth } from '@/features/auth';
+import { auth } from '@/features/auth/server';
 import { AppSidebar } from '@/features/ui/app-sidebar/sidebar';
 ```
 
@@ -379,7 +379,7 @@ shared/
 **예시**:
 ```typescript
 // features/auth/utils/server.ts
-import { auth } from '@/features/auth';
+import { auth } from '../server';
 import { redirect } from 'next/navigation';
 
 export async function requireAuth() {
@@ -435,7 +435,7 @@ features/auth/
 ├── utils/
 │   ├── server.ts      # requireAuth 등 (auth()·redirect 의존 — 도메인성)
 │   └── password.ts    # 비밀번호 해싱 (bcrypt만 의존 — 순수)
-├── next-auth.ts       # NextAuth 핸들러
+├── server.ts          # NextAuth 인스턴스 (server-only)
 └── config.ts          # NextAuth 설정
 ```
 

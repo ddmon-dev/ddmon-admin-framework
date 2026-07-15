@@ -19,7 +19,7 @@ features/auth/
 │   └── password.ts          # 비밀번호 해싱
 ├── config.ts                # NextAuth 설정 (default export)
 ├── schema.ts                # Zod 스키마 (updateProfileSchema)
-├── next-auth.ts             # NextAuth 핸들러
+├── server.ts                # NextAuth 인스턴스 (auth·handlers) — server-only
 ├── types.ts                 # 타입 정의
 ├── use-auth.ts              # Client 훅 (useAuth, useRequireAuth)
 ├── idle-logout-provider.tsx # 유휴 로그아웃
@@ -120,7 +120,7 @@ await signOut({ callbackUrl: '/auth/sign-in' });
 ### 세션 확인 (Server Component)
 
 ```typescript
-import { auth } from '@/features/auth';
+import { auth } from '@/features/auth/server';
 
 const session = await auth();
 if (!session) {
@@ -314,7 +314,7 @@ AUTH: {
 },
 ```
 
-- 세션 JWT의 `maxAge`도 `IDLE_TIMEOUT_MINUTES`와 동일하게 설정됩니다(`next-auth.ts`).
+- 세션 JWT의 `maxAge`도 `IDLE_TIMEOUT_MINUTES`와 동일하게 설정됩니다(`server.ts`).
 - 마우스/키보드 활동을 감지해 타이머를 리셋하고, 경고 시간에 도달하면 알림을 띄웁니다.
 
 ## 조건부 렌더링 가드 (`RequireAuth`)
