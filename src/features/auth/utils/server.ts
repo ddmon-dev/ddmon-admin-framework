@@ -3,7 +3,7 @@
 import { APP_CONFIG } from '@/app.config';
 import { redirect } from 'next/navigation';
 import type { User } from 'next-auth';
-import { auth } from '../next-auth';
+import { auth } from '../server';
 
 /**
  * 현재 로그인한 사용자 정보를 반환합니다.

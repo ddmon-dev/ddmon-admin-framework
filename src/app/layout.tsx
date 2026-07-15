@@ -6,7 +6,7 @@ import { Toaster } from 'sonner';
 import { ThemeProvider } from 'next-themes';
 import { SessionProvider } from 'next-auth/react';
 import { DialogProvider } from '@/shared/ui/app-dialog';
-import { auth } from '@/features/auth';
+import { auth } from '@/features/auth/server';
 
 /**
  * 폰트 설정
