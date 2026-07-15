@@ -55,5 +55,5 @@ next-env.d.ts
 /.serena/
 /graphify-out/
 
-# work notes (internal todos, not for public repo)
-/docs/todos/
+# internal work docs (todos, test reports 등) — not for public repo
+/docs/_local/
