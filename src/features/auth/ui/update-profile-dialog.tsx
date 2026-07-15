@@ -28,7 +28,7 @@ import { updateProfileSchema } from '@/features/auth/schema';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 import { IS_DEMO, DEMO_MESSAGES } from '@/shared/lib/demo';
-import { DemoOverlay } from '@/shared/ui/demo-overlay';
+import { DemoOverlay, DemoOverlayMessage } from '@/shared/ui/demo-overlay';
 import { useDialog } from '@/shared/ui/app-dialog';
 
 const formSchema = updateProfileSchema
@@ -196,6 +196,7 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
                   placeholder="현재 비밀번호"
                   autoComplete="current-password"
                   optional
+                  disabled={IS_DEMO}
                 />
 
                 <FormPasswordInput
@@ -205,6 +206,7 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
                   placeholder="새 비밀번호 (최소 6자)"
                   autoComplete="new-password"
                   optional
+                  disabled={IS_DEMO}
                 />
 
                 <FormPasswordInput
@@ -214,15 +216,14 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
                   placeholder="비밀번호 확인"
                   autoComplete="new-password"
                   optional
+                  disabled={IS_DEMO}
                 />
               </FieldGroup>
             </div>
 
             {IS_DEMO && (
               <DemoOverlay>
-                <p className="text-sm text-foreground px-4 text-center">
-                  {DEMO_MESSAGES.PASSWORD_BLOCKED}
-                </p>
+                <DemoOverlayMessage>{DEMO_MESSAGES.PASSWORD_BLOCKED}</DemoOverlayMessage>
               </DemoOverlay>
             )}
           </div>

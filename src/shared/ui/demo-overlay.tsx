@@ -19,11 +19,20 @@ export function DemoOverlay({ children, className }: DemoOverlayProps) {
     <div
       className={cn(
         'absolute -inset-4 z-10 flex flex-col items-center justify-center gap-3 rounded-md',
-        'bg-background/40 backdrop-blur-sm',
+        'bg-black/25 backdrop-blur-xs',
         className
       )}
     >
       {children}
     </div>
+  );
+}
+
+/** 데모 오버레이 안에 쓰는 pill 형태 안내 문구. */
+export function DemoOverlayMessage({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-full bg-background px-3.5 py-1.5 text-xs font-medium text-foreground shadow-md ring-1 ring-border">
+      {children}
+    </span>
   );
 }

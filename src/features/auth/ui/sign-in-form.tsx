@@ -10,6 +10,7 @@ import { FormTextInput, FormPasswordInput, FormRootError } from '@/shared/ui/for
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { AUTH_ERRORS } from '@/shared/constants/error-messages';
 import { signIn } from '@/features/auth';
+import { IS_DEMO } from '@/shared/lib/demo';
 
 const signInSchema = z.object({
   id: z.string().min(1, { message: '아이디를 입력해주세요.' }),
@@ -62,18 +63,20 @@ export function SignInForm() {
             control={form.control}
             placeholder="아이디를 입력하세요"
             autoFocus
+            disabled={IS_DEMO}
           />
           <FormPasswordInput
             name="password"
             label="비밀번호"
             control={form.control}
             placeholder="비밀번호를 입력하세요"
+            disabled={IS_DEMO}
           />
         </FieldGroup>
 
         {error && <FormRootError>{error}</FormRootError>}
 
-        <LoadingButton type="submit" isLoading={form.formState.isSubmitting}>
+        <LoadingButton type="submit" isLoading={form.formState.isSubmitting} disabled={IS_DEMO}>
           로그인
         </LoadingButton>
       </FieldGroup>

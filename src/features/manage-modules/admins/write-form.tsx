@@ -15,7 +15,7 @@ import { schemaPresets } from '@/shared/schemas';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
 import { IS_DEMO, DEMO_MESSAGES } from '@/shared/lib/demo';
-import { DemoOverlay } from '@/shared/ui/demo-overlay';
+import { DemoOverlay, DemoOverlayMessage } from '@/shared/ui/demo-overlay';
 
 import { useManageSheet, ManageFormSubmit, ManageSheetClose } from '../_base/ui';
 import { useFormGuard } from '../_base/hooks';
@@ -153,6 +153,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
                   label="비밀번호"
                   placeholder="비밀번호를 입력해주세요."
                   optional={!!id}
+                  disabled={IS_DEMO && !!id}
                 />
 
                 <FormPasswordInput
@@ -161,14 +162,13 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
                   label="비밀번호 확인"
                   placeholder="비밀번호를 다시 입력해주세요."
                   optional={!!id}
+                  disabled={IS_DEMO && !!id}
                 />
               </FieldGroup>
 
               {IS_DEMO && id && (
                 <DemoOverlay>
-                  <p className="text-sm text-foreground px-4 text-center">
-                    {DEMO_MESSAGES.PASSWORD_BLOCKED}
-                  </p>
+                  <DemoOverlayMessage>{DEMO_MESSAGES.PASSWORD_BLOCKED}</DemoOverlayMessage>
                 </DemoOverlay>
               )}
             </div>
