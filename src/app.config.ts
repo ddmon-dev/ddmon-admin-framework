@@ -15,7 +15,7 @@ export const APP_CONFIG = {
     IDLE_WARNING_MINUTES: 5, // 로그아웃 경고 표시 (5분 전)
     PATHS: {
       SIGN_IN: '/auth/sign-in',
-      FORBIDDEN: '/unauthorized',
+      FORBIDDEN: '/403-forbidden',
     },
     ADMIN_LABELS: {
       SUPER_ADMIN: '최고관리자',

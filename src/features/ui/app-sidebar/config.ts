@@ -29,8 +29,8 @@ export const navigationConfig: MenuConfig = {
           icon: ServerCrash,
         },
         {
-          title: 'unauthorized',
-          url: '/unauthorized',
+          title: '403 forbidden',
+          url: '/403-forbidden',
           icon: ShieldX,
         },
       ],
