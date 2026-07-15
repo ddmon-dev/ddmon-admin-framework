@@ -4,6 +4,7 @@ import { APP_CONFIG } from '@/app.config';
 import { createServerClient } from '@/shared/lib/supabase/server';
 import { Result } from '@/shared/utils/results';
 import { GENERAL_ERRORS, CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { IS_DEMO, DEMO_MESSAGES } from '@/shared/lib/demo';
 import type { ActionResult } from '@/shared/types/results';
 
 import { requireAuth } from '../utils/server';
@@ -19,6 +20,11 @@ export async function updateProfile(values: UpdateProfileValues): Promise<Action
     return Result.error(VALIDATION_ERRORS.INVALID_INPUT);
   }
   const validatedValues = parsed.data;
+
+  // 데모 모드: 비밀번호 변경 차단 (계정 잠금 방지). 이름/이메일 변경은 허용.
+  if (IS_DEMO && validatedValues.newPassword) {
+    return Result.error(DEMO_MESSAGES.PASSWORD_BLOCKED);
+  }
 
   // 새 비밀번호가 있으면 현재 비밀번호도 필수
   if (validatedValues.newPassword && !validatedValues.currentPassword) {

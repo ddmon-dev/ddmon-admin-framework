@@ -5,6 +5,7 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { hashPassword, requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
 import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
+import { IS_DEMO, DEMO_MESSAGES } from '@/shared/lib/demo';
 import type { ActionResult } from '@/shared/types/results';
 import type { UpdateItemParams } from '../../_base/types';
 import { CONFIG, type ItemDTO } from '../config';
@@ -30,6 +31,11 @@ export async function updateItem(
     }
 
     const validatedValues: Record<string, any> = { ...parsed.data };
+
+    // 데모 모드: 비밀번호 변경 차단 (계정 잠금 방지). 이름/이메일 변경은 허용.
+    if (IS_DEMO && validatedValues.password) {
+      return Result.error(DEMO_MESSAGES.PASSWORD_BLOCKED);
+    }
 
     // 비밀번호가 있으면 해시, 빈 값이면 제거
     if (validatedValues.password) {

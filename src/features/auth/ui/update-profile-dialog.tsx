@@ -27,6 +27,7 @@ import { updateProfileSchema } from '@/features/auth/schema';
 
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
 import { GENERAL_ERRORS } from '@/shared/constants/error-messages';
+import { IS_DEMO, DEMO_MESSAGES } from '@/shared/lib/demo';
 import { useDialog } from '@/shared/ui/app-dialog';
 
 const formSchema = updateProfileSchema
@@ -182,7 +183,9 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
 
           <div className="border-t pt-4">
             <p className="text-sm text-muted-foreground mb-3">
-              비밀번호를 변경하려면 아래 필드를 입력하세요.
+              {IS_DEMO
+                ? DEMO_MESSAGES.PASSWORD_BLOCKED
+                : '비밀번호를 변경하려면 아래 필드를 입력하세요.'}
             </p>
 
             <FieldGroup>
@@ -193,6 +196,7 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
                 placeholder="현재 비밀번호"
                 autoComplete="current-password"
                 optional
+                disabled={IS_DEMO}
               />
 
               <FormPasswordInput
@@ -202,6 +206,7 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
                 placeholder="새 비밀번호 (최소 6자)"
                 autoComplete="new-password"
                 optional
+                disabled={IS_DEMO}
               />
 
               <FormPasswordInput
@@ -211,6 +216,7 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
                 placeholder="비밀번호 확인"
                 autoComplete="new-password"
                 optional
+                disabled={IS_DEMO}
               />
             </FieldGroup>
           </div>
