@@ -22,6 +22,6 @@ export const DEMO_CREDENTIALS = {
 /** 데모 모드에서 차단된 동작을 안내하는 toast 문구 (SSOT) */
 export const DEMO_MESSAGES = {
   DELETE_BLOCKED: '데모 환경에서는 삭제할 수 없습니다.',
-  EMAIL_STUBBED: '데모 환경이라 실제 메일은 발송되지 않았습니다. (저장은 정상 처리됩니다)',
+  EMAIL_STUBBED: '데모 환경에서는 이메일 발송은 처리되지 않습니다.',
   PASSWORD_BLOCKED: '데모 환경에서는 비밀번호를 변경할 수 없습니다.',
 } as const;
