@@ -441,6 +441,8 @@ features/auth/
 └── config.ts          # NextAuth 설정
 ```
 
+> 서버/클라이언트 진입점 경계와 `server-only` 가드레일은 [auth.md](auth.md#서버클라이언트-경계) 참고.
+
 #### 판단 기준
 
 | 질문                          | lib/ | utils/ |
