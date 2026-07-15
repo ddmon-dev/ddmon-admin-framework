@@ -8,9 +8,9 @@ export function AppSidebarIdentity() {
     >
       <ProjectSymbol linkToHome className="text-sm" />
       <div className="grid flex-1 text-left text-sm leading-tight">
-        <span className="truncate font-medium text-sm">Admin Template</span>
+        <span className="truncate font-medium text-sm">DDmon Admin Framework</span>
         <span className="truncate text-xs text-muted-foreground">
-          어드민 대시보드 템플릿 입니다.
+          어드민 대시보드 프레임워크입니다.
         </span>
       </div>
     </div>

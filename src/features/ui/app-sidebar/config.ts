@@ -16,7 +16,7 @@ interface MenuConfig {
 export const navigationConfig: MenuConfig = {
   navMain: [
     {
-      title: '샘플',
+      title: 'System page demo',
       items: [
         {
           title: '404 not found',
