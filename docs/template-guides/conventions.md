@@ -29,9 +29,11 @@ app/
 ├── (auth)/              # 인증 페이지 (레이아웃 없음)
 ├── (protected)/         # 보호된 페이지 (Sidebar + Header)
 │   ├── (super-admin-only)/  # 슈퍼 관리자 전용 (admins)
-│   ├── (system)/            # 시스템 페이지 (unauthorized, error-test, [...not-found])
+│   ├── (system)/            # 시스템 페이지 (unauthorized, 500-internal-server-error, [...not-found])
 │   ├── faqs/ notices/ ...   # 관리 모듈 페이지 (protected 직속)
 │   └── page.tsx             # 대시보드
+├── not-found.tsx        # 전역 404 (루트 레이아웃 내, 사이드바 없음)
+├── global-error.tsx     # 최후 에러 경계 (루트 레이아웃 대체)
 └── api/                 # API 라우트
 ```
 

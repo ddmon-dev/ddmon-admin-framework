@@ -20,12 +20,12 @@ export const navigationConfig: MenuConfig = {
       items: [
         {
           title: '404 not found',
-          url: '/404',
+          url: '/404-not-found',
           icon: AlertCircle,
         },
         {
           title: '500 internal server error',
-          url: '/error-test',
+          url: '/500-internal-server-error',
           icon: ServerCrash,
         },
         {
