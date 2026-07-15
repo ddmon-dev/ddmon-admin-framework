@@ -220,7 +220,7 @@ export function UpdateProfileDialog({ children }: UpdateProfileDialogProps) {
 
             {IS_DEMO && (
               <DemoOverlay>
-                <p className="text-sm text-muted-foreground px-4 text-center">
+                <p className="text-sm text-foreground px-4 text-center">
                   {DEMO_MESSAGES.PASSWORD_BLOCKED}
                 </p>
               </DemoOverlay>
