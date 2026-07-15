@@ -1,320 +1,64 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+이 파일은 Claude Code가 이 저장소에서 작업할 때의 지침입니다. 프로젝트 전반(소개·기술 스택·빠른 시작·아키텍처 개요)은 **README.md**를 정면 문서로 삼고, 이 파일은 작업에 필요한 라우팅과 규칙만 담습니다.
 
-## 프로젝트 개요
+## 무엇인가
 
-Admin Template은 Next.js 16 기반의 관리자 대시보드 템플릿입니다.
+Admin Framework — Next.js 16(App Router) 기반 관리자 대시보드 프레임워크. `config.ts` 하나로 목록·검색·정렬·페이지네이션·CRUD를 조립하는 convention-over-configuration 설계.
 
-### 핵심 원칙
+## 상세 문서 (`docs/template-guides/`)
 
-- **우아함**: 불필요한 복잡성 없이 깔끔한 구조
-- **직관성**: 누가 봐도 바로 이해되는 명확한 코드
-- **실용성**: 과도한 추상화보다 실제 개발과 유지보수에 도움되는 구조
-- **오버엔지니어링 금지**: 컨텍스트와 상황에 맞는 적절한 수준의 개발
+코드나 문서를 고치기 전에 관련 주제의 문서에서 해당 섹션을 먼저 확인하세요.
 
-### 기술 스택
-
-| 분야          | 기술                           |
-| ------------- | ------------------------------ |
-| **Framework** | Next.js 16.1.6 (App Router)    |
-| **React**     | 19.2.1                         |
-| **Language**  | TypeScript (Strict Mode)       |
-| **Database**  | Supabase                       |
-| **CSS**       | Tailwind CSS V4                |
-| **UI**        | Shadcn UI (New York 스타일)    |
-| **Form**      | React Hook Form + Zod          |
-
----
-
-## 상세 문서
-
-프로젝트의 특정 주제에 대한 자세한 내용은 `docs/template-guides/` 폴더를 참조하세요.
-
-### 아키텍처 & 시스템
-
-- **[프로젝트 구조 & 컨벤션](docs/template-guides/conventions.md)** - FSD 아키텍처, 파일명 규칙, lib vs utils 구분, APP_CONFIG
-- **[manage-modules (CRUD 시스템)](docs/template-guides/manage-modules.md)** - 템플릿 기반 CRUD 모듈, 핵심 패턴, 엑셀 내보내기
-- **[파일 시스템](docs/template-guides/file-system.md)** - FormFileUpload + 에디터(Tiptap) 이미지 업로드
-- **[인증 시스템](docs/template-guides/auth.md)** - NextAuth 설정, 라우팅, 세션 관리
-- **[다국어(i18n)](docs/template-guides/i18n.md)** - lang 필터, APP_CONFIG.LANG, 언어 전환
-- **[이메일(SMTP)](docs/template-guides/email.md)** - Nodemailer 발송, 문의 답변 연동
-
-### 개발
-
-- **[개발 가이드](docs/template-guides/development.md)** - 명령어, 환경변수, 설정 파일
-- **[Supabase 워크플로우](docs/template-guides/supabase.md)** - 로컬 개발, 클라우드 배포, 마이그레이션
-
----
+| 문서 | 내용 |
+| --- | --- |
+| [conventions.md](docs/template-guides/conventions.md) | FSD 구조, 파일명 규칙, lib vs utils, APP_CONFIG, 공용 UI |
+| [manage-modules.md](docs/template-guides/manage-modules.md) | CRUD 모듈 시스템, 핵심 패턴, 엑셀 내보내기 |
+| [file-system.md](docs/template-guides/file-system.md) | FormFileUpload + 에디터(Tiptap) 이미지 업로드 |
+| [auth.md](docs/template-guides/auth.md) | NextAuth 설정, 라우팅, 세션 |
+| [i18n.md](docs/template-guides/i18n.md) | lang 필터, APP_CONFIG.LANG, 언어 전환 |
+| [email.md](docs/template-guides/email.md) | Nodemailer 발송, 문의 답변 |
+| [development.md](docs/template-guides/development.md) | 명령어, 환경변수, 설정 파일 |
+| [supabase.md](docs/template-guides/supabase.md) | 로컬 개발, 마이그레이션, 배포 |
 
 ## 빠른 참조
 
-### 새 CRUD 모듈 추가
+레시피 전체 코드는 각 문서에 있습니다. 여기서는 진입점만 안내합니다.
 
-```bash
-# 1. 기존 모듈 복사 (faqs: 기본 CRUD, notices: 카테고리+파일)
-cp -r src/features/manage-modules/faqs src/features/manage-modules/products
-
-# 2. schema.ts 수정 (DB 필드 검증 — SSOT)
-export const writeSchema = z.object({
-  name: z.string().min(1, '이름을 입력해주세요.'),
-  description: z.string().min(1, '설명을 입력해주세요.'),
-});
-
-# 3. config.ts 수정
-export const CONFIG = {
-  tableName: 'products',
-  searchFields: ['name', 'description'],  # 검색 대상 필드
-  schema: writeSchema,                     # 서버 액션 자동 검증
-  enableReorder: true,                     # 순서 변경 (선택)
-  ...
-};
-
-# 4. Server Actions는 _base 액션에 CONFIG를 넘기는 얇은 함수
-export async function getList(params: GetListParams) {
-  return baseGetList<ItemDTO>(CONFIG, params);
-}
-
-# 5. 컴포넌트 수정 (list-columns에서 RowActions 사용, write-form, addons)
-```
-
-📄 자세한 내용: [manage-modules.md](docs/template-guides/manage-modules.md#새로운-모듈-추가)
-
-### 순서 변경(Reorder) 기능 추가
-
-**1. DB 마이그레이션**
-```sql
-sort_order INTEGER NOT NULL DEFAULT 0,
-CREATE INDEX idx_[table]_sort_order ON public.[table](sort_order);
-```
-
-**2. config.ts**
-```typescript
-export const CONFIG = {
-  tableName: 'products',
-  searchFields: ['name'],
-  enableReorder: true,  // 또는 { direction: 'asc' }
-} as const;
-```
-
-📄 자세한 내용: [manage-modules.md](docs/template-guides/manage-modules.md#순서-변경-기능-enablereorder)
-
-### 파일 업로드 추가
-
-**FormFileUpload (manage-modules 첨부파일):**
-
-```typescript
-// write-form.tsx
-import { uploadFormFiles, type FormFilesField } from '@/shared/lib/file-system';
-
-<FormFileUpload name="files.attachments" label="첨부 파일" />;
-
-// 폼 제출 시
-await uploadFormFiles({
-  formFiles: formFiles as FormFilesField,
-  id: data.id,
-  tableName: CONFIG.tableName,
-  pathname,
-  updateAction: updateItem,
-});
-```
-
-**Tiptap (에디터 이미지):**
-
-```typescript
-<FormEditor entity={CONFIG.tableName} name="content" label="내용" />
-```
-
-📄 자세한 내용: [file-system.md](docs/template-guides/file-system.md)
-
-### 새 페이지 추가
-
-```typescript
-// app/(protected)/products/page.tsx
-import { ProductList } from '@/features/products';
-
-export default function ProductsPage() {
-  return <ProductList />;
-}
-```
-
-📄 자세한 내용: [conventions.md](docs/template-guides/conventions.md#새로운-기능-추가-시)
-
-### Supabase 로컬 개발
-
-```bash
-# 초기화 (새 프로젝트)
-npm run db:init
-
-# 로컬 Supabase 시작/중지
-npm run db:start
-npm run db:stop
-
-# 마이그레이션 재적용
-npm run db:reset
-
-# 새 마이그레이션 생성
-npm run db:migrate:new feature_name
-
-# 클라우드 연결 및 배포
-npm run db:link --project-ref <ref>
-npm run db:push
-```
-
-📄 자세한 내용: [supabase.md](docs/template-guides/supabase.md)
-
----
+- **새 CRUD 모듈**: 기존 모듈 복사(`faqs` 기본 / `notices` 카테고리+파일) → `schema.ts`(검증 SSOT)·`config.ts` 수정 → 서버 액션은 `_base` 액션에 `CONFIG`를 넘기는 얇은 함수. → [manage-modules.md](docs/template-guides/manage-modules.md#새로운-모듈-추가)
+- **순서 변경**: `config.ts`에 `enableReorder` + `sort_order` 컬럼 마이그레이션. → [manage-modules.md](docs/template-guides/manage-modules.md#순서-변경-기능-enablereorder)
+- **파일 업로드**: 첨부는 `<FormFileUpload>` + `uploadFormFiles`, 에디터 이미지는 `<FormEditor>`. → [file-system.md](docs/template-guides/file-system.md)
+- **새 페이지**: `app/(protected)/<name>/page.tsx`에서 해당 feature를 import. → [conventions.md](docs/template-guides/conventions.md#새로운-기능-추가-시)
 
 ## 개발 명령어
 
 ```bash
-# 개발 서버
-npm run dev
-
-# 빌드
-npm run build
-
-# ESLint
-npm run lint
+npm run dev         # 개발 서버
+npm run build       # 프로덕션 빌드
+npm run lint        # ESLint
+npm run type-check  # 타입 검사 (tsc --noEmit)
+npm run test:run    # 테스트 (Vitest)
 ```
 
-📄 자세한 내용: [development.md](docs/template-guides/development.md)
+Supabase 로컬 DB(`db:start`, `db:reset`, `db:migrate:new` 등)는 [supabase.md](docs/template-guides/supabase.md#명령어) 참조.
 
----
+## 컨벤션 (요약 — 상세는 [conventions.md](docs/template-guides/conventions.md))
 
-## 파일 구조
+- **파일/폴더**: kebab-case (`user-profile.tsx`). Hooks: `use-*`. 도메인 설정: `config.ts`/`types.ts`. 루트 설정: `*.config.ts`.
+- **코드**: 컴포넌트 PascalCase, 함수/변수 camelCase, 상수 SCREAMING_SNAKE_CASE, 타입 PascalCase.
+- **커밋**: `타입: 제목` 형식. 타입은 `feat`·`fix`·`refactor`·`docs`·`style`·`test`·`chore`.
 
-```
-src/
-├── app/                     # Next.js App Router (라우팅)
-│   ├── (auth)/             # 인증 페이지 (레이아웃 없음)
-│   ├── (protected)/        # 보호된 페이지 (Sidebar + Header)
-│   └── api/                # API 라우트
-├── features/                # 기능 레이어 (비즈니스 로직)
-│   ├── auth/               # 인증 시스템
-│   ├── dashboard/          # 대시보드
-│   ├── manage-modules/     # CRUD 모듈 시스템
-│   └── ui/                 # 복합 UI 위젯 (app-sidebar 등)
-├── shared/                  # 공유 레이어
-│   ├── ui/                  # Shadcn UI + 도메인 UI (form, editor, data-list, app-dialog 등)
-│   ├── lib/                 # 도메인 라이브러리 (supabase, file-system, email, excel)
-│   ├── utils/               # 범용 유틸리티
-│   ├── hooks/               # 커스텀 훅
-│   ├── types/               # 공통 타입
-│   ├── schemas/             # Zod 스키마 (프리셋)
-│   └── constants/           # 공통 상수
-├── fonts/                   # 폰트 정의 (Poppins, Oswald, Pretendard)
-├── types/                   # 전역 타입 확장 (next-auth.d.ts)
-└── app.config.ts            # APP_CONFIG — 앱 전역 설정 SSOT
-```
+## 프로젝트 특이사항
 
-📄 자세한 내용: [conventions.md](docs/template-guides/conventions.md#프로젝트-아키텍처)
+코드만 봐서는 드러나지 않는 결정들입니다.
 
----
-
-## 코딩 컨벤션
-
-### 파일명
-
-- **기본**: kebab-case (`user-profile.tsx`)
-- **Hooks**: use-kebab-case (`use-mobile.ts`)
-- **설정 (도메인)**: `config.ts`, `types.ts`
-- **설정 (루트)**: `*.config.ts` (`app.config.ts`, `next.config.ts`)
-
-### 코드 네이밍
-
-- **컴포넌트**: PascalCase (`UserProfile`)
-- **함수/변수**: camelCase (`getUserData`)
-- **상수**: SCREAMING_SNAKE_CASE (`API_BASE_URL`)
-- **타입**: PascalCase (`UserData`)
-
-### Git 커밋
-
-```
-타입: 제목
-
-본문 (선택사항)
-```
-
-**타입**: `feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore`
-
-📄 자세한 내용: [conventions.md](docs/template-guides/conventions.md#파일명-규칙)
-
----
-
-## 문서 작성 가이드
-
-새로운 기능이나 시스템을 추가할 때 다음 패턴을 따르세요.
-
-### 복잡한 시스템
-
-`docs/template-guides/` 폴더에 전문 문서 작성:
-
-```markdown
-# 기능명
-
-## 개요
-
-핵심 특징 3-5개
-
-## 구조
-
-폴더 트리
-
-## 핵심 개념
-
-주요 패턴 설명 (코드 예시 5-10줄)
-
-## 사용 방법
-
-복사-붙여넣기 가능한 템플릿
-
-## 주의사항
-
-간결하게 (5-10줄)
-```
-
-### CLAUDE.md 업데이트
-
-상세 문서 섹션에 링크 추가:
-
-```markdown
-### 아키텍처 & 시스템
-
-- **[새 기능](docs/template-guides/new-feature.md)** - 간단한 설명
-```
-
-빠른 참조 섹션에 예시 추가 (선택사항)
-
----
-
-## 문서 동기화
-
-코드 변경 시 관련 문서도 함께 업데이트해야 합니다.
-
-### 체크리스트
-
-- [ ] 폴더 구조 변경 → `CLAUDE.md` 파일 구조, `docs/template-guides/conventions.md`
-- [ ] 타입/인터페이스 변경 → 관련 문서의 코드 예시
-- [ ] 새 기능 추가 → 해당 기능 문서 또는 새 문서 작성
-- [ ] API/import 경로 변경 → 모든 문서의 import 예시
-
-### 검증
-
-```bash
-# 변경된 키워드가 문서에 남아있는지 확인
-grep -r "변경전키워드" docs/template-guides/ CLAUDE.md
-```
-
----
-
-## 참고
-
-- **우직실 원칙**: 우아함, 직관성, 실용성 (프로젝트 내부 용어)
 - **Path Alias**: `@/*` = `./src/*`
-- **React Compiler**: 비활성화 — 프로덕션 빌드에서 컴파일러 버그 재현 확인 (상세: [development.md](docs/template-guides/development.md#react-compiler-비활성화))
-- **Tailwind V4**: PostCSS 플러그인 방식
+- **React Compiler 비활성화** — 프로덕션 빌드에서 컴파일러 버그 재현 확인됨. ([development.md](docs/template-guides/development.md#react-compiler-비활성화))
+- **Tailwind V4** — PostCSS 플러그인 방식
+- **APP_CONFIG** (`src/app.config.ts`) — 앱 전역 설정 SSOT
+- **manage-modules SSOT** — `config.ts`가 목록 UI부터 서버 액션 Zod 검증까지 구동. 서버 액션은 `_base`에 `CONFIG`를 넘기는 얇은 함수로 유지.
 
----
+## 문서 규칙
 
-**Claude Code 사용 시 문서를 먼저 확인하고 필요한 섹션을 선택적으로 읽어주세요.**
+- 코드 변경 시 관련 `docs/template-guides/` 문서의 예시(구조·타입·import 경로)도 함께 갱신하세요.
+- **`docs/_local/`** 는 git 추적 제외 경로입니다(내부 todos·테스트 리포트 등 공개하지 않을 작업 문서). 공개용 문서는 `docs/template-guides/` 에 둡니다.
