@@ -19,12 +19,36 @@ features/auth/
 │   └── password.ts          # 비밀번호 해싱
 ├── config.ts                # NextAuth 설정 (default export)
 ├── schema.ts                # Zod 스키마 (updateProfileSchema)
-├── next-auth.ts             # NextAuth 핸들러
+├── server.ts                # NextAuth 인스턴스 (auth·handlers) — server-only
 ├── types.ts                 # 타입 정의
 ├── use-auth.ts              # Client 훅 (useAuth, useRequireAuth)
 ├── idle-logout-provider.tsx # 유휴 로그아웃
 └── index.ts                 # Barrel exports
 ```
+
+## 서버/클라이언트 경계
+
+인증 코드는 실행 런타임에 따라 진입점이 나뉩니다. 핵심은 **클라이언트 번들에
+서버 인증 로직(authorize·secret 키)이 실리지 않게** 하는 것입니다.
+
+| 무엇을 | 어디서 import | 비고 |
+| --- | --- | --- |
+| `signIn`·`signOut`·`useAuth`·`useRequireAuth` | `@/features/auth` (배럴) | 클라이언트 훅 |
+| `RequireAuth`·UI 컴포넌트 | `@/features/auth` (배럴) | `'use client'` |
+| `requireAuth`·`getUserSession`·`updateProfile` | `@/features/auth` (배럴) | `'use server'` 액션 |
+| `auth`·`nextAuthHandlers` | **`@/features/auth/server`** | 서버 전용 (RSC·Route Handler) |
+
+배럴(`@/features/auth`)은 **"클라이언트 안전 기본값"**입니다 — 여기서 가져온 건
+클라 번들에 넣어도 안전합니다. 서버 세션 API만 `@/features/auth/server`로 분리했습니다.
+
+### server-only 가드레일
+
+`server.ts`(NextAuth 인스턴스)와 `shared/lib/supabase/server.ts`(secret 키 팩토리)는
+`import 'server-only'`로 잠겨 있습니다. 이 모듈이 클라 번들에 포함되면 **빌드가 실패**해,
+실수로 서버 인증 코드가 브라우저로 새는 것을 컴파일 타임에 막습니다.
+
+> Vitest는 RSC 경계가 없어 server-only가 throw하므로 `vitest.config.mts`에서
+> no-op으로 alias합니다(`test/stubs/server-only.ts`). 실제 빌드 가드레일에는 영향 없습니다.
 
 ## 라우팅
 
@@ -120,7 +144,7 @@ await signOut({ callbackUrl: '/auth/sign-in' });
 ### 세션 확인 (Server Component)
 
 ```typescript
-import { auth } from '@/features/auth';
+import { auth } from '@/features/auth/server';
 
 const session = await auth();
 if (!session) {
@@ -314,7 +338,7 @@ AUTH: {
 },
 ```
 
-- 세션 JWT의 `maxAge`도 `IDLE_TIMEOUT_MINUTES`와 동일하게 설정됩니다(`next-auth.ts`).
+- 세션 JWT의 `maxAge`도 `IDLE_TIMEOUT_MINUTES`와 동일하게 설정됩니다(`server.ts`).
 - 마우스/키보드 활동을 감지해 타이머를 리셋하고, 경고 시간에 도달하면 알림을 띄웁니다.
 
 ## 조건부 렌더링 가드 (`RequireAuth`)

@@ -1,3 +1,7 @@
+// 서버 전용 진입점. 클라이언트 번들에 포함되면 빌드가 실패하도록 강제한다.
+// 클라이언트 인증 API(signIn/signOut/useAuth)는 './use-auth'에 있다.
+import 'server-only';
+
 import { APP_CONFIG } from '@/app.config';
 import NextAuth from 'next-auth';
 import authConfig from './config';

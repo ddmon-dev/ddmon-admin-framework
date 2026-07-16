@@ -29,9 +29,11 @@ app/
 ├── (auth)/              # 인증 페이지 (레이아웃 없음)
 ├── (protected)/         # 보호된 페이지 (Sidebar + Header)
 │   ├── (super-admin-only)/  # 슈퍼 관리자 전용 (admins)
-│   ├── (system)/            # 시스템 페이지 (unauthorized, error-test, [...not-found])
+│   ├── (system)/            # 시스템 페이지 (403-forbidden, 500-internal-server-error, [...not-found])
 │   ├── faqs/ notices/ ...   # 관리 모듈 페이지 (protected 직속)
 │   └── page.tsx             # 대시보드
+├── not-found.tsx        # 전역 404 (루트 레이아웃 내, 사이드바 없음)
+├── global-error.tsx     # 최후 에러 경계 (루트 레이아웃 대체)
 └── api/                 # API 라우트
 ```
 
@@ -81,7 +83,7 @@ shared/
 
 ```typescript
 import { Button } from '@/shared/ui/button';
-import { auth } from '@/features/auth';
+import { auth } from '@/features/auth/server';
 import { AppSidebar } from '@/features/ui/app-sidebar/sidebar';
 ```
 
@@ -379,7 +381,7 @@ shared/
 **예시**:
 ```typescript
 // features/auth/utils/server.ts
-import { auth } from '@/features/auth';
+import { auth } from '../server';
 import { redirect } from 'next/navigation';
 
 export async function requireAuth() {
@@ -435,9 +437,11 @@ features/auth/
 ├── utils/
 │   ├── server.ts      # requireAuth 등 (auth()·redirect 의존 — 도메인성)
 │   └── password.ts    # 비밀번호 해싱 (bcrypt만 의존 — 순수)
-├── next-auth.ts       # NextAuth 핸들러
+├── server.ts          # NextAuth 인스턴스 (server-only)
 └── config.ts          # NextAuth 설정
 ```
+
+> 서버/클라이언트 진입점 경계와 `server-only` 가드레일은 [auth.md](auth.md#서버클라이언트-경계) 참고.
 
 #### 판단 기준
 

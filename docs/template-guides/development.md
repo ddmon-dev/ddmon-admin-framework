@@ -39,9 +39,8 @@ SUPABASE_SECRET_KEY=
 # Supabase Storage 버킷명 (.env의 값과 config.toml의 버킷 선언이 일치해야 함)
 NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET_NAME=public-assets
 
-# NextAuth
+# NextAuth (URL은 v5 trustHost가 요청 host에서 자동 추론 — NEXTAUTH_URL 불필요)
 NEXTAUTH_SECRET=          # openssl rand -base64 32
-NEXTAUTH_URL=             # 예: http://localhost:3000
 
 # SMTP (이메일 발송 — 문의 답변 등)
 SMTP_HOST=

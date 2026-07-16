@@ -2,9 +2,9 @@
 
 이 파일은 Claude Code가 이 저장소에서 작업할 때의 지침입니다. 프로젝트 전반(소개·기술 스택·빠른 시작·아키텍처 개요)은 **README.md**를 정면 문서로 삼고, 이 파일은 작업에 필요한 라우팅과 규칙만 담습니다.
 
-## 무엇인가
+## 소개
 
-Admin Framework — Next.js 16(App Router) 기반 관리자 대시보드 프레임워크. `config.ts` 하나로 목록·검색·정렬·페이지네이션·CRUD를 조립하는 convention-over-configuration 설계.
+Admin Framework — Next.js 16(App Router) 기반 관리자 대시보드 프레임워크. 설정 파일(`config.ts`) 하나로 목록·검색·정렬·페이지네이션·CRUD 관리 화면 전체가 돌아갑니다.
 
 ## 상세 문서 (`docs/template-guides/`)
 

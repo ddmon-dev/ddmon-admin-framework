@@ -2,12 +2,12 @@ import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
 import { StatusLayout, type StatusSize } from './status-layout';
 
-interface UnauthorizedStatusProps {
+interface ForbiddenStatusProps {
   fullScreen?: boolean;
   size?: StatusSize;
 }
 
-export function UnauthorizedStatus({ fullScreen, size = 'lg' }: UnauthorizedStatusProps) {
+export function ForbiddenStatus({ fullScreen, size = 'lg' }: ForbiddenStatusProps) {
   return (
     <StatusLayout
       code="403"

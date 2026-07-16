@@ -1,5 +1,5 @@
-// NextAuth 핵심 함수
-export { auth, nextAuthHandlers } from './next-auth';
+// 이 배럴은 "클라이언트 안전 기본값"이다. 서버 전용 API(auth, nextAuthHandlers)는
+// 클라 번들 오염을 막기 위해 여기서 제외한다 — '@/features/auth/server'에서 가져올 것.
 
 // Auth UI
 export * from './ui/auth-layout';
