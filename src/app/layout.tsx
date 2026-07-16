@@ -32,6 +32,7 @@ import {
 export const metadata: Metadata = {
   title: APP_CONFIG.META.TITLE,
   description: APP_CONFIG.META.DESCRIPTION,
+  robots: { index: false, follow: false },
 };
 
 export default async function RootLayout({
