@@ -16,7 +16,7 @@ export function ProjectSymbol({
       )}
       linkToHome={linkToHome}
     >
-      <span className={cn('font-primary text-[1.5em] font-bold leading-none')}>D</span>
+      <span className={cn('font-primary text-[1.5em] font-bold leading-none')}>A</span>
     </Wrapper>
   );
 }
