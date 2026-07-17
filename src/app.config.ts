@@ -3,8 +3,8 @@ import type { SidebarVariant } from '@/shared/ui/sidebar';
 
 export const APP_CONFIG = {
   META: {
-    TITLE: 'DDmon Admin Dashboard Framework',
-    DESCRIPTION: '어드민 대시보드 프레임워크입니다.',
+    TITLE: '이동희 | Admin Framework Demo',
+    DESCRIPTION: '이동희의 어드민 대시보드 프레임워크 데모입니다.',
   },
   AUTH: {
     ADMIN_TABLE_NAME: 'admins', // Supabase 관리자 테이블명
