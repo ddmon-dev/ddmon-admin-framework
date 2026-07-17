@@ -10,7 +10,7 @@ export function AppSidebarIdentity() {
       <div className="grid flex-1 text-left text-sm leading-tight">
         <span className="truncate font-medium text-sm">DDmon Admin Framework</span>
         <span className="truncate text-xs text-muted-foreground">
-          어드민 대시보드 프레임워크입니다.
+          이동희의 어드민 프레임워크 데모입니다.
         </span>
       </div>
     </div>
