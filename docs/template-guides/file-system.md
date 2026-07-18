@@ -5,7 +5,7 @@
 | 구분 | FormFileUpload | 에디터(Tiptap) 이미지 업로드 |
 |------|---------------|----------------------|
 | **용도** | 폼 첨부파일 | 에디터 내 이미지 |
-| **Storage 경로** | `{테이블명}/{엔티티ID}/` | `editor/{엔티티}/{날짜}/` |
+| **Storage 경로** | `{테이블명}/{yyyymmdd}/` | `editor/{엔티티}/{날짜}/` |
 | **DB 저장** | JSONB 메타데이터 | 없음 (HTML에 URL만) |
 | **관리** | 삭제 시 Storage도 삭제 | 자동 삭제 없음 |
 
@@ -83,15 +83,19 @@ export type ItemDTO = WithFiles<BaseItemDTO<typeof CONFIG.tableName>>;
 
 #### 2. 폼 스키마
 
+파일 필드는 `schema.ts`의 `writeSchema`에 **폼 모양**(`schemaPresets.files`)으로 선언합니다. 서버 액션이 검증 직전 이 필드를 DB 메타데이터 스키마로 자동 치환하므로(`resolveServerSchema`), 모듈이 `dbFiles`를 직접 다룰 필요가 없습니다.
+
 ```typescript
-// notice/write-form.tsx
+// notice/schema.ts
 import { schemaPresets } from '@/shared/schemas';
 
-const formSchema = z.object({
+export const writeSchema = z.object({
   title: z.string().min(1),
   files: schemaPresets.files({ thumbnail: 0, attachments: 0 }),
 });
 ```
+
+`write-form.tsx`는 이 `writeSchema`를 그대로 사용합니다(별도 `formSchema` 불필요).
 
 #### 3. 폼 컴포넌트
 
@@ -118,30 +122,30 @@ const formSchema = z.object({
 
 #### 4. 폼 제출 (write-form.tsx)
 
+파일을 먼저 업로드해 메타데이터를 받고, 그 메타데이터를 포함해 DB에 한 번만 씁니다. 업로드가 실패하면 DB 저장 자체가 일어나지 않아(fail-closed) "첨부 없는 반쪽 행"이 남지 않습니다.
+
 ```typescript
 import { uploadFormFiles, type FormFilesField } from '@/shared/lib/file-system';
 
 async function onSubmit(values: FormValues) {
   const { files: formFiles, ...restValues } = values;
 
-  // 1. 데이터 DB 저장 (파일 제외)
+  // 1. 파일 업로드 선행 (실패 시 throw → DB 접근 없음)
+  const filesMetadata = await uploadFormFiles({
+    formFiles: formFiles as FormFilesField,
+    tableName: CONFIG.tableName,
+  });
+
+  // 2. 메타데이터 포함해 단일 저장
+  const submitValues = { ...restValues, ...(filesMetadata && { files: filesMetadata }) };
   const { success, data, error } = id
-    ? await updateItem({ id, values: restValues, pathname })
-    : await createItem({ values: restValues, pathname });
+    ? await updateItem({ id, values: submitValues, pathname })
+    : await createItem({ values: submitValues, pathname });
 
   if (!success || !data) {
     toast.error(error);
     return;
   }
-
-  // 2. 파일 업로드 (Presigned URL → Storage → DB 메타데이터)
-  await uploadFormFiles({
-    formFiles: formFiles as FormFilesField,
-    id: data.id,
-    tableName: CONFIG.tableName,
-    pathname,
-    updateAction: updateItem,
-  });
 
   toast.success('저장되었습니다.');
 }
@@ -151,19 +155,19 @@ async function onSubmit(values: FormValues) {
 
 **uploadFormFiles()** (클라이언트 전용)
 
-폼 파일을 Storage에 업로드하고 DB에 메타데이터를 저장합니다.
+폼 파일을 `{테이블명}/{yyyymmdd}/` 경로에 업로드하고 카테고리별 메타데이터를 반환합니다. DB 저장은 하지 않습니다 — 반환된 메타데이터를 호출부가 create/update에 실어 1회 저장합니다. 업로드할 파일이 없으면 `undefined`를 반환합니다.
 
 ```typescript
 import { uploadFormFiles, type FormFilesField } from '@/shared/lib/file-system';
 
-await uploadFormFiles({
+// Promise<DbFilesJSONB | undefined> 반환
+const filesMetadata = await uploadFormFiles({
   formFiles: formFiles as FormFilesField,
-  id: data.id,
   tableName: CONFIG.tableName,
-  pathname,
-  updateAction: updateItem,
 });
 ```
+
+> 경로는 행 id가 아니라 업로드 날짜로 버킷팅됩니다. 행-파일 연결은 files JSONB 메타데이터가 담당하므로, 업로드 시점에 행 id가 없어도 됩니다(생성 흐름이 단순해지는 핵심).
 
 **getOldFiles() / cleanupDeletedFiles()** (Server Action 전용)
 
@@ -178,15 +182,16 @@ await cleanupDeletedFiles({ oldFiles, newFiles: values.files });
 
 **deleteFilesFromStorage() / deleteFolderFromStorage()** (Server Action 전용)
 
+Hard Delete는 삭제 행의 files JSONB에서 URL을 추출해 파일 단위로 삭제합니다(`_base/actions/delete.ts`에서 자동 처리). 파일이 여러 날짜 폴더에 흩어져 있어도, 구 경로(`{테이블명}/{id}/`) 데이터여도 URL 기반이라 모두 정리됩니다.
+
 ```typescript
-import { deleteFilesFromStorage, deleteFolderFromStorage } from '@/shared/lib/file-system';
+import { deleteFilesFromStorage, extractAllFileUrls } from '@/shared/lib/file-system';
 
-// URL 배열로 파일 삭제
-await deleteFilesFromStorage(['https://...', 'https://...']);
-
-// 폴더 전체 삭제 (Hard Delete 시)
-await deleteFolderFromStorage(`notices/${id}`);
+// URL 배열로 파일 삭제 (Hard Delete 기본 경로)
+await deleteFilesFromStorage(extractAllFileUrls(row.files));
 ```
+
+> `deleteFolderFromStorage(folderPath)`는 폴더 접두어 통삭제용 범용 유틸로 남아있지만, 날짜 버킷팅 전환 이후 manage-modules hard delete는 URL 기반 삭제를 사용합니다.
 
 **downloadFileFromStorage()** (클라이언트 전용)
 

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createServerClient } from '@/shared/lib/supabase/server';
-import { deleteFolderFromStorage } from '@/shared/lib/file-system';
+import { deleteFilesFromStorage, extractAllFileUrls } from '@/shared/lib/file-system';
 import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
 import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
@@ -79,9 +79,8 @@ export async function hardDelete(params: DeleteItemParams): Promise<ActionResult
       return Result.error(CRUD_ERRORS.DELETE_FAILED());
     }
 
-    // Storage 폴더 전체 삭제
-    const folderPath = `${tableName}/${id}`;
-    await deleteFolderFromStorage(folderPath);
+    // Storage 파일 삭제 (메타데이터 URL 기반 — 날짜 폴더에 흩어진 파일·구 경로 데이터 모두 커버)
+    await deleteFilesFromStorage(extractAllFileUrls((data as any).files));
 
     if (pathname) {
       revalidatePath(pathname);

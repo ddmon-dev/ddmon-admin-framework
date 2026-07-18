@@ -195,19 +195,24 @@ if (!success) {
 ```
 schema.ts (SSOT)          config.ts              _base actions
 ─────────────────       ─────────────────       ─────────────────
-writeSchema          →  CONFIG.schema         →  safeParse(values) 자동 검증
-  (DB 필드만)                                    updateItem은 .partial() 적용
+writeSchema          →  CONFIG.schema         →  resolveServerSchema → safeParse
+  (= 폼 스키마)                                    files 필드를 dbFiles로 치환 후 검증
+                                                 updateItem은 .partial() 적용
 ```
 
-- **createItem**: `schema.safeParse(values)` — 전체 필드 검증
-- **updateItem**: `schema.partial().safeParse(values)` — 부분 업데이트 허용
+`writeSchema`가 곧 폼 스키마입니다(파일 필드는 폼 모양으로 선언). 업로드가 선행돼 서버에 도달하는 `files`는 이미 DB 메타데이터 모양이므로, `resolveServerSchema`가 검증 직전 `files` 필드만 `dbFilesSchema`로 치환합니다. 파일 없는 모듈은 치환이 항등이라 그대로 검증됩니다.
+
+- **createItem**: `resolveServerSchema(schema).safeParse(values)` — files 치환 후 전체 검증
+- **updateItem**: `resolveServerSchema(schema).partial().safeParse(values)` — 치환 + 부분 업데이트
 - **delete/bulkDelete/swapOrder**: 사용자 콘텐츠를 DB에 쓰지 않으므로 검증 불필요
 
 ```typescript
-// schema.ts — DB 필드만 정의 (SSOT)
+// schema.ts — 폼 스키마가 곧 SSOT
 export const writeSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요.'),
   content: z.string().min(1, '내용을 입력해주세요.'),
+  // 파일 있는 모듈: files 필드를 폼 모양으로 선언 (서버가 dbFiles로 자동 치환)
+  // files: schemaPresets.files({ thumbnail: 1, attachments: 0 }),
 });
 
 // config.ts — schema 연결
@@ -217,16 +222,8 @@ export const CONFIG = {
   schema: writeSchema,  // _base actions에서 자동 검증
 } as const;
 
-// write-form.tsx — 클라이언트 검증 (zodResolver)
+// write-form.tsx — writeSchema를 그대로 사용 (별도 formSchema 불필요)
 import { writeSchema } from './schema';
-
-// 파일 없는 모듈: 그대로 사용
-const formSchema = writeSchema;
-
-// 파일 있는 모듈: UI 전용 필드 확장
-const formSchema = writeSchema.extend({
-  files: schemaPresets.files({ thumbnail: 0, attachments: 0 }),
-});
 ```
 
 **author/updated_by 자동 주입:**
@@ -382,7 +379,7 @@ cp -r src/features/manage-modules/notices src/features/manage-modules/products
 
 ### 2. 스키마 & 설정 파일 수정
 
-**schema.ts (DB 필드 검증 — SSOT):**
+**schema.ts (폼 스키마 = 검증 SSOT):**
 ```typescript
 import { z } from 'zod';
 

@@ -99,8 +99,8 @@ export function createFilesSchema(config: string[] | Record<string, number | { m
 /**
  * DB files JSONB 컬럼에 저장되는 파일 메타데이터 스키마
  *
- * 서버 액션 검증(writeSchema)에 포함해 update 시 files 필드가
- * 스키마 검증에서 제거되지 않도록 합니다.
+ * 서버 액션이 검증 직전 폼 스키마의 files 필드를 이 스키마로 치환합니다
+ * (resolveServerSchema). 업로드가 선행돼 서버에 도달하는 files는 메타데이터 모양이므로.
  */
 export const dbFilesSchema = z.record(
   z.string(),

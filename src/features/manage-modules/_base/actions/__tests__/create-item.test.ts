@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { schemaPresets } from '@/shared/schemas';
 import { createItem } from '../create-item';
 
 // Supabase 체이닝 모킹
@@ -55,6 +56,40 @@ describe('createItem', () => {
         content: '내용',
         author: 'admin1',
       })
+    );
+  });
+
+  it('files 폼 스키마 + 업로드 메타데이터 → 서버가 dbFiles로 치환·검증 후 메타데이터 보존 insert', async () => {
+    // 모듈 실제 형태: files는 폼 모양(new/existing/null)으로 선언됨
+    const fileSchema = z.object({
+      title: z.string().min(1),
+      files: schemaPresets.files({ thumbnail: 1, attachments: 0 }),
+    });
+    // 업로드 선행 후 서버에 도달하는 값: files는 DB 메타데이터 모양
+    const metadata = {
+      thumbnail: [
+        {
+          url: 'https://x/thumb.png',
+          originalName: '검증-썸네일.png',
+          size: 71,
+          mimeType: 'image/png',
+          uploadedAt: '2026-07-18T00:00:00Z',
+        },
+      ],
+    };
+    const mockData = { id: '9', title: '파일 뉴스', files: metadata, author: 'admin1' };
+    mockSingle.mockResolvedValue({ data: mockData, error: null });
+
+    const result = await createItem(
+      { tableName: 'news', schema: fileSchema },
+      { values: { title: '파일 뉴스', files: metadata } }
+    );
+
+    // 폼 스키마 원본이라면 메타데이터(type 없음)는 거부됐을 것 → 성공 = resolveServerSchema 치환 동작
+    expect(result).toEqual({ success: true, data: mockData });
+    // files 메타데이터가 스트립되지 않고 insert까지 보존됨
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({ title: '파일 뉴스', files: metadata, author: 'admin1' })
     );
   });
 
