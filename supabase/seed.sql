@@ -6,61 +6,61 @@
 -- =============================================
 
 -- 공지사항 목 데이터 (30개)
-INSERT INTO public.notices (title, content, author, category, view_count) VALUES
-  ('[중요] 2024년 신년 인사', '<p>새해 복 많이 받으세요! 2024년에도 저희 서비스를 이용해주셔서 감사합니다.</p>', 'admin', 'notice', 1245),
-  ('[공지] 시스템 정기 점검 안내', '<p>시스템 정기 점검이 아래와 같이 진행됩니다.</p><ul><li><p>점검 일시: 2024.01.15 (월) 02:00 ~ 06:00</p></li><li><p>점검 내용: 서버 안정화 및 보안 업데이트</p></li></ul><p><span style="color: #e64c4c">점검 시간 동안 서비스 이용이 제한됩니다.</span></p>', 'admin', 'notice', 892),
-  ('[공지] 개인정보처리방침 변경 안내', '<p>개인정보처리방침이 2024년 1월 1일부로 변경되었습니다.</p><p>주요 변경 사항은 다음과 같습니다.</p><ol><li><p>수집 항목 변경</p></li><li><p>보관 기간 조정</p></li><li><p>제3자 제공 범위 변경</p></li></ol>', 'admin', 'notice', 567),
-  ('2024년 1월 이벤트 당첨자 발표', '<p>새해맞이 이벤트에 참여해주신 모든 분들께 감사드립니다.</p>', 'admin', 'normal', 2341),
-  ('겨울 시즌 특별 할인 안내', '<p>겨울 시즌을 맞아 다양한 상품을 <strong>할인된 가격</strong>에 만나보세요.</p>', 'admin', 'normal', 1876),
-  ('신규 기능 업데이트 소식', '<p>사용자 편의성을 개선한 새로운 기능들이 추가되었습니다.</p>', 'admin', 'normal', 1543),
-  ('고객센터 운영시간 변경 안내', '<p>2024년부터 고객센터 운영시간이 변경됩니다.</p>', 'admin', 'normal', 987),
-  ('모바일 앱 업데이트 안내', '<p>모바일 앱이 버전 2.0으로 업데이트되었습니다.</p>', 'admin', 'normal', 2156),
-  ('회원 등급제도 개편 안내', '<p>더 나은 혜택을 제공하기 위해 회원 등급제도가 개편됩니다.</p>', 'admin', 'normal', 1432),
-  ('결제 시스템 개선 완료', '<p>더욱 안전하고 편리한 결제 시스템으로 개선되었습니다.</p>', 'admin', 'normal', 876),
-  ('FAQ 업데이트 안내', '<p>자주 묻는 질문이 업데이트되었습니다.</p>', 'admin', 'normal', 654),
-  ('2023년 결산 보고', '<p>2023년 한 해 동안의 성과를 공유합니다.</p>', 'admin', 'normal', 3421),
-  ('보안 강화 조치 안내', '<p>회원님들의 정보 보호를 위해 보안이 강화되었습니다.</p>', 'admin', 'normal', 1098),
-  ('배송 정책 변경 안내', '<p>2024년부터 배송 정책이 일부 변경됩니다.</p>', 'admin', 'normal', 765),
-  ('포인트 적립률 변경 안내', '<p>포인트 적립 정책이 변경되었습니다.</p>', 'admin', 'normal', 1234),
-  ('서비스 이용약관 개정 안내', '<p>서비스 이용약관이 개정되었습니다.</p>', 'admin', 'normal', 543),
-  ('신규 파트너사 입점 안내', '<p>새로운 파트너사가 입점했습니다.</p>', 'admin', 'normal', 892),
-  ('고객 만족도 조사 실시', '<p>서비스 개선을 위한 고객 만족도 조사에 참여해주세요.</p>', 'admin', 'normal', 456),
-  ('연말정산 서류 제출 안내', '<p>연말정산 관련 서류 제출 기한이 다가옵니다.</p>', 'admin', 'normal', 678),
-  ('멤버십 프로그램 런칭', '<p>새로운 멤버십 프로그램이 시작됩니다.</p>', 'admin', 'normal', 1567),
-  ('소셜 미디어 채널 오픈', '<p>공식 인스타그램 계정이 오픈했습니다.</p>', 'admin', 'normal', 2345),
-  ('야간 배송 서비스 시작', '<p>밤 10시까지 주문 시 새벽 배송이 가능합니다.</p>', 'admin', 'normal', 1876),
-  ('리뷰 이벤트 진행', '<p>솔직한 리뷰를 남겨주시면 포인트를 드립니다.</p>', 'admin', 'normal', 1234),
-  ('환불 정책 개선 안내', '<p>더욱 간편한 환불 절차로 개선되었습니다.</p>', 'admin', 'normal', 987),
-  ('신규 카테고리 추가', '<p>의류, 식품 카테고리가 새롭게 추가되었습니다.</p>', 'admin', 'normal', 1432),
-  ('위시리스트 기능 추가', '<p>관심 상품을 위시리스트에 담아보세요.</p>', 'admin', 'normal', 1098),
-  ('프리미엄 회원 혜택 확대', '<p>프리미엄 회원 혜택이 확대되었습니다.</p>', 'admin', 'normal', 2156),
-  ('긴급 공지: 서버 장애 복구 완료', '<p>일시적인 서버 장애가 복구되었습니다.</p>', 'admin', 'normal', 3421),
-  ('고객 후기 이벤트 당첨자 발표', '<p>고객 후기 이벤트 당첨자를 발표합니다.</p>', 'admin', 'normal', 876),
-  ('무료 배송 이벤트 진행', '<p>3만원 이상 구매 시 무료 배송 이벤트를 진행합니다.</p>', 'admin', 'normal', 1765);
+INSERT INTO public.notices (title, content, author, category, view_count, created_at) VALUES
+  ('[중요] 2024년 신년 인사', '<p>새해 복 많이 받으세요! 2024년에도 저희 서비스를 이용해주셔서 감사합니다.</p>', 'admin', 'notice', 1245, NOW() - INTERVAL '0 days'),
+  ('[공지] 시스템 정기 점검 안내', '<p>시스템 정기 점검이 아래와 같이 진행됩니다.</p><ul><li><p>점검 일시: 2024.01.15 (월) 02:00 ~ 06:00</p></li><li><p>점검 내용: 서버 안정화 및 보안 업데이트</p></li></ul><p><span style="color: #e64c4c">점검 시간 동안 서비스 이용이 제한됩니다.</span></p>', 'admin', 'notice', 892, NOW() - INTERVAL '1 days'),
+  ('[공지] 개인정보처리방침 변경 안내', '<p>개인정보처리방침이 2024년 1월 1일부로 변경되었습니다.</p><p>주요 변경 사항은 다음과 같습니다.</p><ol><li><p>수집 항목 변경</p></li><li><p>보관 기간 조정</p></li><li><p>제3자 제공 범위 변경</p></li></ol>', 'admin', 'notice', 567, NOW() - INTERVAL '2 days'),
+  ('2024년 1월 이벤트 당첨자 발표', '<p>새해맞이 이벤트에 참여해주신 모든 분들께 감사드립니다.</p>', 'admin', 'normal', 2341, NOW() - INTERVAL '3 days'),
+  ('겨울 시즌 특별 할인 안내', '<p>겨울 시즌을 맞아 다양한 상품을 <strong>할인된 가격</strong>에 만나보세요.</p>', 'admin', 'normal', 1876, NOW() - INTERVAL '4 days'),
+  ('신규 기능 업데이트 소식', '<p>사용자 편의성을 개선한 새로운 기능들이 추가되었습니다.</p>', 'admin', 'normal', 1543, NOW() - INTERVAL '5 days'),
+  ('고객센터 운영시간 변경 안내', '<p>2024년부터 고객센터 운영시간이 변경됩니다.</p>', 'admin', 'normal', 987, NOW() - INTERVAL '6 days'),
+  ('모바일 앱 업데이트 안내', '<p>모바일 앱이 버전 2.0으로 업데이트되었습니다.</p>', 'admin', 'normal', 2156, NOW() - INTERVAL '7 days'),
+  ('회원 등급제도 개편 안내', '<p>더 나은 혜택을 제공하기 위해 회원 등급제도가 개편됩니다.</p>', 'admin', 'normal', 1432, NOW() - INTERVAL '8 days'),
+  ('결제 시스템 개선 완료', '<p>더욱 안전하고 편리한 결제 시스템으로 개선되었습니다.</p>', 'admin', 'normal', 876, NOW() - INTERVAL '9 days'),
+  ('FAQ 업데이트 안내', '<p>자주 묻는 질문이 업데이트되었습니다.</p>', 'admin', 'normal', 654, NOW() - INTERVAL '10 days'),
+  ('2023년 결산 보고', '<p>2023년 한 해 동안의 성과를 공유합니다.</p>', 'admin', 'normal', 3421, NOW() - INTERVAL '11 days'),
+  ('보안 강화 조치 안내', '<p>회원님들의 정보 보호를 위해 보안이 강화되었습니다.</p>', 'admin', 'normal', 1098, NOW() - INTERVAL '12 days'),
+  ('배송 정책 변경 안내', '<p>2024년부터 배송 정책이 일부 변경됩니다.</p>', 'admin', 'normal', 765, NOW() - INTERVAL '13 days'),
+  ('포인트 적립률 변경 안내', '<p>포인트 적립 정책이 변경되었습니다.</p>', 'admin', 'normal', 1234, NOW() - INTERVAL '14 days'),
+  ('서비스 이용약관 개정 안내', '<p>서비스 이용약관이 개정되었습니다.</p>', 'admin', 'normal', 543, NOW() - INTERVAL '15 days'),
+  ('신규 파트너사 입점 안내', '<p>새로운 파트너사가 입점했습니다.</p>', 'admin', 'normal', 892, NOW() - INTERVAL '16 days'),
+  ('고객 만족도 조사 실시', '<p>서비스 개선을 위한 고객 만족도 조사에 참여해주세요.</p>', 'admin', 'normal', 456, NOW() - INTERVAL '17 days'),
+  ('연말정산 서류 제출 안내', '<p>연말정산 관련 서류 제출 기한이 다가옵니다.</p>', 'admin', 'normal', 678, NOW() - INTERVAL '18 days'),
+  ('멤버십 프로그램 런칭', '<p>새로운 멤버십 프로그램이 시작됩니다.</p>', 'admin', 'normal', 1567, NOW() - INTERVAL '19 days'),
+  ('소셜 미디어 채널 오픈', '<p>공식 인스타그램 계정이 오픈했습니다.</p>', 'admin', 'normal', 2345, NOW() - INTERVAL '20 days'),
+  ('야간 배송 서비스 시작', '<p>밤 10시까지 주문 시 새벽 배송이 가능합니다.</p>', 'admin', 'normal', 1876, NOW() - INTERVAL '21 days'),
+  ('리뷰 이벤트 진행', '<p>솔직한 리뷰를 남겨주시면 포인트를 드립니다.</p>', 'admin', 'normal', 1234, NOW() - INTERVAL '22 days'),
+  ('환불 정책 개선 안내', '<p>더욱 간편한 환불 절차로 개선되었습니다.</p>', 'admin', 'normal', 987, NOW() - INTERVAL '23 days'),
+  ('신규 카테고리 추가', '<p>의류, 식품 카테고리가 새롭게 추가되었습니다.</p>', 'admin', 'normal', 1432, NOW() - INTERVAL '24 days'),
+  ('위시리스트 기능 추가', '<p>관심 상품을 위시리스트에 담아보세요.</p>', 'admin', 'normal', 1098, NOW() - INTERVAL '25 days'),
+  ('프리미엄 회원 혜택 확대', '<p>프리미엄 회원 혜택이 확대되었습니다.</p>', 'admin', 'normal', 2156, NOW() - INTERVAL '26 days'),
+  ('긴급 공지: 서버 장애 복구 완료', '<p>일시적인 서버 장애가 복구되었습니다.</p>', 'admin', 'normal', 3421, NOW() - INTERVAL '27 days'),
+  ('고객 후기 이벤트 당첨자 발표', '<p>고객 후기 이벤트 당첨자를 발표합니다.</p>', 'admin', 'normal', 876, NOW() - INTERVAL '28 days'),
+  ('무료 배송 이벤트 진행', '<p>3만원 이상 구매 시 무료 배송 이벤트를 진행합니다.</p>', 'admin', 'normal', 1765, NOW() - INTERVAL '29 days');
 
 
 -- 뉴스 목 데이터 (20개)
-INSERT INTO public.news (title, content, view_count) VALUES
-  ('2024년 신년 특별 이벤트 진행', '<p>새해를 맞아 다양한 특별 이벤트를 준비했습니다. 많은 참여 부탁드립니다.</p>', 3421),
-  ('서비스 업데이트 안내', '<p>더 나은 사용자 경험을 위해 서비스가 업데이트되었습니다.</p>', 2156),
-  ('신규 파트너십 체결 소식', '<p>글로벌 기업과의 전략적 파트너십을 체결하게 되었습니다.</p>', 1876),
-  ('모바일 앱 2.0 출시', '<p>완전히 새로워진 모바일 앱 2.0이 출시되었습니다.</p><ul><li><p>다크 모드 지원</p></li><li><p>푸시 알림 개선</p></li><li><p>성능 최적화</p></li></ul>', 2543),
-  ('고객 감사 이벤트 진행', '<p>그동안 저희 서비스를 이용해주신 고객분들께 감사드립니다.</p>', 1234),
-  ('분기 실적 발표', '<p>2024년 1분기 실적을 발표합니다.</p>', 987),
-  ('새로운 기능 소개: AI 추천 시스템', '<p>인공지능 기반 맞춤 추천 시스템이 도입되었습니다.</p><p><span style="color: #4c99e6"><strong>사용할수록 더 정확해지는 추천</strong></span>을 경험해보세요.</p>', 1765),
-  ('보안 강화 업데이트', '<p>사용자 정보 보호를 위한 보안이 강화되었습니다.</p>', 1098),
-  ('글로벌 진출 소식', '<p>해외 시장 진출을 위한 첫 걸음을 내딛었습니다.</p>', 2345),
-  ('사용자 커뮤니티 오픈', '<p>사용자분들이 소통할 수 있는 커뮤니티가 오픈했습니다.</p>', 1432),
-  ('환경 캠페인 참여 안내', '<p>지속 가능한 미래를 위한 환경 캠페인에 참여합니다.</p>', 876),
-  ('신규 채용 공고', '<p>함께 성장할 인재를 모집합니다.</p>', 654),
-  ('서비스 1주년 기념', '<p style="text-align: center"><span style="font-size: 20px"><strong>서비스 출시 1주년을 맞이했습니다.</strong></span></p><p style="text-align: center">함께해주신 모든 분들께 감사드립니다.</p>', 3210),
-  ('프리미엄 멤버십 출시', '<p>더 많은 혜택을 담은 프리미엄 멤버십이 출시되었습니다.</p>', 1567),
-  ('고객센터 운영 시간 확대', '<p>더 나은 서비스를 위해 고객센터 운영 시간을 확대합니다.</p>', 765),
-  ('결제 시스템 개선', '<p>더욱 편리한 결제 시스템으로 개선되었습니다.</p>', 1098),
-  ('SNS 채널 오픈 안내', '<p>공식 SNS 채널이 오픈했습니다. 팔로우해주세요!</p>', 2134),
-  ('연말 감사 이벤트', '<p>한 해 동안 감사했습니다. 연말 특별 이벤트를 진행합니다.</p>', 1876),
-  ('신규 카테고리 추가', '<p>사용자 요청에 따라 새로운 카테고리가 추가되었습니다.</p>', 987),
-  ('버그 수정 및 안정화 업데이트', '<p>서비스 안정성 향상을 위한 업데이트가 진행되었습니다.</p>', 543);
+INSERT INTO public.news (title, content, view_count, created_at) VALUES
+  ('2024년 신년 특별 이벤트 진행', '<p>새해를 맞아 다양한 특별 이벤트를 준비했습니다. 많은 참여 부탁드립니다.</p>', 3421, NOW() - INTERVAL '0 days'),
+  ('서비스 업데이트 안내', '<p>더 나은 사용자 경험을 위해 서비스가 업데이트되었습니다.</p>', 2156, NOW() - INTERVAL '1 days'),
+  ('신규 파트너십 체결 소식', '<p>글로벌 기업과의 전략적 파트너십을 체결하게 되었습니다.</p>', 1876, NOW() - INTERVAL '2 days'),
+  ('모바일 앱 2.0 출시', '<p>완전히 새로워진 모바일 앱 2.0이 출시되었습니다.</p><ul><li><p>다크 모드 지원</p></li><li><p>푸시 알림 개선</p></li><li><p>성능 최적화</p></li></ul>', 2543, NOW() - INTERVAL '3 days'),
+  ('고객 감사 이벤트 진행', '<p>그동안 저희 서비스를 이용해주신 고객분들께 감사드립니다.</p>', 1234, NOW() - INTERVAL '4 days'),
+  ('분기 실적 발표', '<p>2024년 1분기 실적을 발표합니다.</p>', 987, NOW() - INTERVAL '5 days'),
+  ('새로운 기능 소개: AI 추천 시스템', '<p>인공지능 기반 맞춤 추천 시스템이 도입되었습니다.</p><p><span style="color: #4c99e6"><strong>사용할수록 더 정확해지는 추천</strong></span>을 경험해보세요.</p>', 1765, NOW() - INTERVAL '6 days'),
+  ('보안 강화 업데이트', '<p>사용자 정보 보호를 위한 보안이 강화되었습니다.</p>', 1098, NOW() - INTERVAL '7 days'),
+  ('글로벌 진출 소식', '<p>해외 시장 진출을 위한 첫 걸음을 내딛었습니다.</p>', 2345, NOW() - INTERVAL '8 days'),
+  ('사용자 커뮤니티 오픈', '<p>사용자분들이 소통할 수 있는 커뮤니티가 오픈했습니다.</p>', 1432, NOW() - INTERVAL '9 days'),
+  ('환경 캠페인 참여 안내', '<p>지속 가능한 미래를 위한 환경 캠페인에 참여합니다.</p>', 876, NOW() - INTERVAL '10 days'),
+  ('신규 채용 공고', '<p>함께 성장할 인재를 모집합니다.</p>', 654, NOW() - INTERVAL '11 days'),
+  ('서비스 1주년 기념', '<p style="text-align: center"><span style="font-size: 20px"><strong>서비스 출시 1주년을 맞이했습니다.</strong></span></p><p style="text-align: center">함께해주신 모든 분들께 감사드립니다.</p>', 3210, NOW() - INTERVAL '12 days'),
+  ('프리미엄 멤버십 출시', '<p>더 많은 혜택을 담은 프리미엄 멤버십이 출시되었습니다.</p>', 1567, NOW() - INTERVAL '13 days'),
+  ('고객센터 운영 시간 확대', '<p>더 나은 서비스를 위해 고객센터 운영 시간을 확대합니다.</p>', 765, NOW() - INTERVAL '14 days'),
+  ('결제 시스템 개선', '<p>더욱 편리한 결제 시스템으로 개선되었습니다.</p>', 1098, NOW() - INTERVAL '15 days'),
+  ('SNS 채널 오픈 안내', '<p>공식 SNS 채널이 오픈했습니다. 팔로우해주세요!</p>', 2134, NOW() - INTERVAL '16 days'),
+  ('연말 감사 이벤트', '<p>한 해 동안 감사했습니다. 연말 특별 이벤트를 진행합니다.</p>', 1876, NOW() - INTERVAL '17 days'),
+  ('신규 카테고리 추가', '<p>사용자 요청에 따라 새로운 카테고리가 추가되었습니다.</p>', 987, NOW() - INTERVAL '18 days'),
+  ('버그 수정 및 안정화 업데이트', '<p>서비스 안정성 향상을 위한 업데이트가 진행되었습니다.</p>', 543, NOW() - INTERVAL '19 days');
 
 
 -- FAQ 목 데이터 (20개)
@@ -133,17 +133,17 @@ INSERT INTO public.popups (title, content, author, position_top, position_left, 
 -- =============================================
 
 -- 공지사항 (en)
-INSERT INTO public.notices (title, content, author, category, view_count, lang) VALUES
-  ('[Important] Happy New Year 2024', '<p>Wishing you a wonderful new year! Thank you for using our service.</p>', 'admin', 'notice', 842, 'en'),
-  ('[Notice] Scheduled System Maintenance', '<p>Regular system maintenance is scheduled for Jan 15, 2024, 02:00–06:00.</p>', 'admin', 'notice', 531, 'en'),
-  ('Winter Season Special Discount', '<p>Meet a wide range of products at <strong>discounted prices</strong> this winter.</p>', 'admin', 'normal', 1120, 'en'),
-  ('Mobile App Update', '<p>Our mobile app has been updated to version 2.0.</p>', 'admin', 'normal', 976, 'en');
+INSERT INTO public.notices (title, content, author, category, view_count, lang, created_at) VALUES
+  ('[Important] Happy New Year 2024', '<p>Wishing you a wonderful new year! Thank you for using our service.</p>', 'admin', 'notice', 842, 'en', NOW() - INTERVAL '0 days'),
+  ('[Notice] Scheduled System Maintenance', '<p>Regular system maintenance is scheduled for Jan 15, 2024, 02:00–06:00.</p>', 'admin', 'notice', 531, 'en', NOW() - INTERVAL '1 days'),
+  ('Winter Season Special Discount', '<p>Meet a wide range of products at <strong>discounted prices</strong> this winter.</p>', 'admin', 'normal', 1120, 'en', NOW() - INTERVAL '2 days'),
+  ('Mobile App Update', '<p>Our mobile app has been updated to version 2.0.</p>', 'admin', 'normal', 976, 'en', NOW() - INTERVAL '3 days');
 
 -- 뉴스 (en)
-INSERT INTO public.news (title, content, view_count, lang) VALUES
-  ('New Year Special Event 2024', '<p>We have prepared various special events to celebrate the new year. Please join us.</p>', 2103, 'en'),
-  ('Mobile App 2.0 Released', '<p>The completely renewed mobile app 2.0 is now available.</p>', 1487, 'en'),
-  ('New Feature: AI Recommendation', '<p>An AI-based personalized recommendation system has been introduced.</p>', 998, 'en');
+INSERT INTO public.news (title, content, view_count, lang, created_at) VALUES
+  ('New Year Special Event 2024', '<p>We have prepared various special events to celebrate the new year. Please join us.</p>', 2103, 'en', NOW() - INTERVAL '0 days'),
+  ('Mobile App 2.0 Released', '<p>The completely renewed mobile app 2.0 is now available.</p>', 1487, 'en', NOW() - INTERVAL '1 days'),
+  ('New Feature: AI Recommendation', '<p>An AI-based personalized recommendation system has been introduced.</p>', 998, 'en', NOW() - INTERVAL '2 days');
 
 -- FAQ (en) — sort_order는 언어별로 독립적
 INSERT INTO public.faqs (question, answer, category, sort_order, lang) VALUES
