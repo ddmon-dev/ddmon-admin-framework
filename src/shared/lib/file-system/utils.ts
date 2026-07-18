@@ -24,6 +24,17 @@ export function extractFilePathFromUrl(url: string): string {
 }
 
 /**
+ * 날짜 기반 업로드 폴더 경로 생성 (yyyymmdd 버킷팅)
+ *
+ * @param prefix - 폴더 접두어 (보통 테이블명)
+ * @returns `<prefix>/<yyyymmdd>` (예: 'notices/20260718')
+ */
+export function generateDatedFolder(prefix: string): string {
+  const dateString = new Date().toISOString().split('T')[0].replace(/-/g, '');
+  return `${prefix}/${dateString}`;
+}
+
+/**
  * 파일명 생성: UUID + 확장자만 (한글 완벽 지원)
  * 원본 파일명은 메타데이터에 별도 저장
  *
