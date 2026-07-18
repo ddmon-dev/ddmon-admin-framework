@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { Badge } from '@/shared/ui/badge';
+import { FileDownloadList } from '@/shared/ui/file-download-list';
 import { RichTextContent } from '@/shared/ui/editor/rich-text-content';
 import { SheetFooter, SheetBody, SheetContainer } from '@/shared/ui/sheet';
 import {
@@ -45,12 +46,9 @@ export function DetailView({ data }: { data: ItemDTO }) {
             <DetailField label="내용" value={<RichTextContent>{data.content}</RichTextContent>} />
             <DetailField
               label="첨부 파일"
-              value={data.files?.attachments?.map((file) => file.url).join(', ')}
+              value={<FileDownloadList files={data.files?.attachments} />}
             />
-            <DetailField
-              label="썸네일"
-              value={data.files?.thumbnail?.map((file) => file.url).join(', ')}
-            />
+            <DetailField label="썸네일" value={<FileDownloadList files={data.files?.thumbnail} />} />
           </DetailGroup>
         </SheetContainer>
       </SheetBody>
