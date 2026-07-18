@@ -1,4 +1,4 @@
-import { email, phone, url, files, dbFiles, dateRange, numberRange, fieldArray } from './presets/common';
+import { email, phone, url, files, dateRange, numberRange, fieldArray } from './presets/common';
 import { password } from './presets/password';
 import { id } from './presets/id';
 
@@ -32,7 +32,6 @@ export const schemaPresets = {
   password,
   id,
   files,
-  dbFiles,
   dateRange,
   numberRange,
   fieldArray,

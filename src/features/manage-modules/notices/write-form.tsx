@@ -17,7 +17,6 @@ import {
   FormDatePicker,
 } from '@/shared/ui/form';
 import { SheetFooter, SheetBody, SheetContainer } from '@/shared/ui/sheet';
-import { schemaPresets } from '@/shared/schemas';
 import { type FormFilesField, uploadFormFiles } from '@/shared/lib/file-system';
 import { APP_CONFIG } from '@/app.config';
 import { SUCCESS_MESSAGES } from '@/shared/constants/success-messages';
@@ -34,10 +33,6 @@ import { CONFIG } from './config';
 import { type ItemDTO } from './config';
 import { createItem, updateItem } from './actions';
 import { writeSchema } from './schema';
-
-const formSchema = writeSchema.extend({
-  files: schemaPresets.files({ thumbnail: 0, attachments: 0 }),
-});
 
 const formDefaultValues = {
   category: CONFIG.categoryOptions[0].value,
@@ -58,18 +53,18 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentLang = searchParams.get('lang') || APP_CONFIG.LANG.DEFAULT;
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof formSchema>,
+  const form = useForm<z.infer<typeof writeSchema>>({
+    resolver: zodResolver(writeSchema),
+    defaultValues: (prevValues ?? formDefaultValues) as z.infer<typeof writeSchema>,
   });
   useFormGuard(form);
 
   useEffect(() => {
-    form.reset((prevValues ?? formDefaultValues) as z.infer<typeof formSchema>);
+    form.reset((prevValues ?? formDefaultValues) as z.infer<typeof writeSchema>);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevValues]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof writeSchema>) {
     try {
       const { files: formFiles, ...restValues } = values;
 

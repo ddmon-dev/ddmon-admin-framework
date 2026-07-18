@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { type DateRange } from 'react-day-picker';
-import { createFilesSchema, dbFilesSchema } from '@/shared/lib/file-system';
+import { createFilesSchema } from '@/shared/lib/file-system';
 import type { PresetSchema } from './types';
 
 /**
@@ -100,15 +100,6 @@ export const url = <T extends { message?: string; optional?: boolean } | undefin
  * })
  */
 export const files = createFilesSchema;
-
-/**
- * DB에 저장된 파일 메타데이터 검증 (서버 액션용)
- *
- * @example
- * // writeSchema에 포함 — update 검증에서 files 필드 보존
- * files: schemaPresets.dbFiles().optional()
- */
-export const dbFiles = () => dbFilesSchema;
 
 /**
  * 날짜 범위 검증

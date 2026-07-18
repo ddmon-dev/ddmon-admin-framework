@@ -83,15 +83,19 @@ export type ItemDTO = WithFiles<BaseItemDTO<typeof CONFIG.tableName>>;
 
 #### 2. 폼 스키마
 
+파일 필드는 `schema.ts`의 `writeSchema`에 **폼 모양**(`schemaPresets.files`)으로 선언합니다. 서버 액션이 검증 직전 이 필드를 DB 메타데이터 스키마로 자동 치환하므로(`resolveServerSchema`), 모듈이 `dbFiles`를 직접 다룰 필요가 없습니다.
+
 ```typescript
-// notice/write-form.tsx
+// notice/schema.ts
 import { schemaPresets } from '@/shared/schemas';
 
-const formSchema = z.object({
+export const writeSchema = z.object({
   title: z.string().min(1),
   files: schemaPresets.files({ thumbnail: 0, attachments: 0 }),
 });
 ```
+
+`write-form.tsx`는 이 `writeSchema`를 그대로 사용합니다(별도 `formSchema` 불필요).
 
 #### 3. 폼 컴포넌트
 

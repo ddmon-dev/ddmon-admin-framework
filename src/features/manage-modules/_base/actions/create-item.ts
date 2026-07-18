@@ -5,6 +5,7 @@ import { createServerClient } from '@/shared/lib/supabase/server';
 import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
 import { GENERAL_ERRORS, CRUD_ERRORS, VALIDATION_ERRORS } from '@/shared/constants/error-messages';
+import { resolveServerSchema } from './resolve-server-schema';
 import type { ZodType } from 'zod';
 import type { ActionResult } from '@/shared/types/results';
 import type { CreateItemParams, ReorderConfig } from '../types';
@@ -28,7 +29,7 @@ export async function createItem<TData>(
 
   // 스키마 검증 (있을 때만)
   if (schema) {
-    const result = schema.safeParse(values);
+    const result = resolveServerSchema(schema).safeParse(values);
     if (!result.success) {
       console.error('[createItem] Validation failed:', result.error.flatten());
       return Result.error(VALIDATION_ERRORS.INVALID_INPUT);

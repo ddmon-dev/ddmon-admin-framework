@@ -6,6 +6,7 @@ import { requireAuth } from '@/features/auth';
 import { Result } from '@/shared/utils/results';
 import { GENERAL_ERRORS, VALIDATION_ERRORS, CRUD_ERRORS } from '@/shared/constants/error-messages';
 import { getOldFiles, cleanupDeletedFiles } from '@/shared/lib/file-system';
+import { resolveServerSchema } from './resolve-server-schema';
 import type { ZodObject, ZodType } from 'zod';
 import type { ActionResult } from '@/shared/types/results';
 import type { UpdateItemParams } from '../types';
@@ -32,7 +33,7 @@ export async function updateItem<TData>(
 
   // 스키마 검증 (있을 때만) - partial()로 부분 업데이트 허용
   if (schema) {
-    const partialSchema = (schema as ZodObject<any>).partial();
+    const partialSchema = (resolveServerSchema(schema) as ZodObject<any>).partial();
     const result = partialSchema.safeParse(values);
     if (!result.success) {
       console.error('[updateItem] Validation failed:', result.error.flatten());
