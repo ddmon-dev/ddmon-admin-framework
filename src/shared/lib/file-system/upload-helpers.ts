@@ -98,7 +98,7 @@ export async function processFileUploads({
           url: urlData.publicUrl,
           originalName: file.name,
           size: file.size,
-          mimeType: file.type,
+          mimeType: file.type || 'application/octet-stream',
           uploadedAt: new Date().toISOString(),
         });
       });
@@ -190,7 +190,8 @@ async function uploadSingleFileWithPresignedUrl(
 
     // 업로드 시작
     xhr.open('PUT', uploadUrl);
-    xhr.setRequestHeader('Content-Type', file.type);
+    // 브라우저가 MIME을 식별 못 하는 형식(hwp 등)은 file.type이 빈 문자열
+    xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
     xhr.timeout = APP_CONFIG.FILE.UPLOAD_TIMEOUT_MS;
     xhr.send(file);
   });

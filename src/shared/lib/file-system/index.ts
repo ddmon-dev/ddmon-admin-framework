@@ -35,4 +35,4 @@ export {
 } from './utils';
 
 // Schemas (Zod 검증)
-export { createFilesSchema } from './schemas';
+export { createFilesSchema, dbFilesSchema } from './schemas';

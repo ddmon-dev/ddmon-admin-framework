@@ -95,3 +95,22 @@ export function createFilesSchema(config: string[] | Record<string, number | { m
 
   return z.object(filesObject).optional();
 }
+
+/**
+ * DB files JSONB 컬럼에 저장되는 파일 메타데이터 스키마
+ *
+ * 서버 액션 검증(writeSchema)에 포함해 update 시 files 필드가
+ * 스키마 검증에서 제거되지 않도록 합니다.
+ */
+export const dbFilesSchema = z.record(
+  z.string(),
+  z.array(
+    z.object({
+      url: z.string(),
+      originalName: z.string(),
+      size: z.number(),
+      mimeType: z.string(),
+      uploadedAt: z.string(),
+    })
+  )
+);

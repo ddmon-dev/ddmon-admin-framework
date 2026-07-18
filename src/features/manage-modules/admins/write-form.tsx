@@ -110,7 +110,7 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
       sheet.close();
     } catch (error) {
       console.error(error);
-      toast.error(GENERAL_ERRORS.UNEXPECTED);
+      toast.error(error instanceof Error ? error.message : GENERAL_ERRORS.UNEXPECTED);
     }
   }
 

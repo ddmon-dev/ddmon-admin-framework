@@ -39,7 +39,7 @@ const eslintConfig = defineConfig([
   // no-explicit-any 예외 경계
   // app 코드 전반은 `error`로 엄격하게 유지하되, 아래 경계에서만 any를 허용한다.
   // - manage-modules actions: Supabase 동적 테이블명 기반 insert/update 타이핑 한계
-  // - shared/lib/excel, shared/ui/editor/tiptap: xlsx/Tiptap 서드파티 경계
+  // - shared/lib/excel: xlsx 서드파티 경계
   // - shared/lib/file-system: 파일 레코드 동적 처리
   // - shared/ui/form: react-hook-form 제네릭 경계
   {
@@ -48,7 +48,6 @@ const eslintConfig = defineConfig([
       'src/features/manage-modules/_base/ui/delete-button.tsx',
       'src/shared/lib/excel/**/*.ts',
       'src/shared/lib/file-system/**/*.ts',
-      'src/shared/ui/editor/tiptap/**/*.tsx',
       'src/shared/ui/form/**/*.tsx',
       'src/shared/ui/app-dialog/**/*.tsx',
       'src/shared/ui/excel-export-button.tsx',
