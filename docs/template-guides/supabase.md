@@ -74,6 +74,8 @@ rm supabase/migrations/*_popups.sql
 
 seed.sql에는 notices, news, faqs, inquiries, inquiry_replies, popups 테이블의 개발용 목 데이터가 포함되어 있습니다(한국어 `ko` + 일부 영어 `en` 로우로 다국어 데모 포함).
 
+시드를 추가로 작성할 때 `created_at`은 `NOW() - INTERVAL 'n days'`처럼 행마다 다른 값을 명시하세요. `DEFAULT now()`에 맡기면 같은 트랜잭션의 모든 행이 동일한 타임스탬프를 받아 목록 정렬(`created_at DESC`)이 동률이 되고, 이후 행을 수정할 때 순서가 예기치 않게 바뀔 수 있습니다.
+
 ```bash
 # 시드 전체 삭제 (프로덕션용)
 rm supabase/seed.sql

@@ -3,6 +3,8 @@
 -- db:reset 시 자동 실행, db:push 시 무시
 -- 에디터 컬럼(notices.content, news.content, popups.content)은
 -- Tiptap 에디터가 저장하는 HTML 형식을 따른다.
+-- created_at은 행마다 다른 값을 명시한다 — DEFAULT now()는 같은 트랜잭션에서
+-- 전부 동일한 값이 되어 목록 정렬(created_at DESC)이 동률로 불안정해진다.
 -- =============================================
 
 -- 공지사항 목 데이터 (30개)
