@@ -1,64 +1,66 @@
 -- =============================================
 -- 개발용 시드 데이터
 -- db:reset 시 자동 실행, db:push 시 무시
+-- 에디터 컬럼(notices.content, news.content, popups.content)은
+-- Tiptap 에디터가 저장하는 HTML 형식을 따른다.
 -- =============================================
 
 -- 공지사항 목 데이터 (30개)
 INSERT INTO public.notices (title, content, author, category, view_count) VALUES
-  ('[중요] 2024년 신년 인사', '새해 복 많이 받으세요! 2024년에도 저희 서비스를 이용해주셔서 감사합니다.', 'admin', 'notice', 1245),
-  ('[공지] 시스템 정기 점검 안내', '2024년 1월 15일 02:00~06:00 시스템 정기 점검이 진행됩니다.', 'admin', 'notice', 892),
-  ('[공지] 개인정보처리방침 변경 안내', '개인정보처리방침이 2024년 1월 1일부로 변경되었습니다.', 'admin', 'notice', 567),
-  ('2024년 1월 이벤트 당첨자 발표', '새해맞이 이벤트에 참여해주신 모든 분들께 감사드립니다.', 'admin', 'normal', 2341),
-  ('겨울 시즌 특별 할인 안내', '겨울 시즌을 맞아 다양한 상품을 할인된 가격에 만나보세요.', 'admin', 'normal', 1876),
-  ('신규 기능 업데이트 소식', '사용자 편의성을 개선한 새로운 기능들이 추가되었습니다.', 'admin', 'normal', 1543),
-  ('고객센터 운영시간 변경 안내', '2024년부터 고객센터 운영시간이 변경됩니다.', 'admin', 'normal', 987),
-  ('모바일 앱 업데이트 안내', '모바일 앱이 버전 2.0으로 업데이트되었습니다.', 'admin', 'normal', 2156),
-  ('회원 등급제도 개편 안내', '더 나은 혜택을 제공하기 위해 회원 등급제도가 개편됩니다.', 'admin', 'normal', 1432),
-  ('결제 시스템 개선 완료', '더욱 안전하고 편리한 결제 시스템으로 개선되었습니다.', 'admin', 'normal', 876),
-  ('FAQ 업데이트 안내', '자주 묻는 질문이 업데이트되었습니다.', 'admin', 'normal', 654),
-  ('2023년 결산 보고', '2023년 한 해 동안의 성과를 공유합니다.', 'admin', 'normal', 3421),
-  ('보안 강화 조치 안내', '회원님들의 정보 보호를 위해 보안이 강화되었습니다.', 'admin', 'normal', 1098),
-  ('배송 정책 변경 안내', '2024년부터 배송 정책이 일부 변경됩니다.', 'admin', 'normal', 765),
-  ('포인트 적립률 변경 안내', '포인트 적립 정책이 변경되었습니다.', 'admin', 'normal', 1234),
-  ('서비스 이용약관 개정 안내', '서비스 이용약관이 개정되었습니다.', 'admin', 'normal', 543),
-  ('신규 파트너사 입점 안내', '새로운 파트너사가 입점했습니다.', 'admin', 'normal', 892),
-  ('고객 만족도 조사 실시', '서비스 개선을 위한 고객 만족도 조사에 참여해주세요.', 'admin', 'normal', 456),
-  ('연말정산 서류 제출 안내', '연말정산 관련 서류 제출 기한이 다가옵니다.', 'admin', 'normal', 678),
-  ('멤버십 프로그램 런칭', '새로운 멤버십 프로그램이 시작됩니다.', 'admin', 'normal', 1567),
-  ('소셜 미디어 채널 오픈', '공식 인스타그램 계정이 오픈했습니다.', 'admin', 'normal', 2345),
-  ('야간 배송 서비스 시작', '밤 10시까지 주문 시 새벽 배송이 가능합니다.', 'admin', 'normal', 1876),
-  ('리뷰 이벤트 진행', '솔직한 리뷰를 남겨주시면 포인트를 드립니다.', 'admin', 'normal', 1234),
-  ('환불 정책 개선 안내', '더욱 간편한 환불 절차로 개선되었습니다.', 'admin', 'normal', 987),
-  ('신규 카테고리 추가', '의류, 식품 카테고리가 새롭게 추가되었습니다.', 'admin', 'normal', 1432),
-  ('위시리스트 기능 추가', '관심 상품을 위시리스트에 담아보세요.', 'admin', 'normal', 1098),
-  ('프리미엄 회원 혜택 확대', '프리미엄 회원 혜택이 확대되었습니다.', 'admin', 'normal', 2156),
-  ('긴급 공지: 서버 장애 복구 완료', '일시적인 서버 장애가 복구되었습니다.', 'admin', 'normal', 3421),
-  ('고객 후기 이벤트 당첨자 발표', '고객 후기 이벤트 당첨자를 발표합니다.', 'admin', 'normal', 876),
-  ('무료 배송 이벤트 진행', '3만원 이상 구매 시 무료 배송 이벤트를 진행합니다.', 'admin', 'normal', 1765);
+  ('[중요] 2024년 신년 인사', '<p>새해 복 많이 받으세요! 2024년에도 저희 서비스를 이용해주셔서 감사합니다.</p>', 'admin', 'notice', 1245),
+  ('[공지] 시스템 정기 점검 안내', '<p>시스템 정기 점검이 아래와 같이 진행됩니다.</p><ul><li><p>점검 일시: 2024.01.15 (월) 02:00 ~ 06:00</p></li><li><p>점검 내용: 서버 안정화 및 보안 업데이트</p></li></ul><p><span style="color: #e64c4c">점검 시간 동안 서비스 이용이 제한됩니다.</span></p>', 'admin', 'notice', 892),
+  ('[공지] 개인정보처리방침 변경 안내', '<p>개인정보처리방침이 2024년 1월 1일부로 변경되었습니다.</p><p>주요 변경 사항은 다음과 같습니다.</p><ol><li><p>수집 항목 변경</p></li><li><p>보관 기간 조정</p></li><li><p>제3자 제공 범위 변경</p></li></ol>', 'admin', 'notice', 567),
+  ('2024년 1월 이벤트 당첨자 발표', '<p>새해맞이 이벤트에 참여해주신 모든 분들께 감사드립니다.</p>', 'admin', 'normal', 2341),
+  ('겨울 시즌 특별 할인 안내', '<p>겨울 시즌을 맞아 다양한 상품을 <strong>할인된 가격</strong>에 만나보세요.</p>', 'admin', 'normal', 1876),
+  ('신규 기능 업데이트 소식', '<p>사용자 편의성을 개선한 새로운 기능들이 추가되었습니다.</p>', 'admin', 'normal', 1543),
+  ('고객센터 운영시간 변경 안내', '<p>2024년부터 고객센터 운영시간이 변경됩니다.</p>', 'admin', 'normal', 987),
+  ('모바일 앱 업데이트 안내', '<p>모바일 앱이 버전 2.0으로 업데이트되었습니다.</p>', 'admin', 'normal', 2156),
+  ('회원 등급제도 개편 안내', '<p>더 나은 혜택을 제공하기 위해 회원 등급제도가 개편됩니다.</p>', 'admin', 'normal', 1432),
+  ('결제 시스템 개선 완료', '<p>더욱 안전하고 편리한 결제 시스템으로 개선되었습니다.</p>', 'admin', 'normal', 876),
+  ('FAQ 업데이트 안내', '<p>자주 묻는 질문이 업데이트되었습니다.</p>', 'admin', 'normal', 654),
+  ('2023년 결산 보고', '<p>2023년 한 해 동안의 성과를 공유합니다.</p>', 'admin', 'normal', 3421),
+  ('보안 강화 조치 안내', '<p>회원님들의 정보 보호를 위해 보안이 강화되었습니다.</p>', 'admin', 'normal', 1098),
+  ('배송 정책 변경 안내', '<p>2024년부터 배송 정책이 일부 변경됩니다.</p>', 'admin', 'normal', 765),
+  ('포인트 적립률 변경 안내', '<p>포인트 적립 정책이 변경되었습니다.</p>', 'admin', 'normal', 1234),
+  ('서비스 이용약관 개정 안내', '<p>서비스 이용약관이 개정되었습니다.</p>', 'admin', 'normal', 543),
+  ('신규 파트너사 입점 안내', '<p>새로운 파트너사가 입점했습니다.</p>', 'admin', 'normal', 892),
+  ('고객 만족도 조사 실시', '<p>서비스 개선을 위한 고객 만족도 조사에 참여해주세요.</p>', 'admin', 'normal', 456),
+  ('연말정산 서류 제출 안내', '<p>연말정산 관련 서류 제출 기한이 다가옵니다.</p>', 'admin', 'normal', 678),
+  ('멤버십 프로그램 런칭', '<p>새로운 멤버십 프로그램이 시작됩니다.</p>', 'admin', 'normal', 1567),
+  ('소셜 미디어 채널 오픈', '<p>공식 인스타그램 계정이 오픈했습니다.</p>', 'admin', 'normal', 2345),
+  ('야간 배송 서비스 시작', '<p>밤 10시까지 주문 시 새벽 배송이 가능합니다.</p>', 'admin', 'normal', 1876),
+  ('리뷰 이벤트 진행', '<p>솔직한 리뷰를 남겨주시면 포인트를 드립니다.</p>', 'admin', 'normal', 1234),
+  ('환불 정책 개선 안내', '<p>더욱 간편한 환불 절차로 개선되었습니다.</p>', 'admin', 'normal', 987),
+  ('신규 카테고리 추가', '<p>의류, 식품 카테고리가 새롭게 추가되었습니다.</p>', 'admin', 'normal', 1432),
+  ('위시리스트 기능 추가', '<p>관심 상품을 위시리스트에 담아보세요.</p>', 'admin', 'normal', 1098),
+  ('프리미엄 회원 혜택 확대', '<p>프리미엄 회원 혜택이 확대되었습니다.</p>', 'admin', 'normal', 2156),
+  ('긴급 공지: 서버 장애 복구 완료', '<p>일시적인 서버 장애가 복구되었습니다.</p>', 'admin', 'normal', 3421),
+  ('고객 후기 이벤트 당첨자 발표', '<p>고객 후기 이벤트 당첨자를 발표합니다.</p>', 'admin', 'normal', 876),
+  ('무료 배송 이벤트 진행', '<p>3만원 이상 구매 시 무료 배송 이벤트를 진행합니다.</p>', 'admin', 'normal', 1765);
 
 
 -- 뉴스 목 데이터 (20개)
 INSERT INTO public.news (title, content, view_count) VALUES
-  ('2024년 신년 특별 이벤트 진행', '새해를 맞아 다양한 특별 이벤트를 준비했습니다. 많은 참여 부탁드립니다.', 3421),
-  ('서비스 업데이트 안내', '더 나은 사용자 경험을 위해 서비스가 업데이트되었습니다.', 2156),
-  ('신규 파트너십 체결 소식', '글로벌 기업과의 전략적 파트너십을 체결하게 되었습니다.', 1876),
-  ('모바일 앱 2.0 출시', '완전히 새로워진 모바일 앱 2.0이 출시되었습니다.', 2543),
-  ('고객 감사 이벤트 진행', '그동안 저희 서비스를 이용해주신 고객분들께 감사드립니다.', 1234),
-  ('분기 실적 발표', '2024년 1분기 실적을 발표합니다.', 987),
-  ('새로운 기능 소개: AI 추천 시스템', '인공지능 기반 맞춤 추천 시스템이 도입되었습니다.', 1765),
-  ('보안 강화 업데이트', '사용자 정보 보호를 위한 보안이 강화되었습니다.', 1098),
-  ('글로벌 진출 소식', '해외 시장 진출을 위한 첫 걸음을 내딛었습니다.', 2345),
-  ('사용자 커뮤니티 오픈', '사용자분들이 소통할 수 있는 커뮤니티가 오픈했습니다.', 1432),
-  ('환경 캠페인 참여 안내', '지속 가능한 미래를 위한 환경 캠페인에 참여합니다.', 876),
-  ('신규 채용 공고', '함께 성장할 인재를 모집합니다.', 654),
-  ('서비스 1주년 기념', '서비스 출시 1주년을 맞이했습니다.', 3210),
-  ('프리미엄 멤버십 출시', '더 많은 혜택을 담은 프리미엄 멤버십이 출시되었습니다.', 1567),
-  ('고객센터 운영 시간 확대', '더 나은 서비스를 위해 고객센터 운영 시간을 확대합니다.', 765),
-  ('결제 시스템 개선', '더욱 편리한 결제 시스템으로 개선되었습니다.', 1098),
-  ('SNS 채널 오픈 안내', '공식 SNS 채널이 오픈했습니다. 팔로우해주세요!', 2134),
-  ('연말 감사 이벤트', '한 해 동안 감사했습니다. 연말 특별 이벤트를 진행합니다.', 1876),
-  ('신규 카테고리 추가', '사용자 요청에 따라 새로운 카테고리가 추가되었습니다.', 987),
-  ('버그 수정 및 안정화 업데이트', '서비스 안정성 향상을 위한 업데이트가 진행되었습니다.', 543);
+  ('2024년 신년 특별 이벤트 진행', '<p>새해를 맞아 다양한 특별 이벤트를 준비했습니다. 많은 참여 부탁드립니다.</p>', 3421),
+  ('서비스 업데이트 안내', '<p>더 나은 사용자 경험을 위해 서비스가 업데이트되었습니다.</p>', 2156),
+  ('신규 파트너십 체결 소식', '<p>글로벌 기업과의 전략적 파트너십을 체결하게 되었습니다.</p>', 1876),
+  ('모바일 앱 2.0 출시', '<p>완전히 새로워진 모바일 앱 2.0이 출시되었습니다.</p><ul><li><p>다크 모드 지원</p></li><li><p>푸시 알림 개선</p></li><li><p>성능 최적화</p></li></ul>', 2543),
+  ('고객 감사 이벤트 진행', '<p>그동안 저희 서비스를 이용해주신 고객분들께 감사드립니다.</p>', 1234),
+  ('분기 실적 발표', '<p>2024년 1분기 실적을 발표합니다.</p>', 987),
+  ('새로운 기능 소개: AI 추천 시스템', '<p>인공지능 기반 맞춤 추천 시스템이 도입되었습니다.</p><p><span style="color: #4c99e6"><strong>사용할수록 더 정확해지는 추천</strong></span>을 경험해보세요.</p>', 1765),
+  ('보안 강화 업데이트', '<p>사용자 정보 보호를 위한 보안이 강화되었습니다.</p>', 1098),
+  ('글로벌 진출 소식', '<p>해외 시장 진출을 위한 첫 걸음을 내딛었습니다.</p>', 2345),
+  ('사용자 커뮤니티 오픈', '<p>사용자분들이 소통할 수 있는 커뮤니티가 오픈했습니다.</p>', 1432),
+  ('환경 캠페인 참여 안내', '<p>지속 가능한 미래를 위한 환경 캠페인에 참여합니다.</p>', 876),
+  ('신규 채용 공고', '<p>함께 성장할 인재를 모집합니다.</p>', 654),
+  ('서비스 1주년 기념', '<p style="text-align: center"><span style="font-size: 20px"><strong>서비스 출시 1주년을 맞이했습니다.</strong></span></p><p style="text-align: center">함께해주신 모든 분들께 감사드립니다.</p>', 3210),
+  ('프리미엄 멤버십 출시', '<p>더 많은 혜택을 담은 프리미엄 멤버십이 출시되었습니다.</p>', 1567),
+  ('고객센터 운영 시간 확대', '<p>더 나은 서비스를 위해 고객센터 운영 시간을 확대합니다.</p>', 765),
+  ('결제 시스템 개선', '<p>더욱 편리한 결제 시스템으로 개선되었습니다.</p>', 1098),
+  ('SNS 채널 오픈 안내', '<p>공식 SNS 채널이 오픈했습니다. 팔로우해주세요!</p>', 2134),
+  ('연말 감사 이벤트', '<p>한 해 동안 감사했습니다. 연말 특별 이벤트를 진행합니다.</p>', 1876),
+  ('신규 카테고리 추가', '<p>사용자 요청에 따라 새로운 카테고리가 추가되었습니다.</p>', 987),
+  ('버그 수정 및 안정화 업데이트', '<p>서비스 안정성 향상을 위한 업데이트가 진행되었습니다.</p>', 543);
 
 
 -- FAQ 목 데이터 (20개)
@@ -110,19 +112,19 @@ INSERT INTO public.inquiry_replies (inquiry_id, content, author, sent_at, create
   ('a0000000-0000-0000-0000-000000000002', '간편결제 도입은 현재 개발 로드맵에 포함되어 있으며, 2024년 2분기 중 카카오페이와 네이버페이를 우선 지원할 예정입니다. 토스페이 등 추가 결제 수단도 순차적으로 도입할 계획입니다. 업데이트 시 별도 안내드리겠습니다.', 'admin', NOW() - INTERVAL '11 days', NOW() - INTERVAL '11 days'),
   ('a0000000-0000-0000-0000-000000000003', '회원 탈퇴 시 개인정보는 관련 법령에 따라 30일간 보관 후 완전 삭제됩니다. 즉시 삭제를 원하시는 경우 고객센터로 별도 요청해주시면 수동 처리가 가능합니다. 단, 전자상거래법에 따라 거래 기록은 5년간 보관됩니다.', 'admin', NOW() - INTERVAL '9 days', NOW() - INTERVAL '9 days'),
   ('a0000000-0000-0000-0000-000000000008', '기존 데이터는 업그레이드 시 100% 유지됩니다. 요금은 남은 기간에 대해 일할 계산되며, Basic 잔여 금액을 차감한 Pro 요금이 청구됩니다. 예를 들어 15일 남은 시점에서 업그레이드하시면 Basic 15일분을 공제한 차액만 결제하시면 됩니다.', 'admin', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
-  ('a0000000-0000-0000-0000-000000000012', '현재 Tiptap 기반 에디터에서 유튜브, Vimeo 등 동영상 임베드를 지원하고 있습니다. 에디터 상단 툴바의 "미디어 삽입" 아이콘을 클릭하시면 URL을 입력하여 임베드할 수 있습니다. 혹시 해당 아이콘이 보이지 않으시면 브라우저 캐시를 삭제 후 다시 시도해주세요.', 'admin', NOW() - INTERVAL '18 hours', NOW() - INTERVAL '18 hours');
+  ('a0000000-0000-0000-0000-000000000012', '네, 에디터에서 유튜브 동영상 임베드를 지원하고 있습니다. 에디터 툴바의 유튜브 아이콘을 클릭하신 뒤 영상 URL을 입력하시면 본문에 삽입됩니다. 혹시 해당 아이콘이 보이지 않으시면 브라우저 캐시를 삭제 후 다시 시도해주세요.', 'admin', NOW() - INTERVAL '18 hours', NOW() - INTERVAL '18 hours');
 
 
 -- 팝업 목 데이터 (8개)
 INSERT INTO public.popups (title, content, author, position_top, position_left, width, is_active, is_always, start_date, end_date, z_index) VALUES
-  ('신년 이벤트 안내', '<div style="text-align:center;padding:20px;"><h2 style="color:#e74c3c;margin-bottom:12px;">2024 신년 특별 이벤트</h2><p>신규 가입 시 <strong>30% 할인 쿠폰</strong>을 드립니다!</p><p style="margin-top:16px;color:#666;">기간: 2024.01.01 ~ 2024.01.31</p></div>', 'admin', 100, 100, 450, true, false, '2024-01-01', '2024-01-31', 10),
-  ('시스템 점검 안내', '<div style="padding:20px;"><h3 style="margin-bottom:10px;">시스템 정기 점검 안내</h3><p>아래 시간 동안 서비스 이용이 제한됩니다.</p><ul style="margin-top:10px;padding-left:20px;"><li>일시: 2024.02.15 (목) 02:00 ~ 06:00</li><li>대상: 전체 서비스</li></ul><p style="margin-top:10px;color:#888;">이용에 불편을 드려 죄송합니다.</p></div>', 'admin', 150, 200, 400, false, false, '2024-02-14', '2024-02-15', 20),
-  ('개인정보 처리방침 변경', '<div style="padding:20px;"><h3>개인정보 처리방침 변경 안내</h3><p style="margin-top:10px;">2024년 3월 1일부로 개인정보 처리방침이 변경됩니다.</p><p style="margin-top:8px;">주요 변경 사항:</p><ol style="padding-left:20px;margin-top:8px;"><li>수집 항목 변경</li><li>보관 기간 조정</li><li>제3자 제공 범위 변경</li></ol></div>', 'admin', 80, 150, 420, true, false, '2024-02-15', '2024-03-15', 15),
-  ('긴급 공지', '<div style="padding:20px;text-align:center;"><h2 style="color:#c0392b;">긴급 공지</h2><p style="margin-top:12px;">현재 결제 시스템 일시 장애가 발생하여<br/>복구 작업을 진행 중입니다.</p><p style="margin-top:16px;font-weight:bold;">예상 복구 시간: 1시간 이내</p></div>', 'admin', 120, 250, 380, false, false, NULL, NULL, 30),
-  ('프로모션 배너', '<div style="padding:24px;text-align:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border-radius:8px;"><h2 style="margin-bottom:8px;">Premium Plan</h2><p>지금 업그레이드하면 첫 3개월 50% 할인!</p><p style="margin-top:12px;font-size:24px;font-weight:bold;">월 29,900원 → 14,950원</p></div>', 'admin', 200, 300, 500, true, true, NULL, NULL, 5),
-  ('설문조사 참여 요청', '<div style="padding:20px;"><h3>고객 만족도 설문조사</h3><p style="margin-top:10px;">서비스 개선을 위한 설문조사에 참여해주세요.</p><p style="margin-top:8px;">소요 시간: 약 3분</p><p style="margin-top:12px;color:#3498db;"><strong>참여하신 분들께 스타벅스 기프티콘을 드립니다!</strong></p></div>', 'admin', 100, 50, 380, true, false, '2024-03-01', '2024-03-31', 10),
-  ('앱 업데이트 안내', '<div style="padding:20px;text-align:center;"><h3>모바일 앱 v3.0 업데이트</h3><p style="margin-top:10px;">새로워진 기능을 만나보세요!</p><ul style="text-align:left;margin-top:12px;padding-left:20px;"><li>다크 모드 지원</li><li>푸시 알림 개선</li><li>성능 최적화</li></ul></div>', 'admin', 80, 120, 360, false, false, '2024-03-10', '2024-04-10', 10),
-  ('채용 공고', '<div style="padding:20px;"><h3 style="color:#2c3e50;">함께 성장할 인재를 찾습니다</h3><p style="margin-top:10px;">프론트엔드 개발자, 백엔드 개발자, 디자이너를 모집합니다.</p><p style="margin-top:12px;">지원 마감: 2024.04.30</p><p style="margin-top:8px;color:#3498db;">자세한 내용은 채용 페이지를 확인해주세요.</p></div>', 'admin', 160, 180, 420, true, false, '2024-02-01', '2024-04-30', 8);
+  ('신년 이벤트 안내', '<p style="text-align: center"><span style="color: #e64c4c; font-size: 20px"><strong>2024 신년 특별 이벤트</strong></span></p><p style="text-align: center">신규 가입 시 <strong>30% 할인 쿠폰</strong>을 드립니다!</p><p style="text-align: center"><span style="color: #999999">기간: 2024.01.01 ~ 2024.01.31</span></p>', 'admin', 100, 100, 450, true, false, '2024-01-01', '2024-01-31', 10),
+  ('시스템 점검 안내', '<p><span style="font-size: 18px"><strong>시스템 정기 점검 안내</strong></span></p><p>아래 시간 동안 서비스 이용이 제한됩니다.</p><ul><li><p>일시: 2024.02.15 (목) 02:00 ~ 06:00</p></li><li><p>대상: 전체 서비스</p></li></ul><p><span style="color: #999999">이용에 불편을 드려 죄송합니다.</span></p>', 'admin', 150, 200, 400, false, false, '2024-02-14', '2024-02-15', 20),
+  ('개인정보 처리방침 변경', '<p><span style="font-size: 18px"><strong>개인정보 처리방침 변경 안내</strong></span></p><p>2024년 3월 1일부로 개인정보 처리방침이 변경됩니다.</p><p>주요 변경 사항:</p><ol><li><p>수집 항목 변경</p></li><li><p>보관 기간 조정</p></li><li><p>제3자 제공 범위 변경</p></li></ol>', 'admin', 80, 150, 420, true, false, '2024-02-15', '2024-03-15', 15),
+  ('긴급 공지', '<p style="text-align: center"><span style="color: #e64c4c; font-size: 22px"><strong>긴급 공지</strong></span></p><p style="text-align: center">현재 결제 시스템 일시 장애가 발생하여 복구 작업을 진행 중입니다.</p><p style="text-align: center"><strong>예상 복구 시간: 1시간 이내</strong></p>', 'admin', 120, 250, 380, false, false, NULL, NULL, 30),
+  ('프로모션 배너', '<p style="text-align: center"><span style="font-size: 22px"><strong>Premium Plan</strong></span></p><p style="text-align: center">지금 업그레이드하면 첫 3개월 50% 할인!</p><p style="text-align: center"><span style="color: #4c4ce6; font-size: 20px"><strong>월 29,900원 → 14,950원</strong></span></p>', 'admin', 200, 300, 500, true, true, NULL, NULL, 5),
+  ('설문조사 참여 요청', '<p><span style="font-size: 18px"><strong>고객 만족도 설문조사</strong></span></p><p>서비스 개선을 위한 설문조사에 참여해주세요.</p><p>소요 시간: 약 3분</p><p><span style="color: #4c99e6"><strong>참여하신 분들께 스타벅스 기프티콘을 드립니다!</strong></span></p>', 'admin', 100, 50, 380, true, false, '2024-03-01', '2024-03-31', 10),
+  ('앱 업데이트 안내', '<p style="text-align: center"><span style="font-size: 18px"><strong>모바일 앱 v3.0 업데이트</strong></span></p><p style="text-align: center">새로워진 기능을 만나보세요!</p><ul><li><p>다크 모드 지원</p></li><li><p>푸시 알림 개선</p></li><li><p>성능 최적화</p></li></ul>', 'admin', 80, 120, 360, false, false, '2024-03-10', '2024-04-10', 10),
+  ('채용 공고', '<p><span style="font-size: 18px"><strong>함께 성장할 인재를 찾습니다</strong></span></p><p>프론트엔드 개발자, 백엔드 개발자, 디자이너를 모집합니다.</p><p>지원 마감: 2024.04.30</p><p><span style="color: #4c99e6">자세한 내용은 채용 페이지를 확인해주세요.</span></p>', 'admin', 160, 180, 420, true, false, '2024-02-01', '2024-04-30', 8);
 
 
 -- =============================================
@@ -132,16 +134,16 @@ INSERT INTO public.popups (title, content, author, position_top, position_left, 
 
 -- 공지사항 (en)
 INSERT INTO public.notices (title, content, author, category, view_count, lang) VALUES
-  ('[Important] Happy New Year 2024', 'Wishing you a wonderful new year! Thank you for using our service.', 'admin', 'notice', 842, 'en'),
-  ('[Notice] Scheduled System Maintenance', 'Regular system maintenance is scheduled for Jan 15, 2024, 02:00–06:00.', 'admin', 'notice', 531, 'en'),
-  ('Winter Season Special Discount', 'Meet a wide range of products at discounted prices this winter.', 'admin', 'normal', 1120, 'en'),
-  ('Mobile App Update', 'Our mobile app has been updated to version 2.0.', 'admin', 'normal', 976, 'en');
+  ('[Important] Happy New Year 2024', '<p>Wishing you a wonderful new year! Thank you for using our service.</p>', 'admin', 'notice', 842, 'en'),
+  ('[Notice] Scheduled System Maintenance', '<p>Regular system maintenance is scheduled for Jan 15, 2024, 02:00–06:00.</p>', 'admin', 'notice', 531, 'en'),
+  ('Winter Season Special Discount', '<p>Meet a wide range of products at <strong>discounted prices</strong> this winter.</p>', 'admin', 'normal', 1120, 'en'),
+  ('Mobile App Update', '<p>Our mobile app has been updated to version 2.0.</p>', 'admin', 'normal', 976, 'en');
 
 -- 뉴스 (en)
 INSERT INTO public.news (title, content, view_count, lang) VALUES
-  ('New Year Special Event 2024', 'We have prepared various special events to celebrate the new year. Please join us.', 2103, 'en'),
-  ('Mobile App 2.0 Released', 'The completely renewed mobile app 2.0 is now available.', 1487, 'en'),
-  ('New Feature: AI Recommendation', 'An AI-based personalized recommendation system has been introduced.', 998, 'en');
+  ('New Year Special Event 2024', '<p>We have prepared various special events to celebrate the new year. Please join us.</p>', 2103, 'en'),
+  ('Mobile App 2.0 Released', '<p>The completely renewed mobile app 2.0 is now available.</p>', 1487, 'en'),
+  ('New Feature: AI Recommendation', '<p>An AI-based personalized recommendation system has been introduced.</p>', 998, 'en');
 
 -- FAQ (en) — sort_order는 언어별로 독립적
 INSERT INTO public.faqs (question, answer, category, sort_order, lang) VALUES
@@ -152,5 +154,5 @@ INSERT INTO public.faqs (question, answer, category, sort_order, lang) VALUES
 
 -- 팝업 (en)
 INSERT INTO public.popups (title, content, author, position_top, position_left, width, is_active, is_always, start_date, end_date, z_index, lang) VALUES
-  ('New Year Event', '<div style="text-align:center;padding:20px;"><h2 style="color:#e74c3c;margin-bottom:12px;">2024 New Year Special Event</h2><p>Get a <strong>30% discount coupon</strong> when you sign up!</p><p style="margin-top:16px;color:#666;">Period: 2024.01.01 – 2024.01.31</p></div>', 'admin', 100, 100, 450, true, false, '2024-01-01', '2024-01-31', 10, 'en'),
-  ('Premium Plan', '<div style="padding:24px;text-align:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border-radius:8px;"><h2 style="margin-bottom:8px;">Premium Plan</h2><p>Upgrade now and get 50% off for the first 3 months!</p></div>', 'admin', 200, 300, 500, true, true, NULL, NULL, 5, 'en');
+  ('New Year Event', '<p style="text-align: center"><span style="color: #e64c4c; font-size: 20px"><strong>2024 New Year Special Event</strong></span></p><p style="text-align: center">Get a <strong>30% discount coupon</strong> when you sign up!</p><p style="text-align: center"><span style="color: #999999">Period: 2024.01.01 – 2024.01.31</span></p>', 'admin', 100, 100, 450, true, false, '2024-01-01', '2024-01-31', 10, 'en'),
+  ('Premium Plan', '<p style="text-align: center"><span style="font-size: 22px"><strong>Premium Plan</strong></span></p><p style="text-align: center">Upgrade now and get 50% off for the first 3 months!</p>', 'admin', 200, 300, 500, true, true, NULL, NULL, 5, 'en');
