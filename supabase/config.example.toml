@@ -27,7 +27,21 @@ file_size_limit = "50MiB"
 [storage.buckets.public-assets]
 public = true
 file_size_limit = "50MiB"
-allowed_mime_types = ["image/*", "application/pdf", "application/zip"]
+allowed_mime_types = [
+  "image/*",
+  "application/pdf",
+  "application/zip",
+  "text/plain",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "application/x-hwp",
+  "application/haansoft-hwp",
+  "application/octet-stream",
+]
 
 [analytics]
 enabled = false
