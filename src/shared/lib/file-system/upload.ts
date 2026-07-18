@@ -1,63 +1,44 @@
 'use client';
 
-import { type FormFilesField } from './types';
+import { type DbFilesJSONB, type FormFilesField } from './types';
 import { processFileUploads } from './upload-helpers';
+import { generateDatedFolder } from './utils';
 
 /**
  * 폼 파일 업로드 처리 (클라이언트 전용)
  *
- * 폼에서 제출된 파일을 Storage에 업로드하고 DB에 메타데이터를 저장합니다.
- * Presigned URL 방식을 사용하여 클라이언트에서 직접 업로드합니다.
+ * 폼에서 제출된 파일을 Storage에 업로드하고 메타데이터를 반환합니다.
+ * DB 저장은 호출부(write-form)가 이 메타데이터를 create/update에 실어 1회 처리합니다.
+ * Presigned URL 방식으로 클라이언트에서 직접 업로드합니다.
  *
  * @param formFiles - 폼에서 제출된 파일 데이터
- * @param id - 아이템 ID (Storage 폴더명으로 사용)
- * @param tableName - 테이블명 (Storage 폴더명으로 사용)
- * @param pathname - 현재 경로 (revalidatePath용)
- * @param updateAction - 아이템 업데이트 Server Action
+ * @param tableName - 테이블명 (Storage 폴더 접두어)
+ * @returns 카테고리별 파일 메타데이터. 업로드할 파일이 없으면 undefined.
  *
  * @example
  * ```typescript
- * await uploadFormFiles({
+ * const filesMetadata = await uploadFormFiles({
  *   formFiles,
- *   id: data.id,
  *   tableName: CONFIG.tableName,
- *   pathname,
- *   updateAction: updateItem,
  * });
+ * const values = { ...restValues, ...(filesMetadata && { files: filesMetadata }) };
  * ```
  */
 export async function uploadFormFiles({
   formFiles,
-  id,
   tableName,
-  pathname,
-  updateAction,
 }: {
   formFiles?: FormFilesField;
-  id: string;
   tableName: string;
-  pathname: string;
-  updateAction: (params: { id: string; values: any; pathname: string }) => Promise<any>;
-}): Promise<void> {
-  // 파일 유무 체크
+}): Promise<DbFilesJSONB | undefined> {
   const hasFormFiles =
     formFiles &&
     Object.values(formFiles).some((fileList) => Array.isArray(fileList) && fileList.length > 0);
 
-  if (!hasFormFiles) return;
+  if (!hasFormFiles) return undefined;
 
-  // 파일 업로드
-  const uploadedFilesMetadata = await processFileUploads({
+  return processFileUploads({
     files: formFiles,
-    folder: `${tableName}/${id}`,
+    folder: generateDatedFolder(tableName),
   });
-
-  // files JSONB 컬럼 업데이트
-  if (Object.keys(uploadedFilesMetadata).length > 0) {
-    await updateAction({
-      id,
-      values: { files: uploadedFilesMetadata },
-      pathname,
-    });
-  }
 }

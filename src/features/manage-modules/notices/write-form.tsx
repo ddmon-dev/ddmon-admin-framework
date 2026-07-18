@@ -73,37 +73,28 @@ export function WriteForm({ id, prevValues }: WriteFormProps) {
     try {
       const { files: formFiles, ...restValues } = values;
 
+      // 1. 파일 업로드 선행 (실패 시 throw → DB 접근 없음)
+      const filesMetadata = await uploadFormFiles({
+        formFiles: formFiles as FormFilesField,
+        tableName: CONFIG.tableName,
+      });
+
+      // 2. 메타데이터 포함해 단일 저장
       // 언어: 수정 시 기존값 유지, 생성 시 URL 파라미터 사용
       const submitValues = {
         ...restValues,
+        ...(filesMetadata && { files: filesMetadata }),
         lang: prevValues?.lang ?? currentLang,
       } as Partial<ItemDTO>;
 
-      // 데이터 DB 저장
       const { success, data, error } = id
-        ? await updateItem({
-            id,
-            values: submitValues,
-            pathname,
-          })
-        : await createItem({
-            values: submitValues,
-            pathname,
-          });
+        ? await updateItem({ id, values: submitValues, pathname })
+        : await createItem({ values: submitValues, pathname });
 
       if (!success || !data) {
         toast.error(error);
         return;
       }
-
-      // 파일 업로드
-      await uploadFormFiles({
-        formFiles: formFiles as FormFilesField,
-        id: data.id,
-        tableName: CONFIG.tableName,
-        pathname,
-        updateAction: updateItem,
-      });
 
       toast.success(id ? SUCCESS_MESSAGES.UPDATE_SUCCESS() : SUCCESS_MESSAGES.CREATE_SUCCESS());
       sheet.close();
